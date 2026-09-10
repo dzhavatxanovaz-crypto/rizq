@@ -1,5 +1,5 @@
 /* Ризк - офлайн-кэш. Меняйте номер версии при каждом обновлении приложения. */
-var CACHE = "rizq-v75";
+var CACHE = "rizq-v76";
 var ASSETS = [
   "./",
   "./index.html",
@@ -29,7 +29,7 @@ self.addEventListener("activate", function (e) {
     caches.keys().then(function (keys) {
       /* rizq-audio не трогаем: это скачанное человеком аудио, а не наш кэш.
          Стирать его при каждом обновлении - значит заставлять качать заново. */
-      return Promise.all(keys.filter(function (k) { return k !== CACHE && k !== "rizq-audio"; })
+      return Promise.all(keys.filter(function (k) { return k.indexOf("rizq-v") === 0 ? k !== CACHE : false; /* общий домен с Volt: чужие кэши и rizq-audio не трогаем */ })
         .map(function (k) { return caches.delete(k); }));
     }).then(function () { return self.clients.claim(); })
   );
