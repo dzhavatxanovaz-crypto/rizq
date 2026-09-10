@@ -1,0 +1,20 @@
+{
+  "name": "Ризк: намаз и Коран",
+  "short_name": "Ризк",
+  "description": "Время намаза, азкары, имена Всевышнего, хадисы, кибла, закят и курсы.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1E2A5A",
+  "theme_color": "#1E2A5A",
+  "lang": "ru",
+  "dir": "ltr",
+  "categories": ["lifestyle", "education"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
