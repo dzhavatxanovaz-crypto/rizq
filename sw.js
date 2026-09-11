@@ -1,5 +1,5 @@
 /* Ризк - офлайн-кэш. Меняйте номер версии при каждом обновлении приложения. */
-var CACHE = "rizq-v76";
+var CACHE = "rizq-v80";
 var ASSETS = [
   "./",
   "./index.html",
@@ -70,6 +70,23 @@ self.addEventListener("fetch", function (e) {
         return caches.match(e.request).then(function (hit) {
           return hit;
         });
+      })
+    );
+    return;
+  }
+
+  /* Сама страница приложения - сначала сеть: иначе исправление доходило бы
+     до человека только со второго открытия. Без сети - из кэша, как раньше. */
+  if (e.request.mode === "navigate") {
+    e.respondWith(
+      fetch(e.request).then(function (resp) {
+        if (resp && resp.status === 200) {
+          var copy = resp.clone();
+          caches.open(CACHE).then(function (c) { c.put("./index.html", copy); });
+        }
+        return resp;
+      }).catch(function () {
+        return caches.match("./index.html").then(function (hit) { return hit || caches.match("./"); });
       })
     );
     return;
