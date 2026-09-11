@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<title>Ризк: намаз и Коран</title>
+<title>RIZQ: намаз и Коран</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
 <meta name="description" content="Время намаза, Коран с аудио, азкары, имена Всевышнего, хадисы, кибла и калькулятор закята.">
 <meta name="theme-color" content="#1E2A5A">
@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Ризк">
+<meta name="apple-mobile-web-app-title" content="RIZQ">
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
@@ -86,7 +86,7 @@
   <div class="sub">Ищите удел у Аллаха</div>
 </div>
 
-<title>Ризк</title>
+<title>RIZQ</title>
 <link rel="stylesheet" href="fonts.css">
 
 <style>
@@ -683,7 +683,7 @@ button, a{ -webkit-tap-highlight-color:transparent }
 
 <script>
 /* ============================================================
-   Ризк - прототип. Все данные хранятся в браузере (localStorage).
+   RIZQ - прототип. Все данные хранятся в браузере (localStorage).
    ============================================================ */
 "use strict";
 /* "Zhenshchina, kotoraya verit" - author: Zaira Dzhavatkhanova. Published with the author permission. */
@@ -2684,7 +2684,7 @@ function zakatICS(){
     if(!nx){ toast("Сначала запишите расчёт"); return; }
     var d = nx.date, next = new Date(d.getTime()+86400000);
     var out = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Rizq//Zakat//RU",
-      "CALSCALE:GREGORIAN","METHOD:PUBLISH","X-WR-CALNAME:"+icsEscape("Закят · Ризк"),
+      "CALSCALE:GREGORIAN","METHOD:PUBLISH","X-WR-CALNAME:"+icsEscape("Закят · RIZQ"),
       "BEGIN:VEVENT",
       "UID:rizq-zakat-"+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+"@rizq",
       "DTSTAMP:"+icsStamp(new Date()),
@@ -3587,7 +3587,7 @@ function courseCard(c){
    ЭКРАН: ПОДЕЛИТЬСЯ И УСТАНОВИТЬ
    ============================================================ */
 var APP_URL = "https://dzhavatxanovaz-crypto.github.io/rizq/";
-var SHARE_TEXT = "Ассаламу алейкум! Нашла приложение «Ризк»: время намаза, Коран, азкары, дуа и знания о религии. Бесплатно и без чужой рекламы.";
+var SHARE_TEXT = "Ассаламу алейкум! Нашла приложение «RIZQ»: время намаза, Коран, азкары, дуа и знания о религии. Бесплатно и без чужой рекламы.";
 
 /* Экраны, которые можно открыть ссылкой. Белый список, а не любое значение:
    по чужой ссылке приложение не должно оказываться где угодно. */
@@ -3622,7 +3622,7 @@ function deepOpen(){
 /* Что отправляем с каждого экрана: свой адрес и свой текст.
    Текст без обещаний и без цен - цены меняются, а ссылка живёт долго. */
 var SHARE_WHAT = {
-  app: { url: APP_URL, title: "Ризк", text: SHARE_TEXT },
+  app: { url: APP_URL, title: "RIZQ", text: SHARE_TEXT },
   courses: {
     url: APP_URL + "?open=courses",
     title: "Обучение JAVATTI",
@@ -3665,7 +3665,7 @@ function shareBlock(k, title, note){
 }
 
 function shareNative(){
-  var data = { title:"Ризк", text:SHARE_TEXT, url:APP_URL };
+  var data = { title:"RIZQ", text:SHARE_TEXT, url:APP_URL };
   if(navigator.share){ navigator.share(data).catch(function(){}); }
   else copyText(APP_URL + " - " + SHARE_TEXT);
 }
@@ -4714,7 +4714,7 @@ function nameCardFileName(i){
    в галерею, и дальше человек отправляет его как обычное фото. */
 function nameCardShare(i){
   var n = NAMES99[i];
-  var text = n.n + " - " + n.mean + "\nИмя № " + (i + 1) + " из 99. Приложение «Ризкъ»";
+  var text = n.n + " - " + n.mean + "\nИмя № " + (i + 1) + " из 99. Приложение «RIZQ»";
   nameCardBlob(i, function(blob){
     if(!blob){ toast("Открытка ещё рисуется, попробуйте ещё раз"); return; }
     var file = null;
@@ -5673,7 +5673,7 @@ function viewSupport(){
     '<div class="rows">'+
       '<a class="row" href="tel:+'+SUPPORT.tel+'" style="text-decoration:none;color:inherit"><span class="ic">☎</span>Позвонить<span class="val">'+esc(SUPPORT.phone)+'</span></a>'+
       '<a class="row" href="https://wa.me/'+SUPPORT.tel+'" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><span class="ic">✆</span>Написать в WhatsApp<span class="val">'+esc(SUPPORT.phone)+'</span></a>'+
-      '<a class="row" href="mailto:'+SUPPORT.email+'?subject='+encodeURIComponent("Ризк - вопрос")+'" style="text-decoration:none;color:inherit"><span class="ic">✉</span>Написать на почту<span class="val">'+esc(SUPPORT.email)+'</span></a>'+
+      '<a class="row" href="mailto:'+SUPPORT.email+'?subject='+encodeURIComponent("RIZQ - вопрос")+'" style="text-decoration:none;color:inherit"><span class="ic">✉</span>Написать на почту<span class="val">'+esc(SUPPORT.email)+'</span></a>'+
       '<button class="row" data-copy="'+SUPPORT.tel+'"><span class="ic">⧉</span>Скопировать номер</button>'+
     '</div>'+
     '<div class="sec-h"><h3>Частые вопросы</h3></div>'+
@@ -5702,6 +5702,8 @@ var DONATE = {
   bank:   "",
   ready:  true
 };
+/* Реквизиты для «Поддержать проект». Пусто - вместо них кнопка «Узнать реквизиты». */
+var SUPPORT_PAY = null;
 function viewSadaqa(){
   var d = sadaqaData(), items = d.items || [];
   var h = ['<div class="stack">'];
@@ -5744,18 +5746,15 @@ function viewSadaqa(){
     '<span>проверенные фонды, полный список и отчёты</span></span>'+
     '<span class="cw-go">›</span></a>');
 
-  /* Поддержка самого приложения (просьба Заиры). Реквизиты не пишем здесь:
-     их присылает школа лично, чтобы не было поддельных копий. */
-  h.push('<section class="card" style="margin-top:12px;border-color:rgba(212,175,55,.45)">'+
-    '<div class="eyebrow" style="color:var(--accent-ink)">Поддержать приложение Ризк</div>'+
-    '<p style="font-size:14px;color:var(--ink-2);line-height:1.6;margin:8px 0 10px">Ризк бесплатный и без рекламы. Его делает школа бизнеса JAVATTI, чтобы время намаза, Коран, азкары и знания были под рукой у каждого. Помочь приложению развиваться можно так:</p>'+
-    '<ul style="margin:0 0 12px;padding-left:18px;font-size:14px;line-height:1.7;color:var(--ink-2)">'+
-      '<li>Поделитесь Ризком с близкими - это лучшая помощь</li>'+
-      '<li>Напишите, чего не хватает или что работает не так</li>'+
-      '<li>Поддержите развитие деньгами - напишите нам, и мы пришлём реквизиты</li>'+
-    '</ul>'+
-    '<button class="btn" data-copy2="1">Скопировать ссылку на Ризк</button>'+
-    '<a class="btn sec" style="margin-top:8px;text-decoration:none;display:block;text-align:center" href="https://wa.me/'+digitsOf(CONTACT.tel)+'?text='+encodeURIComponent("Ассаламу алейкум! Хочу поддержать приложение Ризк")+'" target="_blank" rel="noopener">Написать о поддержке в WhatsApp</a>'+
+  /* Поддержать проект - скромно, одним блоком (просьба Заиры). Реквизиты задаются в SUPPORT_PAY;
+     пока их нет, человек узнаёт их у школы. */
+  h.push('<section class="card flat" style="margin-top:12px;padding:14px 15px">'+
+    '<div class="eyebrow">Поддержать проект</div>'+
+    '<p style="font-size:13.5px;color:var(--ink-2);line-height:1.55;margin:6px 0 10px">RIZQ бесплатный и без рекламы. Если хотите помочь ему развиваться, можно перевести любую сумму.</p>'+
+    (SUPPORT_PAY
+      ? '<div style="font-size:14px;line-height:1.7;color:var(--ink)">'+SUPPORT_PAY.lines.map(function(x){ return esc(x); }).join('<br>')+'</div>'+
+        '<button class="btn sec sm" style="margin-top:10px;width:100%" data-copy="'+esc(SUPPORT_PAY.copy)+'">Скопировать реквизиты</button>'
+      : '<a class="btn sec sm" style="display:block;width:100%;text-align:center;text-decoration:none" href="https://wa.me/'+digitsOf(CONTACT.tel)+'?text='+encodeURIComponent("Ассаламу алейкум! Хочу поддержать проект RIZQ, подскажите реквизиты")+'" target="_blank" rel="noopener">Узнать реквизиты</a>')+
   '</section>');
 
   h.push('<p class="disclaimer">Tooba - отдельное приложение и отдельная организация, мы к нему не относимся. '+
@@ -5776,7 +5775,7 @@ function viewDonate(){
     '<div class="eyebrow" style="margin-top:8px">Садака на развитие</div>'+
     '<div style="font-family:var(--f-display);font-size:21px;font-weight:700;margin-top:4px">Поддержать приложение</div>'+
     '<div class="ru" style="font-size:14px;color:rgba(255,255,255,.75);margin-top:8px">'+
-      'Ризк остаётся бесплатным: Коран, азкары, намаз и все инструменты доступны каждому без оплаты. '+
+      'RIZQ остаётся бесплатным: Коран, азкары, намаз и все инструменты доступны каждому без оплаты. '+
       'Ваша поддержка идёт на новые разделы, озвучку и работу над приложением.</div></section>');
 
   if(DONATE.ready){
@@ -10313,7 +10312,7 @@ function viewPlanner(){
 function buildTodoICS(){
   var now = new Date();
   var out = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Rizq//Planner//RU",
-             "CALSCALE:GREGORIAN","METHOD:PUBLISH","X-WR-CALNAME:"+icsEscape("Задачи · Ризк")];
+             "CALSCALE:GREGORIAN","METHOD:PUBLISH","X-WR-CALNAME:"+icsEscape("Задачи · RIZQ")];
   var cnt = 0;
   (S.todos||[]).forEach(function(x){
     if(x.done || !x.due) return;
@@ -10334,7 +10333,7 @@ function buildTodoICS(){
       out.push("DTEND;VALUE=DATE:"+nx.getFullYear()+pad(nx.getMonth()+1)+pad(nx.getDate()));
     }
     out.push("SUMMARY:"+icsEscape(x.t));
-    out.push("DESCRIPTION:"+icsEscape("Задача из приложения Ризк"));
+    out.push("DESCRIPTION:"+icsEscape("Задача из приложения RIZQ"));
     out.push("BEGIN:VALARM");
     out.push(x.tm ? "TRIGGER:-PT15M" : "TRIGGER:PT9H");
     out.push("ACTION:DISPLAY");
@@ -10438,7 +10437,7 @@ function clubCard(){
     '</section>';
 }
 /* ---------- связка с JAVATTI и CRM ----------
-   Ризк бесплатный: здесь человек видит программы и клуб, может купить сразу
+   RIZQ бесплатный: здесь человек видит программы и клуб, может купить сразу
    или открыть подробную карточку в приложении JAVATTI. Шаги уходят в CRM под
    случайным номером устройства; после заказа CRM связывает их с клиентом. */
 function rizqVisitor(){
@@ -11117,7 +11116,7 @@ function viewProf(){
     '<div style="display:flex;align-items:center;gap:14px">'+
       '<div style="width:54px;height:54px;flex:none;display:grid;place-items:center;filter:drop-shadow(0 4px 14px rgba(212,175,55,.3))">'+RA_SVG.replace(/38px/g,"52px")+'</div>'+
       '<div style="flex:1;min-width:0">'+
-        '<b style="font-family:var(--f-display);font-size:16px;font-weight:600;display:block">О проекте «Ризк»</b>'+
+        '<b style="font-family:var(--f-display);font-size:16px;font-weight:600;display:block">О проекте «RIZQ»</b>'+
         '<span style="font-size:13.5px;color:var(--ink-2);display:block;margin-top:3px;line-height:1.45">'+
           'Что значит имя, зачем мы это делаем и как помочь стать лучше</span>'+
       '</div>'+
@@ -12101,10 +12100,10 @@ function sheetWhy(){
     'Пишите - мы читаем каждое сообщение, и многое здесь появилось именно по просьбам тех, кто пользуется.</p>'+
     '<div class="rows" style="margin-top:12px">'+
       '<a class="row" href="https://wa.me/'+esc(CONTACT.tel.replace(/[^0-9]/g,""))+'?text='+
-        encodeURIComponent("Ассаламу алейкум! Пользуюсь приложением «Ризк». Хочу предложить:")+
+        encodeURIComponent("Ассаламу алейкум! Пользуюсь приложением «RIZQ». Хочу предложить:")+
         '" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">'+
         '<span class="ic">✆</span>Написать в WhatsApp<span class="val">'+esc(CONTACT.phone)+'</span></a>'+
-      '<a class="row" href="mailto:'+esc(CONTACT.email)+'?subject='+encodeURIComponent("Обратная связь по приложению «Ризк»")+
+      '<a class="row" href="mailto:'+esc(CONTACT.email)+'?subject='+encodeURIComponent("Обратная связь по приложению «RIZQ»")+
         '" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">'+
         '<span class="ic">✉</span>Написать письмо<span class="val">'+esc(CONTACT.email)+'</span></a>'+
     '</div>'+
