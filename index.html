@@ -1027,7 +1027,7 @@ var S = (function(){
   }catch(e){}
   return JSON.parse(JSON.stringify(DEF));
 })();
-function save(){ try{ localStorage.setItem("rizq.v1", JSON.stringify(S)); }catch(e){} }
+function save(){ try{ localStorage.setItem("rizq.v1", JSON.stringify(S)); }catch(e){} if(typeof VT !== "undefined" && VT && VT.code) vaultSoon(); }
 
 /* ---------- утилиты ---------- */
 function el(h){ var d=document.createElement("div"); d.innerHTML=h.trim(); return d; }
@@ -2042,7 +2042,11 @@ var ZIKRS = [
  {ar:"اللَّهُ أَكْبَرُ", ru:"Аллаху Акбар - Аллах Велик", goal:34},
  {ar:"أَسْتَغْفِرُ اللَّهَ", ru:"АстагфируЛлах - Прошу прощения у Аллаха", goal:100},
  {ar:"لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ", ru:"Ля хауля ва ля куввата илля биЛлях", goal:100},
- {ar:"اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ", ru:"Салават Пророку ﷺ", goal:100}
+ {ar:"اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ", ru:"О Аллах, благослови Мухаммада", tr:"Аллахумма салли 'аля Мухаммад", pl:"Салават Пророку ﷺ", goal:100},
+ {ar:"اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ", ru:"О Аллах, благослови Мухаммада и род Мухаммада", tr:"Аллахумма салли 'аля Мухаммадин ва 'аля али Мухаммад", pl:"Салават с родом Пророка", goal:100},
+ {ar:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى نَبِيِّنَا مُحَمَّدٍ", ru:"О Аллах, благослови, приветствуй и одари благодатью нашего пророка Мухаммада.", tr:"Аллахумма салли ва саллим ва барик 'аля набийина Мухаммад", pl:"Салават утром и вечером", goal:10},
+ {ar:"صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ", ru:"Да благословит его Аллах и приветствует", tr:"Салла-Ллаху 'аляйхи ва саллям", pl:"Салла-Ллаху 'аляйхи ва саллям", goal:100},
+ {ar:"اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، وَبَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، فِي الْعَالَمِينَ إِنَّكَ حَمِيدٌ مَجِيدٌ", ru:"О Аллах, благослови Мухаммада и род Мухаммада, как Ты благословил Ибрахима и род Ибрахима, и ниспошли благодать Мухаммаду и роду Мухаммада, как Ты ниспослал её Ибрахиму и роду Ибрахима, среди миров. Поистине, Ты Достойный хвалы, Славный", tr:"Аллахумма салли 'аля Мухаммадин ва 'аля али Мухаммад, кама салляйта 'аля Ибрахима ва 'аля али Ибрахим, ва барик 'аля Мухаммадин ва 'аля али Мухаммад, кама баракта 'аля Ибрахима ва 'аля али Ибрахим, филь-'алямина иннака Хамидун Маджид", pl:"Салават Ибрахима", goal:10}
 ];
 /* ============================================================
    99 ИМЁН ВСЕВЫШНЕГО
@@ -2544,7 +2548,7 @@ function startCompass(){
 
   function attach(){
     compassOn = true;
-    qStatus("Ищем север… поводите телефоном восьмёркой");
+    qStatus("Ищем север... поводите телефоном восьмёркой");
     window.addEventListener("deviceorientationabsolute", onOrient, true);
     window.addEventListener("deviceorientation", onOrient, true);
     setTimeout(function(){
@@ -3333,6 +3337,13 @@ function viewHome(){
   var d = duaOfDay(), a = ayatOfDay();
   var tn = timesNow(), np = nextPrayer();
   var h = ['<div class="stack">'];
+  var own = (S.myduas||[]).length + (S.todos||[]).length + (S.goals||[]).length + Object.keys(S.shukrNotes||{}).length;
+  if(own && vaultOk() && !VT.code && !(S.vaultHide && Date.now() - S.vaultHide < 14*86400000)){
+    h.push('<section class="card" style="border-color:rgba(212,175,55,.45)"><div class="eyebrow" style="color:var(--accent-ink)">Сохраните свои записи</div>'+
+      '<p style="font-size:14px;color:var(--ink-2);margin:6px 0 12px;line-height:1.5">Ваши дуа, задачи и дневники хранятся только на этом телефоне. Включите облачную копию - тогда они не пропадут при переустановке или смене телефона.</p>'+
+      '<button class="btn" data-open="backup">Включить облачную копию</button>'+
+      '<button class="btn ghost sm" style="margin-top:6px;width:100%" data-vhide="1">Не сейчас</button></section>');
+  }
 
   /* план чтения Корана: одна строка, если план идёт.
      На главной он нужен не для отчёта, а чтобы вспомнить о нём до вечера. */
@@ -3522,7 +3533,7 @@ function viewHome(){
       '<span class="more" style="color:var(--ink-3)">№ '+hd.num+'</span></div>');
     h.push('<button class="card" style="width:100%;text-align:left" data-hadith="'+HADITHS.indexOf(hd)+'">'+
       '<div style="font-family:var(--f-display);font-size:16px;font-weight:600;margin-bottom:6px;line-height:1.35">'+esc(hd.n)+'</div>'+
-      '<div style="font-size:14px;line-height:1.6;color:var(--ink-2)">'+esc(hd.text.slice(0,150))+'…</div>'+
+      '<div style="font-size:14px;line-height:1.6;color:var(--ink-2)">'+esc(hd.text.slice(0,150))+'...</div>'+
       '<div style="font-size:13px;color:var(--accent-ink);margin-top:9px;font-weight:600">Читать целиком →</div></button>');
   }
 
@@ -4155,6 +4166,7 @@ function viewTasbih(){
   return '<div class="stack">'+
     '<section class="card tasbih">'+
       '<div class="zikr">'+esc(z.ar)+'</div>'+
+      (z.tr ? '<div class="zikr-ru" style="font-style:italic;margin-bottom:4px">'+esc(z.tr)+'</div>' : '')+
       '<div class="zikr-ru">'+esc(z.ru)+'</div>'+
       '<div class="ring">'+
         '<svg viewBox="0 0 216 216" aria-hidden="true">'+
@@ -4171,7 +4183,7 @@ function viewTasbih(){
         '<button class="btn sm" data-tick="1">+ 1</button>'+
       '</div>'+
       '<div class="pill-row">'+ ZIKRS.map(function(zz,i){
-        return '<button class="pill'+(i===V.zikr?" on":"")+'" data-zikr="'+i+'">'+esc(zz.ru.split(" -")[0])+'</button>';
+        return '<button class="pill'+(i===V.zikr?" on":"")+'" data-zikr="'+i+'">'+esc(zz.pl || zz.ru.split(" -")[0])+'</button>';
       }).join("") +'</div>'+
     '</section>'+
     '<div class="card flat" style="text-align:center;padding:14px">'+
@@ -4866,7 +4878,7 @@ function viewDuaShort(){
     '<div class="ru" style="font-size:14.5px;color:rgba(255,255,255,.75);margin-top:8px;line-height:1.6">'+
       'По одной короткой мольбе на каждое имя: на арабском, как читается и что значит.</div></section>');
 
-  h.push('<input class="search" id="nameSearch" placeholder="Найти: прощение, удел, терпение, Раззак…" value="'+esc(V.q)+'">');
+  h.push('<input class="search" id="nameSearch" placeholder="Найти: прощение, удел, терпение, Раззак..." value="'+esc(V.q)+'">');
 
   var q = String(V.q||"").toLowerCase().trim();
   var shown = 0;
@@ -4892,7 +4904,7 @@ function viewDuaShort(){
       (n.dru ? '<div class="ru">'+esc(n.dru)+'</div>' : '')+
       '<div class="dua-f">'+
         '<button class="btn ghost sm" style="flex:1" data-name="'+i+'">Разбор имени</button>'+
-        '<button class="btn ghost sm" style="flex:1" data-copy="'+esc(n.dar+" — "+(n.dtr||"")+" — "+(n.dru||""))+'">Скопировать</button>'+
+        '<button class="btn ghost sm" style="flex:1" data-copy="'+esc(n.dar+" - "+(n.dtr||"")+" - "+(n.dru||""))+'">Скопировать</button>'+
       '</div>'+
     '</section>');
   });
@@ -5149,7 +5161,7 @@ function viewNames(){
       '<span style="font-size:13px;color:var(--ink-3);line-height:1.45">Откройте имя и нажмите «Произнести» - счётчик запомнит.</span>'+
       (done? '<button class="btn ghost sm" style="margin-left:auto;flex:none" data-namesreset="1">Сбросить</button>':'')+
     '</div></section>');
-  h.push('<input class="search" id="nameSearch" placeholder="Поиск: Рахман, удел, прощение, 17…" value="'+esc(V.q)+'">');
+  h.push('<input class="search" id="nameSearch" placeholder="Поиск: Рахман, удел, прощение, 17..." value="'+esc(V.q)+'">');
   var shown = 0;
   NAMES99.forEach(function(n,i){
     if(q){
@@ -5178,7 +5190,7 @@ function viewNames(){
 function shortMean(m){
   if(!m) return "";
   var s = m.split(";")[0];
-  return s.length>46 ? s.slice(0,44).replace(/[ ,]+$/,"")+"…" : s;
+  return s.length>46 ? s.slice(0,44).replace(/[ ,]+$/,"")+"..." : s;
 }
 
 function viewName(){
@@ -5326,7 +5338,7 @@ function viewHadith(){
   h.push('<div class="card flat" style="padding:13px 15px;font-size:14px;color:var(--ink-2);line-height:1.55">'+
     'Сборник имама ан-Навави - основа, которую традиционно заучивают первой. '+HADITHS.length+' хадисов.</div>');
   h.push('<button class="btn sec" data-open="hadithquiz">Проверить себя</button>');
-  h.push('<input class="search" id="hadSearch" placeholder="Поиск по теме: намерение, сосед, гнев…" value="'+esc(V.q)+'">');
+  h.push('<input class="search" id="hadSearch" placeholder="Поиск по теме: намерение, сосед, гнев..." value="'+esc(V.q)+'">');
   var shown = 0;
   HADITHS.forEach(function(x,i){
     if(q && (x.n+" "+x.text).toLowerCase().indexOf(q)<0) return;
@@ -5334,7 +5346,7 @@ function viewHadith(){
     h.push('<button class="name" data-hadith="'+i+'" style="align-items:flex-start">'+
       '<div class="num">'+x.num+'</div>'+
       '<div style="min-width:0;flex:1"><b style="line-height:1.35">'+esc(x.n)+'</b>'+
-      '<span style="display:block;margin-top:3px">'+esc(x.text.slice(0,72))+'…</span></div></button>');
+      '<span style="display:block;margin-top:3px">'+esc(x.text.slice(0,72))+'...</span></div></button>');
   });
   if(!shown) h.push('<div class="empty"><div class="ic">☰</div><b>Ничего не найдено</b><p>Попробуйте другое слово.</p></div>');
   h.push('</div>');
@@ -5546,6 +5558,7 @@ function viewReader(){
         '<button class="qbtn" data-qplay="'+i+'">▶</button>'+
         '<button class="qbtn'+(isMark(i)?" on":"")+'" data-qmark="'+i+'">★</button>'+
         '<button class="qbtn" data-qcopy="'+i+'">⧉</button>'+
+        '<button class="qbtn" data-qshare="'+i+'" aria-label="Поделиться аятом" title="Поделиться аятом">↗</button>'+
       '</div></article>');
   }
 
@@ -5622,7 +5635,7 @@ function viewQSettings(){
 function viewQSearch(){
   var q = V.q.trim();
   var h = ['<div class="stack">'];
-  h.push('<input class="search" id="qSearchInput" placeholder="Слово арабским письмом…" value="'+esc(V.q)+'">');
+  h.push('<input class="search" id="qSearchInput" placeholder="Слово арабским письмом..." value="'+esc(V.q)+'">');
   if(q.length < 2){
     h.push('<div class="empty"><div class="ic">⌕</div><b>Поиск по всему Корану</b><p>Введите слово арабским письмом - ищем по всему тексту без учёта огласовок.</p></div>');
   } else {
@@ -5635,7 +5648,7 @@ function viewQSearch(){
         out.push('<button class="qrow" style="align-items:flex-start" data-qread="'+i+'">'+
           '<span class="qnum">'+ayahInSurah(i)+'</span>'+
           '<div style="min-width:0;flex:1"><b>'+esc(qRef(i))+'</b>'+
-          '<span style="display:block;margin-top:4px;line-height:1.5" dir="rtl">'+esc((HAS_TR? QR[i] : QA[i]).slice(0,120))+'…</span></div></button>');
+          '<span style="display:block;margin-top:4px;line-height:1.5" dir="rtl">'+esc((HAS_TR? QR[i] : QA[i]).slice(0,120))+'...</span></div></button>');
       }
     }
     h.push('<div style="font-size:13.5px;color:var(--ink-3);padding:0 2px">Найдено: '+found+(found>=60?" (показаны первые 60)":"")+'</div>');
@@ -10055,7 +10068,7 @@ function plRow(x, td){
   meta.push(esc(plDueLabel(x.due)) + (x.tm ? ", " + esc(x.tm) : ""));
   if(over) meta.push('<i style="font-style:normal;color:#C0392B">просрочено</i>');
   if(x.rep) meta.push("↻ " + esc(plRepName(x.rep)) + ((x.streak||0) > 1 ? " · " + x.streak + " раз" : ""));
-  if(g) meta.push("◈ " + esc(g.t.length > 28 ? g.t.slice(0,28) + "…" : g.t));
+  if(g) meta.push("◈ " + esc(g.t.length > 28 ? g.t.slice(0,28) + "..." : g.t));
   return '<div class="lesson'+(x.done?" done":"")+'" style="align-items:flex-start">'+
     '<button class="tick" data-pltoggle="'+x.id+'" style="margin-top:2px">✓</button>'+
     '<div style="min-width:0;flex:1"><b style="font-weight:400;font-size:14.5px;line-height:1.5">'+esc(x.t)+'</b>'+
@@ -10067,7 +10080,7 @@ function plRow(x, td){
 function plGoalOptions(sel){
   var o = '<option value=""'+(!sel?" selected":"")+'>Без цели</option>';
   (S.goals||[]).filter(function(g){ return !g.done; }).forEach(function(g){
-    o += '<option value="'+esc(g.id)+'"'+(sel===g.id?" selected":"")+'>'+esc(g.t.length>40?g.t.slice(0,40)+"…":g.t)+'</option>';
+    o += '<option value="'+esc(g.id)+'"'+(sel===g.id?" selected":"")+'>'+esc(g.t.length>40?g.t.slice(0,40)+"...":g.t)+'</option>';
   });
   return o;
 }
@@ -11036,7 +11049,7 @@ function viewFav(){
       h.push('<button class="name" data-hadith="'+i+'" style="align-items:flex-start">'+
         '<div class="num">'+x.num+'</div><div style="min-width:0;flex:1">'+
         '<b style="line-height:1.35">'+esc(x.n)+'</b>'+
-        '<span style="display:block;margin-top:3px">'+esc(x.text.slice(0,64))+'…</span></div></button>');
+        '<span style="display:block;margin-top:3px">'+esc(x.text.slice(0,64))+'...</span></div></button>');
     });
   }
   h.push('</div>');
@@ -11330,10 +11343,124 @@ function backupApply(){
   toast("Данные восстановлены");
 }
 
+/* ============================================================
+   ОБЛАЧНАЯ КОПИЯ. Свои записи шифруются на телефоне ключом из кода
+   восстановления и хранятся на сервере школы. Сервер видит только шифр,
+   а без кода копию не открыть. Нужна, чтобы данные не пропадали при
+   переустановке приложения, смене адреса или телефона.
+   ============================================================ */
+var VAULT_APP = "rizq";
+var VAULT_BASE = CRM_URL + "/api/public/vault/";
+var VAULT_LS = "rizq.vault";
+var VT = { code:"", at:0, busy:false, timer:null, err:"" };
+try{ var vt0 = JSON.parse(localStorage.getItem(VAULT_LS) || "null"); if(vt0 && vt0.code){ VT.code = vt0.code; VT.at = vt0.at || 0; } }catch(e){}
+function vaultStore(){ try{ localStorage.setItem(VAULT_LS, JSON.stringify({ code: VT.code, at: VT.at })); }catch(e){} }
+var VAULT_ABC = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+function vaultOk(){ return !!(window.crypto && crypto.subtle && window.TextEncoder && window.fetch); }
+function vaultClean(c){ return String(c || "").toUpperCase().split("").filter(function(ch){ return VAULT_ABC.indexOf(ch) >= 0; }).join(""); }
+function vaultPretty(c){ var s = vaultClean(c), out = []; for(var i = 0; i < s.length; i += 4) out.push(s.slice(i, i + 4)); return out.join("-"); }
+function vaultNewCode(){ var a = new Uint8Array(16), s = ""; crypto.getRandomValues(a); for(var i = 0; i < 16; i++) s += VAULT_ABC.charAt(a[i] % 32); return vaultPretty(s); }
+function vB64(u8){ var s = ""; for(var i = 0; i < u8.length; i++) s += String.fromCharCode(u8[i]); return btoa(s); }
+function vUnB64(t){ var s = atob(t), u = new Uint8Array(s.length); for(var i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u; }
+function vaultKeys(code){
+  var enc = new TextEncoder(), c = vaultClean(code);
+  return crypto.subtle.digest("SHA-256", enc.encode("vault-id:" + VAULT_APP + ":" + c)).then(function(hash){
+    var id = Array.prototype.map.call(new Uint8Array(hash), function(x){ return ("0" + x.toString(16)).slice(-2); }).join("");
+    return crypto.subtle.importKey("raw", enc.encode(c), "PBKDF2", false, ["deriveKey"]).then(function(base){
+      return crypto.subtle.deriveKey({ name:"PBKDF2", salt: enc.encode("vault-key:" + VAULT_APP), iterations: 150000, hash: "SHA-256" },
+        base, { name:"AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
+    }).then(function(key){ return { id: id, key: key }; });
+  });
+}
+function vaultPush(){
+  if(!VT.code || VT.busy || !vaultOk()) return Promise.resolve(false);
+  VT.busy = true;
+  var iv = crypto.getRandomValues(new Uint8Array(12));
+  return vaultKeys(VT.code).then(function(k){
+    var plain = new TextEncoder().encode(JSON.stringify(vaultPayload()));
+    return crypto.subtle.encrypt({ name:"AES-GCM", iv: iv }, k.key, plain).then(function(ct){
+      var all = new Uint8Array(12 + ct.byteLength); all.set(iv, 0); all.set(new Uint8Array(ct), 12);
+      return fetch(VAULT_BASE + k.id, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ app: VAULT_APP, data: vB64(all) }) });
+    });
+  }).then(function(r){
+    VT.busy = false;
+    if(!r.ok){ VT.err = "Копия не сохранилась, попробуем ещё раз при следующем изменении"; return false; }
+    VT.err = ""; VT.at = Date.now(); vaultStore(); return true;
+  }).catch(function(){ VT.busy = false; VT.err = "Нет связи: копия сохранится, когда появится интернет"; return false; });
+}
+function vaultSoon(){ if(!VT.code) return; clearTimeout(VT.timer); VT.timer = setTimeout(vaultPush, 4000); }
+function vaultPull(code){
+  if(!vaultOk()) return Promise.reject(new Error("Этот браузер не умеет расшифровывать копию"));
+  return vaultKeys(code).then(function(k){
+    return fetch(VAULT_BASE + k.id, { cache:"no-store" }).catch(function(){ throw new Error("Нет связи с сервером школы"); }).then(function(r){
+      if(r.status === 404) throw new Error("Копия по этому коду не найдена. Проверьте код.");
+      if(!r.ok) throw new Error("Сервер не ответил, попробуйте позже");
+      return r.json();
+    }).then(function(j){
+      var all = vUnB64(j.data);
+      return crypto.subtle.decrypt({ name:"AES-GCM", iv: all.slice(0, 12) }, k.key, all.slice(12));
+    }).then(function(buf){ return JSON.parse(new TextDecoder().decode(buf)); }).catch(function(e){
+      var m = e && e.message ? String(e.message) : "";
+      if(m.indexOf("Копия") === 0 || m.indexOf("Сервер") === 0 || m.indexOf("Нет связи") === 0) throw e;
+      throw new Error("Код не подходит к этой копии");
+    });
+  });
+}
+function vaultDelete(){
+  if(!VT.code) return Promise.resolve();
+  return vaultKeys(VT.code).then(function(k){
+    return fetch(VAULT_BASE + k.id + "/delete", { method:"POST", headers:{ "Content-Type":"application/json" }, body:"{}" });
+  }).catch(function(){}).then(function(){ VT.code = ""; VT.at = 0; VT.err = ""; vaultStore(); });
+}
+function vaultWhen(){ return VT.at ? new Date(VT.at).toLocaleString("ru-RU", { day:"numeric", month:"long", hour:"2-digit", minute:"2-digit" }) : ""; }
+function vaultPayload(){ return backupData(); }
+function vaultSection(){
+  if(!vaultOk()) return '';
+  if(VT.code){
+    return '<div class="card flat" style="padding:13px;border-color:rgba(212,175,55,.45)"><div class="eyebrow" style="color:var(--accent-ink)">Облачная копия включена</div>'+
+      '<p style="font-size:13.5px;color:var(--ink-2);margin:6px 0 10px;line-height:1.5">Записи сохраняются сами после каждого изменения'+(VT.at ? ', последний раз '+esc(vaultWhen()) : '')+'. Код восстановления - сохраните его в заметках или отправьте себе:</p>'+
+      '<div style="font-family:ui-monospace,monospace;font-size:18px;letter-spacing:.06em;text-align:center;padding:11px;border-radius:12px;background:var(--surface-2);color:var(--ink)">'+esc(VT.code)+'</div>'+
+      (VT.err ? '<p class="note" style="margin:8px 0 0">'+esc(VT.err)+'</p>' : '')+
+      '<button class="btn sec" style="margin-top:10px" data-vcopy="1">Скопировать код</button>'+
+      '<button class="btn ghost sm" style="margin-top:6px;width:100%" data-voff="1">Отключить и удалить копию</button></div>';
+  }
+  return '<div class="card flat" style="padding:13px;border-color:rgba(212,175,55,.45)"><div class="eyebrow" style="color:var(--accent-ink)">Облачная копия</div>'+
+    '<p style="font-size:13.5px;color:var(--ink-2);margin:6px 0 10px;line-height:1.5">Чтобы свои дуа, задачи и дневники не пропали при переустановке или смене телефона. Записи шифруются прямо на телефоне, сервер школы видит только шифр.</p>'+
+    '<button class="btn" data-von="1">Включить облачную копию</button>'+
+    '<div class="eyebrow" style="margin-top:14px">Есть код восстановления?</div>'+
+    '<input class="search" id="vCode" style="margin:8px 0" placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters">'+
+    '<button class="btn sec" data-vpull="1">Вернуть мои записи</button></div>';
+}
+function vaultEnable(){
+  VT.code = vaultNewCode(); VT.at = 0; vaultStore();
+  vaultPush().then(function(ok){ sheetBackup(); toast(ok ? "Облачная копия включена. Сохраните код" : "Код создан. Копия сохранится, когда будет интернет"); });
+}
+function vaultOff(){
+  if(!window.confirm("Отключить облачную копию и удалить её с сервера?")) return;
+  vaultDelete().then(function(){ sheetBackup(); toast("Облачная копия удалена"); });
+}
+function vaultRestore(){
+  var inp = document.getElementById("vCode"), c = vaultClean(inp && inp.value);
+  if(c.length !== 16){ toast("В коде 16 знаков: латинские буквы и цифры"); return; }
+  toast("Ищем копию...");
+  vaultPull(c).then(function(o){
+    if(!o || o.app !== "rizq" || !o.data){ toast("Это копия другого приложения"); return; }
+    VT.code = vaultPretty(c); VT.at = Date.now(); vaultStore();
+    backupPreview(o);
+  }).catch(function(e){ toast(e.message); });
+}
+function qShareAyah(i){
+  var nl = String.fromCharCode(10);
+  var text = QA[i] + nl + nl + ((HAS_TR && QR[i]) ? QR[i] + nl + nl : "") + qRef(i) + nl + nl + "Коран в приложении Rizq: " + APP_URL;
+  if(navigator.share){ navigator.share({ text: text }).catch(function(){}); return; }
+  copyText(text);
+}
+
 function sheetBackup(){
   var c = backupCount(S), lines = backupLines(c);
   sheet('<h3>Копия данных</h3>'+
-    '<p class="note" style="margin:0 0 12px">Ваши записи хранятся только в этом браузере. '+
+    vaultSection()+'<hr class="hr" style="margin:16px 0">'+
+    '<p class="note" style="margin:0 0 12px">Без облачной копии записи хранятся только в этом браузере. '+
       'Копия нужна, чтобы не потерять их при переустановке и перенести на другой телефон.</p>'+
     '<div class="card flat" style="padding:13px">'+
       '<div class="eyebrow">Сейчас у вас</div>'+
@@ -11451,7 +11578,7 @@ function checkoutStart(id, tariff){
   if(!ok || !ok.checked){ toast("Отметьте согласие на обработку данных"); return; }
   save();
   var label = btn ? btn.textContent : "";
-  if(btn){ btn.disabled = true; btn.textContent = "Готовим оплату…"; }
+  if(btn){ btn.disabled = true; btn.textContent = "Готовим оплату..."; }
   var fail = function(msg){ if(btn){ btn.disabled = false; btn.textContent = label; } toast(msg); };
   fetch(CRM_URL + "/api/public/checkout", {
     method:"POST", headers:{ "Content-Type":"application/json" },
@@ -12054,7 +12181,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -12071,6 +12198,12 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.bkCopy!==undefined){ backupCopy(); return; }
   if(d.bkPaste!==undefined){ backupFromText(); return; }
   if(d.bkApply!==undefined){ backupApply(); return; }
+  if(d.von!==undefined){ vaultEnable(); return; }
+  if(d.voff!==undefined){ vaultOff(); return; }
+  if(d.vcopy!==undefined){ copyText(VT.code); return; }
+  if(d.vpull!==undefined){ vaultRestore(); return; }
+  if(d.vhide!==undefined){ S.vaultHide = Date.now(); save(); render(); return; }
+  if(d.qshare!==undefined){ qShareAyah(+d.qshare); return; }
   if(d.copy2!==undefined){ copyText(APP_URL); return; }
   if(d.shcopy){ copyText(shareOf(d.shcopy).url); return; }
   if(d.shnative){ shareThis(d.shnative); return; }
@@ -12520,7 +12653,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.ask){ sheetAsk(d.ask); return; }
   if(d.checkout){ checkoutStart(d.checkout, d.tariff); return; }
   if(d.buytar){ checkoutKeepInputs(); sheetBuy("sunnah", d.buytar); return; }
-  if(d.ordcheck){ ordersCheck(); toast("Проверяем оплату…"); return; }
+  if(d.ordcheck){ ordersCheck(); toast("Проверяем оплату..."); return; }
   if(d.lesson){
     var cid = d.lesson.split(".")[0];
     var free = d.lesson.indexOf(".0.0")>0;
@@ -12597,7 +12730,7 @@ $screen.addEventListener("input", function(ev){
 
 function askGPS(){
   if(!navigator.geolocation){ toast("Геолокация недоступна"); return; }
-  toast("Определяем местоположение…");
+  toast("Определяем местоположение...");
   navigator.geolocation.getCurrentPosition(function(pos){
     var la=pos.coords.latitude, lo=pos.coords.longitude, best=null, bd=1e9;
     CITIES.forEach(function(c){
@@ -12676,7 +12809,21 @@ if(!S.welcomed) setTimeout(sheetWelcome, 700);
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
   window.addEventListener("load", function () {
-    navigator.serviceWorker.register("sw.js").catch(function () {});
+    navigator.serviceWorker.register("sw.js").then(function(reg){
+      document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible") reg.update().catch(function(){}); });
+    }).catch(function(){});
+    var hadCtl = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener("controllerchange", function(){
+      if(!hadCtl){ hadCtl = true; return; }
+      if(document.getElementById("updBar")) return;
+      var b = document.createElement("div");
+      b.id = "updBar"; b.setAttribute("role", "status");
+      b.style.cssText = "position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:9999;background:#1F3B2D;color:#FFFFFF;border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:center;font:14px/1.4 system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.3)";
+      b.innerHTML = '<span style="flex:1">Вышла новая версия. Ваши записи сохранятся - переустанавливать приложение не нужно.</span><button type="button" style="flex:none;border:0;border-radius:10px;padding:9px 13px;background:#D4AF37;color:#1B1B1B;font:600 14px system-ui,sans-serif;cursor:pointer">Обновить</button>';
+      b.querySelector("button").onclick = function(){ location.reload(); };
+      document.body.appendChild(b);
+    });
+    if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function(){});
   });
 }
 
