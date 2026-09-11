@@ -5744,6 +5744,20 @@ function viewSadaqa(){
     '<span>проверенные фонды, полный список и отчёты</span></span>'+
     '<span class="cw-go">›</span></a>');
 
+  /* Поддержка самого приложения (просьба Заиры). Реквизиты не пишем здесь:
+     их присылает школа лично, чтобы не было поддельных копий. */
+  h.push('<section class="card" style="margin-top:12px;border-color:rgba(212,175,55,.45)">'+
+    '<div class="eyebrow" style="color:var(--accent-ink)">Поддержать приложение Ризк</div>'+
+    '<p style="font-size:14px;color:var(--ink-2);line-height:1.6;margin:8px 0 10px">Ризк бесплатный и без рекламы. Его делает школа бизнеса JAVATTI, чтобы время намаза, Коран, азкары и знания были под рукой у каждого. Помочь приложению развиваться можно так:</p>'+
+    '<ul style="margin:0 0 12px;padding-left:18px;font-size:14px;line-height:1.7;color:var(--ink-2)">'+
+      '<li>Поделитесь Ризком с близкими - это лучшая помощь</li>'+
+      '<li>Напишите, чего не хватает или что работает не так</li>'+
+      '<li>Поддержите развитие деньгами - напишите нам, и мы пришлём реквизиты</li>'+
+    '</ul>'+
+    '<button class="btn" data-copy2="1">Скопировать ссылку на Ризк</button>'+
+    '<a class="btn sec" style="margin-top:8px;text-decoration:none;display:block;text-align:center" href="https://wa.me/'+digitsOf(CONTACT.tel)+'?text='+encodeURIComponent("Ассаламу алейкум! Хочу поддержать приложение Ризк")+'" target="_blank" rel="noopener">Написать о поддержке в WhatsApp</a>'+
+  '</section>');
+
   h.push('<p class="disclaimer">Tooba - отдельное приложение и отдельная организация, мы к нему не относимся. '+
     'Подборка неполная и делается вручную: перед переводом посмотрите сбор целиком - кто собирает, на что и сколько осталось.</p>');
   h.push('</div>');
@@ -10420,9 +10434,35 @@ function clubCard(){
     (own
       ? '<a class="btn" style="text-decoration:none;display:block;text-align:center" href="'+CLUB.url+'" target="_blank" rel="noopener">Открыть приложение JAVATTI</a>'
       : '<button class="btn" data-buy="club">Вступить в клуб</button>'+
-        '<a class="btn ghost" style="margin-top:8px;text-decoration:none;display:block;text-align:center" href="'+CLUB.url+'?tab=club" target="_blank" rel="noopener">Что внутри клуба</a>')+
+        '<a class="btn ghost" style="margin-top:8px;text-decoration:none;display:block;text-align:center" href="'+esc(javattiUrl("club"))+'" target="_blank" rel="noopener" data-jopen="club">Что внутри клуба</a>')+
     '</section>';
 }
+/* ---------- связка с JAVATTI и CRM ----------
+   Ризк бесплатный: здесь человек видит программы и клуб, может купить сразу
+   или открыть подробную карточку в приложении JAVATTI. Шаги уходят в CRM под
+   случайным номером устройства; после заказа CRM связывает их с клиентом. */
+function rizqVisitor(){
+  if(!S.vid){
+    var a = new Uint8Array(10);
+    try{ crypto.getRandomValues(a); }catch(e){ for(var i = 0; i < a.length; i++) a[i] = Math.floor(Math.random() * 256); }
+    S.vid = Array.prototype.map.call(a, function(b){ return ("0" + b.toString(16)).slice(-2); }).join("");
+    save();
+  }
+  return S.vid;
+}
+function rTrack(event, product){
+  try{
+    fetch(CRM_URL + "/api/public/event", { method:"POST", headers:{ "Content-Type":"application/json" }, keepalive:true,
+      body: JSON.stringify({ app:"rizq", event:event, product: product || "", visitor: rizqVisitor() }) }).catch(function(){});
+  }catch(e){}
+}
+var R_SEEN = {};
+function rTrackOnce(event, product){ var k = event + ":" + product; if(R_SEEN[k]) return; R_SEEN[k] = 1; rTrack(event, product); }
+function javattiUrl(course, token){
+  return CRM_URL + "/app/" + (course ? "?course=" + encodeURIComponent(course) : "?tab=learn") +
+    "#from=rizq&vid=" + rizqVisitor() + (token ? "&t=" + encodeURIComponent(token) : "");
+}
+
 function viewCourses(){
   var h = ['<div class="stack">'];
   var paid = COURSES.filter(function(c){ return c.price; });
@@ -10430,6 +10470,7 @@ function viewCourses(){
   h.push(clubCard());
   COURSES.forEach(function(c){
     h.push(courseCard(c));
+    h.push('<a class="btn ghost sm" style="display:block;width:100%;text-align:center;text-decoration:none;margin-top:-4px" href="'+esc(javattiUrl(c.id))+'" target="_blank" rel="noopener" data-jopen="'+c.id+'">Подробнее в приложении JAVATTI ›</a>');
     if(c.id === "ai") h.push(consultCard());
   });
   h.push('<div class="sec-h" style="margin-top:8px"><h3>Книга</h3></div>');
@@ -10809,6 +10850,7 @@ function viewCourse(){
   if(!c) return '<div class="stack"><div class="empty"><div class="ic">◆</div><b>Программа не найдена</b></div></div>';
   var L = LAND[c.id] || {};
   var b = bought(c.id), pr = courseProgress(c);
+  rTrackOnce("course_view", c.id);
   var h = ['<div class="stack">'];
 
   /* первый экран */
@@ -10822,6 +10864,7 @@ function viewCourse(){
       '<div class="pill-row" style="justify-content:center">'+
         '<span class="pill">'+esc(c.dur)+'</span><span class="pill">'+esc(c.lvl)+'</span></div>'+
     '</div></section>');
+  h.push('<a class="btn sec" style="display:block;text-align:center;text-decoration:none" href="'+esc(javattiUrl(c.id))+'" target="_blank" rel="noopener" data-jopen="'+c.id+'">Открыть в приложении JAVATTI</a>');
 
   if(b){
     h.push('<section class="card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:9px">'+
@@ -11582,7 +11625,7 @@ function checkoutStart(id, tariff){
   var fail = function(msg){ if(btn){ btn.disabled = false; btn.textContent = label; } toast(msg); };
   fetch(CRM_URL + "/api/public/checkout", {
     method:"POST", headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify({ app:"rizq", product:id, tariff:tariff||"", name:S.name, email:S.email, phone:S.phone||"",
+    body: JSON.stringify({ app:"rizq", visitor: rizqVisitor(), product:id, tariff:tariff||"", name:S.name, email:S.email, phone:S.phone||"",
       consent:true, adsConsent:!!(ads && ads.checked), source:"rizq", utm:utmPayload() })
   }).then(function(r){ return r.json().then(function(j){ return { ok:r.ok, j:j }; }); })
     .then(function(x){
@@ -11626,7 +11669,8 @@ function sheetAccessOpened(o){
   sheet('<h3>Доступ открыт</h3>'+
     '<p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 12px">Оплата получена, доступ к программе «'+esc(o.title)+'» открыт. Баракаллаху фикум!</p>'+
     '<p class="note" style="margin:0 0 14px">Данные для входа на обучающую платформу отправлены на почту '+esc(S.email||"")+'. Войти можно по этой почте или по телефону.</p>'+
-    '<a class="btn" style="text-decoration:none;display:block;text-align:center" href="'+esc(o.cabinetUrl || cabinetUrl())+'" target="_blank" rel="noopener">Открыть обучение</a>'+
+    '<a class="btn" style="text-decoration:none;display:block;text-align:center" href="'+esc(javattiUrl("", o.token))+'" target="_blank" rel="noopener" data-jopen="'+esc(o.id || "")+'">Открыть обучение в приложении JAVATTI</a>'+
+    '<a class="btn ghost" style="margin-top:8px;text-decoration:none;display:block;text-align:center" href="'+esc(o.cabinetUrl || cabinetUrl())+'" target="_blank" rel="noopener">Войти на платформу по почте</a>'+
     '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Хорошо</button>');
 }
 function sheetAsk(id){
@@ -12181,7 +12225,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -12198,6 +12242,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.bkCopy!==undefined){ backupCopy(); return; }
   if(d.bkPaste!==undefined){ backupFromText(); return; }
   if(d.bkApply!==undefined){ backupApply(); return; }
+  if(d.jopen!==undefined){ rTrack("open_in_javatti", d.jopen); return; }
   if(d.von!==undefined){ vaultEnable(); return; }
   if(d.voff!==undefined){ vaultOff(); return; }
   if(d.vcopy!==undefined){ copyText(VT.code); return; }
