@@ -3399,6 +3399,7 @@ function renderHdr(){
         : V.view==="hajjtrip" ? "Хадж и умра в пути"
         : V.view==="kids" ? "Детям"
         : V.view==="kidstory" ? "История"
+        : V.view==="installment" ? "Исламская рассрочка"
         : V.view==="settings" ? "Настройки" : "";
     $hdr.innerHTML = '<header class="hdr"><div class="hdr-row">'+
       '<button class="back" data-back="1" aria-label="Назад">‹</button>'+
@@ -3648,7 +3649,8 @@ function viewHome(){
       '<span>'+(S.myduas.length? plural(S.myduas.length,"запись","записи","записей") : "личный список")+'</span></button>'+
     '<button class="cat" data-open="qibla"><div class="ic">✧</div><b>Кибла</b><span>'+Math.round(qiblaBearing())+'° от севера</span></button>'+
     '<button class="cat" data-open="live"><div class="ic" style="font-size:24px">🕋</div><b>Мекка онлайн</b><span>прямой эфир из Харама</span></button>'+
-    '<button class="cat" data-open="sadaqa"><div class="ic">❁</div><b>Куда помочь</b><span>сборы, которые мы посмотрели</span></button>'+
+    '<button class="cat" data-open="sadaqa"><div class="ic">❁</div><b>Куда помочь</b><span>сборы и поддержка проекта</span></button>'+
+    '<button class="cat" data-open="installment"><div class="ic">◈</div><b>Исламская рассрочка</b><span>без процентов</span></button>'+
     '</div>');
 
   /* хадис дня */
@@ -3717,7 +3719,7 @@ var SHARE_TEXT = "Ассаламу алейкум! Нашла приложени
 /* Экраны, которые можно открыть ссылкой. Белый список, а не любое значение:
    по чужой ссылке приложение не должно оказываться где угодно. */
 var DEEP_VIEWS = ["courses","sadaqa","zakat","names","hadith","sira","book1","qibla",
-                  "calendar","tasbih","suras","qduas","duaall","report","share","consulting","live","kids","hajjtrip","salahpics"];
+                  "calendar","tasbih","suras","qduas","duaall","report","share","consulting","live","installment","kids","hajjtrip","salahpics"];
 var DEEP_TABS  = ["home","quran","dua","journal","income","prof"];
 
 function deepOpen(){
@@ -3998,6 +4000,7 @@ function buildIndex(){
    ["Намаз в картинках","для новичков и детей, с озвучкой","open:salahpics","намаз картинки дети ребенок новичок научиться как молиться позы озвучка слушать произношение"],
    ["Хадж и умра в пути","чек-лист по шагам, счёт кругов","open:hajjtrip","хадж умра чек-лист чеклист таваф сай круги ихрам мекка паломничество камни джамарат арафат муздалифа мина сборы"],
    ["Детям","истории пророков, перед сном, дуа, имена","open:kids","дети детям ребенок ребёнок истории пророков сказки перед сном на ночь дуа для детей имена имя для ребенка мальчику девочке"],
+   ["Исламская рассрочка","партнёры и покупка товара в рассрочку","open:installment","рассрочка исламская халяль мурабаха кредит без процентов частями взносы купить в рассрочку партнерское финансирование"],
    ["Восполнение","пропущенные намазы и посты","open:qada","каза восполнение пропущенный намаз пост долг восполнить казаа qada"],
    ["Куда помочь","сборы, которые мы посмотрели","open:sadaqa","садака милостыня помочь сбор пожертвование благотворительность нуждающимся закят раздать туба tooba"],
   ].forEach(function(x){ add(x[0], x[1], x[2], x[3], "Разделы"); });
@@ -5956,6 +5959,219 @@ var DONATE = {
 };
 /* Реквизиты для «Поддержать проект». Пусто - вместо них кнопка «Узнать реквизиты». */
 var SUPPORT_PAY = null;
+/* ============================================================
+   ИСЛАМСКАЯ РАССРОЧКА
+   Что показывать, решает CRM: условия рассрочки на программы, партнёры из
+   реестра Банка России, приём заявок на мурабаху. Приложение ничего не
+   считает само, кроме подсказки о размере взносов - сумму к оплате всё
+   равно называет CRM.
+   ============================================================ */
+function crmApi(){ return location.hostname === "localhost" ? "http://localhost:3210" : CRM_URL; }
+var FIN = null, FIN_LOADING = false;
+function finData(){
+  if(!FIN){
+    try{ var c = JSON.parse(localStorage.getItem("rizq.fin") || "null"); if(c && c.data) FIN = c.data; }catch(e){}
+  }
+  return FIN;
+}
+function finLoad(after){
+  if(FIN_LOADING || !window.fetch) return;
+  FIN_LOADING = true;
+  fetch(crmApi() + "/api/public/finance").then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      FIN_LOADING = false;
+      if(!j || !j.products) return;
+      FIN = j;
+      try{ localStorage.setItem("rizq.fin", JSON.stringify({ at: Date.now(), data: j })); }catch(e){}
+      if(after) after();
+    }).catch(function(){ FIN_LOADING = false; });
+}
+/* Можно ли эту цену разбить на взносы - по условиям из CRM */
+function finCounts(product, price){
+  var d = finData();
+  if(!d) return null;
+  var p = (d.products || []).filter(function(x){ return x.product === product; })[0];
+  if(!p) return null;
+  var ok = (p.prices || []).some(function(x){ return x.price === price; });
+  return ok ? p.counts : null;
+}
+/* Так же, как в CRM: остаток от деления - в первый взнос */
+function finSplit(total, n){
+  var each = Math.floor(total / n);
+  return { first: total - each * (n - 1), each: each };
+}
+function finPlanPick(product, price){
+  var counts = finCounts(product, price);
+  if(!counts || !V.buyPlan) return 0;
+  return counts.indexOf(V.buyPlan) >= 0 ? V.buyPlan : 0;
+}
+function finPlanPills(product, price){
+  var counts = finCounts(product, price);
+  if(!counts) return "";
+  var cur = finPlanPick(product, price);
+  var pill = function(n, label){
+    return '<button class="pill'+(n===cur?" on":"")+'" data-buyplan="'+n+'" style="'+(n===cur?"border-color:var(--accent);color:var(--accent-ink)":"")+'">'+label+'</button>';
+  };
+  return '<div style="font-size:12.5px;color:var(--ink-3);margin-top:12px">Как оплатить</div>'+
+    '<div class="pill-row" style="justify-content:flex-start;margin-top:6px">'+
+      pill(0, "Сразу")+counts.map(function(n){ return pill(n, n+" взноса"); }).join("")+
+    '</div>';
+}
+function finPlanNote(price, plan){
+  if(!plan) return "";
+  var s = finSplit(price, plan);
+  return '<div style="font-size:13px;color:var(--ink-2);line-height:1.55;margin-top:8px">'+
+    'Сейчас '+money(s.first)+', затем '+plural(plan-1, "раз", "раза", "раз")+' по '+money(s.each)+' раз в месяц. '+
+    'Всего '+money(price)+' - столько же, сколько при оплате сразу.</div>';
+}
+
+/* Заказ в рассрочку: сколько оплачено и следующий взнос */
+function finOrdersRefresh(){
+  var now = Date.now();
+  (S.orders || []).forEach(function(o){
+    if(!o.plan || o.status !== "paid" || (o.planInfo && !o.planInfo.next)) return;
+    if(o.planAt && now - o.planAt < 10*60000) return;
+    o.planAt = now;
+    fetch(crmApi() + "/api/public/checkout/" + o.token).then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(j){ if(j && j.plan){ o.planInfo = j.plan; save(); if(V.tab === "prof") render(); } }).catch(function(){});
+  });
+}
+function finPayNext(token){
+  var w = null;
+  try{ w = window.open("", "_blank"); }catch(e){}
+  fetch(crmApi() + "/api/public/checkout/" + token + "/pay", { method:"POST", headers:{ "Content-Type":"application/json" }, body:"{}" })
+    .then(function(r){ return r.json().then(function(j){ return { ok:r.ok, j:j }; }); })
+    .then(function(x){
+      if(!x.ok || !x.j.payUrl){ if(w) w.close(); toast(x.j && x.j.error ? x.j.error : "Не получилось получить ссылку"); return; }
+      if(w) w.location.href = x.j.payUrl; else location.href = x.j.payUrl;
+      toast("Взнос "+x.j.n+" из "+x.j.count+": "+money(x.j.amount));
+    })
+    .catch(function(){ if(w) w.close(); toast("Нет связи с сервером школы"); });
+}
+function finOrderCards(){
+  return (S.orders || []).filter(function(o){ return o.plan && o.status === "paid" && o.planInfo; }).map(function(o){
+    var p = o.planInfo;
+    return '<section class="card">'+
+      '<b style="font-family:var(--f-display);font-size:15px">'+esc(o.title)+'</b>'+
+      '<div style="font-size:13px;color:var(--ink-3);margin-top:4px">Рассрочка: оплачено '+p.paid+' из '+p.count+
+        (p.next ? ' · следующий взнос '+money(p.next.amount)+' до '+esc(p.next.due.split("-").reverse().join(".")) : ' · всё оплачено')+'</div>'+
+      (p.next ? '<button class="btn sm" style="margin-top:11px" data-paynext="'+esc(o.token)+'">Оплатить взнос '+money(p.next.amount)+'</button>' : '')+
+      '</section>';
+  }).join("");
+}
+
+/* Партнёр: по ссылке - сразу к нему, данные через нас не идут */
+function finPartnerGo(id){
+  var w = null;
+  try{ w = window.open("", "_blank"); }catch(e){}
+  fetch(crmApi() + "/api/public/finance/click", { method:"POST", headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ partner: id, source: "rizq" }) })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      if(!j || !/^https:\/\//.test(j.url || "")){ if(w) w.close(); toast("Партнёр сейчас недоступен"); return; }
+      if(w) w.location.href = j.url; else location.href = j.url;
+    }).catch(function(){ if(w) w.close(); toast("Нет связи с сервером школы"); });
+}
+
+function sheetFinRequest(kind, partnerId){
+  var d = finData() || {}, partner = null;
+  if(kind === "partner") partner = (d.partners || []).filter(function(p){ return String(p.id) === String(partnerId); })[0];
+  if(kind === "partner" && !partner){ toast("Партнёр сейчас недоступен"); return; }
+  var consentText = partner
+    ? 'Согласна на обработку моих персональных данных школой бизнеса JAVATTI (ИП Джаватханова З. А.) и на их передачу в '+esc(partner.name)+' для рассмотрения заявки на рассрочку.'
+    : 'Согласна на обработку моих персональных данных школой бизнеса JAVATTI (ИП Джаватханова З. А.) для рассмотрения заявки на покупку в рассрочку.';
+  sheet('<h3>'+(partner ? 'Заявка: '+esc(partner.name) : 'Купить в рассрочку через RIZQ')+'</h3>'+
+    (partner ? '' : '<p class="note" style="margin:0 0 12px">Направление запускается: сейчас мы собираем заявки и договоры ещё не заключаем. '+
+      'Когда условия проверят юрист и преподаватель, мы свяжемся и расскажем, как это будет работать для вашей покупки.</p>')+
+    '<label class="eyebrow">Что нужно купить</label>'+
+    '<input class="search" id="fnItem" style="margin:6px 0 10px" placeholder="Например: холодильник, ноутбук">'+
+    '<div style="display:flex;gap:8px">'+
+      '<div style="flex:1"><label class="eyebrow">Примерная цена, ₽</label><input class="search" id="fnAmount" inputmode="numeric" style="margin:6px 0 10px"></div>'+
+      '<div style="flex:1"><label class="eyebrow">Срок, месяцев</label><input class="search" id="fnTerm" inputmode="numeric" style="margin:6px 0 10px"></div>'+
+    '</div>'+
+    '<label class="eyebrow">Город</label>'+
+    '<input class="search" id="fnCity" style="margin:6px 0 10px" value="'+esc(currentCity().n || "")+'">'+
+    '<label class="eyebrow">Имя</label>'+
+    '<input class="search" id="fnName" style="margin:6px 0 10px" value="'+esc(S.name||"")+'">'+
+    '<label class="eyebrow">Телефон с WhatsApp</label>'+
+    '<input class="search" id="fnTel" type="tel" style="margin:6px 0 4px" placeholder="+7 900 000-00-00" value="'+esc(S.phone||"")+'">'+
+    '<label style="display:flex;align-items:flex-start;gap:9px;margin-top:12px;font-size:13px;color:var(--ink-2);line-height:1.5">'+
+      '<input type="checkbox" id="fnOk" style="margin-top:2px;flex:none">'+
+      '<span>'+consentText+' <a href="privacy.html" target="_blank" rel="noopener" style="color:var(--accent-ink)">Политика</a></span></label>'+
+    '<button class="btn" id="fnGo" style="margin-top:14px" data-finsend="'+kind+':'+(partner ? partner.id : "")+'">Отправить заявку</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>'+
+    (partner ? '<p class="note" style="margin-top:12px">Решение о рассрочке и её условия принимает '+esc(partner.name)+'. Мы передаём заявку и не берём с вас денег.</p>' : ''));
+}
+function finSend(kind, partnerId){
+  var g = function(id){ var el = document.getElementById(id); return el ? el.value.trim() : ""; };
+  var ok = document.getElementById("fnOk"), btn = document.getElementById("fnGo");
+  var d = finData() || {};
+  var partner = kind === "partner" ? (d.partners || []).filter(function(p){ return String(p.id) === String(partnerId); })[0] : null;
+  if(!g("fnItem")){ toast("Напишите, что нужно купить"); return; }
+  if(!g("fnName")){ toast("Напишите, как к вам обращаться"); return; }
+  if(digitsOf(g("fnTel")).length < 10){ toast("Проверьте номер телефона"); return; }
+  if(!ok || !ok.checked){ toast("Отметьте согласие"); return; }
+  S.name = g("fnName"); S.phone = g("fnTel"); save();
+  if(btn){ btn.disabled = true; btn.textContent = "Отправляем..."; }
+  fetch(crmApi() + "/api/public/finance/request", { method:"POST", headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ kind: kind, partner: partner ? partner.id : null, consentPartner: partner ? partner.name : "",
+      item: g("fnItem"), amount: g("fnAmount"), term: g("fnTerm"), city: g("fnCity"),
+      name: S.name, phone: S.phone, email: S.email || "", consent: true, source: "rizq" }) })
+    .then(function(r){ return r.json().then(function(j){ return { ok:r.ok, j:j }; }); })
+    .then(function(x){
+      if(!x.ok){ if(btn){ btn.disabled = false; btn.textContent = "Отправить заявку"; } toast(x.j && x.j.error ? x.j.error : "Не получилось отправить"); return; }
+      closeSheet();
+      sheet('<h3>Заявка принята</h3><p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 14px">'+
+        (partner ? 'Передаём заявку в '+esc(partner.name)+'. С вами свяжутся по номеру '+esc(S.phone)+'.'
+                 : 'Мы свяжемся с вами по номеру '+esc(S.phone)+', уточним детали и расскажем, когда направление заработает.')+
+        '</p><button class="btn" data-scrim="1">Хорошо</button>');
+    })
+    .catch(function(){ if(btn){ btn.disabled = false; btn.textContent = "Отправить заявку"; } toast("Нет связи с сервером школы"); });
+}
+
+function viewInstallment(){
+  var d = finData(), h = ['<div class="stack">'];
+  if(!d) finLoad(function(){ if(V.view === "installment") render(); });
+
+  h.push('<section class="card">'+
+    '<div class="eyebrow">Как это устроено</div>'+
+    '<p style="font-size:14.5px;line-height:1.65;color:var(--ink-2);margin:9px 0 0">'+
+    'Цена называется заранее и не меняется до последнего взноса: без процентов и без штрафов в пользу продавца. '+
+    'Перед подписанием договора покажите его своему преподавателю.</p></section>');
+
+  /* 1. партнёры */
+  var partners = d ? (d.partners || []) : [];
+  if(partners.length) h.push('<div class="sec-h"><h3>Рассрочка у партнёров</h3></div>');
+  partners.forEach(function(p){
+    h.push('<section class="card">'+
+      '<div class="eyebrow">'+(p.erid ? 'Реклама · ' : '')+'В реестре Банка России</div>'+
+      '<b style="display:block;font-family:var(--f-display);font-size:16px;margin-top:6px">'+esc(p.name)+'</b>'+
+      '<div style="font-size:13.5px;color:var(--ink-2);line-height:1.55;margin-top:6px">'+esc(p.products || "")+
+        (p.regions ? ' · '+esc(p.regions) : '')+'</div>'+
+      (p.about ? '<div style="font-size:13.5px;color:var(--ink-3);line-height:1.55;margin-top:6px">'+esc(p.about)+'</div>' : '')+
+      (p.mode === "lead"
+        ? '<button class="btn sm" style="margin-top:12px;width:100%" data-finreq="partner:'+p.id+'">Оставить заявку</button>'
+        : '<button class="btn sm" style="margin-top:12px;width:100%" data-finpartner="'+p.id+'">Перейти к партнёру</button>')+
+      '<div style="font-size:11.5px;color:var(--ink-3);margin-top:8px">'+esc(p.name)+(p.inn ? ', ИНН '+esc(p.inn) : '')+(p.erid ? ', erid '+esc(p.erid) : '')+'</div>'+
+      '</section>');
+  });
+
+  /* 2. мурабаха */
+  if(!d || (d.murabaha && d.murabaha.requests)){
+    h.push('<div class="sec-h"><h3>Купить товар в рассрочку через RIZQ</h3></div>');
+    h.push('<section class="card">'+
+      '<p style="font-size:14px;line-height:1.6;color:var(--ink-2);margin:0">'+
+      'Мурабаха: вы называете товар, RIZQ покупает его на себя и продаёт вам в рассрочку. Цена фиксируется в договоре и не меняется до конца, штрафов нет.</p>'+
+      '<p class="note" style="margin:10px 0 0">Сейчас принимаем заявки. Сделки начнём заключать после проверки условий юристом и преподавателем.</p>'+
+      '<button class="btn sm" style="margin-top:12px;width:100%" data-finreq="murabaha:">Оставить заявку</button></section>');
+  }
+
+  h.push('<p class="disclaimer">Рассрочку у партнёров дают сами партнёры: решение и условия - за ними. '+
+    'Реестр участников партнёрского финансирования опубликован на сайте Банка России.</p>');
+  h.push('</div>');
+  return h.join("");
+}
+
 function viewSadaqa(){
   var d = sadaqaData(), items = d.items || [];
   var h = ['<div class="stack">'];
@@ -5998,16 +6214,9 @@ function viewSadaqa(){
     '<span>проверенные фонды, полный список и отчёты</span></span>'+
     '<span class="cw-go">›</span></a>');
 
-  /* Поддержать проект - скромно, одним блоком (просьба Заиры). Реквизиты задаются в SUPPORT_PAY;
-     пока их нет, человек узнаёт их у школы. */
-  h.push('<section class="card flat" style="margin-top:12px;padding:14px 15px">'+
-    '<div class="eyebrow">Поддержать проект</div>'+
-    '<p style="font-size:13.5px;color:var(--ink-2);line-height:1.55;margin:6px 0 10px">RIZQ бесплатный и без рекламы. Если хотите помочь ему развиваться, можно перевести любую сумму.</p>'+
-    (SUPPORT_PAY
-      ? '<div style="font-size:14px;line-height:1.7;color:var(--ink)">'+SUPPORT_PAY.lines.map(function(x){ return esc(x); }).join('<br>')+'</div>'+
-        '<button class="btn sec sm" style="margin-top:10px;width:100%" data-copy="'+esc(SUPPORT_PAY.copy)+'">Скопировать реквизиты</button>'
-      : '<a class="btn sec sm" style="display:block;width:100%;text-align:center;text-decoration:none" href="https://wa.me/'+digitsOf(CONTACT.tel)+'?text='+encodeURIComponent("Ассаламу алейкум! Хочу поддержать проект RIZQ, подскажите реквизиты")+'" target="_blank" rel="noopener">Узнать реквизиты</a>')+
-  '</section>');
+  /* Поддержать проект - тот же блок, что был в профиле (перенесён по просьбе Заиры). */
+  h.push('<div class="sec-h" style="margin-top:14px"><h3>Поддержать проект</h3></div>');
+  h.push(donateParts());
 
   h.push('<p class="disclaimer">Tooba - отдельное приложение и отдельная организация, мы к нему не относимся. '+
     'Подборка неполная и делается вручную: перед переводом посмотрите сбор целиком - кто собирает, на что и сколько осталось.</p>');
@@ -6918,7 +7127,10 @@ function viewQada(){
 }
 
 function viewDonate(){
-  var h = ['<div class="stack">'];
+  return '<div class="stack">' + donateParts() + '</div>';
+}
+function donateParts(){
+  var h = [];
   h.push('<section class="mihrab" style="border-radius:100px 100px var(--r-lg) var(--r-lg);padding:26px 20px 20px">'+
     '<div style="font-size:40px;line-height:1">❁</div>'+
     '<div class="eyebrow" style="margin-top:8px">Садака на развитие</div>'+
@@ -6961,7 +7173,6 @@ function viewDonate(){
 
   h.push('<p class="disclaimer">Перевод добровольный, ничего не открывает и не отключает в приложении: весь бесплатный функционал остаётся бесплатным. '+
     'Да воздаст Аллах благом каждому, кто поддержит.</p>');
-  h.push('</div>');
   return h.join("");
 }
 
@@ -12168,7 +12379,9 @@ function viewCourse(){
         '<button class="btn" data-buy="'+c.id+'">Купить курс</button>'+
         '<button class="btn sec" style="margin-top:9px" data-leadgo="'+c.id+'">Оставить заявку</button></section>');
     } else if(L.tariffsFull){
-      h.push('<div class="sec-h"><h3>Тарифы</h3><span class="more" style="color:var(--ink-3)">есть рассрочка</span></div>');
+      if(!finData()) finLoad(function(){ if(V.view === "course") render(); });
+      var finC = finCounts(c.id, (SUNNAH_TARIFFS[0] || {}).p);
+      h.push('<div class="sec-h"><h3>Тарифы</h3><span class="more" style="color:var(--ink-3)">'+(finC ? finC.join(" или ")+' взноса без переплаты' : 'есть рассрочка')+'</span></div>');
       L.tariffsFull.forEach(function(t){
         h.push('<section class="card">'+
           '<div style="display:flex;align-items:baseline;gap:9px">'+
@@ -12424,12 +12637,14 @@ function viewProf(){
   ordersPending().forEach(function(o){
     h.push('<section class="card" style="border-color:rgba(212,175,55,.45)">'+
       '<b style="font-family:var(--f-display);font-size:15px">'+esc(o.title)+'</b>'+
-      '<div style="font-size:13px;color:var(--ink-3);margin-top:4px">Ждём оплату'+(o.tariff ? ' · тариф «'+esc(o.tariff)+'»' : '')+' · '+money(o.amount)+'</div>'+
+      '<div style="font-size:13px;color:var(--ink-3);margin-top:4px">Ждём оплату'+(o.tariff ? ' · тариф «'+esc(o.tariff)+'»' : '')+' · '+(o.plan ? 'первый взнос из '+o.plan+' - ' : '')+money(o.amount)+'</div>'+
       '<div style="display:flex;gap:8px;margin-top:11px;flex-wrap:wrap">'+
         (o.payUrl ? '<a class="btn sm" style="text-decoration:none" href="'+esc(o.payUrl)+'" target="_blank" rel="noopener">Оплатить</a>' : '')+
         '<button class="btn sec sm" data-ordcheck="1">Я оплатила - проверить</button>'+
       '</div></section>');
   });
+  finOrdersRefresh();
+  h.push(finOrderCards());
   if((S.orders||[]).some(function(o){ return o.status === "paid"; }) || mine.length){
     h.push('<a class="btn" style="text-decoration:none;display:block;text-align:center" href="'+esc(cabinetUrl())+'" target="_blank" rel="noopener">Открыть обучение на платформе</a>'+
       '<p class="note" style="margin:6px 0 12px">Вход по почте или телефону, которые вы указали при оплате.</p>');
@@ -12488,7 +12703,7 @@ function viewProf(){
   h.push('<div class="rows">'+
     '<button class="row" data-open="support"><span class="ic">☎</span>Написать нам<span class="val">'+esc(SUPPORT.phone)+'</span></button>'+
     '<button class="row" data-open="sadaqa"><span class="ic">❁</span>Куда помочь<span class="val">сборы</span></button>'+
-    '<button class="row" data-open="donate"><span class="ic">✦</span>Поддержать проект<span class="val">садака</span></button>'+
+    '<button class="row" data-open="installment"><span class="ic">◈</span>Исламская рассрочка<span class="val">без процентов</span></button>'+
     (S.email? '<button class="row" data-logout="1" style="color:#C0392B"><span class="ic">→</span>Выйти</button>':'')+
     '</div>');
 
@@ -12910,6 +13125,9 @@ function sheetBuy(id, tariff){
   var price = t ? t.p : isBook ? BOOK1.price : c.price;
   var title = isBook ? BOOK1.n : c.n;
   var ic = isBook ? "✦" : c.ic;
+  V.buyId = id; V.buyTar = t ? t.n : "";
+  if(!finData()) finLoad(function(){ if(V.buyId === id && document.getElementById("coGo")){ checkoutKeepInputs(); sheetBuy(V.buyId, V.buyTar); } });
+  var plan = isBook ? 0 : finPlanPick(id, price), payNow = plan ? finSplit(price, plan).first : price;
   sheet('<h3>Оплата</h3>'+
     '<div class="card flat" style="padding:14px"><div style="display:flex;gap:10px;align-items:center">'+
       '<div class="course-ic" style="width:42px;height:42px;font-size:21px">'+ic+'</div>'+
@@ -12918,9 +13136,10 @@ function sheetBuy(id, tariff){
       (tars ? '<div class="pill-row" style="justify-content:flex-start;margin-top:11px">'+tars.map(function(x){
         return '<button class="pill'+(x.n===t.n?" on":"")+'" data-buytar="'+esc(x.n)+'" style="'+(x.n===t.n?"border-color:var(--accent);color:var(--accent-ink)":"")+'">'+esc(x.n)+' · '+money(x.p)+'</button>';
       }).join("")+'</div>' : '')+
+      (isBook ? '' : finPlanPills(id, price))+
       '<hr class="hr" style="margin:12px 0">'+
-      '<div style="display:flex;align-items:baseline"><span style="font-size:14.5px;color:var(--ink-2)">К оплате</span>'+
-      '<span class="price" style="margin-left:auto;font-size:22px">'+money(price)+'</span></div></div>'+
+      '<div style="display:flex;align-items:baseline"><span style="font-size:14.5px;color:var(--ink-2)">'+(plan ? "Первый взнос" : "К оплате")+'</span>'+
+      '<span class="price" style="margin-left:auto;font-size:22px">'+money(payNow)+'</span></div>'+finPlanNote(price, plan)+'</div>'+
     '<label class="eyebrow" style="display:block;margin-top:14px">Имя</label>'+
     '<input class="search" id="coName" style="margin:6px 0 10px" placeholder="Как к вам обращаться" value="'+esc(S.name||"")+'">'+
     '<label class="eyebrow">Почта - на неё придут данные для входа</label>'+
@@ -12933,7 +13152,8 @@ function sheetBuy(id, tariff){
     '<label style="display:flex;align-items:flex-start;gap:9px;margin-top:10px;font-size:13px;color:var(--ink-2);line-height:1.5">'+
       '<input type="checkbox" id="coAds" style="margin-top:2px;flex:none">'+
       '<span>Хочу получать новости о программах. Не обязательно, отписаться можно в любой момент</span></label>'+
-    '<button class="btn" id="coGo" style="margin-top:14px" data-checkout="'+id+'" data-tariff="'+(t ? esc(t.n) : "")+'">Перейти к оплате '+money(price)+'</button>'+
+    '<button class="btn" id="coGo" style="margin-top:14px" data-checkout="'+id+'" data-tariff="'+(t ? esc(t.n) : "")+'" data-plan="'+(plan||"")+'">'+(plan ? 'Оплатить первый взнос ' : 'Перейти к оплате ')+money(payNow)+'</button>'+
+    (plan ? '<p class="note" style="margin-top:10px">Рассрочка от школы JAVATTI без процентов и штрафов. Первый взнос открывает доступ. О следующих взносах напомним за 3 дня, оплатить можно по ссылке в сообщении или в профиле.</p>' : '')+
     '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>'+
     '<p class="note" style="margin-top:12px">Оплата картой или по СБП на защищённой странице Prodamus. После оплаты доступ откроется сам: данные для входа придут на почту, а в приложении появится отметка.</p>');
 }
@@ -12952,7 +13172,7 @@ function checkoutKeepInputs(){
   if(n) S.name = n.value.trim(); if(m) S.email = m.value.trim(); if(t) S.phone = t.value.trim();
 }
 
-function checkoutStart(id, tariff){
+function checkoutStart(id, tariff, plan){
   checkoutKeepInputs();
   var ok = document.getElementById("coOk"), ads = document.getElementById("coAds"), btn = document.getElementById("coGo");
   if(!S.name){ toast("Напишите, как к вам обращаться"); return; }
@@ -12963,15 +13183,15 @@ function checkoutStart(id, tariff){
   var label = btn ? btn.textContent : "";
   if(btn){ btn.disabled = true; btn.textContent = "Готовим оплату..."; }
   var fail = function(msg){ if(btn){ btn.disabled = false; btn.textContent = label; } toast(msg); };
-  fetch(CRM_URL + "/api/public/checkout", {
+  fetch(crmApi() + "/api/public/checkout", {
     method:"POST", headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify({ app:"rizq", visitor: rizqVisitor(), product:id, tariff:tariff||"", name:S.name, email:S.email, phone:S.phone||"",
+    body: JSON.stringify({ app:"rizq", visitor: rizqVisitor(), product:id, tariff:tariff||"", plan: parseInt(plan,10) || undefined, name:S.name, email:S.email, phone:S.phone||"",
       consent:true, adsConsent:!!(ads && ads.checked), source:"rizq", utm:utmPayload() })
   }).then(function(r){ return r.json().then(function(j){ return { ok:r.ok, j:j }; }); })
     .then(function(x){
       if(!x.ok || !x.j.payUrl){ fail(x.j && x.j.error ? x.j.error : "Не получилось оформить заказ, попробуйте ещё раз"); return; }
       if(!S.orders) S.orders = [];
-      S.orders.push({ token:x.j.token, id:id, title:x.j.title, tariff:x.j.tariff||"", amount:x.j.amount, payUrl:x.j.payUrl, at:Date.now(), status:"pending" });
+      S.orders.push({ token:x.j.token, id:id, title:x.j.title, tariff:x.j.tariff||"", amount:x.j.amount, total:x.j.total||x.j.amount, plan:x.j.plan||0, payUrl:x.j.payUrl, at:Date.now(), status:"pending" });
       save(); closeSheet(); render();
       var w = window.open(x.j.payUrl, "_blank");
       if(!w) location.href = x.j.payUrl;
@@ -12987,10 +13207,10 @@ function ordersPending(){
 }
 function ordersCheck(){
   ordersPending().forEach(function(o){
-    fetch(CRM_URL + "/api/public/checkout/" + o.token).then(function(r){ return r.ok ? r.json() : null; })
+    fetch(crmApi() + "/api/public/checkout/" + o.token).then(function(r){ return r.ok ? r.json() : null; })
       .then(function(j){
         if(!j || j.status !== "paid" || o.status === "paid") return;
-        o.status = "paid"; o.cabinetUrl = j.cabinetUrl;
+        o.status = "paid"; o.cabinetUrl = j.cabinetUrl; if(j.plan) o.planInfo = j.plan;
         if(!bought(o.id)) S.bought.push(o.id);
         save(); render(); sheetAccessOpened(o);
       }).catch(function(){});
@@ -13541,6 +13761,7 @@ function render(){
   else if(V.view==="hajjtrip") html = viewHajjTrip();
   else if(V.view==="kids") html = viewKids();
   else if(V.view==="kidstory") html = viewKidStory();
+  else if(V.view==="installment") html = viewInstallment();
   else if(V.tab==="quran") html = viewQuranHome();
   else if(V.tab==="home") html = viewHome();
   else if(V.tab==="dua") html = viewDua();
@@ -13574,7 +13795,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -14085,10 +14306,15 @@ document.getElementById("app").addEventListener("click", function(ev){
     save(); render(); return;
   }
 
-  if(d.buy){ sheetBuy(d.buy, d.tariff); return; }
+  if(d.buy){ V.buyPlan = parseInt(d.plan, 10) || 0; sheetBuy(d.buy, d.tariff); return; }
   if(d.ask){ sheetAsk(d.ask); return; }
-  if(d.checkout){ checkoutStart(d.checkout, d.tariff); return; }
+  if(d.checkout){ checkoutStart(d.checkout, d.tariff, d.plan); return; }
   if(d.buytar){ checkoutKeepInputs(); sheetBuy("sunnah", d.buytar); return; }
+  if(d.buyplan!==undefined){ checkoutKeepInputs(); V.buyPlan = parseInt(d.buyplan, 10) || 0; sheetBuy(V.buyId, V.buyTar); return; }
+  if(d.paynext){ finPayNext(d.paynext); return; }
+  if(d.finpartner){ finPartnerGo(d.finpartner); return; }
+  if(d.finreq){ var fr = d.finreq.split(":"); sheetFinRequest(fr[0], fr[1]); return; }
+  if(d.finsend){ var fs2 = d.finsend.split(":"); finSend(fs2[0], fs2[1]); return; }
   if(d.ordcheck){ ordersCheck(); toast("Проверяем оплату..."); return; }
   if(d.lesson){
     var cid = d.lesson.split(".")[0];
