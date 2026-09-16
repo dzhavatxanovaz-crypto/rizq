@@ -566,7 +566,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   font-size:var(--q-size,28px);line-height:2.25;color:var(--ink);
 }
 .ayah-ru{font-size:calc(var(--q-size,28px) * .56);line-height:1.65;color:var(--ink-2);margin-top:11px}
-.ayah-acts{display:flex;gap:6px;margin-top:11px;opacity:.85}
+.ayah-acts{display:flex;gap:6px;margin-top:11px;opacity:.85;flex-wrap:wrap;align-items:center}
+.ayah-hide{display:block;width:100%;min-height:74px;padding:14px;border-radius:var(--r-md);border:1.5px dashed var(--line);
+  background:var(--surface-2);color:var(--ink-3);font-size:13.5px;line-height:1.5;text-align:center}
+.ayah-hide b{display:block;color:var(--ink-2);font-size:14px;margin-bottom:3px}
+.hifz-tag{font-size:11.5px;color:var(--ink-3);padding:3px 8px;border-radius:10px;border:1px solid var(--line)}
+.hifz-tag.due{color:var(--accent-ink);border-color:var(--gold)}
 .qpage-sep{display:flex;align-items:center;gap:12px;color:var(--ink-3);font-size:12.5px;letter-spacing:.04em;margin:2px 4px}
 .qpage-sep:before,.qpage-sep:after{content:"";flex:1;height:1px;background:var(--line-soft)}
 .sajda{
@@ -1038,11 +1043,17 @@ var DEF = {
   theme:"", city:"mah", method:"mwl", madhab:1,
   name:"", email:"", notifPrayer:true, notifDua:true, notifCourse:false, notifAzan:true,
   salah:{}, myduas:[], goals:[], namesRead:{}, daily:{}, shukrNotes:{}, shukr:[], shukrMigrated:false, shukrOpen:false, salahOpen:false,
-  checks:{}, sunnah:{}, sunnahOpen:false, health:{}, healthOpen:false, postSeen:"", points:0, pointsDay:{}, cat:{},
+  checks:{}, sunnah:{}, sunnahOpen:false, health:{}, healthOpen:false, pauses:[],
+  qada:{p:{}, done:{}, fast:0, fastDone:0, perDay:1, log:[]}, postSeen:"", points:0, pointsDay:{}, cat:{},
   fin:[], todos:[], leads:[], phone:"", quiz:{}, nav:{}, account:{registered:false, queued:false, at:0, ads:false},
   azkarLifetime:0, levelSeen:0, weekSeen:0, welcomed:0,
   qLast:0, qMax:0, qMarks:[], qSize:28, qTr:true, qReciter:"ar.alafasy",
   qSpeed:1, qRepeat:1, qContinue:true, qScroll:20,
+  hifz:{on:false, items:{}},
+  push:{on:false, at:0, sig:""},
+  salahKid:false,
+  trip:{},
+  kids:{},
   qplan:{on:false, days:0, startPage:1, startAt:"", log:{}},
   qoff:{juz:[], sura:[], reciter:""},
   zakat:{cash:"", bank:"", goods:"", debtsIn:"", debtsOut:"", goldG:"", silverG:"",
@@ -2361,14 +2372,40 @@ function salahDone(key){
   FARD.forEach(function(f){ if(d[f.k]) n++; });
   return n;
 }
-function streak(){
+/* ---------- пауза ----------
+   Промежуток дат {from, to}. Пустой to - пауза идёт сейчас. Ключи дней
+   вида ГГГГ-ММ-ДД сравниваются строками: так проще и без часовых поясов. */
+function pauseList(){ if(!S.pauses || !S.pauses.length) S.pauses = S.pauses || []; return S.pauses; }
+function pauseNow(){
+  var p = pauseList();
+  for(var i = 0; i < p.length; i++){ if(!p[i].to) return p[i]; }
+  return null;
+}
+function isPaused(key){
+  var p = pauseList(), today = todayKey();
+  for(var i = 0; i < p.length; i++){
+    var to = p[i].to || today;
+    if(key >= p[i].from && key <= to) return true;
+  }
+  return false;
+}
+function pauseDate(key){
+  return new Date(key + "T12:00:00").toLocaleDateString("ru-RU", {day:"numeric", month:"long"});
+}
+/* Серия идёт назад по дням: день паузы пропускается, не обрывая счёт. */
+function streakBy(full){
   var n = 0, d = new Date();
-  if(salahDone(dayKey(d)) < 5) d.setDate(d.getDate()-1);
-  for(var i=0;i<400;i++){
-    if(salahDone(dayKey(d)) === 5){ n++; d.setDate(d.getDate()-1); }
+  if(!full(dayKey(d))) d.setDate(d.getDate()-1);
+  for(var i = 0; i < 800; i++){
+    var k = dayKey(d);
+    if(isPaused(k)){ d.setDate(d.getDate()-1); continue; }
+    if(full(k)){ n++; d.setDate(d.getDate()-1); }
     else break;
   }
   return n;
+}
+function streak(){
+  return streakBy(function(k){ return salahDone(k) === 5; });
 }
 
 /* ============================================================
@@ -2465,23 +2502,24 @@ function toggleDaily(k){
 }
 /* серия дней, когда закрыты все пять направлений */
 function dailyStreak(){
-  var n = 0, d = new Date();
-  if(dayCount(dayKey(d)) < DAILY.length) d.setDate(d.getDate()-1);
-  for(var i=0;i<400;i++){
-    if(dayCount(dayKey(d)) === DAILY.length){ n++; d.setDate(d.getDate()-1); }
-    else break;
-  }
-  return n;
+  return streakBy(function(k){ return dayCount(k) === DAILY.length; });
 }
+/* Лучшая серия: идём вперёд от первой отметки. Дни паузы не прерывают
+   счёт, а сегодняшний незакрытый день ещё не считается пропуском. */
 function bestStreak(){
-  var keys = Object.keys(S.daily).filter(function(k){ return dayCount(k) === DAILY.length; }).sort();
-  var best = 0, run = 0, prev = null;
-  keys.forEach(function(k){
-    var d = new Date(k + "T12:00:00");
-    if(prev && (d - prev) === 86400000) run++; else run = 1;
-    if(run > best) best = run;
-    prev = d;
-  });
+  var keys = Object.keys(S.daily).sort();
+  if(!keys.length) return 0;
+  var d = new Date(keys[0] + "T12:00:00"), end = new Date(), today = todayKey();
+  end.setHours(12, 0, 0, 0);
+  var best = 0, run = 0;
+  for(var i = 0; i < 4000 && d <= end; i++){
+    var k = dayKey(d);
+    if(!isPaused(k)){
+      if(dayCount(k) === DAILY.length){ run++; if(run > best) best = run; }
+      else if(k !== today) run = 0;
+    }
+    d.setDate(d.getDate()+1);
+  }
   return best;
 }
 function monthKey(d){ return d.getFullYear() + "-" + pad(d.getMonth()+1); }
@@ -2537,7 +2575,7 @@ function notifCheck(){
       var id = key + ":" + f.k;
       if(passed >= 0 && passed < 2 && !notifSent[id]){
         notifSent[id] = 1;
-        notifShow("Время намаза - " + f.n, city + " · " + hhmm(v));
+        if(!pushOn()) notifShow("Время намаза - " + f.n, city + " · " + hhmm(v));
         if(S.notifAzan!==false) playAzan();
       }
     }
@@ -2549,7 +2587,7 @@ function notifCheck(){
     if(now.getHours() === 8 && now.getMinutes() < 2 && !notifSent[idd]){
       notifSent[idd] = 1;
       var d = duaOfDay();
-      notifShow("Дуа дня", d.n);
+      if(!pushOn()) notifShow("Дуа дня", d.n);
     }
   }
 }
@@ -3222,6 +3260,7 @@ function back(){
   if(V.view==="name"){ V.view="names"; V.p=null; V.q=""; render(); return; }
   if(V.view==="hadithOne"){ V.view="hadith"; V.p=null; V.q=""; render(); return; }
   if(V.view==="course"){ V.view="courses"; V.p=null; render(); return; }
+  if(V.view==="kidstory"){ kidStop(); V.view="kids"; V.p=null; render(); return; }
   V.view=null; V.p=null; V.q=""; render();
 }
 
@@ -3335,6 +3374,7 @@ function renderHdr(){
         : V.view==="donate" ? "Поддержать проект"
         : V.view==="support" ? "Поддержка"
         : V.view==="qsettings" ? "Настройки чтения"
+        : V.view==="hifz" ? "Повторение наизусть"
         : V.view==="qsearch" ? "Поиск по Корану"
         : V.view==="hadith" ? "40 хадисов"
         : V.view==="hadithOne" ? "Хадис ан-Навави"
@@ -3354,6 +3394,11 @@ function renderHdr(){
         : V.view==="shukr" ? "Дневник благодарности"
         : V.view==="namegroups" ? "Имена по категориям"
         : V.view==="sadaqa" ? "Куда помочь"
+        : V.view==="qada" ? "Восполнение"
+        : V.view==="salahpics" ? "Намаз в картинках"
+        : V.view==="hajjtrip" ? "Хадж и умра в пути"
+        : V.view==="kids" ? "Детям"
+        : V.view==="kidstory" ? "История"
         : V.view==="settings" ? "Настройки" : "";
     $hdr.innerHTML = '<header class="hdr"><div class="hdr-row">'+
       '<button class="back" data-back="1" aria-label="Назад">‹</button>'+
@@ -3458,12 +3503,17 @@ function viewHome(){
   /* трекер дня - пять направлений */
   syncSalahFlag();
   var tk = todayKey(), rec = dayRec(tk), done = dayCount(tk), st = dailyStreak();
-  var day = salahDay(tk);
+  var day = salahDay(tk), pz = pauseNow();
   h.push('<section class="card">'+
     '<div style="display:flex;align-items:center;gap:10px;margin-bottom:13px">'+
       '<b style="font-family:var(--f-display);font-size:15px">Мой день</b>'+
+      (pz ? '<span style="font-size:11.5px;padding:2px 9px;border-radius:10px;border:1px solid var(--line);color:var(--ink-3)">пауза</span>' : '')+
       '<span style="margin-left:auto;font-family:var(--f-display);font-weight:700;font-size:16.5px;color:'+(done===5?"var(--emerald)":"var(--accent-ink)")+'">'+done+' / 5</span>'+
     '</div>'+
+    (pz ?
+      '<div style="display:flex;align-items:center;gap:10px;margin:-2px 0 13px;padding:10px 12px;border-radius:10px;background:var(--surface-2);border:1px dashed var(--line)">'+
+        '<span style="font-size:12.5px;line-height:1.45;color:var(--ink-2)">Пауза с '+esc(pauseDate(pz.from))+'. Серия сохраняется, пропуском эти дни не считаются.</span>'+
+        '<button class="btn sec sm" style="flex:none;margin-left:auto" data-pauseopen="1">Изменить</button></div>' : '')+
     '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">'+
     DAILY.map(function(x){
       var on = !!rec[x.k];
@@ -3487,6 +3537,11 @@ function viewHome(){
           '<span style="font-size:11px;color:'+(on?"var(--ink-2)":"var(--ink-3)")+'">'+f.n+'</span></button>';
       }).join("") +'</div>' : '')+
 
+    '<button style="display:flex;align-items:center;gap:6px;width:100%;margin-top:11px;font-size:13px;color:var(--ink-3)" data-open="qada">'+
+      '<span>Восполнение: '+(qadaLeft() || qadaData().fast ?
+        'осталось '+plural(qadaLeft(),"намаз","намаза","намазов")+(qadaData().fast ? ', '+plural(qadaData().fast,"пост","поста","постов") : '')
+        : 'пропущенные намазы и посты')+'</span>'+
+      '<span style="margin-left:auto">›</span></button>'+
     '<button style="display:flex;align-items:center;gap:6px;width:100%;margin-top:11px;font-size:13px;color:var(--ink-3)" data-sunnahopen="1">'+
       '<span>Сунна-намазы: '+sunnahDone(tk)+' из '+SUNNAH.length+'</span>'+
       '<span style="margin-left:auto">'+(S.sunnahOpen?"▲":"▼")+'</span></button>'+
@@ -3530,7 +3585,8 @@ function viewHome(){
       '<span style="font-size:13px;color:'+(st?"var(--accent-ink)":"var(--ink-3)")+';font-weight:600;line-height:1.4">'+
         (st ? "◈ серия: "+daysWord(st) : "серия начнётся с первого полного дня")+
         ((S.points||0) ? '<span style="color:var(--ink-3);font-weight:400"> · </span>'+plural(S.points||0,"балл","балла","баллов") : "")+'</span>'+
-      '<button class="btn ghost sm" style="margin-left:auto;flex:none" data-open="report">Отчёт за месяц</button>'+
+      (pz ? '' : '<button class="btn ghost sm" style="margin-left:auto;flex:none" data-pauseopen="1" aria-label="Пауза в трекере">Пауза</button>')+
+      '<button class="btn ghost sm" style="'+(pz?"margin-left:auto;":"")+'flex:none" data-open="report">Отчёт за месяц</button>'+
     '</div></section>');
 
   /* благодарность - всегда на виду, а не спрятана за галочкой шукра */
@@ -3661,7 +3717,7 @@ var SHARE_TEXT = "Ассаламу алейкум! Нашла приложени
 /* Экраны, которые можно открыть ссылкой. Белый список, а не любое значение:
    по чужой ссылке приложение не должно оказываться где угодно. */
 var DEEP_VIEWS = ["courses","sadaqa","zakat","names","hadith","sira","book1","qibla",
-                  "calendar","tasbih","suras","qduas","duaall","report","share","consulting","live"];
+                  "calendar","tasbih","suras","qduas","duaall","report","share","consulting","live","kids","hajjtrip","salahpics"];
 var DEEP_TABS  = ["home","quran","dua","journal","income","prof"];
 
 function deepOpen(){
@@ -3938,6 +3994,11 @@ function buildIndex(){
    ["Избранное","сохранённые дуа, имена и руководства","open:fav","избранное сохраненное звездочка"],
    ["Журнал","новые записи и разборы","go:journal","журнал блог статьи новости записи что нового обновление"],
    ["Копия данных","сохранить записи и перенести на другой телефон","open:backup","копия резервная бэкап сохранить перенести восстановить новый телефон потерять данные"],
+   ["Заучивание Корана","наизусть, повторение по графику","open:hifz","заучивание наизусть хифз хафиз выучить запомнить повторение повторить суру"],
+   ["Намаз в картинках","для новичков и детей, с озвучкой","open:salahpics","намаз картинки дети ребенок новичок научиться как молиться позы озвучка слушать произношение"],
+   ["Хадж и умра в пути","чек-лист по шагам, счёт кругов","open:hajjtrip","хадж умра чек-лист чеклист таваф сай круги ихрам мекка паломничество камни джамарат арафат муздалифа мина сборы"],
+   ["Детям","истории пророков, перед сном, дуа, имена","open:kids","дети детям ребенок ребёнок истории пророков сказки перед сном на ночь дуа для детей имена имя для ребенка мальчику девочке"],
+   ["Восполнение","пропущенные намазы и посты","open:qada","каза восполнение пропущенный намаз пост долг восполнить казаа qada"],
    ["Куда помочь","сборы, которые мы посмотрели","open:sadaqa","садака милостыня помочь сбор пожертвование благотворительность нуждающимся закят раздать туба tooba"],
   ].forEach(function(x){ add(x[0], x[1], x[2], x[3], "Разделы"); });
 
@@ -4060,6 +4121,19 @@ function viewDua(){
       return '<button class="cat" data-guide="'+g[0]+'"><div class="ic">'+g[1]+'</div>'+
         '<b>'+esc(g[2])+'</b><span>'+esc(g[3])+'</span></button>';
     }).join("")+'</div>');
+
+  h.push('<button class="cat-wide gold" data-open="kids">'+
+    '<span class="cw-ic">✧</span>'+
+    '<span class="cw-t"><b>Детям</b><span>истории пророков, перед сном, дуа, имена</span></span>'+
+    '<span class="cw-go">›</span></button>');
+  h.push('<button class="cat-wide" data-open="hajjtrip">'+
+    '<span class="cw-ic">◍</span>'+
+    '<span class="cw-t"><b>Хадж и умра в пути</b><span>чек-лист по шагам, счёт кругов</span></span>'+
+    '<span class="cw-go">›</span></button>');
+  h.push('<button class="cat-wide gold" data-open="salahpics">'+
+    '<span class="cw-ic">☾</span>'+
+    '<span class="cw-t"><b>Намаз в картинках</b><span>для новичков и детей, с озвучкой</span></span>'+
+    '<span class="cw-go">›</span></button>');
 
   KNOW.forEach(function(k){
     h.push('<button class="cat-wide'+(k.id==="book"?" gold":"")+'" data-know="'+k.id+'">'+
@@ -5535,6 +5609,7 @@ function viewQuranHome(){
     '<div style="font-size:13px;color:var(--ink-3);margin-top:8px">'+((S.qMax||0)+1)+' из '+QTOTAL+' аятов · страница '+pageOf(S.qMax||0)+' из 604</div></section>');
 
   h.push(qPlanCard());
+  h.push(hifzCard());
 
   h.push('<div style="display:flex;gap:8px">'+
     '<button class="btn sec sm" style="flex:1" data-open="qmarks">Закладки'+(S.qMarks.length? " · "+S.qMarks.length : "")+'</button>'+
@@ -5585,6 +5660,126 @@ function viewQuranHome(){
 /* ============================================================
    ЭКРАН: ЧТЕНИЕ
    ============================================================ */
+/* ============================================================
+   ЗАУЧИВАНИЕ
+   ============================================================ */
+var HIFZ_STEPS = [1, 3, 7, 14, 30, 60, 120];
+var HZ = { show: {} };   /* какие аяты открыты в этом сеансе */
+function hifzData(){
+  var h = S.hifz || (S.hifz = {});
+  if(!h.items) h.items = {};
+  return h;
+}
+function hifzAddDays(n){ var d = new Date(); d.setDate(d.getDate() + n); return dayKey(d); }
+function hifzItem(i){ return hifzData().items[i] || null; }
+function hifzDue(i){ var it = hifzItem(i); return !!(it && it.n <= todayKey()); }
+function hifzDueList(){
+  var items = hifzData().items, today = todayKey(), out = [];
+  for(var k in items){ if(items.hasOwnProperty(k) && items[k].n <= today) out.push(parseInt(k, 10)); }
+  return out.sort(function(a, b){ return a - b; });
+}
+function hifzCount(){ return Object.keys(hifzData().items).length; }
+function hifzLearn(i){
+  hifzData().items[i] = { s: 0, n: hifzAddDays(HIFZ_STEPS[0]), a: todayKey() };
+  save();
+}
+function hifzAnswer(i, ok){
+  var it = hifzItem(i); if(!it) return;
+  if(ok){ it.s = Math.min(it.s + 1, HIFZ_STEPS.length - 1); it.n = hifzAddDays(HIFZ_STEPS[it.s]); }
+  else { it.s = 0; it.n = hifzAddDays(1); }
+  delete HZ.show[i];
+  save();
+}
+function hifzForget(i){ delete hifzData().items[i]; save(); }
+function hifzWhen(key){
+  return new Date(key + "T12:00:00").toLocaleDateString("ru-RU", {day:"numeric", month:"short"});
+}
+/* Текст аята: в режиме заучивания скрыт, пока человек сам не откроет. */
+function hifzText(i){
+  var open = !hifzData().on || HZ.show[i];
+  if(open){
+    return '<div class="ayah-ar">'+esc(QA[i])+'</div>'+
+      ((HAS_TR && S.qTr)? '<div class="ayah-ru">'+esc(QR[i])+'</div>' : '');
+  }
+  return '<button class="ayah-hide" data-hifzshow="'+i+'"><b>Прочитайте по памяти</b>и нажмите, чтобы проверить себя</button>';
+}
+function hifzActs(i){
+  if(!hifzData().on) return '';
+  var it = hifzItem(i);
+  if(!it) return '<button class="btn sec sm" style="margin-left:auto" data-hifzlearn="'+i+'">Выучил</button>';
+  if(hifzDue(i)){
+    return '<span class="hifz-tag due" style="margin-left:auto">повторить</span>'+
+      '<button class="btn sec sm" data-hifzbad="'+i+'">Забыл</button>'+
+      '<button class="btn sm" data-hifzok="'+i+'">Помню</button>';
+  }
+  return '<span class="hifz-tag" style="margin-left:auto">выучен · повтор '+esc(hifzWhen(it.n))+'</span>'+
+    '<button class="qbtn" data-hifzforget="'+i+'" aria-label="Убрать из выученных" title="Убрать из выученных">✕</button>';
+}
+/* Внутренность карточки аята. Одна на читалку и на повторение, чтобы
+   открытие и отметки обновляли карточку на месте, без сброса прокрутки. */
+function ayahInner(i, withSurah){
+  return '<div class="ayah-h">'+
+      '<span class="ayah-n">'+ayahInSurah(i)+'</span>'+
+      (isSajda(i)? '<span class="sajda">۩ земной поклон</span>' : '')+
+      '<span style="margin-left:auto;font-size:12px;color:var(--ink-3)">'+esc(QSUR[surahOf(i)][2])+(withSurah ? ', аят '+ayahInSurah(i) : '')+'</span>'+
+    '</div>'+
+    hifzText(i)+
+    '<div class="ayah-acts">'+
+      '<button class="qbtn" data-qplay="'+i+'">▶</button>'+
+      '<button class="qbtn'+(isMark(i)?" on":"")+'" data-qmark="'+i+'">★</button>'+
+      '<button class="qbtn" data-qcopy="'+i+'">⧉</button>'+
+      '<button class="qbtn" data-qshare="'+i+'" aria-label="Поделиться аятом" title="Поделиться аятом">↗</button>'+
+      hifzActs(i)+
+    '</div>';
+}
+function hifzRefresh(i){
+  var el = document.querySelector('.ayah[data-i="'+i+'"]');
+  if(el) el.innerHTML = ayahInner(i, V.view === "hifz");
+  paintPlayer();
+}
+
+/* Карточка на главной Корана. */
+function hifzCard(){
+  var n = hifzCount(), due = hifzDueList().length;
+  return '<section class="card">'+
+    '<div style="display:flex;align-items:baseline;gap:10px">'+
+      '<b style="font-family:var(--f-display);font-size:15px">Заучивание</b>'+
+      '<span style="margin-left:auto;font-size:13px;color:var(--ink-3)">'+(n ? 'выучено '+plural(n,"аят","аята","аятов") : 'пока ничего')+'</span></div>'+
+    '<p style="font-size:13.5px;color:var(--ink-2);margin:8px 0 0;line-height:1.5">'+
+      (n ? (due ? 'Сегодня на повторение: '+plural(due,"аят","аята","аятов")+'.' : 'Сегодня повторять нечего - всё выученное помнится по графику.')
+         : 'Включите режим «Наизусть» в читалке: текст скроется, вы читаете по памяти и открываете аят, чтобы проверить себя.')+'</p>'+
+    '<div style="display:flex;gap:8px;margin-top:11px">'+
+      (due ? '<button class="btn sm" style="flex:1" data-open="hifz">Повторить · '+due+'</button>' : '')+
+      '<button class="btn sec sm" style="flex:1" data-hifz="1">'+(hifzData().on ? 'Выключить «Наизусть»' : 'Включить «Наизусть»')+'</button>'+
+    '</div></section>';
+}
+
+/* Экран повторения: только аяты, чей срок пришёл. */
+function viewHifz(){
+  /* На повторении каждый аят начинается скрытым, даже если его только что
+     открывали в читалке: иначе проверять себя нечем. */
+  HZ.show = {};
+  var list = hifzDueList(), h = ['<div class="stack">'];
+  h.push('<div class="card flat" style="padding:13px 15px;font-size:14px;color:var(--ink-2);line-height:1.55">'+
+    'Прочитайте аят по памяти, откройте и честно отметьте. «Помню» отодвигает следующий повтор: '+
+    '1, 3, 7, 14, 30, 60 и 120 дней. «Забыл» возвращает аят на завтра.</div>');
+  if(!list.length){
+    h.push('<div class="empty"><div class="ic">﴾﴿</div><b>Сегодня повторять нечего</b>'+
+      '<p>Выученные аяты вернутся сюда в свой день. Чтобы добавить новые, откройте суру в режиме «Наизусть» и отметьте «Выучил».</p></div>');
+  } else {
+    var was = hifzData().on;
+    hifzData().on = true;   /* на повторении текст всегда скрыт */
+    list.slice(0, 40).forEach(function(i){
+      h.push('<article class="ayah" data-i="'+i+'">'+ayahInner(i, true)+'</article>');
+    });
+    hifzData().on = was;
+    if(list.length > 40) h.push('<p class="disclaimer">Показаны первые 40 из '+list.length+'. Остальные появятся, когда отметите эти.</p>');
+  }
+  h.push('<p class="disclaimer">Приложение не слышит чтение и не проверяет произношение - это делает учитель. Таджвид - в разделе «Знания».</p>');
+  h.push('</div>');
+  return h.join("");
+}
+
 function viewReader(){
   var from = V.qFrom, to = V.qTo;
   var h = [];
@@ -5594,6 +5789,7 @@ function viewReader(){
     '<button class="qbtn" data-qsize="-1" title="Меньше">A−</button>'+
     '<button class="qbtn" data-qsize="1" title="Больше">A+</button>'+
     (HAS_TR? '<button class="qbtn'+(S.qTr?" on":"")+'" data-qtr="1" title="Перевод">Ru</button>' : '')+
+    '<button class="qbtn'+(hifzData().on?" on":"")+'" data-hifz="1" title="Наизусть: скрыть текст" aria-label="Режим заучивания">◐</button>'+
     '<button class="qbtn" data-open="qsettings" title="Настройки">⚙</button>'+
     '<span id="qPageLbl" style="margin-left:auto;font-size:13px;color:var(--ink-3);white-space:nowrap">стр. '+pageOf(from)+' · джуз '+juzOf(from)+'</span>'+
     '</div>');
@@ -5615,20 +5811,7 @@ function viewReader(){
   for(var i = from; i <= to && i < QTOTAL; i++){
     var pg = pageOf(i);
     if(pg !== pgPrev){ h.push('<div class="qpage-sep">страница '+pg+'</div>'); pgPrev = pg; }
-    h.push('<article class="ayah" data-i="'+i+'">'+
-      '<div class="ayah-h">'+
-        '<span class="ayah-n">'+ayahInSurah(i)+'</span>'+
-        (isSajda(i)? '<span class="sajda">۩ земной поклон</span>' : '')+
-        '<span style="margin-left:auto;font-size:12px;color:var(--ink-3)">'+esc(QSUR[surahOf(i)][2])+'</span>'+
-      '</div>'+
-      '<div class="ayah-ar">'+esc(QA[i])+'</div>'+
-      ((HAS_TR && S.qTr)? '<div class="ayah-ru">'+esc(QR[i])+'</div>' : '')+
-      '<div class="ayah-acts">'+
-        '<button class="qbtn" data-qplay="'+i+'">▶</button>'+
-        '<button class="qbtn'+(isMark(i)?" on":"")+'" data-qmark="'+i+'">★</button>'+
-        '<button class="qbtn" data-qcopy="'+i+'">⧉</button>'+
-        '<button class="qbtn" data-qshare="'+i+'" aria-label="Поделиться аятом" title="Поделиться аятом">↗</button>'+
-      '</div></article>');
+    h.push('<article class="ayah" data-i="'+i+'">'+ayahInner(i, false)+'</article>');
   }
 
   /* переходы */
@@ -5837,6 +6020,903 @@ function sadaqaDate(iso){
   return p[2]+"."+p[1]+"."+p[0];
 }
 
+/* ============================================================
+   ВОСПОЛНЕНИЕ: каза намазов и постов
+   ============================================================ */
+function qadaData(){
+  var q = S.qada || (S.qada = {});
+  if(!q.p) q.p = {}; if(!q.done) q.done = {}; if(!q.log) q.log = [];
+  if(typeof q.fast !== "number") q.fast = 0;
+  if(typeof q.fastDone !== "number") q.fastDone = 0;
+  if(!(q.perDay >= 1)) q.perDay = 1;
+  return q;
+}
+/* Витр в ханафитском мазхабе восполняется, поэтому показываем его тем,
+   у кого выбран этот мазхаб (он же задаёт время асра в настройках). */
+function qadaKinds(){
+  var list = FARD.slice();
+  if(S.madhab === 2) list.push({k:"witr", n:"Витр"});
+  return list;
+}
+function qadaLeft(){
+  var q = qadaData(), n = 0;
+  qadaKinds().forEach(function(f){ n += q.p[f.k] || 0; });
+  return n;
+}
+function qadaLog(k, delta){
+  var q = qadaData();
+  q.log.push({d: todayKey(), k: k, n: delta, ts: Date.now()});
+  if(q.log.length > 200) q.log = q.log.slice(-200);
+}
+function qadaChange(k, delta, isDone){
+  var q = qadaData();
+  if(k === "fast"){
+    if(isDone){ if(q.fast <= 0) return; q.fast--; q.fastDone++; qadaLog("fast", -1); }
+    else { q.fast += delta; qadaLog("fast", delta); }
+  } else {
+    if(isDone){ if(!(q.p[k] > 0)) return; q.p[k]--; q.done[k] = (q.done[k]||0) + 1; qadaLog(k, -1); }
+    else { q.p[k] = (q.p[k]||0) + delta; qadaLog(k, delta); }
+  }
+  save();
+}
+/* Быстрое добавление: число дней - по одному каждому намазу за каждый день. */
+function qadaBulk(){
+  var di = document.getElementById("qadaDays"), yi = document.getElementById("qadaYears");
+  var fi = document.getElementById("qadaFasts");
+  var days = Math.max(0, Math.round(parseFloat(String(di && di.value || "0").replace(",", ".")) || 0));
+  var years = Math.max(0, parseFloat(String(yi && yi.value || "0").replace(",", ".")) || 0);
+  var fasts = Math.max(0, Math.round(parseFloat(String(fi && fi.value || "0").replace(",", ".")) || 0));
+  days += Math.round(years * 365);
+  if(!days && !fasts){ toast("Укажите число дней, лет или постов"); return; }
+  if(days > 36500){ toast("Больше ста лет - проверьте число"); return; }
+  var q = qadaData();
+  if(days){
+    qadaKinds().forEach(function(f){ q.p[f.k] = (q.p[f.k]||0) + days; });
+    qadaLog("days", days);
+  }
+  if(fasts){ q.fast += fasts; qadaLog("fast", fasts); }
+  save(); render();
+  toast("Добавлено");
+}
+/* Отмена последнего действия: ошибиться в касании на телефоне легко. */
+function qadaUndo(){
+  var q = qadaData(), last = q.log.pop();
+  if(!last){ toast("Отменять нечего"); return; }
+  if(last.k === "days"){
+    qadaKinds().forEach(function(f){ q.p[f.k] = Math.max(0, (q.p[f.k]||0) - last.n); });
+  } else if(last.k === "fast"){
+    if(last.n < 0){ q.fast++; q.fastDone = Math.max(0, q.fastDone - 1); }
+    else q.fast = Math.max(0, q.fast - last.n);
+  } else {
+    if(last.n < 0){ q.p[last.k] = (q.p[last.k]||0) + 1; q.done[last.k] = Math.max(0, (q.done[last.k]||0) - 1); }
+    else q.p[last.k] = Math.max(0, (q.p[last.k]||0) - last.n);
+  }
+  save(); render();
+  toast("Отменено");
+}
+function qadaName(k){
+  if(k === "fast") return "пост";
+  if(k === "days") return "дни";
+  var f = qadaKinds().concat([{k:"witr", n:"Витр"}]).filter(function(x){ return x.k === k; })[0];
+  return f ? f.n : k;
+}
+/* Намаз в картинках - для новичков и детей.
+   Слова формул не пишутся здесь заново: они берутся из руководства
+   «Намаз пошагово», чтобы текст в двух местах не мог разойтись.
+   Озвучка: сначала ищется запись audio/salah/<id>.mp3 (её делает
+   преподаватель), если записи нет - звучит арабский голос телефона,
+   и об этом честно написано под кнопкой. Аль-Фатиха звучит в чтении
+   того же чтеца, что и в разделе Корана. */
+function spG(prefix){
+  var b = GUIDES.salah.blocks;
+  for(var i = 0; i < b.length; i++) if(b[i].t && b[i].t.indexOf(prefix) === 0) return b[i];
+  return {};
+}
+
+/* Позы - фигура без лица, вид сбоку, лицом к кибле (вправо). */
+function spFig(kind){
+  var ink = "var(--accent-ink)", arm = "var(--ink)";
+  function L(x1,y1,x2,y2,w){ return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'"'+(w?' stroke-width="'+w+'"':'')+'/>'; }
+  function P(pts){ return '<polyline fill="none" points="'+pts+'"/>'; }
+  function H(x,y,r){ return '<circle cx="'+x+'" cy="'+y+'" r="'+(r||10)+'" fill="'+ink+'" stroke="none"/>'; }
+  var body = "", arms = "";
+  var standBody = H(60,17)+L(60,31,60,70,12)+L(59,70,56,106)+L(61,70,65,106);
+  if(kind==="stand")  { body = standBody; arms = P("60,39 62,58 64,72"); }
+  if(kind==="takbir") { body = standBody; arms = P("60,39 71,47 69,24"); }
+  if(kind==="qiyam")  { body = standBody; arms = P("60,39 54,53 72,50"); }
+  if(kind==="itidal") { body = standBody; arms = P("60,39 61,58 62,72"); }
+  if(kind==="ruku")   { body = H(98,63)+L(46,66,85,66,12)+L(45,68,44,106)+L(48,68,50,106); arms = P("81,68 64,79 50,86"); }
+  if(kind==="sujud")  { body = H(91,97,9)+L(42,80,77,94,12)+L(42,81,52,104)+L(52,104,24,104); arms = P("75,95 69,103 85,106"); }
+  if(kind==="sit" || kind==="tash" || kind==="salam"){
+    body = H(52,38)+L(50,51,48,90,12)+L(48,92,77,103)+L(77,104,38,105);
+    arms = P("50,57 61,80 75,96") + (kind==="tash" ? L(75,96,80,84,4) : "");
+  }
+  var extra = kind==="salam" ?
+    '<g fill="none" stroke="var(--accent-ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">'+
+    '<path d="M30 30 Q52 6 74 30"/><path d="M69 22 L74 30 L66 32"/><path d="M35 22 L30 30 L38 32"/></g>' : "";
+  return '<svg viewBox="0 0 120 116" role="img" aria-label="Положение в намазе" style="width:100%;max-width:240px;height:auto;display:block;margin:0 auto">'+
+    '<rect x="10" y="107" width="100" height="5" rx="2.5" fill="var(--ink-3)" opacity=".45"/>'+
+    '<g transform="translate(104 8)"><rect width="12" height="13" rx="1.5" fill="var(--ink-2)"/><rect y="3" width="12" height="2.5" fill="var(--accent-ink)"/></g>'+
+    extra+
+    '<g stroke="'+ink+'" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">'+body+'</g>'+
+    '<g stroke="'+arm+'" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">'+arms+'</g>'+
+    '</svg>';
+}
+
+var SP_STEPS = [
+  {pose:"stand", t:"Намерение и кибла",
+   p:"Встаньте лицом к кибле. Намерение - в сердце: вы знаете, какой намаз сейчас совершаете. Произносить его вслух не обязательно.",
+   kid:"Встань лицом к Каабе. Скажи в сердце, какой намаз ты сейчас будешь делать. Громко говорить не нужно."},
+  {pose:"takbir", t:"Такбир", g:"1. ",
+   kid:"Подними руки к плечам и скажи «Аллаху Акбар». Всё, намаз начался: теперь не разговариваем и не оглядываемся.",
+   say:[{id:"takbir", g:"1. "}]},
+  {pose:"qiyam", t:"Стояние", g:"4. ",
+   p:"Правая рука лежит на левой, под грудью. Сначала, в первом ракяте, про себя читается дуа открытия, затем прибегание к Аллаху, затем Аль-Фатиха.",
+   kid:"Положи правую руку на левую, на грудь. Смотри на место, куда будешь класть лоб. Прочитай суру Аль-Фатиха.",
+   say:[{id:"istiftah", g:"2. ", sub:"Сунна, только в первом ракяте"},{id:"audhu", g:"3. "},{id:"fatiha", quran:[0,6], n:"Аль-Фатиха"}]},
+  {pose:"qiyam", t:"Короткая сура", g:"5. ",
+   kid:"В первом и втором ракяте после Аль-Фатихи прочитай ещё одну короткую суру, которую знаешь.",
+   link:"suras"},
+  {pose:"ruku", t:"Руку - поясной поклон", g:"6. ",
+   kid:"Скажи «Аллаху Акбар» и наклонись. Ладони на коленях, спина ровная, как стол. Скажи три раза.",
+   say:[{id:"ruku", g:"6. "}]},
+  {pose:"itidal", t:"Выпрямление", g:"7. ",
+   kid:"Поднимайся и говори первую фразу. Когда встал ровно, скажи вторую.",
+   say:[{id:"itidal", g:"7. "}]},
+  {pose:"sujud", t:"Суджуд - земной поклон", g:"8. ",
+   kid:"Скажи «Аллаху Акбар» и опустись на землю. Лоб и нос касаются пола, ладони, колени и пальцы ног тоже. Скажи три раза.",
+   girls:"Девочки и женщины держат локти ближе к телу.",
+   say:[{id:"sujud", g:"8. "}]},
+  {pose:"sit", t:"Сидение между поклонами", g:"9. ",
+   kid:"Скажи «Аллаху Акбар» и сядь. Попроси у Аллаха прощения и добра.",
+   say:[{id:"jalsa", g:"9. "}]},
+  {pose:"sujud", t:"Второй суджуд", g:"10. ",
+   kid:"Ещё раз опустись в земной поклон и скажи то же самое три раза.",
+   say:[{id:"sujud", g:"8. "}]},
+  {pose:"stand", t:"Следующий ракят",
+   p:"Со словами такбира встаньте. Это уже второй ракят: всё повторяется со стояния - Аль-Фатиха, сура, руку, два суджуда. Дуа открытия во втором ракяте не читается.",
+   kid:"Встань со словами «Аллаху Акбар». Начинается второй ракят: делай всё то же самое, начиная с Аль-Фатихи."},
+  {pose:"tash", t:"Ташаххуд", g:"11. ",
+   kid:"После второго ракята сядь. Прочитай ташаххуд. Когда говоришь «илля Ллах», подними указательный палец правой руки.",
+   say:[{id:"tashahhud", g:"11. "}]},
+  {pose:"sit", t:"Салават Пророку ﷺ", g:"12. ",
+   kid:"В последнем сидении, после ташаххуда, пожелай мира и благословения Пророку ﷺ.",
+   say:[{id:"salawat", g:"12. "}]},
+  {pose:"salam", t:"Салям - конец намаза", g:"13. ",
+   kid:"Поверни голову направо и скажи салям, потом налево и скажи ещё раз. Намаз совершён, машаАллах!",
+   say:[{id:"salam", g:"13. "}]}
+];
+
+var SP = { audio:null, key:null, queue:[], via:"" };
+function spStop(){
+  if(SP.audio){ SP.audio.pause(); SP.audio.removeAttribute("src"); }
+  if(window.speechSynthesis) try{ speechSynthesis.cancel(); }catch(e){}
+  SP.key = null; SP.queue = []; SP.via = "";
+}
+function spFind(id){
+  for(var i = 0; i < SP_STEPS.length; i++){
+    var s = SP_STEPS[i].say || [];
+    for(var j = 0; j < s.length; j++) if(s[j].id === id) return s[j];
+  }
+  return null;
+}
+function spReciter(){
+  var r = RECITERS.filter(function(x){ return x.id === S.qReciter; })[0];
+  return r ? r.n : S.qReciter;
+}
+function spEnd(){ SP.key = null; SP.via = ""; render(); }
+function spSpeak(text){
+  var voices = [];
+  try{ voices = window.speechSynthesis ? speechSynthesis.getVoices() : []; }catch(e){}
+  var ar = voices.filter(function(v){ return /^ar/i.test(v.lang); })[0];
+  if(!window.speechSynthesis || !window.SpeechSynthesisUtterance || (voices.length && !ar)){
+    spEnd();
+    toast("Записи пока нет, а арабского голоса на телефоне не нашлось");
+    return;
+  }
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = "ar-SA"; if(ar) u.voice = ar;
+  u.rate = S.salahKid ? 0.65 : 0.8;
+  u.onend = function(){ if(SP.via === "tts") spEnd(); };
+  u.onerror = function(){ if(SP.via === "tts") spEnd(); };
+  SP.via = "tts"; render();
+  speechSynthesis.speak(u);
+}
+/* Записи преподавателя, которые уже лежат в audio/salah/. Пока список
+   пуст, формулы звучат голосом телефона. Появился файл - впишите сюда его
+   имя без .mp3, например "takbir". */
+var SP_REC = [];
+
+function spNext(){
+  if(!SP.queue.length){ spEnd(); return; }
+  SP.audio.src = SP.queue.shift();
+  SP.audio.play().catch(function(e){
+    if(e && e.name === "NotAllowedError"){ spEnd(); toast("Не получилось воспроизвести"); }
+  });
+}
+function spPlay(id){
+  if(SP.key === id){ spStop(); render(); return; }
+  spStop();
+  if(QP.audio && QP.playing){ QP.audio.pause(); QP.playing = false; paintPlayer(); }
+  if(NAME_AUDIO) NAME_AUDIO.pause();
+  var it = spFind(id);
+  if(!it) return;
+  if(!SP.audio){
+    SP.audio = new Audio();
+    SP.audio.addEventListener("ended", function(){ if(SP.key) spNext(); });
+    SP.audio.addEventListener("error", function(){
+      if(!SP.key || !SP.audio.getAttribute("src")) return;
+      var cur = spFind(SP.key);
+      if(cur && cur.quran){ spEnd(); toast("Не получилось загрузить запись. Нужен интернет"); return; }
+      SP.audio.removeAttribute("src");
+      spSpeak(cur ? spG(cur.g).ar || "" : "");
+    });
+  }
+  SP.key = id;
+  if(it.quran){
+    SP.via = "quran";
+    for(var k = it.quran[0]; k <= it.quran[1]; k++) SP.queue.push(audioUrl(k));
+  } else if(SP_REC.indexOf(id) >= 0){
+    SP.via = "file";
+    SP.queue = ["audio/salah/" + id + ".mp3"];
+  } else {
+    /* голос телефона запускается прямо в обработчике нажатия: iPhone
+       не даёт говорить, если между нажатием и речью была загрузка */
+    spSpeak(spG(it.g).ar || "");
+    return;
+  }
+  render();
+  spNext();
+}
+
+/* Хадж и умра - чек-лист в пути.
+   Порядок - по шафиитскому мазхабу, как в руководстве «Хадж». Сборы берутся
+   из списков того же руководства, тальбия - из него же, дуа при входе в
+   мечеть - из азкаров. Кыран и ифрад здесь не расписаны: у них другой
+   порядок, и путать человека в дороге нельзя. Счёт кругов тавафа и са'я -
+   большой кнопкой, потому что в толпе сбиться легче всего. */
+/* Детям: истории пророков, истории перед сном, дуа, имена.
+   Истории пересказаны по аятам - номера аятов под каждой, без подробностей
+   из преданий, которых нет в источнике. Дуа берутся из азкаров приложения,
+   слова из Корана - из раздела дуа из Корана. Значения имён даны только там,
+   где они ясны по словарю; у остальных сказано, чьё это имя. */
+var KID_STORIES = [
+ {id:"nuh", t:"Нух и большой корабль", ic:"⛵", src:"Сура «Худ», 11:25-48; сура «Нух»",
+  p:["Давным-давно жил пророк Нух, мир ему. Много-много лет он звал свой народ: «Поклоняйтесь только Аллаху и будьте добрыми». Но почти никто его не слушал.",
+     "Тогда Аллах велел Нуху построить большой корабль. Нух строил его на суше, далеко от моря. Люди проходили мимо и смеялись: «Зачем корабль там, где нет воды?» А Нух терпеливо продолжал работу.",
+     "Когда пришло время, Аллах велел взять на корабль верующих людей и животных - каждого вида по паре. Пошёл сильный дождь, из земли забила вода, и корабль поплыл по огромным волнам.",
+     "Нух сказал: «С именем Аллаха он плывёт и причаливает». Вода успокоилась, и корабль остановился на горе Джуди. Верующие вышли на землю живыми и невредимыми."],
+  lesson:"Делать правильное, даже если над тобой смеются. Аллах не оставляет тех, кто Ему верен.",
+  ask:"Почему Нух не бросил строить корабль, когда над ним смеялись?"},
+
+ {id:"ibrahim", t:"Ибрахим смотрит на небо", ic:"✦", night:true, src:"Сура «Аль-Анам», 6:74-79",
+  p:["Народ Ибрахима, мир ему, поклонялся идолам, которых сделал своими руками. Ибрахим не понимал: как можно молиться тому, что вырезано из камня и дерева?",
+     "Однажды ночью он увидел яркую звезду и сказал: «Это мой Господь?» Но звезда закатилась, и Ибрахим сказал: «Я не люблю тех, кто исчезает».",
+     "Потом взошла луна, большая и светлая. Но и она зашла. Утром поднялось солнце - самое большое и яркое. Но вечером село и оно.",
+     "И тогда Ибрахим сказал: «Я обращаю своё лицо к Тому, Кто создал небеса и землю». Звёзды, луна и солнце - только творения. Господь - Тот, Кто их создал, и Он никогда не исчезает."],
+  lesson:"Всё вокруг создано Аллахом. Он всегда рядом и никуда не уходит.",
+  ask:"Что ты видишь на небе вечером? Кто это создал?"},
+
+ {id:"musa", t:"Малыш Муса на реке", ic:"🌊", night:true, src:"Сура «Аль-Касас», 28:7-13; сура «Та Ха», 20:38-40",
+  p:["В Египте правил жестокий Фараон. Когда родился Муса, мир ему, его мама очень боялась за него.",
+     "Аллах внушил ей: «Корми его, а если испугаешься за него - пусти его по реке. Не бойся и не печалься: Мы вернём его тебе». Мама положила малыша в ящик и опустила на воду.",
+     "Сестра Мусы тихонько шла по берегу и смотрела, куда плывёт ящик. Его нашли люди Фараона. Жена Фараона увидела малыша и сказала: «Он будет радостью для глаз - не убивайте его».",
+     "Малыш плакал и не брал грудь ни у одной кормилицы. Тогда сестра сказала: «Я знаю семью, которая позаботится о нём». Так Муса вернулся к своей маме - как и обещал Аллах."],
+  lesson:"Обещание Аллаха - истина. Даже когда страшно, Он заботится о нас.",
+  ask:"Как ты думаешь, что чувствовала мама Мусы, когда он вернулся?"},
+
+ {id:"ant", t:"Сулейман и муравей", ic:"🐜", night:true, src:"Сура «Ан-Намль», 27:15-19",
+  p:["Пророк Сулейман, мир ему, был царём. Аллах научил его понимать язык птиц, и у него было большое войско: люди, джинны и птицы.",
+     "Однажды войско шло через долину муравьёв. Одна маленькая муравьиха увидела их и позвала: «Муравьи, скорее в свои домики, чтобы Сулейман и его войско не раздавили вас, сами того не заметив!»",
+     "Сулейман услышал её и улыбнулся. Он не рассердился и не прошёл мимо. Он сказал: «Господи, помоги мне благодарить Тебя за милость, которую Ты оказал мне и моим родителям, и делать добрые дела, которые Тебе угодны».",
+     "Великий царь позаботился даже о самых маленьких. А маленькая муравьиха позаботилась обо всех своих друзьях."],
+  lesson:"Беречь даже маленьких и благодарить Аллаха за то, что умеешь.",
+  ask:"Кого маленького ты можешь сегодня защитить?"},
+
+ {id:"yunus", t:"Юнус в большой рыбе", ic:"🐋", night:true, src:"Сура «Аль-Анбия», 21:87-88; сура «Ас-Саффат», 37:139-148",
+  p:["Пророк Юнус, мир ему, долго звал свой народ к добру, но люди не слушали. Юнус рассердился и ушёл от них.",
+     "Он сел на корабль, и в пути оказался в море. Большая рыба проглотила его.",
+     "Внутри было совсем темно. И там Юнус позвал Аллаха: «Нет божества, кроме Тебя. Пречист Ты. Я был неправ».",
+     "Аллах услышал его и спас. Рыба оставила Юнуса на берегу. Он был слабым, и Аллах вырастил над ним растение с большими листьями, чтобы укрыть его. Юнус вернулся к людям - и на этот раз они уверовали."],
+  say:{sura:21, ayah:87},
+  lesson:"Если ошибся - скажи об этом Аллаху. Он слышит даже из самой глубокой темноты.",
+  ask:"Какие слова сказал Юнус? Давай повторим их вместе."},
+
+ {id:"cave", t:"Юноши, которые уснули в пещере", ic:"☾", night:true, src:"Сура «Аль-Кахф», 18:9-26",
+  p:["Жили когда-то юноши, которые верили в Аллаха, а люди вокруг поклонялись идолам. Юношам стало опасно в городе, и они укрылись в пещере.",
+     "Они попросили: «Господь наш, даруй нам милость от Себя и устрой наше дело наилучшим образом». И Аллах погрузил их в долгий-долгий сон.",
+     "Солнце обходило пещеру стороной и не тревожило их. У входа, вытянув лапы, лежал их верный пёс. А Аллах поворачивал спящих то на правый бок, то на левый.",
+     "Проснувшись, юноши подумали, что спали день или часть дня. Одного из них послали в город за едой, с серебряной монетой. А прошло триста лет и ещё девять. Так Аллах показал людям, что Его обещание - истина."],
+  say:{sura:18, ayah:10},
+  lesson:"Аллах бережёт тех, кто просит Его о помощи, даже когда они спят.",
+  ask:"Кто лежал у входа в пещеру?"},
+
+ {id:"maryam", t:"Марьям и финиковая пальма", ic:"🌴", night:true, src:"Сура «Марьям», 19:16-26",
+  p:["Марьям, мир ей, была праведной и много молилась. Аллах подарил ей сына - будущего пророка Ису, мир ему.",
+     "Когда малыш должен был родиться, Марьям ушла в далёкое место и села у ствола финиковой пальмы. Ей было тяжело и одиноко.",
+     "И тогда её позвали: «Не печалься! Господь сделал под тобой ручей. Потряси ствол пальмы - и на тебя упадут свежие спелые финики. Ешь, пей и радуйся».",
+     "Марьям потрясла пальму, и Аллах дал ей всё, что было нужно."],
+  lesson:"Сделай то, что можешь, даже если это немного, - остальное Аллах даст Сам.",
+  ask:"Что Марьям нашла у пальмы?"},
+
+ {id:"yusuf", t:"Юсуф и одиннадцать звёзд", ic:"✧", src:"Сура «Юсуф», 12:4-100",
+  p:["Мальчик Юсуф, мир ему, рассказал отцу, пророку Якубу, свой сон: одиннадцать звёзд, солнце и луна поклонились ему. Отец сказал: «Не рассказывай этот сон братьям».",
+     "Братья завидовали Юсуфу, потому что отец очень его любил. Они бросили его в колодец, а отцу сказали, что Юсуфа съел волк. Якуб ответил: «Прекрасное терпение».",
+     "Юсуфа нашли путники и увезли в Египет. Там ему пришлось многое пережить, даже тюрьму. Но он оставался честным, и Аллах сделал его хранителем запасов всего Египта.",
+     "Прошли годы. Братья пришли в Египет просить еды и не узнали Юсуфа. А он узнал их - и простил: «Нет вам упрёка сегодня. Аллах простит вас». Вся семья снова была вместе, и сон сбылся."],
+  lesson:"Зависть приносит беду, а терпение и прощение - добро.",
+  ask:"Трудно ли простить того, кто обидел? Почему Юсуф простил?"},
+
+ {id:"kaaba", t:"Ибрахим и Исмаил строят Каабу", ic:"🕋", src:"Сура «Аль-Бакара», 2:125-129",
+  p:["Пророк Ибрахим и его сын Исмаил, мир им, получили от Аллаха важное дело: построить Дом для поклонения - Каабу.",
+     "Отец и сын вместе поднимали его стены.",
+     "Работая, они просили: «Господь наш, прими от нас. Ты - Слышащий, Знающий».",
+     "Они не хвастались своей работой, а просили, чтобы Аллах её принял. Сегодня к этому Дому приезжают люди со всего мира, а все мусульмане молятся, повернувшись в его сторону."],
+  say:{sura:2, ayah:127},
+  lesson:"Любое доброе дело делай ради Аллаха и проси, чтобы Он его принял.",
+  ask:"В какую сторону мы поворачиваемся, когда молимся?"},
+
+ {id:"camel", t:"Верблюд, который плакал", ic:"🐪", night:true, src:"Абдуллах ибн Джафар, да будет доволен Аллах им и его отцом. Абу Дауд",
+  p:["Однажды Пророк Мухаммад ﷺ зашёл в сад одного человека из Медины. Там стоял верблюд. Увидев Пророка ﷺ, верблюд заплакал.",
+     "Пророк ﷺ подошёл к нему и погладил его, и верблюд успокоился.",
+     "Пророк ﷺ спросил: «Чей это верблюд?» Пришёл молодой хозяин. Пророк ﷺ сказал ему: «Разве ты не боишься Аллаха из-за этого животного? Он пожаловался мне, что ты держишь его голодным и изнуряешь работой».",
+     "Животные чувствуют голод и усталость, и за то, как мы с ними обращаемся, с нас спросят."],
+  lesson:"Заботиться о животных - часть веры.",
+  ask:"Как ты заботишься о животных или растениях?"}
+];
+
+var KID_DUAS = [["d1","Перед едой"],["d2","После еды"],["s1","Перед сном"],["n2","Выходя из дома"],
+  ["n1","Входя в дом"],["n3","Надевая новую одежду"],["n6","Глядя в зеркало"],["w1","Когда идёт дождь"],
+  ["k1","Перед учёбой"],["f3","За родителей"]];
+
+var KID_NAMES = {
+ boys:[["Абдуллах","раб Аллаха","Одно из самых любимых Аллахом имён, так передаёт Муслим"],
+  ["Абдуррахман","раб Милостивого","Одно из самых любимых Аллахом имён"],
+  ["Мухаммад","восхваляемый","Имя Пророка ﷺ"],["Ахмад","достойный хвалы","Имя Пророка ﷺ, названное в Коране (61:6)"],
+  ["Ибрахим","","Пророк, упомянутый в Коране"],["Исмаил","","Пророк, сын Ибрахима"],["Юсуф","","Пророк, о нём целая сура"],
+  ["Муса","","Пророк, упомянутый в Коране"],["Иса","","Пророк, упомянутый в Коране"],["Юнус","","Пророк, о нём сура «Юнус»"],
+  ["Сулейман","","Пророк, упомянутый в Коране"],["Давуд","","Пророк, упомянутый в Коране"],["Яхья","живёт","Пророк, упомянутый в Коране"],
+  ["Салих","праведный","Пророк, упомянутый в Коране"],["Амин","надёжный","Так называли Пророка ﷺ ещё до пророчества"],
+  ["Али","возвышенный","Сподвижник, двоюродный брат Пророка ﷺ"],["Хасан","хороший, прекрасный","Внук Пророка ﷺ"],
+  ["Хусейн","маленький прекрасный","Внук Пророка ﷺ"],["Умар","жизнь, долголетие","Сподвижник, второй праведный халиф"],
+  ["Билал","свежесть","Сподвижник, первый муэдзин"],["Зейд","рост, прибавление","Единственный сподвижник, названный в Коране по имени (33:37)"],
+  ["Анас","близость, дружелюбие","Сподвижник, который мальчиком служил Пророку ﷺ"],["Халид","вечный, постоянный",""],
+  ["Карим","щедрый, благородный",""],["Саид","счастливый",""]],
+ girls:[["Марьям","","Единственная женщина, названная в Коране по имени, о ней сура «Марьям»"],
+  ["Хадиджа","","Жена Пророка ﷺ, первой поверила ему"],["Аиша","живущая","Жена Пророка ﷺ, передала множество хадисов"],
+  ["Фатима","","Дочь Пророка ﷺ"],["Зайнаб","","Дочь Пророка ﷺ"],["Рукайя","","Дочь Пророка ﷺ"],
+  ["Амина","надёжная, спокойная","Мать Пророка ﷺ"],["Халима","кроткая, терпеливая","Кормилица Пророка ﷺ"],
+  ["Сафия","чистая","Жена Пророка ﷺ"],["Сумая","","Сподвижница, первая, кто отдал жизнь за ислам"],
+  ["Хаджар","","Мать пророка Исмаила"],["Асия","","Так по преданиям звали праведную жену Фараона, о которой сказано в Коране (66:11)"],
+  ["Нур","свет",""],["Салиха","праведная",""],["Латифа","мягкая, добрая",""],["Мунира","светлая, сияющая",""],
+  ["Амира","предводительница",""],["Карима","щедрая, благородная",""],["Райхана","благоуханное растение",""],
+  ["Ясмин","жасмин",""],["Сальма","мирная, спокойная",""]]
+};
+
+function kidStore(){
+  if(!S.kids || typeof S.kids !== "object") S.kids = {};
+  if(!S.kids.names || !S.kids.names.push) S.kids.names = [];
+  if(!S.kids.duas || typeof S.kids.duas !== "object") S.kids.duas = {};
+  if(!S.kids.read || typeof S.kids.read !== "object") S.kids.read = {};
+  return S.kids;
+}
+function kidAyah(say){
+  if(!say) return null;
+  return QURAN.filter(function(q){ return q.sura === say.sura && q.ayah === say.ayah; })[0] || null;
+}
+
+/* Чтение вслух по-русски - голосом телефона */
+var KS = { on:false };
+function kidStop(){ if(window.speechSynthesis) try{ speechSynthesis.cancel(); }catch(e){} KS.on = false; }
+function kidRead(id){
+  if(KS.on){ kidStop(); render(); return; }
+  var s = KID_STORIES.filter(function(x){ return x.id === id; })[0];
+  if(!s) return;
+  if(!window.speechSynthesis || !window.SpeechSynthesisUtterance){ toast("На этом телефоне нет чтения вслух"); return; }
+  var voices = []; try{ voices = speechSynthesis.getVoices(); }catch(e){}
+  var ru = voices.filter(function(v){ return /^ru/i.test(v.lang); })[0];
+  if(voices.length && !ru){ toast("На телефоне не нашлось русского голоса"); return; }
+  speechSynthesis.cancel();
+  var parts = [s.t].concat(s.p).concat(["Чему учит эта история. " + s.lesson]);
+  parts.forEach(function(text, i){
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = "ru-RU"; if(ru) u.voice = ru; u.rate = 0.85; u.pitch = 1;
+    if(i === parts.length - 1){ u.onend = function(){ KS.on = false; render(); }; }
+    u.onerror = function(){ KS.on = false; render(); };
+    speechSynthesis.speak(u);
+  });
+  KS.on = true; render();
+}
+
+function kidDuaCard(id, label){
+  var d = DUAS.filter(function(x){ return x.id === id; })[0];
+  if(!d) return "";
+  var K = kidStore(), ok = !!K.duas[id];
+  return '<section class="card">'+
+    '<div style="display:flex;align-items:center;gap:10px"><div class="eyebrow" style="flex:1">'+esc(label)+'</div>'+
+    '<button class="btn sm'+(ok?"":" sec")+'" style="flex:none" data-kidduaok="'+id+'">'+(ok?"★ Выучили":"☆ Выучили")+'</button></div>'+
+    '<div class="dua" style="background:var(--surface-2);margin-top:10px">'+
+      '<div class="ar" style="font-size:24px">'+esc(d.ar)+'</div>'+
+      (d.tr ? '<div class="tr" style="font-size:16px">'+esc(d.tr)+'</div>' : '')+
+      (d.ru ? '<div class="ru">'+esc(d.ru)+'</div>' : '')+
+      (d.src ? '<div class="src">'+esc(d.src)+'</div>' : '')+'</div></section>';
+}
+
+function viewKids(){
+  var K = kidStore(), tab = V.kt || "stories", h = ['<div class="stack">'];
+  var tabs = [["stories","Пророки"],["night","На ночь"],["duas","Дуа"],["names","Имена"]];
+  h.push('<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">'+tabs.map(function(x){
+    return '<button class="btn sm'+(tab===x[0]?"":" sec")+'" style="padding-left:4px;padding-right:4px" data-kidtab="'+x[0]+'">'+x[1]+'</button>';
+  }).join("")+'</div>');
+
+  if(tab === "stories" || tab === "night"){
+    var list = tab === "night" ? KID_STORIES.filter(function(s){ return s.night; }) : KID_STORIES;
+    h.push('<div class="card flat" style="padding:13px 15px;font-size:14px;color:var(--ink-2);line-height:1.55">'+
+      (tab === "night"
+        ? 'Тихие истории на ночь, по 2-3 минуты. Можно читать самим или включить чтение вслух, а в конце - дуа перед сном.'
+        : 'Истории из Корана простыми словами. Под каждой - откуда она, чему учит и вопрос, чтобы поговорить с ребёнком.')+'</div>');
+    list.forEach(function(s){
+      var read = !!K.read[s.id];
+      h.push('<button class="course" data-kidstory="'+s.id+'" style="align-items:center">'+
+        '<div class="course-ic" style="font-size:22px">'+s.ic+'</div>'+
+        '<div style="flex:1"><h4>'+esc(s.t)+'</h4><p>'+esc(s.src)+'</p></div>'+
+        (read ? '<span style="flex:none;color:var(--emerald);font-weight:700">✓</span>' : '')+'</button>');
+    });
+  }
+
+  if(tab === "duas"){
+    var learned = KID_DUAS.filter(function(x){ return K.duas[x[0]]; }).length;
+    h.push('<div class="card flat" style="padding:13px 15px;font-size:14px;color:var(--ink-2);line-height:1.55">'+
+      'Короткие дуа на каждый день. Учите по одному: говорите вместе перед едой, сном, выходом из дома. Выучено: <b>'+learned+' из '+KID_DUAS.length+'</b>.</div>');
+    KID_DUAS.forEach(function(x){ h.push(kidDuaCard(x[0], x[1])); });
+    h.push('<button class="btn sec" style="width:100%" data-open="salahpics">Намаз в картинках - режим для детей</button>');
+  }
+
+  if(tab === "names"){
+    var sex = V.kns || "boys";
+    h.push('<div class="card flat" style="padding:13px 15px;font-size:14px;color:var(--ink-2);line-height:1.55">'+
+      'Лучшие имена - Абдуллах и Абдуррахман, затем имена пророков и праведников. Нажмите ☆, чтобы отложить имя. '+
+      'Значение указано, где оно ясно по словарю; у остальных - чьё это имя.</div>');
+    h.push('<div style="display:flex;gap:8px">'+
+      '<button class="btn sm'+(sex==="boys"?"":" sec")+'" style="flex:1" data-kidsex="boys">Мальчику</button>'+
+      '<button class="btn sm'+(sex==="girls"?"":" sec")+'" style="flex:1" data-kidsex="girls">Девочке</button>'+
+      '<button class="btn sm'+(sex==="fav"?"":" sec")+'" style="flex:1" data-kidsex="fav">☆ '+K.names.length+'</button></div>');
+    var rows = sex === "fav"
+      ? KID_NAMES.boys.concat(KID_NAMES.girls).filter(function(n){ return K.names.indexOf(n[0]) >= 0; })
+      : KID_NAMES[sex];
+    if(!rows.length) h.push('<p style="text-align:center;color:var(--ink-3);font-size:14px">Пока ничего не отложено</p>');
+    else h.push('<section class="card" style="padding:4px 14px">'+rows.map(function(n){
+      var fav = K.names.indexOf(n[0]) >= 0;
+      return '<div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line-soft)">'+
+        '<div style="flex:1"><b style="font-size:16px">'+esc(n[0])+'</b>'+
+        (n[1] ? '<span style="color:var(--accent-ink);font-size:14px"> - '+esc(n[1])+'</span>' : '')+
+        (n[2] ? '<div style="font-size:12.5px;color:var(--ink-3);margin-top:2px;line-height:1.45">'+esc(n[2])+'</div>' : '')+'</div>'+
+        '<button data-kidname="'+esc(n[0])+'" aria-label="Отложить" style="flex:none;font-size:22px;color:'+(fav?"var(--accent-ink)":"var(--ink-3)")+'">'+(fav?"★":"☆")+'</button></div>';
+    }).join("")+'</section>');
+    h.push('<button class="btn ghost sm" style="width:100%" data-guide="child">Родился ребёнок: азан, имя, акыка</button>');
+  }
+
+  h.push('<p class="disclaimer">Истории пересказаны по аятам Корана и достоверным хадисам, источник - под каждой. Подробности, которых нет в источниках, не добавлены.</p>');
+  h.push('</div>');
+  return h.join("");
+}
+
+function viewKidStory(){
+  var s = KID_STORIES.filter(function(x){ return x.id === V.p; })[0];
+  if(!s) return '<div class="stack"><p>История не найдена</p></div>';
+  var night = V.kt === "night", big = night ? 18 : 17, h = ['<div class="stack">'];
+  h.push('<section class="card" style="padding:20px 18px">'+
+    '<div style="font-size:44px;text-align:center;line-height:1">'+s.ic+'</div>'+
+    '<h2 style="font-family:var(--f-display);font-size:23px;text-align:center;margin:10px 0 4px;line-height:1.25">'+esc(s.t)+'</h2>'+
+    '<div style="text-align:center;font-size:12.5px;color:var(--ink-3)">'+esc(s.src)+'</div>'+
+    '<button class="btn '+(KS.on?"":"sec ")+'sm" style="width:100%;margin-top:14px" data-kidread="'+s.id+'">'+(KS.on?"■ Остановить чтение":"▶ Послушать")+'</button>'+
+    s.p.map(function(x){ return '<p style="font-size:'+big+'px;line-height:1.75;margin:16px 0 0">'+esc(x)+'</p>'; }).join("")+
+    '</section>');
+  var a = kidAyah(s.say);
+  if(a) h.push('<section class="card"><div class="eyebrow">Эти слова в Коране</div>'+
+    '<div class="dua" style="background:var(--surface-2);margin-top:10px"><div class="ar" style="font-size:23px">'+esc(a.ar)+'</div>'+
+    '<div class="ru">'+esc(a.ru)+'</div><div class="src">'+esc(a.src)+'</div></div></section>');
+  h.push('<section class="card"><div class="eyebrow">Чему учит</div><p style="font-size:15.5px;line-height:1.65;margin:8px 0 0">'+esc(s.lesson)+'</p>'+
+    '<div class="eyebrow" style="margin-top:14px">Спросите ребёнка</div><p style="font-size:15.5px;line-height:1.65;margin:8px 0 0">'+esc(s.ask)+'</p></section>');
+  if(night){
+    h.push('<div style="text-align:center;font-size:15px;color:var(--ink-2);margin-top:4px">Спокойной ночи. Скажем вместе дуа перед сном:</div>');
+    h.push(kidDuaCard("s1", "Перед сном"));
+  }
+  var K = kidStore();
+  h.push('<button class="btn'+(K.read[s.id]?" sec":"")+'" style="width:100%" data-kidreadok="'+s.id+'">'+(K.read[s.id]?"✓ Прочитали":"Прочитали")+'</button>');
+  h.push('</div>');
+  return h.join("");
+}
+
+function tripData(){
+  if(!S.trip || typeof S.trip !== "object") S.trip = {};
+  var t = S.trip;
+  if(t.mode !== "umra" && t.mode !== "hajj") t.mode = "umra";
+  if(!t.done || typeof t.done !== "object") t.done = {};
+  if(!t.cnt || typeof t.cnt !== "object") t.cnt = {};
+  return t;
+}
+function tripG(title){
+  var b = GUIDES.hajj.blocks;
+  for(var i = 0; i < b.length; i++) if(b[i].t === title) return b[i];
+  return {};
+}
+
+var TRIP_UMRA = [
+  {id:"ihram", t:"Ихрам на микате", when:"до пересечения миката - в самолёте об этом объявляют", items:[
+    {id:"clean", n:"Подстричь ногти, привести себя в порядок: в ихраме уже нельзя"},
+    {id:"ghusl", n:"Гусль, а если нет возможности - вуду"},
+    {id:"cloth", n:"Мужчинам - два несшитых полотна и сандалии; женщинам - обычная закрытая одежда, лицо и кисти открыты"},
+    {id:"rakat", n:"Два ракята ихрама, если сейчас не запретное для намаза время"},
+    {id:"niyya", n:"Намерение: «Намереваюсь совершить умру и вхожу ради Аллаха в ихрам»"},
+    {id:"talb",  n:"Произнести тальбию и повторять её в пути", say:"talbiya"}
+  ], ban:true},
+  {id:"haram", t:"Вход в Масджид аль-Харам", when:"по прибытии в Мекку", items:[
+    {id:"wudu",  n:"Проверить омовение: таваф без него недействителен"},
+    {id:"enter", n:"Войти правой ногой с дуа входа в мечеть", say:"mosque"},
+    {id:"stop",  n:"Когда начинаете таваф - тальбию прекращают"}
+  ]},
+  {id:"tawaf", t:"Таваф", when:"семь кругов, Кааба слева", items:[
+    {id:"start", n:"Встать на линию Чёрного камня, повернуться к нему, поднять правую руку и сказать «Бисмиллях, Аллаху Акбар»"},
+    {id:"men",   n:"Мужчинам: правое плечо открыто, первые три круга - быстрым шагом", only:"men"},
+    {id:"rounds", n:"Круги тавафа", count:7},
+    {id:"dua",   n:"Во время кругов - дуа своими словами, зикр, Коран. Из Корана подходит", say:"q2201"},
+    {id:"pray",  n:"Два ракята за Макамом Ибрахима, а если тесно - в любом месте мечети"},
+    {id:"zamzam", n:"Попить воды Замзам"}
+  ]},
+  {id:"say", t:"Са'й между Сафа и Марва", when:"семь проходов, начиная с Сафа", items:[
+    {id:"safa",  n:"Подняться на Сафа, повернуться к Каабе, сделать дуа"},
+    {id:"runs",  n:"Проходы: Сафа → Марва - это один, обратно - второй", count:7},
+    {id:"green", n:"Мужчинам: между зелёными огнями - быстрым шагом", only:"men"},
+    {id:"end",   n:"Седьмой проход заканчивается на Марва"}
+  ]},
+  {id:"hair", t:"Волосы - выход из ихрама", when:"после са'я", items:[
+    {id:"cut",   n:"Мужчинам - побрить голову или укоротить волосы; женщинам - укоротить прядь примерно на кончик пальца"},
+    {id:"fin",   n:"Умра завершена, запреты ихрама сняты. Сделайте дуа, чтобы Аллах принял"}
+  ]}
+];
+
+var TRIP_HAJJ = [
+  {id:"d8", t:"8 зуль-хиджа - день тарвия", g:"8 зуль-хиджа - день тарвия", items:[
+    {id:"ihram", n:"Гусль и ихрам с намерением хаджа там, где вы живёте в Мекке"},
+    {id:"talb",  n:"Тальбия - с этого момента до броска в Джамрат аль-Акаба", say:"talbiya"},
+    {id:"mina",  n:"Выезд в Мину: зухр, аср, магриб, иша и фаджр - каждый в своё время, четырёхракятные по два"}
+  ], ban:true},
+  {id:"d9", t:"9 зуль-хиджа - Арафа", g:"9 зуль-хиджа - день Арафа", items:[
+    {id:"arafat", n:"После восхода - на Арафат"},
+    {id:"zuhr",  n:"Зухр и аср соединены и сокращены"},
+    {id:"wuquf", n:"Стояние до заката: время дуа, а не разговоров и фотографий"},
+    {id:"muzd",  n:"После заката - в Муздалифу, там магриб и иша вместе"},
+    {id:"stones", n:"Ночёвка в Муздалифе, собрать камешки размером с фасолину"}
+  ]},
+  {id:"d10", t:"10 зуль-хиджа - день жертвы", g:"10 зуль-хиджа - день жертвы", items:[
+    {id:"aqaba", n:"Камешки в Джамрат аль-Акаба, с такбиром на каждый", count:7},
+    {id:"sacr",  n:"Жертвоприношение (при таматту' обязательно) - обычно через оператора"},
+    {id:"hair",  n:"Бритьё или укорачивание волос: снимается часть запретов"},
+    {id:"ifada", n:"Таваф аль-ифада - семь кругов", count:7},
+    {id:"say",   n:"Са'й - семь проходов", count:7},
+    {id:"fin",   n:"Ихрам завершён полностью"}
+  ]},
+  {id:"d11", t:"11 зуль-хиджа - ташрик", items:[
+    {id:"night", n:"Ночь в Мине"},
+    {id:"j1", n:"Малый столб после полудня", count:7},
+    {id:"j2", n:"Средний столб", count:7},
+    {id:"j3", n:"Большой столб - Джамрат аль-Акаба", count:7}
+  ]},
+  {id:"d12", t:"12 зуль-хиджа - ташрик", items:[
+    {id:"night", n:"Ночь в Мине"},
+    {id:"j1", n:"Малый столб после полудня", count:7},
+    {id:"j2", n:"Средний столб", count:7},
+    {id:"j3", n:"Большой столб", count:7},
+    {id:"leave", n:"Уехать можно до заката, а остаться на 13-е - лучше"}
+  ]},
+  {id:"d13", t:"13 зуль-хиджа - если остались", optional:true, items:[
+    {id:"j1", n:"Малый столб после полудня", count:7},
+    {id:"j2", n:"Средний столб", count:7},
+    {id:"j3", n:"Большой столб", count:7}
+  ]},
+  {id:"wada", t:"Прощальный таваф", g:"Перед отъездом", items:[
+    {id:"rounds", n:"Семь кругов - последнее дело в Мекке", count:7},
+    {id:"haid", n:"Женщина в хайде от прощального тавафа освобождена"}
+  ]}
+];
+
+var TRIP_PACK = ["Документы","Одежда","Гигиена","Аптечка","Мелочи, которые выручают"];
+
+function tripStages(){
+  var t = tripData(), out = [];
+  out.push({id:"pack", t:"Сборы", when:"из руководства «Хадж»", items:
+    TRIP_PACK.reduce(function(acc, title){
+      var b = tripG(title);
+      (b.list || []).forEach(function(x, i){ acc.push({id:title.slice(0,3)+i, n:x, group:title}); });
+      return acc;
+    }, [])});
+  TRIP_UMRA.forEach(function(s){ out.push(s); });
+  if(t.mode === "hajj") TRIP_HAJJ.forEach(function(s){ out.push(s); });
+  return out;
+}
+function tripKey(s, it){ return s.id + "." + it.id; }
+function tripItemDone(s, it){
+  var t = tripData(), k = tripKey(s, it);
+  return it.count ? (t.cnt[k] || 0) >= it.count : !!t.done[k];
+}
+function tripStageLeft(s){
+  var n = 0;
+  s.items.forEach(function(it){ if(!it.only && !tripItemDone(s, it)) n++; });
+  return n;
+}
+function tripCurrent(){
+  var st = tripStages();
+  for(var i = 1; i < st.length; i++) if(!st[i].optional && tripStageLeft(st[i])) return st[i].id;
+  return null;
+}
+function tripCount(key, delta, max){
+  var t = tripData(), v = Math.max(0, Math.min(max, (t.cnt[key] || 0) + delta));
+  t.cnt[key] = v; save();
+  if(delta > 0 && navigator.vibrate){ try{ navigator.vibrate(v === max ? [30, 60, 30] : 15); }catch(e){} }
+  if(delta > 0 && v === max) toast("Готово: " + max + " из " + max);
+  render();
+}
+function tripSay(kind){
+  var ar = "", tr = "", ru = "", src = "";
+  if(kind === "talbiya"){ var b = tripG("Слова хаджа"); ar = b.ar; tr = b.tr; ru = b.ru; src = b.src; }
+  if(kind === "mosque"){
+    var d = DUAS.filter(function(x){ return x.id === "n4"; })[0];
+    if(d){ ar = d.ar; tr = d.tr; ru = d.ru; src = d.src; }
+  }
+  if(kind === "q2201"){
+    var q = QURAN_EXTRA.filter(function(x){ return x.src.indexOf("2:201") >= 0; })[0];
+    if(q){ ar = q.ar; ru = q.ru; src = "Сура " + q.src; }
+  }
+  if(!ar) return "";
+  return '<div class="dua" style="background:var(--surface-2);margin-top:10px">'+
+    '<div class="ar" style="font-size:20px">'+esc(ar)+'</div>'+
+    (tr ? '<div class="tr">'+esc(tr)+'</div>' : '')+
+    (ru ? '<div class="ru">'+esc(ru)+'</div>' : '')+
+    (src ? '<div class="src">'+esc(src)+'</div>' : '')+'</div>';
+}
+
+function viewHajjTrip(){
+  var t = tripData(), st = tripStages(), cur = tripCurrent();
+  if(V.tripOpen === undefined) V.tripOpen = cur;
+  var total = 0, done = 0;
+  st.forEach(function(s){ if(s.id === "pack" || s.optional) return;
+    s.items.forEach(function(it){ if(it.only) return; total++; if(tripItemDone(s, it)) done++; }); });
+
+  var h = ['<div class="stack">'];
+  h.push('<div style="display:flex;gap:8px">'+
+    '<button class="btn sm'+(t.mode==="umra"?"":" sec")+'" style="flex:1" data-tripmode="umra">Умра</button>'+
+    '<button class="btn sm'+(t.mode==="hajj"?"":" sec")+'" style="flex:1" data-tripmode="hajj">Хадж таматту\'</button></div>');
+
+  var pct = total ? Math.round(done * 100 / total) : 0;
+  h.push('<section class="card" style="padding:16px">'+
+    '<div style="display:flex;align-items:baseline;gap:8px"><div class="eyebrow" style="flex:1">'+
+      (t.mode==="hajj" ? "Умра и хадж" : "Умра")+'</div>'+
+      '<b style="font-family:var(--f-display);font-size:20px;color:var(--accent-ink)">'+done+' из '+total+'</b></div>'+
+    '<div style="height:8px;border-radius:4px;background:var(--surface-3);margin-top:10px;overflow:hidden">'+
+      '<div style="height:100%;width:'+pct+'%;background:var(--accent-ink)"></div></div>'+
+    (cur ? '<button class="btn sm" style="width:100%;margin-top:12px" data-tripopen="'+cur+'">Сейчас: '+
+      esc(st.filter(function(s){ return s.id===cur; })[0].t)+'</button>'
+         : '<p style="margin:12px 0 0;font-size:14px;color:var(--ink-2)">Всё отмечено. Пусть Аллах примет.</p>')+
+    '</section>');
+
+  st.forEach(function(s){
+    var open = V.tripOpen === s.id, left = tripStageLeft(s), isCur = s.id === cur;
+    var mark = s.id === "pack" ? (left ? left + " не собрано" : "собрано")
+             : left ? (isCur ? "сейчас" : "осталось " + left) : "✓";
+    h.push('<section class="card" style="padding:0;overflow:hidden'+(isCur?';border-color:var(--accent-ink)':'')+'">'+
+      '<button data-tripopen="'+s.id+'" style="display:flex;align-items:center;gap:10px;width:100%;padding:14px 16px;text-align:left">'+
+        '<span style="flex:1"><b style="font-size:15px">'+esc(s.t)+'</b>'+
+        (s.when ? '<span style="display:block;font-size:12.5px;color:var(--ink-3);margin-top:2px">'+esc(s.when)+'</span>' : '')+'</span>'+
+        '<span style="flex:none;font-size:12.5px;font-weight:700;color:'+(left?(isCur?"var(--accent-ink)":"var(--ink-3)"):"var(--emerald)")+'">'+esc(mark)+'</span>'+
+        '<span style="flex:none;color:var(--ink-3)">'+(open?"▲":"▼")+'</span></button>');
+    if(open){
+      h.push('<div style="padding:0 16px 14px">');
+      if(s.g){ var gb = tripG(s.g); if(gb.p) h.push('<p style="font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:0 0 10px">'+esc(gb.p)+'</p>'); }
+      var lastGroup = "";
+      s.items.forEach(function(it){
+        var k = tripKey(s, it), ok = tripItemDone(s, it);
+        if(it.group && it.group !== lastGroup){
+          lastGroup = it.group;
+          h.push('<div class="eyebrow" style="margin:12px 0 4px">'+esc(it.group)+'</div>');
+        }
+        if(it.count){
+          var c = t.cnt[k] || 0;
+          h.push('<div style="border-top:1px solid var(--line-soft);padding:12px 0">'+
+            '<div style="font-size:14px;color:var(--ink-2);margin-bottom:10px">'+esc(it.n)+'</div>'+
+            '<div style="display:flex;align-items:center;gap:10px">'+
+              '<button class="btn sec sm" style="flex:none;width:46px" data-tripcnt="'+k+'" data-tripd="-1" data-tripmax="'+it.count+'" aria-label="Минус один">−</button>'+
+              '<button class="btn'+(ok?" sec":"")+'" style="flex:1;font-size:20px;padding:16px 0" data-tripcnt="'+k+'" data-tripd="1" data-tripmax="'+it.count+'">'+
+                (ok ? "✓ " + it.count + " из " + it.count : c + " из " + it.count + "  +1")+'</button>'+
+            '</div>'+
+            '<div style="display:flex;gap:5px;justify-content:center;margin-top:9px">'+
+              Array.apply(null, Array(it.count)).map(function(_, j){
+                return '<span style="width:11px;height:11px;border-radius:50%;background:'+(j<c?"var(--accent-ink)":"var(--surface-3)")+'"></span>';
+              }).join("")+'</div></div>');
+        } else {
+          h.push('<div style="border-top:1px solid var(--line-soft);padding:10px 0">'+
+            '<button data-trip="'+k+'" style="display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left">'+
+              '<span style="flex:none;width:22px;height:22px;border-radius:6px;border:2px solid '+(ok?"var(--emerald)":"var(--line)")+';background:'+(ok?"var(--emerald)":"transparent")+';color:#fff;display:grid;place-items:center;font-size:13px">'+(ok?"✓":"")+'</span>'+
+              '<span style="font-size:14.5px;line-height:1.5;color:'+(ok?"var(--ink-3)":"var(--ink)")+'">'+esc(it.n)+
+              (it.only==="men" ? ' <span style="font-size:12px;color:var(--ink-3)">(для мужчин)</span>' : '')+'</span>'+
+            '</button>'+(it.say ? tripSay(it.say) : '')+'</div>');
+        }
+      });
+      if(s.ban){
+        var bans = tripG("Чего нельзя в состоянии ихрама").list || [];
+        h.push('<details style="margin-top:8px;font-size:13.5px;color:var(--ink-2)"><summary style="cursor:pointer;font-weight:700;color:var(--accent-ink)">Чего нельзя в ихраме</summary>'+
+          '<ul style="padding-left:18px;margin:8px 0 0;line-height:1.6">'+bans.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul>'+
+          '<p style="margin:8px 0 0">'+esc(tripG("Если запрет нарушен").p || "")+'</p></details>');
+      }
+      h.push('</div>');
+    }
+    h.push('</section>');
+  });
+
+  h.push('<button class="btn ghost sm" style="width:100%" data-guide="hajj">Руководство «Хадж» целиком</button>');
+  h.push('<button class="btn ghost sm" style="width:100%" data-tripreset="1">Начать заново</button>');
+  h.push('<p class="disclaimer">Порядок по шафиитскому мазхабу. Кыран и ифрад идут иначе - сверяйтесь с руководителем группы. Отметки хранятся на этом телефоне и работают без интернета.</p>');
+  h.push('</div>');
+  return h.join("");
+}
+
+function viewSalahPics(){
+  if(typeof V.sp !== "number") V.sp = 0;
+  /* голоса в Chrome подгружаются не сразу - просим список заранее */
+  try{ if(window.speechSynthesis) speechSynthesis.getVoices(); }catch(e){}
+  var i = V.sp, st = SP_STEPS[i], kid = !!S.salahKid, g = st.g ? spG(st.g) : {};
+  var h = ['<div class="stack">'];
+
+  h.push('<div style="display:flex;gap:8px">'+
+    '<button class="btn sm'+(kid?" sec":"")+'" style="flex:1" data-spkid="0">Взрослым</button>'+
+    '<button class="btn sm'+(kid?"":" sec")+'" style="flex:1" data-spkid="1">Детям</button></div>');
+
+  /* точки шагов */
+  h.push('<div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">'+
+    SP_STEPS.map(function(x, k){
+      return '<button data-spgo="'+k+'" aria-label="Шаг '+(k+1)+'" style="width:'+(k===i?22:9)+'px;height:9px;padding:0;border-radius:5px;background:'+
+        (k<=i?"var(--accent-ink)":"var(--ink-3)")+';opacity:'+(k<i?.6:k>i?.35:1)+'"></button>';
+    }).join("")+'</div>');
+
+  var text = kid ? st.kid : (st.p || g.p || st.kid);
+  h.push('<section class="card" style="text-align:center;padding:18px 16px">'+
+    '<div class="eyebrow">Шаг '+(i+1)+' из '+SP_STEPS.length+'</div>'+
+    '<h2 style="font-family:var(--f-display);font-size:'+(kid?24:21)+'px;margin:6px 0 12px;line-height:1.25">'+esc(st.t)+'</h2>'+
+    spFig(st.pose)+
+    '<p style="font-size:'+(kid?17:15)+'px;line-height:1.65;color:var(--ink);margin:14px 0 0;text-align:left">'+esc(text)+'</p>'+
+    (st.girls ? '<p style="font-size:13.5px;line-height:1.55;color:var(--ink-3);margin:8px 0 0;text-align:left">'+esc(st.girls)+'</p>' : '')+
+    '</section>');
+
+  (st.say || []).forEach(function(s){
+    var b = s.g ? spG(s.g) : {}, on = SP.key === s.id;
+    var name = s.n || (b.t ? b.t.replace(/^\d+\.\s*/, "") : "");
+    var via = on ? (SP.via === "tts" ? "Звучит голос телефона - запись с верным произношением добавит преподаватель"
+                  : SP.via === "quran" ? "Чтец: " + esc(spReciter()) : "Запись преподавателя") : "";
+    h.push('<section class="card">'+
+      '<div style="display:flex;align-items:center;gap:10px">'+
+        '<div style="flex:1"><div class="eyebrow">'+esc(name)+'</div>'+
+        (s.sub ? '<div style="font-size:12.5px;color:var(--ink-3);margin-top:3px">'+esc(s.sub)+'</div>' : '')+
+        (b.rep ? '<div style="font-size:12.5px;color:var(--ink-3);margin-top:3px">'+esc(b.rep)+'</div>' : '')+'</div>'+
+        '<button class="btn '+(on?"":"sec ")+'sm" style="flex:none;min-width:104px" data-spplay="'+s.id+'">'+(on?"■ Стоп":"▶ Слушать")+'</button>'+
+      '</div>'+
+      (via ? '<div style="font-size:12px;color:var(--ink-3);margin-top:8px">'+via+'</div>' : '')+
+      (b.ar ? '<div class="dua" style="background:var(--surface-2);margin-top:12px">'+
+        '<div class="ar"'+(kid?' style="font-size:25px"':'')+'>'+esc(b.ar)+'</div>'+
+        (b.tr ? '<div class="tr"'+(kid?' style="font-size:16px"':'')+'>'+esc(b.tr)+'</div>' : '')+
+        (b.ru ? '<div class="ru">'+esc(b.ru)+'</div>' : '')+
+        (b.src ? '<div class="src">'+esc(b.src)+'</div>' : '')+
+      '</div>' : '')+
+      (s.quran ? '<button class="btn ghost sm" style="width:100%;margin-top:10px" data-open="suras">Текст суры - в «Коротких сурах»</button>' : '')+
+      '</section>');
+  });
+
+  if(st.link) h.push('<button class="btn sec" style="width:100%" data-open="'+st.link+'">Открыть короткие суры</button>');
+
+  h.push('<div style="display:flex;gap:10px">'+
+    '<button class="btn sec" style="flex:1" data-spgo="'+(i-1)+'"'+(i===0?' disabled':'')+'>‹ Назад</button>'+
+    (i < SP_STEPS.length-1
+      ? '<button class="btn" style="flex:1" data-spgo="'+(i+1)+'">Дальше ›</button>'
+      : '<button class="btn" style="flex:1" data-spgo="0">С начала</button>')+
+    '</div>');
+
+  if(i === SP_STEPS.length-1){
+    h.push('<section class="card"><div class="eyebrow">Сколько ракятов</div>'+
+      '<div class="rows" style="margin-top:10px">'+ spG("Сколько ракятов").rows.map(function(r){
+        return '<div class="row"><span>'+esc(r[0])+'</span><span class="val" style="color:var(--ink);font-weight:600">'+esc(r[1])+'</span></div>';
+      }).join("")+'</div>'+
+      '<p style="font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:10px 0 0">В трёх- и четырёхракятных намазах после первого ташаххуда встают на третий ракят, а салават и салям - в последнем сидении.</p></section>');
+  }
+
+  h.push('<p class="disclaimer">Порядок по шафиитскому мазхабу, как в руководстве «Намаз пошагово». Проверить произношение лучше вживую у преподавателя. Ребёнка учат постепенно и с радостью: сначала он просто встаёт рядом.</p>');
+  h.push('</div>');
+  return h.join("");
+}
+
+function viewQada(){
+  var q = qadaData(), kinds = qadaKinds(), h = ['<div class="stack">'];
+  var left = qadaLeft(), doneAll = 0;
+  kinds.forEach(function(f){ doneAll += q.done[f.k] || 0; });
+
+  h.push('<div class="card flat" style="padding:13px 15px;font-size:14px;color:var(--ink-2);line-height:1.55">'+
+    'Запишите, сколько намазов и дней поста пропущено, и отмечайте каждый восполненный. '+
+    'Счёт хранится только на этом телефоне.</div>');
+
+  /* сводка */
+  var maxLeft = 0;
+  kinds.forEach(function(f){ if((q.p[f.k]||0) > maxLeft) maxLeft = q.p[f.k]||0; });
+  var daysNeed = maxLeft ? Math.ceil(maxLeft / q.perDay) : 0;
+  var finish = "";
+  if(daysNeed){
+    var fd = new Date(); fd.setDate(fd.getDate() + daysNeed);
+    finish = fd.toLocaleDateString("ru-RU", {day:"numeric", month:"long", year:"numeric"});
+  }
+  h.push('<section class="card" style="text-align:center;padding:20px 16px">'+
+    '<div class="eyebrow">Осталось восполнить</div>'+
+    '<div style="font-family:var(--f-display);font-size:34px;font-weight:700;color:var(--accent-ink);margin-top:4px;font-variant-numeric:tabular-nums">'+left+'</div>'+
+    '<div style="font-size:13px;color:var(--ink-3)">'+(left ? plural(left,"намаз","намаза","намазов") : "намазов")+
+      (q.fast ? ' · '+plural(q.fast,"день поста","дня поста","дней поста") : '')+'</div>'+
+    (doneAll || q.fastDone ? '<div style="font-size:13px;color:var(--emerald);margin-top:8px">Уже восполнено: '+plural(doneAll,"намаз","намаза","намазов")+
+      (q.fastDone ? ' и '+plural(q.fastDone,"пост","поста","постов") : '')+'</div>' : '')+
+    (daysNeed ? '<div style="font-size:12.5px;color:var(--ink-3);margin-top:10px;line-height:1.5">Если за сутки восполнять намазы '+
+      (q.perDay === 1 ? 'одного пропущенного дня' : q.perDay+' пропущенных дней')+' - закончите примерно к '+esc(finish)+'</div>'+
+      '<div style="display:flex;justify-content:center;align-items:center;gap:10px;margin-top:8px">'+
+        '<button class="btn sec sm" data-qadaper="-1" aria-label="Меньше">−</button>'+
+        '<span style="font-size:13px;color:var(--ink-2)">дней за сутки: '+q.perDay+'</span>'+
+        '<button class="btn sec sm" data-qadaper="1" aria-label="Больше">+</button></div>' : '')+
+  '</section>');
+
+  /* по намазам */
+  h.push('<div class="sec-h"><h3>Намазы</h3></div>');
+  h.push('<div class="rows">'+ kinds.map(function(f){
+    var n = q.p[f.k] || 0, dn = q.done[f.k] || 0;
+    return '<div class="row" style="padding:10px 12px;gap:8px">'+
+      '<div style="flex:1;min-width:0"><div style="font-size:14.5px">'+esc(f.n)+'</div>'+
+        '<div style="font-size:12px;color:var(--ink-3)">осталось '+n+(dn ? ' · восполнено '+dn : '')+'</div></div>'+
+      '<button class="btn sec sm" style="flex:none" data-qadaadd="'+f.k+'" aria-label="Добавить пропущенный">+1</button>'+
+      '<button class="btn sm" style="flex:none'+(n?'':';opacity:.45')+'" data-qadadone="'+f.k+'">Восполнено</button>'+
+    '</div>';
+  }).join("") +'</div>');
+
+  /* посты */
+  h.push('<div class="sec-h"><h3>Пост</h3></div>');
+  h.push('<div class="rows"><div class="row" style="padding:10px 12px;gap:8px">'+
+    '<div style="flex:1;min-width:0"><div style="font-size:14.5px">Дни поста</div>'+
+      '<div style="font-size:12px;color:var(--ink-3)">осталось '+q.fast+(q.fastDone ? ' · восполнено '+q.fastDone : '')+'</div></div>'+
+    '<button class="btn sec sm" style="flex:none" data-qadaadd="fast" aria-label="Добавить день поста">+1</button>'+
+    '<button class="btn sm" style="flex:none'+(q.fast?'':';opacity:.45')+'" data-qadadone="fast">Восполнено</button>'+
+  '</div></div>');
+
+  /* быстрое добавление */
+  h.push('<section class="card"><div class="eyebrow">Добавить сразу много</div>'+
+    '<p style="font-size:13px;color:var(--ink-3);margin:6px 0 0;line-height:1.5">Если пропущены целые дни, укажите их число - '+
+      'каждому намазу добавится столько же. Годы считаются примерно, по 365 дней.</p>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px">'+
+      '<label style="font-size:12px;color:var(--ink-3)">дней<input id="qadaDays" class="search" inputmode="numeric" placeholder="0" style="margin-top:4px"></label>'+
+      '<label style="font-size:12px;color:var(--ink-3)">лет<input id="qadaYears" class="search" inputmode="decimal" placeholder="0" style="margin-top:4px"></label>'+
+      '<label style="font-size:12px;color:var(--ink-3)">постов<input id="qadaFasts" class="search" inputmode="numeric" placeholder="0" style="margin-top:4px"></label>'+
+    '</div>'+
+    '<button class="btn" style="margin-top:10px" data-qadabulk="1">Добавить</button>'+
+  '</section>');
+
+  /* журнал */
+  var recent = q.log.slice(-6).reverse();
+  if(recent.length){
+    h.push('<div class="sec-h"><h3>Последние отметки</h3>'+
+      '<button class="more" data-qadaundo="1" style="color:var(--accent-ink)">Отменить последнее</button></div>');
+    h.push('<div class="rows">'+ recent.map(function(x){
+      var what = x.k === "days" ? "добавлено дней: "+x.n
+        : (x.n < 0 ? "восполнен: " : "добавлен пропущенный: ") + qadaName(x.k) + (x.n > 1 ? " ×"+x.n : "");
+      return '<div class="row" style="padding:9px 12px;font-size:13px">'+esc(what)+
+        '<span class="val">'+esc(new Date(x.d + "T12:00:00").toLocaleDateString("ru-RU",{day:"numeric",month:"short"}))+'</span></div>';
+    }).join("") +'</div>');
+  }
+
+  h.push('<p class="disclaimer">Приложение только ведёт счёт. В каком порядке восполнять, как быть, если число пропусков неизвестно, '+
+    'и нужен ли выкуп вместо поста - спросите преподавателя.</p>');
+  h.push('</div>');
+  return h.join("");
+}
+
 function viewDonate(){
   var h = ['<div class="stack">'];
   h.push('<section class="mihrab" style="border-radius:100px 100px var(--r-lg) var(--r-lg);padding:26px 20px 20px">'+
@@ -6016,13 +7096,13 @@ function viewReport(){
   for(var i = 0; i < lead; i++) h.push('<div></div>');
   for(var d2 = 1; d2 <= daysIn; d2++){
     var key2 = y + "-" + pad(m+1) + "-" + pad(d2);
-    var c2 = dayCount(key2);
+    var c2 = dayCount(key2), pz2 = isPaused(key2);
     var alpha = c2 ? (0.18 + 0.82 * c2 / DAILY.length) : 0;
     var sel = V.repDay === key2;
     h.push('<button data-repday="'+key2+'" style="aspect-ratio:1;border-radius:9px;display:grid;place-items:center;'+
       'font-size:13px;font-variant-numeric:tabular-nums;'+
-      'border:1.5px solid '+(sel ? "var(--gold)" : (key2===todayK ? "var(--accent-ink)" : "var(--line)"))+';'+
-      'background:'+(c2 ? "rgba(45,106,79," + alpha.toFixed(2) + ")" : "transparent")+';'+
+      'border:1.5px '+(pz2 ? "dashed " : "solid ")+(sel ? "var(--gold)" : (key2===todayK ? "var(--accent-ink)" : "var(--line)"))+';'+
+      'background:'+(c2 ? "rgba(45,106,79," + alpha.toFixed(2) + ")" : (pz2 ? "repeating-linear-gradient(135deg,var(--line-soft) 0 3px,transparent 3px 7px)" : "transparent"))+';'+
       'color:'+(c2>=3 ? "#fff" : "var(--ink-2)")+'">'+d2+'</button>');
   }
   h.push('</div>');
@@ -6033,6 +7113,7 @@ function viewReport(){
     var rr = dayRec(selKey);
     h.push('<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line-soft)">'+
       '<div class="eyebrow" style="margin-bottom:9px">'+new Date(selKey+"T12:00:00").toLocaleDateString("ru-RU",{day:"numeric",month:"long",weekday:"long"})+'</div>'+
+      (isPaused(selKey) ? '<p style="font-size:12.5px;color:var(--ink-3);margin:0 0 9px">День паузы: серию не прерывает.</p>' : '')+
       '<div class="rows">'+ DAILY.map(function(x){
         var on = !!rr[x.k];
         return '<div class="row" style="padding:10px 12px"><span class="ic" style="color:'+(on?"var(--emerald)":"var(--ink-3)")+'">'+(on?"✓":"-")+'</span>'+
@@ -6861,6 +7942,8 @@ salah: {
       "Есть намерение совершить именно этот намаз"
     ]},
     {div:"Порядок в намазе"},
+    {t:"В картинках", p:"Те же шаги с рисунком каждого положения и озвучкой слов - удобно учить самому и объяснять ребёнку.",
+     jump:"open:salahpics", jn:"Открыть «Намаз в картинках»"},
     {t:"1. Такбир вступления", p:"Поднимите руки к плечам и произнесите такбир. С этого момента вы в намазе: разговоры и посторонние движения прерывают его.",
      ar:"اللَّهُ أَكْبَرُ", tr:"Аллаху Акбар", ru:"Аллах превыше всего"},
     {t:"2. Дуа открытия", p:"Читается про себя после такбира, в первом ракяте. Это сунна, а не обязанность.",
@@ -7437,6 +8520,8 @@ GUIDES.hajj = {
   madhab:"Порядок дан по шафиитскому мазхабу. Организационные детали уточняйте у своего оператора хаджа.",
   blocks:[
     {div:"Прежде хаджа"},
+    {t:"Чек-лист в дорогу", p:"Те же шаги отметками: сборы, умра, дни хаджа. Круги тавафа и са'я считаются большой кнопкой - в толпе так не собьётесь.",
+     jump:"open:hajjtrip", jn:"Открыть «Хадж и умра в пути»"},
     {t:"Кому обязателен", p:"Хадж совершается раз в жизни тем, кто способен: физически здоров, имеет средства на дорогу и на содержание семьи в своё отсутствие, и путь безопасен. Женщина совершает хадж с махрамом или в организованной группе - по условиям, принятым в её мазхабе."},
     {t:"Хадж и умра - в чём разница", p:"Умра - малое паломничество: ихрам, таваф вокруг Каабы, са'й между Сафа и Марва, бритьё или укорачивание волос. Её можно совершать в любое время года, и она не заменяет хадж. Хадж включает те же действия и добавляет к ним обязательное стояние на Арафате и ночёвки в Мине - совершается только в дни зуль-хиджа."},
 
@@ -8480,6 +9565,8 @@ GUIDES.child = {
   sub:"Азан, имя, акыка и первые дни",
   madhab:"По шафиитскому мазхабу.",
   blocks:[
+    {t:"Раздел «Детям»", p:"Имена для мальчика и девочки со значениями, истории пророков, истории перед сном и первые дуа.",
+     jump:"open:kids", jn:"Открыть «Детям»"},
     {t:"В первые часы", list:[
       "Прочитать азан на правое ухо новорождённого",
       "Некоторые добавляют икаму на левое ухо",
@@ -9357,7 +10444,8 @@ var RUBRICS = [
   {id:"imya",     n:"Разбор имени",   ic:"۹۹"},
   {id:"sahaba",   n:"Сподвижники",    ic:"✾"},
   {id:"zhenskoe", n:"Женское",        ic:"❁"},
-  {id:"delo",     n:"Дело по Сунне",  ic:"◈"}
+  {id:"delo",     n:"Дело по Сунне",  ic:"◈"},
+  {id:"novoe",    n:"Новое в RIZQ",   ic:"✦"}
 ];
 function rubric(id){ return RUBRICS.filter(function(r){ return r.id===id; })[0]; }
 
@@ -10774,6 +11862,123 @@ function landBand(){
    и дублируются в WhatsApp - без своего сервера иначе они потеряются. */
 /* CRM школы JAVATTI: заявки, регистрации и оплата программ. */
 var CRM_URL = "https://crm.javattigroup.ru";
+/* Для проверки на компьютере уведомления ходят в местную CRM. */
+var PUSH_API = (location.hostname === "localhost" ? "http://localhost:3210" : CRM_URL) + "/api/public/push";
+
+/* ============================================================
+   УВЕДОМЛЕНИЯ ПРИ ЗАКРЫТОМ ПРИЛОЖЕНИИ
+   ============================================================ */
+var PUSH_BUSY = false, PUSH_TIMER = 0;
+function pushSupported(){
+  return ("serviceWorker" in navigator) && ("PushManager" in window) && ("Notification" in window) &&
+    (location.protocol === "https:" || location.hostname === "localhost");
+}
+function pushIosBrowser(){
+  var ios = /iphone|ipad|ipod/i.test(navigator.userAgent || "");
+  var installed = window.navigator.standalone === true ||
+    (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
+  return ios && !installed;
+}
+function pushOn(){ return !!(S.push && S.push.on); }
+function pushKeyBytes(s){
+  var b = String(s).split("-").join("+").split("_").join("/");
+  while(b.length % 4) b += "=";
+  var raw = atob(b), out = new Uint8Array(raw.length);
+  for(var i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+  return out;
+}
+/* Расписание на неделю: времена намаза в городе из настроек и дуа дня в 8:00.
+   Пока идёт пауза, напоминания о намазе не планируются. */
+function pushItems(){
+  var c = currentCity(), now = Date.now(), items = [];
+  var pool = DUAS.filter(function(d){ return d.c !== "long" && d.c !== "nature" && d.ar && d.ar.length <= 90; });
+  for(var k = 0; k < 7; k++){
+    var day = new Date(); day.setDate(day.getDate() + k);
+    if(S.notifPrayer && !pauseNow()){
+      var t = prayerTimes(day, c.lat, c.lng, c.tz, S.method, S.madhab);
+      var base = Date.UTC(day.getFullYear(), day.getMonth(), day.getDate());
+      FARD.forEach(function(f){
+        var h = t[f.k];
+        if(h === undefined || isNaN(h)) return;
+        var at = base + (h - c.tz) * 3600000;
+        if(at > now) items.push({ at: new Date(at).toISOString(), title: "Время намаза - " + f.n, body: c.n + " · " + hhmm(h), tag: "prayer" });
+      });
+    }
+    if(S.notifDua && pool.length){
+      var morning = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 8, 0, 0).getTime();
+      var dua = pool[(dayIndex() + k) % pool.length];
+      if(morning > now) items.push({ at: new Date(morning).toISOString(), title: "Дуа дня", body: dua.n, tag: "dua" });
+    }
+  }
+  return items;
+}
+/* Что влияет на расписание. Если это поменялось - отправляем сразу,
+   иначе не чаще раза в шесть часов. */
+function pushSig(){
+  var c = currentCity();
+  return [c.lat, c.lng, c.tz, S.method, S.madhab, S.notifPrayer ? 1 : 0, S.notifDua ? 1 : 0, pauseNow() ? 1 : 0, todayKey()].join("|");
+}
+function pushSync(force){
+  if(!pushOn() || !pushSupported() || PUSH_BUSY) return;
+  var sig = pushSig();
+  if(!force && S.push.sig === sig && Date.now() - (S.push.at || 0) < 6 * 3600000) return;
+  PUSH_BUSY = true;
+  navigator.serviceWorker.ready.then(function(reg){ return reg.pushManager.getSubscription(); })
+    .then(function(sub){
+      if(!sub){ S.push.on = false; save(); return null; }
+      return fetch(PUSH_API + "/subscribe", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ app: "rizq", sub: sub.toJSON(), items: pushItems() })
+      }).then(function(r){ if(r.ok){ S.push.at = Date.now(); S.push.sig = sig; save(); } });
+    })
+    .catch(function(){})
+    .then(function(){ PUSH_BUSY = false; });
+}
+function pushSoon(){ clearTimeout(PUSH_TIMER); PUSH_TIMER = setTimeout(function(){ pushSync(false); }, 1500); }
+function pushEnable(){
+  if(pushIosBrowser()){
+    toast("На iPhone: сначала поставьте RIZQ на экран «Домой», потом включите здесь");
+    V.tab = "prof"; open("share", null);
+    return;
+  }
+  if(!pushSupported()){ toast("Этот браузер не умеет присылать уведомления при закрытом приложении"); return; }
+  notifAsk().then(function(r){
+    if(r !== "granted"){
+      toast(r === "denied" ? "Телефон запретил уведомления - включите их в настройках" : "Уведомления не разрешены");
+      return;
+    }
+    return fetch(PUSH_API + "/key").then(function(res){
+      if(!res.ok) throw new Error("key");
+      return res.json();
+    }).then(function(j){
+      return navigator.serviceWorker.ready.then(function(reg){
+        return reg.pushManager.getSubscription().then(function(old){
+          return old || reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: pushKeyBytes(j.key) });
+        });
+      });
+    }).then(function(){
+      S.push = { on: true, at: 0, sig: "" };
+      save(); render();
+      pushSync(true);
+      toast("Напоминания будут приходить и при закрытом приложении");
+    }).catch(function(){
+      toast("Сервер уведомлений сейчас недоступен - попробуйте позже");
+    });
+  });
+}
+function pushDisable(){
+  S.push = { on: false, at: 0, sig: "" };
+  save(); render();
+  if(!pushSupported()) return;
+  navigator.serviceWorker.ready.then(function(reg){ return reg.pushManager.getSubscription(); })
+    .then(function(sub){
+      if(!sub) return;
+      fetch(PUSH_API + "/unsubscribe", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ endpoint: sub.endpoint }) }).catch(function(){});
+      return sub.unsubscribe();
+    }).catch(function(){});
+  toast("Напоминания при закрытом приложении выключены");
+}
 var LEAD_API = CRM_URL + "/api/leads";
 
 /* ---------- метки рекламы ----------
@@ -11261,9 +12466,17 @@ function viewProf(){
     swRow("notifPrayer","🕌","Напоминания о намазе") +
     swRow("notifAzan","🔊","Звук азана") +
     swRow("notifDua","✦","Дуа дня утром") +
+    '<button class="row" data-pushtoggle="1"><span class="ic">🔔</span>При закрытом приложении'+
+      '<span class="sw'+(pushOn()?" on":"")+'"></span></button>'+
     '</div>');
-  h.push('<p class="disclaimer" style="text-align:left;padding:2px 4px 0">Напоминания от приложения приходят, пока оно открыто или свёрнуто. '+
-    'Чтобы они приходили и при полностью закрытом приложении, добавьте времена намаза в календарь телефона.</p>');
+  h.push('<p class="disclaimer" style="text-align:left;padding:2px 4px 0">'+
+    (pushOn()
+      ? 'Напоминания о намазе и дуа дня приходят и при закрытом приложении. Сервер знает только расписание - без имени и города. '+
+        'Расписание обновляется, когда вы открываете RIZQ: откройте его хотя бы раз в неделю.'
+      : 'Сейчас напоминания приходят, пока приложение открыто или свёрнуто. Включите «При закрытом приложении» '+
+        (pushIosBrowser() ? '(на iPhone - после установки иконки на экран «Домой») ' : '')+
+        'или добавьте времена намаза в календарь телефона.')+
+    '</p>');
   h.push('<button class="cat-wide" data-ics="1" style="margin-top:8px">'+
     '<span class="cw-ic">☷</span>'+
     '<span class="cw-t"><b>Намаз в календарь телефона</b>'+
@@ -11345,8 +12558,8 @@ function viewSettings(){
    и по отметке будет видно, что именно пришло.
    ============================================================ */
 var BK_KEYS = ["fav","tasbih","tasbihTotal","read","dcnt","practice","orders","readDay","done","salah","myduas","goals",
-  "namesRead","daily","shukrNotes","shukr","checks","sunnah","health","points","pointsDay",
-  "fin","todos","quiz","azkarLifetime","qLast","qMax","qMarks","qplan","zakat",
+  "namesRead","daily","shukrNotes","shukr","checks","sunnah","health","pauses","qada","points","pointsDay",
+  "fin","todos","quiz","azkarLifetime","qLast","qMax","qMarks","qplan","hifz","zakat","trip","kids",
   "name","city","method","madhab","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll"];
 
 /* Что человек потеряет, если копии не будет. Считаем по тем же данным,
@@ -11609,6 +12822,65 @@ function sheetBackup(){
     r.onerror = function(){ toast("Файл не прочитался"); };
     r.readAsText(file);
   });
+}
+
+/* ---------- лист «Пауза» ---------- */
+function sheetPause(){
+  var now = pauseNow(), today = todayKey();
+  var past = pauseList().filter(function(p){ return p.to; }).slice(-6).reverse();
+  var h = '<h3>Пауза в трекере</h3>'+
+    '<p class="note" style="margin:0 0 12px">Для месячных и послеродового периода. Дни паузы не считаются пропуском: '+
+      'серия не сгорает, а в отчёте они помечены отдельно. Отметки хранятся только на этом телефоне.</p>';
+  if(now){
+    h += '<div class="card flat" style="padding:13px">'+
+        '<div class="eyebrow">Идёт сейчас</div>'+
+        '<div style="font-size:15px;margin-top:6px">с '+esc(pauseDate(now.from))+'</div>'+
+        '<label class="eyebrow" style="display:block;margin-top:12px">Последний день паузы</label>'+
+        '<input type="date" id="pauseTo" class="search" style="margin-top:6px" value="'+today+'" min="'+esc(now.from)+'" max="'+today+'">'+
+      '</div>'+
+      '<button class="btn" style="margin-top:12px" data-pauseend="1">Завершить паузу</button>';
+  } else {
+    h += '<label class="eyebrow" style="display:block">С какого дня</label>'+
+      '<input type="date" id="pauseFrom" class="search" style="margin-top:6px" value="'+today+'" max="'+today+'">'+
+      '<button class="btn" style="margin-top:12px" data-pausestart="1">Включить паузу</button>';
+  }
+  h += '<p class="note" style="margin-top:12px">Намаз в эти дни не совершается и потом не восполняется. '+
+    'Пропущенные дни поста восполняются - их можно отметить в разделе «Восполнение». '+
+    'Частные вопросы уточняйте у преподавателя.</p>'+
+    '<button class="btn sec sm" style="width:100%;margin-top:8px" data-open="qada">Открыть «Восполнение»</button>';
+  if(past.length){
+    h += '<div class="eyebrow" style="margin-top:14px">Прошлые паузы</div><div class="rows" style="margin-top:8px">'+
+      past.map(function(p){
+        return '<div class="row" style="padding:10px 12px">'+esc(pauseDate(p.from))+' - '+esc(pauseDate(p.to))+
+          '<button class="lock" style="margin-left:auto;color:var(--ink-3)" data-pausedel="'+esc(p.from)+'" aria-label="Удалить">✕</button></div>';
+      }).join("")+'</div>';
+  }
+  h += '<button class="btn ghost" style="margin-top:12px" data-scrim="1">Закрыть</button>';
+  sheet(h);
+}
+function pauseStart(){
+  var inp = document.getElementById("pauseFrom");
+  var from = (inp && inp.value) || todayKey();
+  if(from > todayKey()) from = todayKey();
+  /* новая пауза не должна налезать на прошлую: обрезаем по её концу */
+  pauseList().forEach(function(p){ if(p.to && from <= p.to && from >= p.from) from = p.to; });
+  S.pauses.push({from: from, to: ""});
+  save(); closeSheet(); render();
+  toast("Пауза включена");
+}
+function pauseEnd(){
+  var now = pauseNow(); if(!now) return;
+  var inp = document.getElementById("pauseTo");
+  var to = (inp && inp.value) || todayKey();
+  if(to < now.from) to = now.from;
+  if(to > todayKey()) to = todayKey();
+  now.to = to;
+  save(); closeSheet(); render();
+  toast("Пауза завершена, серия сохранена");
+}
+function pauseDel(from){
+  S.pauses = pauseList().filter(function(p){ return p.from !== from || !p.to; });
+  save(); sheetPause(); render();
 }
 
 function sheet(html){
@@ -12211,6 +13483,9 @@ function sheetWhy(){
    РЕНДЕР
    ============================================================ */
 function render(){
+  if(pushOn()) pushSoon();
+  if(KS.on && V.view!=="kidstory"){ kidStop(); }
+  if(SP.key && V.view!=="salahpics"){ spStop(); }
   if(V.tab==="journal" && !V.view) postsSeen();
   renderHdr(); renderTabs();
   var html;
@@ -12219,6 +13494,7 @@ function render(){
   else if(V.view==="name") html = viewName();
   else if(V.view==="qduas") html = viewQuran();
   else if(V.view==="reader") html = viewReader();
+  else if(V.view==="hifz") html = viewHifz();
   else if(V.view==="tajwid") html = viewTajwid();
   else if(V.view==="guide") html = viewGuide();
   else if(V.view==="check") html = viewCheck();
@@ -12260,6 +13536,11 @@ function render(){
   else if(V.view==="planner") html = viewPlanner();
   else if(V.view==="settings") html = viewSettings();
   else if(V.view==="sadaqa") html = viewSadaqa();
+  else if(V.view==="qada") html = viewQada();
+  else if(V.view==="salahpics") html = viewSalahPics();
+  else if(V.view==="hajjtrip") html = viewHajjTrip();
+  else if(V.view==="kids") html = viewKids();
+  else if(V.view==="kidstory") html = viewKidStory();
   else if(V.tab==="quran") html = viewQuranHome();
   else if(V.tab==="home") html = viewHome();
   else if(V.tab==="dua") html = viewDua();
@@ -12293,7 +13574,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -12452,6 +13733,24 @@ document.getElementById("app").addEventListener("click", function(ev){
     return;
   }
   if(d.qplay!==undefined){ qToggle(parseInt(d.qplay,10)); return; }
+  if(d.hifz!==undefined){
+    var hz = hifzData(); hz.on = !hz.on; HZ.show = {}; save();
+    if(V.view === "reader"){
+      /* перерисовываем карточки на месте: прокрутка в длинной суре не сбрасывается */
+      var nodes = document.querySelectorAll(".ayah[data-i]");
+      for(var hn = 0; hn < nodes.length; hn++) hifzRefresh(parseInt(nodes[hn].getAttribute("data-i"), 10));
+      var hb = document.querySelector('[data-hifz]'); if(hb) hb.classList.toggle("on", hz.on);
+    } else render();
+    toast(hz.on ? "«Наизусть»: текст скрыт" : "Текст снова виден");
+    return;
+  }
+  if(d.hifzshow!==undefined){ HZ.show[parseInt(d.hifzshow,10)] = 1; hifzRefresh(parseInt(d.hifzshow,10)); return; }
+  if(d.hifzlearn!==undefined){ var hl = parseInt(d.hifzlearn,10); hifzLearn(hl); hifzRefresh(hl); toast("Выучен, повтор завтра"); return; }
+  if(d.hifzok!==undefined){ var ho = parseInt(d.hifzok,10); hifzAnswer(ho, true); toast("Следующий повтор - "+hifzWhen(hifzItem(ho).n));
+    if(V.view === "hifz") render(); else hifzRefresh(ho); return; }
+  if(d.hifzbad!==undefined){ var hb2 = parseInt(d.hifzbad,10); hifzAnswer(hb2, false); toast("Повторим завтра");
+    if(V.view === "hifz") render(); else hifzRefresh(hb2); return; }
+  if(d.hifzforget!==undefined){ var hf = parseInt(d.hifzforget,10); hifzForget(hf); hifzRefresh(hf); return; }
   if(d.mpplay!==undefined){ if(QP.cur > -1) qToggle(QP.cur); return; }
   if(d.mpstop!==undefined){ qStop(); return; }
   if(d.qplayall!==undefined){
@@ -12500,6 +13799,30 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.namesreset!==undefined){ S.namesRead = {}; save(); render(); toast("Счётчик имён сброшен"); return; }
 
   if(d.daily){ toggleDaily(d.daily); render(); return; }
+  if(d.pauseopen!==undefined){ sheetPause(); return; }
+  if(d.qadadone){ qadaChange(d.qadadone, -1, true); render(); return; }
+  if(d.qadaadd){ qadaChange(d.qadaadd, 1, false); render(); return; }
+  if(d.qadabulk!==undefined){ qadaBulk(); return; }
+  if(d.qadaundo!==undefined){ qadaUndo(); return; }
+  if(d.kidtab){ V.kt = d.kidtab; render(); return; }
+  if(d.kidstory){ open("kidstory", d.kidstory); return; }
+  if(d.kidread){ kidRead(d.kidread); return; }
+  if(d.kidreadok){ var kr = kidStore().read; kr[d.kidreadok] = !kr[d.kidreadok]; save(); render(); return; }
+  if(d.kidduaok){ var kd = kidStore().duas; kd[d.kidduaok] = !kd[d.kidduaok]; save(); render(); return; }
+  if(d.kidsex){ V.kns = d.kidsex; render(); return; }
+  if(d.kidname){ var kn = kidStore().names, ki = kn.indexOf(d.kidname); if(ki >= 0) kn.splice(ki, 1); else kn.push(d.kidname); save(); render(); return; }
+  if(d.tripmode){ tripData().mode = d.tripmode; save(); V.tripOpen = tripCurrent(); render(); return; }
+  if(d.tripopen){ V.tripOpen = V.tripOpen === d.tripopen ? null : d.tripopen; render(); return; }
+  if(d.trip){ var tdn = tripData().done; tdn[d.trip] = !tdn[d.trip]; save(); render(); return; }
+  if(d.tripcnt){ tripCount(d.tripcnt, parseInt(d.tripd,10)||0, parseInt(d.tripmax,10)||7); return; }
+  if(d.tripreset){ if(window.confirm("Снять все отметки чек-листа?")){ S.trip = {}; save(); V.tripOpen = undefined; render(); } return; }
+  if(d.spgo!==undefined){ spStop(); V.sp = Math.max(0, Math.min(SP_STEPS.length-1, parseInt(d.spgo,10)||0)); render(); window.scrollTo(0,0); return; }
+  if(d.spplay){ spPlay(d.spplay); return; }
+  if(d.spkid!==undefined){ S.salahKid = d.spkid==="1"; save(); render(); return; }
+  if(d.qadaper){ var qd = qadaData(); qd.perDay = Math.max(1, Math.min(10, qd.perDay + parseInt(d.qadaper,10))); save(); render(); return; }
+  if(d.pausestart!==undefined){ pauseStart(); return; }
+  if(d.pauseend!==undefined){ pauseEnd(); return; }
+  if(d.pausedel){ pauseDel(d.pausedel); return; }
   if(d.salahopen!==undefined){ S.salahOpen = !S.salahOpen; save(); render(); return; }
   if(d.repperiod){ V.repPeriod = d.repperiod; render(); return; }
   if(d.repmonth){ V.repMonth = d.repmonth; V.repDay = null; render(); return; }
@@ -12784,8 +14107,10 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.gps!==undefined){ askGPS(); return; }
   if(d.method){ S.method=d.method; save(); render(); return; }
   if(d.madhab){ S.madhab=parseInt(d.madhab,10); save(); render(); return; }
+  if(d.pushtoggle!==undefined){ if(pushOn()) pushDisable(); else pushEnable(); return; }
   if(d.sw){
     S[d.sw] = !S[d.sw]; save(); render();
+    if(d.sw === "notifPrayer" || d.sw === "notifDua") pushSync(true);
     if(S[d.sw] && (d.sw === "notifPrayer" || d.sw === "notifDua")){
       notifAsk().then(function(r){
         if(r === "granted"){ toast("Напоминания включены"); }
@@ -12900,6 +14225,8 @@ deepOpen();
 postsLoad();
 sadaqaLoad();
 signupFlush();
+pushSync(false);
+document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible") pushSoon(); });
 
 /* первый запуск: пока город не выбран, время намаза чужое */
 if(!S.welcomed) setTimeout(sheetWelcome, 700);

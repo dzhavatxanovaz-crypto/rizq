@@ -1,5 +1,5 @@
 /* Ризк - офлайн-кэш. Меняйте номер версии при каждом обновлении приложения. */
-var CACHE = "rizq-v86";
+var CACHE = "rizq-v87";
 var ASSETS = [
   "./",
   "./index.html",
@@ -33,6 +33,29 @@ self.addEventListener("activate", function (e) {
         .map(function (k) { return caches.delete(k); }));
     }).then(function () { return self.clients.claim(); })
   );
+});
+
+/* Уведомление при закрытом приложении. Текст приходит зашифрованным
+   ключом этого телефона; браузер расшифровывает его сам. Одна метка на
+   все напоминания о намазе: новое заменяет прежнее, а не копится. */
+self.addEventListener("push", function (e) {
+  var d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (x) { d = { title: "RIZQ", body: e.data ? e.data.text() : "" }; }
+  e.waitUntil(self.registration.showNotification(d.title || "RIZQ", {
+    body: d.body || "",
+    icon: "icons/icon-192.png",
+    badge: "icons/icon-192.png",
+    tag: d.tag || "rizq",
+    renotify: true
+  }));
+});
+
+self.addEventListener("notificationclick", function (e) {
+  e.notification.close();
+  e.waitUntil(clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (list) {
+    for (var i = 0; i < list.length; i++) { if ("focus" in list[i]) return list[i].focus(); }
+    return clients.openWindow("./");
+  }));
 });
 
 self.addEventListener("fetch", function (e) {
