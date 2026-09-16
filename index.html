@@ -1054,6 +1054,7 @@ var DEF = {
   salahKid:false,
   trip:{},
   kids:{},
+  finReqs:[],
   qplan:{on:false, days:0, startPage:1, startAt:"", log:{}},
   qoff:{juz:[], sura:[], reciter:""},
   zakat:{cash:"", bank:"", goods:"", debtsIn:"", debtsOut:"", goldG:"", silverG:"",
@@ -6073,24 +6074,50 @@ function finPartnerGo(id){
     }).catch(function(){ if(w) w.close(); toast("Нет связи с сервером школы"); });
 }
 
+var FINREQ_CATS = [["tech","Техника"],["furniture","Мебель"],["home","Для дома"],["auto","Авто"],["other","Другое"]];
+
+/* Мои заявки: номер хранится на телефоне, статус - в CRM */
+function finReqs(){ if(!S.finReqs || !S.finReqs.push) S.finReqs = []; return S.finReqs; }
+function finReqsRefresh(){
+  var now = Date.now();
+  finReqs().forEach(function(r){
+    if(r.status === "closed" || r.status === "rejected") return;
+    if(r.checkedAt && now - r.checkedAt < 5*60000) return;
+    r.checkedAt = now;
+    fetch(crmApi() + "/api/public/finance/request/" + r.token).then(function(x){ return x.ok ? x.json() : null; })
+      .then(function(j){
+        if(!j) return;
+        var changed = j.status !== r.status || j.text !== r.text;
+        r.status = j.status; r.text = j.text; r.updated = j.updated;
+        save();
+        if(changed && V.view === "installment") render();
+      }).catch(function(){});
+  });
+}
+
 function sheetFinRequest(kind, partnerId){
   var d = finData() || {}, partner = null;
   if(kind === "partner") partner = (d.partners || []).filter(function(p){ return String(p.id) === String(partnerId); })[0];
   if(kind === "partner" && !partner){ toast("Партнёр сейчас недоступен"); return; }
+  V.finCat = V.finCat || "";
   var consentText = partner
     ? 'Согласна на обработку моих персональных данных школой бизнеса JAVATTI (ИП Джаватханова З. А.) и на их передачу в '+esc(partner.name)+' для рассмотрения заявки на рассрочку.'
     : 'Согласна на обработку моих персональных данных школой бизнеса JAVATTI (ИП Джаватханова З. А.) для рассмотрения заявки на покупку в рассрочку.';
   sheet('<h3>'+(partner ? 'Заявка: '+esc(partner.name) : 'Купить в рассрочку через RIZQ')+'</h3>'+
-    (partner ? '' : '<p class="note" style="margin:0 0 12px">Направление запускается: сейчас мы собираем заявки и договоры ещё не заключаем. '+
-      'Когда условия проверят юрист и преподаватель, мы свяжемся и расскажем, как это будет работать для вашей покупки.</p>')+
-    '<label class="eyebrow">Что нужно купить</label>'+
-    '<input class="search" id="fnItem" style="margin:6px 0 10px" placeholder="Например: холодильник, ноутбук">'+
+    (partner ? '' : '<p class="note" style="margin:0 0 12px">Сейчас собираем заявки. Сделки начнём после проверки условий юристом и преподавателем - вы узнаете первыми.</p>')+
+    '<label class="eyebrow">Что это</label>'+
+    '<div class="pill-row" style="justify-content:flex-start;margin:6px 0 10px">'+FINREQ_CATS.map(function(c){
+      var on = V.finCat === c[0];
+      return '<button class="pill'+(on?" on":"")+'" data-fincat="'+c[0]+'" style="'+(on?"border-color:var(--accent);color:var(--accent-ink)":"")+'">'+c[1]+'</button>';
+    }).join("")+'</div>'+
+    '<label class="eyebrow">Что именно нужно</label>'+
+    '<input class="search" id="fnItem" style="margin:6px 0 10px" placeholder="Например: холодильник двухкамерный" value="'+esc(V.finItem||"")+'">'+
     '<div style="display:flex;gap:8px">'+
-      '<div style="flex:1"><label class="eyebrow">Примерная цена, ₽</label><input class="search" id="fnAmount" inputmode="numeric" style="margin:6px 0 10px"></div>'+
-      '<div style="flex:1"><label class="eyebrow">Срок, месяцев</label><input class="search" id="fnTerm" inputmode="numeric" style="margin:6px 0 10px"></div>'+
+      '<div style="flex:1"><label class="eyebrow">Примерная цена, ₽</label><input class="search" id="fnAmount" inputmode="numeric" style="margin:6px 0 10px" value="'+esc(V.finAmount||"")+'"></div>'+
+      '<div style="flex:1"><label class="eyebrow">Желаемый срок, мес.</label><input class="search" id="fnTerm" inputmode="numeric" style="margin:6px 0 10px" value="'+esc(V.finTerm||"")+'"></div>'+
     '</div>'+
     '<label class="eyebrow">Город</label>'+
-    '<input class="search" id="fnCity" style="margin:6px 0 10px" value="'+esc(currentCity().n || "")+'">'+
+    '<input class="search" id="fnCity" style="margin:6px 0 10px" value="'+esc(V.finCity || currentCity().n || "")+'">'+
     '<label class="eyebrow">Имя</label>'+
     '<input class="search" id="fnName" style="margin:6px 0 10px" value="'+esc(S.name||"")+'">'+
     '<label class="eyebrow">Телефон с WhatsApp</label>'+
@@ -6100,7 +6127,14 @@ function sheetFinRequest(kind, partnerId){
       '<span>'+consentText+' <a href="privacy.html" target="_blank" rel="noopener" style="color:var(--accent-ink)">Политика</a></span></label>'+
     '<button class="btn" id="fnGo" style="margin-top:14px" data-finsend="'+kind+':'+(partner ? partner.id : "")+'">Отправить заявку</button>'+
     '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>'+
-    (partner ? '<p class="note" style="margin-top:12px">Решение о рассрочке и её условия принимает '+esc(partner.name)+'. Мы передаём заявку и не берём с вас денег.</p>' : ''));
+    (partner ? '<p class="note" style="margin-top:12px">Решение о рассрочке и её условия - за '+esc(partner.name)+'. Мы передаём заявку и не берём с вас денег.</p>' : ''));
+}
+/* Выбор категории перерисовывает шторку - введённое не теряем */
+function finKeepInputs(){
+  var g = function(id){ var el = document.getElementById(id); return el ? el.value : null; };
+  if(g("fnItem") !== null){ V.finItem = g("fnItem"); V.finAmount = g("fnAmount"); V.finTerm = g("fnTerm"); V.finCity = g("fnCity"); }
+  if(g("fnName") !== null) S.name = g("fnName").trim();
+  if(g("fnTel") !== null) S.phone = g("fnTel").trim();
 }
 function finSend(kind, partnerId){
   var g = function(id){ var el = document.getElementById(id); return el ? el.value.trim() : ""; };
@@ -6113,18 +6147,24 @@ function finSend(kind, partnerId){
   if(!ok || !ok.checked){ toast("Отметьте согласие"); return; }
   S.name = g("fnName"); S.phone = g("fnTel"); save();
   if(btn){ btn.disabled = true; btn.textContent = "Отправляем..."; }
+  var item = g("fnItem");
   fetch(crmApi() + "/api/public/finance/request", { method:"POST", headers:{ "Content-Type":"application/json" },
     body: JSON.stringify({ kind: kind, partner: partner ? partner.id : null, consentPartner: partner ? partner.name : "",
-      item: g("fnItem"), amount: g("fnAmount"), term: g("fnTerm"), city: g("fnCity"),
+      category: V.finCat || "", item: item, amount: g("fnAmount"), term: g("fnTerm"), city: g("fnCity"),
       name: S.name, phone: S.phone, email: S.email || "", consent: true, source: "rizq" }) })
     .then(function(r){ return r.json().then(function(j){ return { ok:r.ok, j:j }; }); })
     .then(function(x){
       if(!x.ok){ if(btn){ btn.disabled = false; btn.textContent = "Отправить заявку"; } toast(x.j && x.j.error ? x.j.error : "Не получилось отправить"); return; }
-      closeSheet();
+      if(x.j.token && !finReqs().some(function(r){ return r.token === x.j.token; })){
+        finReqs().unshift({ token: x.j.token, kind: kind, item: item, partner: partner ? partner.name : "", status: "new",
+          text: partner ? "Заявка принята" : "Заявка принята, мы свяжемся", at: Date.now() });
+      }
+      V.finItem = V.finAmount = V.finTerm = V.finCity = ""; V.finCat = "";
+      save(); closeSheet(); render();
       sheet('<h3>Заявка принята</h3><p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 14px">'+
         (partner ? 'Передаём заявку в '+esc(partner.name)+'. С вами свяжутся по номеру '+esc(S.phone)+'.'
-                 : 'Мы свяжемся с вами по номеру '+esc(S.phone)+', уточним детали и расскажем, когда направление заработает.')+
-        '</p><button class="btn" data-scrim="1">Хорошо</button>');
+                 : 'Мы свяжемся с вами по номеру '+esc(S.phone)+' и расскажем, как будет проходить покупка.')+
+        ' Статус заявки - в разделе «Исламская рассрочка».</p><button class="btn" data-scrim="1">Хорошо</button>');
     })
     .catch(function(){ if(btn){ btn.disabled = false; btn.textContent = "Отправить заявку"; } toast("Нет связи с сервером школы"); });
 }
@@ -6132,14 +6172,32 @@ function finSend(kind, partnerId){
 function viewInstallment(){
   var d = finData(), h = ['<div class="stack">'];
   if(!d) finLoad(function(){ if(V.view === "installment") render(); });
+  finReqsRefresh();
 
   h.push('<section class="card">'+
     '<div class="eyebrow">Как это устроено</div>'+
-    '<p style="font-size:14.5px;line-height:1.65;color:var(--ink-2);margin:9px 0 0">'+
-    'Цена называется заранее и не меняется до последнего взноса: без процентов и без штрафов в пользу продавца. '+
-    'Перед подписанием договора покажите его своему преподавателю.</p></section>');
+    '<div style="font-family:var(--f-display);font-size:18px;font-weight:700;line-height:1.35;margin-top:6px">Покупки в рассрочку по нормам ислама</div>'+
+    '<div class="rows" style="margin-top:12px">'+
+      '<div class="row"><span class="ic">✓</span><span style="flex:1;line-height:1.5">Цена называется до договора и не меняется до последнего взноса</span></div>'+
+      '<div class="row"><span class="ic">✓</span><span style="flex:1;line-height:1.5">Без процентов и без штрафов в пользу продавца</span></div>'+
+      '<div class="row"><span class="ic">✓</span><span style="flex:1;line-height:1.5">Сначала товар покупается и принадлежит продавцу, и только потом продаётся вам</span></div>'+
+    '</div>'+
+    '<p class="note" style="margin:10px 0 0">Перед подписанием договора покажите его своему преподавателю.</p></section>');
 
-  /* 1. партнёры */
+  /* мои заявки */
+  var mine = finReqs();
+  if(mine.length){
+    h.push('<div class="sec-h"><h3>Мои заявки</h3></div>');
+    mine.forEach(function(r){
+      var done = r.status === "approved", off = r.status === "rejected" || r.status === "closed";
+      h.push('<section class="card" style="display:flex;gap:12px;align-items:center">'+
+        '<span style="flex:none;width:10px;height:10px;border-radius:50%;background:'+(done?"var(--emerald)":off?"var(--ink-3)":"var(--accent-ink)")+'"></span>'+
+        '<div style="flex:1;min-width:0"><b style="font-size:15px">'+esc(r.item)+'</b>'+
+        '<div style="font-size:13px;color:var(--ink-3);margin-top:3px">'+esc(r.text || "")+(r.partner ? ' · '+esc(r.partner) : '')+'</div></div></section>');
+    });
+  }
+
+  /* партнёры - только когда они есть */
   var partners = d ? (d.partners || []) : [];
   if(partners.length) h.push('<div class="sec-h"><h3>Рассрочка у партнёров</h3></div>');
   partners.forEach(function(p){
@@ -6156,17 +6214,42 @@ function viewInstallment(){
       '</section>');
   });
 
-  /* 2. мурабаха */
+  /* мурабаха */
   if(!d || (d.murabaha && d.murabaha.requests)){
     h.push('<div class="sec-h"><h3>Купить товар в рассрочку через RIZQ</h3></div>');
+    var step = function(n, t, s){
+      return '<div style="display:flex;gap:12px;align-items:flex-start;padding:9px 0">'+
+        '<span style="flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;background:var(--surface-2);color:var(--accent-ink)">'+n+'</span>'+
+        '<div><b style="font-size:14.5px">'+t+'</b><div style="font-size:13px;color:var(--ink-3);line-height:1.5;margin-top:2px">'+s+'</div></div></div>';
+    };
     h.push('<section class="card">'+
-      '<p style="font-size:14px;line-height:1.6;color:var(--ink-2);margin:0">'+
-      'Мурабаха: вы называете товар, RIZQ покупает его на себя и продаёт вам в рассрочку. Цена фиксируется в договоре и не меняется до конца, штрафов нет.</p>'+
-      '<p class="note" style="margin:10px 0 0">Сейчас принимаем заявки. Сделки начнём заключать после проверки условий юристом и преподавателем.</p>'+
-      '<button class="btn sm" style="margin-top:12px;width:100%" data-finreq="murabaha:">Оставить заявку</button></section>');
+      step(1, "Заявка", "Вы пишете, что нужно купить, примерную цену и срок")+
+      step(2, "Подбор и цена", "Мы находим товар и называем цену в рассрочку - она больше не изменится")+
+      step(3, "Покупка и договор", "Товар покупается на продавца, затем вы подписываете договор и получаете товар")+
+      step(4, "Взносы", "Платите частями по графику, напоминания приходят заранее")+
+      '<div class="pill-row" style="justify-content:flex-start;margin-top:10px">'+FINREQ_CATS.map(function(c){
+        return '<button class="pill" data-fincatgo="'+c[0]+'">'+c[1]+'</button>';
+      }).join("")+'</div>'+
+      '<button class="btn" style="margin-top:12px;width:100%" data-finreq="murabaha:">Оставить заявку</button>'+
+      '<p class="note" style="margin:10px 0 0">Сейчас собираем заявки. Сделки начнём после проверки условий юристом и преподавателем.</p></section>');
   }
 
-  h.push('<p class="disclaimer">Рассрочку у партнёров дают сами партнёры: решение и условия - за ними. '+
+  /* вопросы */
+  var qa = function(q, a){
+    return '<details class="card" style="padding:13px 15px"><summary style="cursor:pointer;font-weight:600;font-size:14.5px">'+q+'</summary>'+
+      '<p style="font-size:14px;line-height:1.6;color:var(--ink-2);margin:9px 0 0">'+a+'</p></details>';
+  };
+  h.push('<div class="sec-h"><h3>Частые вопросы</h3></div>');
+  h.push(qa("Сколько будет стоить товар в рассрочку?",
+    "Цену в рассрочку мы называем после заявки, до подписания договора. После подписания она не меняется, сколько бы времени ни заняли взносы."));
+  h.push(qa("Что будет, если не успею внести взнос?",
+    "Штрафов нет. Напишите нам заранее - мы на связи и вместе найдём решение."));
+  h.push(qa("Где будут все условия?",
+    "В договоре: товар, цена, график взносов и кто продавец. Договор мы покажем до подписания, у вас будет время его спокойно прочитать."));
+  h.push(qa("Когда начнутся сделки?",
+    "После того как условия проверят юрист и преподаватель. Все, кто оставил заявку, узнают первыми."));
+
+  h.push('<p class="disclaimer">Перед подписанием любого договора покажите его своему преподавателю. '+
     'Реестр участников партнёрского финансирования опубликован на сайте Банка России.</p>');
   h.push('</div>');
   return h.join("");
@@ -6571,7 +6654,105 @@ var KID_STORIES = [
      "Пророк ﷺ спросил: «Чей это верблюд?» Пришёл молодой хозяин. Пророк ﷺ сказал ему: «Разве ты не боишься Аллаха из-за этого животного? Он пожаловался мне, что ты держишь его голодным и изнуряешь работой».",
      "Животные чувствуют голод и усталость, и за то, как мы с ними обращаемся, с нас спросят."],
   lesson:"Заботиться о животных - часть веры.",
-  ask:"Как ты заботишься о животных или растениях?"}
+  ask:"Как ты заботишься о животных или растениях?"},
+
+ {id:"adam", t:"Адам и имена всех вещей", ic:"🌱", night:true, src:"Сура «Аль-Бакара», 2:30-37; сура «Аль-Араф», 7:11-25",
+  p:["Аллах сказал ангелам, что создаст на земле наместника. Он создал первого человека - Адама, мир ему.",
+     "Аллах научил Адама названиям всех вещей. Ангелы этих названий не знали, а Адам назвал их все. Тогда Аллах велел ангелам поклониться Адаму, и все поклонились, кроме Иблиса. Он загордился: «Я лучше его: меня Ты создал из огня, а его из глины».",
+     "Адам и его жена жили в Раю. Им было можно всё, кроме одного дерева. Но шайтан нашёптывал им и обманул их, и они поели с этого дерева.",
+     "Они сразу пожалели и сказали: «Господь наш, мы были несправедливы к себе. Если Ты не простишь нас и не помилуешь, мы окажемся в убытке». И Аллах простил их: Он принимает покаяние и милостив."],
+  say:{sura:7, ayah:23},
+  lesson:"Все ошибаются. Хороший человек признаёт ошибку и просит у Аллаха прощения, а не гордится, как Иблис.",
+  ask:"Что сказали Адам и его жена, когда ошиблись?"},
+
+ {id:"fire", t:"Ибрахим и огонь, который стал прохладным", ic:"🔥", src:"Сура «Аль-Анбия», 21:51-70",
+  p:["Ибрахим, мир ему, говорил своему народу: «Эти идолы не слышат вас и не помогают вам». Но люди не хотели слушать.",
+     "Когда все ушли на праздник, Ибрахим разбил идолов, а самого большого оставил. Люди вернулись и спросили: «Кто это сделал?» Ибрахим ответил: «Спросите у них, если они умеют говорить». Люди задумались: ведь идолы не говорят.",
+     "Но они всё равно рассердились и бросили Ибрахима в большой огонь.",
+     "И Аллах сказал: «О огонь, будь прохладой и миром для Ибрахима». Огонь не причинил ему вреда, и Ибрахим вышел целым."],
+  lesson:"Кто держится за правду, того Аллах защищает, даже когда кажется, что выхода нет.",
+  ask:"Почему идолы не смогли ответить, кто их разбил?"},
+
+ {id:"hudhud", t:"Удод и царица Сабы", ic:"🐦", night:true, src:"Сура «Ан-Намль», 27:20-44",
+  p:["Однажды пророк Сулейман, мир ему, осматривал птиц и не нашёл удода. Скоро удод прилетел и сказал: «Я узнал то, чего ты не знаешь. В стране Саба правит царица, и её народ поклоняется солнцу, а не Аллаху».",
+     "Сулейман отправил с удодом письмо. Оно начиналось словами «Бисмиллях» - «С именем Аллаха, Милостивого, Милующего». В письме Сулейман звал царицу прийти и покориться Аллаху.",
+     "Царица посоветовалась со своими людьми и отправила Сулейману богатые подарки. Сулейман их не принял: то, что дал ему Аллах, лучше любых подарков.",
+     "Царица сама приехала к Сулейману, увидела чудеса, которые дал ему Аллах, и сказала: «Я покоряюсь вместе с Сулейманом Аллаху, Господу миров»."],
+  lesson:"Маленький удод принёс большую новость. Любой может сделать важное доброе дело.",
+  ask:"С каких слов начиналось письмо Сулеймана?"},
+
+ {id:"springs", t:"Двенадцать источников в пустыне", ic:"💧", night:true, src:"Сура «Аль-Бакара», 2:57-60; сура «Аль-Араф», 7:160",
+  p:["Пророк Муса, мир ему, вёл свой народ через пустыню. Было жарко, и людям нечего было пить.",
+     "Муса попросил у Аллаха воды для них. Аллах сказал: «Ударь посохом по камню».",
+     "Муса ударил, и из камня забили двенадцать источников - для каждого рода свой, чтобы никто не толкался и всем хватило.",
+     "А ещё Аллах укрыл их облаками от солнца и послал им вкусную еду. И сказал: «Ешьте и пейте из того, чем Аллах наделил вас, и не делайте зла на земле»."],
+  lesson:"Аллах заботится обо всех, и о каждом отдельно. За удел благодарят и не делают зла.",
+  ask:"Сколько источников было и почему так много?"},
+
+ {id:"luqman", t:"Лукман учит сына", ic:"📜", night:true, src:"Сура «Лукман», 31:12-19",
+  p:["Аллах дал мудрость праведному человеку по имени Лукман. И вот что Лукман говорил своему сыну.",
+     "«Сынок, не поклоняйся никому, кроме Аллаха. Даже если доброе дело будет размером с горчичное зёрнышко и спрятано в камне, на небе или в земле, Аллах его увидит и вернёт тебе».",
+     "«Сынок, совершай намаз, зови людей к доброму, удерживай от плохого и терпи то, что с тобой случится».",
+     "«Не задирай нос перед людьми и не ходи гордо. Иди спокойно и говори негромко»."],
+  lesson:"Аллах видит даже самое маленькое доброе дело. Хороший человек скромный и спокойный.",
+  ask:"Какой совет Лукмана тебе понравился больше всего?"},
+
+ {id:"zakariya", t:"Закария и сын, о котором он молился", ic:"🕯", night:true, src:"Сура «Аль Имран», 3:37-41; сура «Марьям», 19:2-11",
+  p:["Пророк Закария, мир ему, заботился о девочке Марьям. Когда он заходил к ней в молельню, у неё всегда была еда. «Откуда это у тебя?» - спрашивал он. «Это от Аллаха», - отвечала Марьям.",
+     "Закария был уже старым, а детей у него не было. И он тихонько, чтобы слышал только Аллах, попросил: «Господи, подари мне праведного сына».",
+     "Ангелы принесли ему радостную весть: у него родится сын, и зовут его Яхья.",
+     "Знаком стало то, что три дня Закария не мог говорить с людьми, только показывал знаками. И он показал им: «Славьте Аллаха утром и вечером»."],
+  lesson:"Никогда не поздно просить Аллаха. Он слышит даже тихую просьбу.",
+  ask:"О чём Закария просил Аллаха?"},
+
+ {id:"dawud", t:"Давуд, горы и птицы", ic:"⛰", night:true, src:"Сура «Саба», 34:10-11; сура «Аль-Анбия», 21:79-80",
+  p:["Пророк Давуд, мир ему, был царём и много поминал Аллаха.",
+     "Аллах дал ему удивительный дар: когда Давуд прославлял Аллаха, вместе с ним прославляли Аллаха горы и птицы.",
+     "А ещё Аллах сделал для Давуда железо мягким. Давуд делал из него кольчуги - доспехи, которые защищали людей.",
+     "Аллах сказал: «Делайте доброе». Давуд не хвастался своим даром, а использовал его, чтобы помогать."],
+  lesson:"Всё вокруг славит Аллаха. А свои умения нужно тратить на добро.",
+  ask:"Что Давуд делал из железа?"},
+
+ {id:"ayyub", t:"Терпеливый Айюб", ic:"🌿", night:true, src:"Сура «Аль-Анбия», 21:83-84; сура «Сад», 38:41-44",
+  p:["У пророка Айюба, мир ему, было всё: здоровье, семья, богатство. А потом Аллах испытал его: Айюб тяжело заболел и многое потерял.",
+     "Айюб не жаловался людям. Он обратился к Аллаху: «Меня коснулась беда, а Ты - Милосерднейший из милосердных».",
+     "Аллах ответил ему: «Ударь ногой о землю». Там забил прохладный источник. Айюб умылся и попил, и болезнь ушла.",
+     "Аллах вернул ему семью и дал ещё больше. И сказал об Айюбе: «Мы нашли его терпеливым. Как прекрасен этот раб!»"],
+  say:{sura:21, ayah:83},
+  lesson:"В трудное время жалуются Аллаху, а не на Аллаха. Терпение приносит облегчение.",
+  ask:"Что забило из земли, когда Айюб ударил ногой?"},
+
+ {id:"garden", t:"Хозяева сада, которые не хотели делиться", ic:"🍎", src:"Сура «Аль-Калям», 68:17-33",
+  p:["Жили братья, у которых был большой сад с урожаем. Они договорились: «Соберём урожай рано утром, пока не пришли бедные, чтобы никому ничего не давать».",
+     "Ночью, пока они спали, с садом случилась беда, и от урожая ничего не осталось.",
+     "Утром братья тихо пошли в сад, чтобы их никто не увидел. А пришли - и не узнали его. «Мы, наверное, заблудились», - сказали они. Потом поняли: нет, это наш сад, и мы всё потеряли.",
+     "Лучший из них сказал: «Разве я не говорил вам поминать Аллаха?» И они раскаялись: «Мы были неправы. Может быть, Аллах даст нам взамен что-то лучше»."],
+  lesson:"Делиться с нуждающимися - это не потеря. Жадность может забрать всё.",
+  ask:"Почему братья хотели прийти в сад так рано?"},
+
+ {id:"dhulqarnayn", t:"Зуль-Карнайн строит стену", ic:"🧱", src:"Сура «Аль-Кахф», 18:83-98",
+  p:["Аллах дал праведному правителю Зуль-Карнайну большую силу, и он путешествовал по всей земле - на запад и на восток.",
+     "Однажды он пришёл к людям, которые жили между двумя горами. Они пожаловались: «Злые племена Яджудж и Маджудж делают нам плохое. Давай мы заплатим тебе, а ты построишь между нами стену».",
+     "Зуль-Карнайн ответил: «То, что дал мне Аллах, лучше вашей платы. Просто помогите мне работой». Люди принесли большие куски железа, заполнили ими проход, раскалили и залили расплавленной медью.",
+     "Стена получилась такой, что злые племена не смогли ни перелезть, ни пробить её. А Зуль-Карнайн сказал: «Это милость от моего Господа»."],
+  lesson:"Сильный помогает слабым, не жадничает и знает, что всё хорошее - от Аллаха.",
+  ask:"Из чего построили стену?"},
+
+ {id:"elephant", t:"Войско со слоном", ic:"🐘", src:"Сура «Аль-Филь», 105",
+  p:["Давно, ещё до того, как Пророк Мухаммад ﷺ начал призывать к исламу, один правитель собрал огромное войско со слоном и пошёл разрушить Каабу.",
+     "Жители Мекки были слабы и не могли защитить Дом Аллаха.",
+     "И тогда Аллах послал на войско стаи птиц. Птицы бросали в воинов камешки из обожжённой глины.",
+     "Войско было разбито, а Кааба осталась стоять. Аллах Сам защитил Свой Дом."],
+  lesson:"Никакое войско не сильнее Аллаха. Он защищает то, что Ему дорого.",
+  ask:"Кого Аллах послал защитить Каабу?"},
+
+ {id:"thawr", t:"Пророк ﷺ и его друг в пещере", ic:"🌙", night:true, src:"Сура «Ат-Тауба», 9:40",
+  p:["Когда жить в Мекке мусульманам стало опасно, Пророк Мухаммад ﷺ ушёл в Медину вместе со своим лучшим другом - Абу Бакром.",
+     "Враги искали их, и Пророк ﷺ с другом спрятались в пещере в горах.",
+     "Абу Бакр волновался за Пророка ﷺ. А Пророк ﷺ сказал ему: «Не печалься, ведь Аллах с нами».",
+     "Аллах послал им спокойствие и помог им. Враги ушли, а Пророк ﷺ и Абу Бакр благополучно добрались до Медины."],
+  lesson:"Когда страшно, вспомни: Аллах с нами. От этого становится спокойно.",
+  ask:"Какие слова сказал Пророк ﷺ своему другу в пещере?"}
 ];
 
 var KID_DUAS = [["d1","Перед едой"],["d2","После еды"],["s1","Перед сном"],["n2","Выходя из дома"],
@@ -6590,7 +6771,8 @@ var KID_NAMES = {
   ["Хусейн","маленький прекрасный","Внук Пророка ﷺ"],["Умар","жизнь, долголетие","Сподвижник, второй праведный халиф"],
   ["Билал","свежесть","Сподвижник, первый муэдзин"],["Зейд","рост, прибавление","Единственный сподвижник, названный в Коране по имени (33:37)"],
   ["Анас","близость, дружелюбие","Сподвижник, который мальчиком служил Пророку ﷺ"],["Халид","вечный, постоянный",""],
-  ["Карим","щедрый, благородный",""],["Саид","счастливый",""]],
+  ["Карим","щедрый, благородный",""],["Саид","счастливый",""],
+  ["Абдуль-Азиз","раб Могущественного",""],["Абдуль-Карим","раб Щедрого",""],["Абдуль-Малик","раб Властелина",""],["Абдуль-Хамид","раб Достохвального",""],["Абдуль-Басит","раб Расширяющего удел",""],["Абдуррахим","раб Милующего",""],["Исхак","","Пророк, сын Ибрахима"],["Якуб","","Пророк, отец Юсуфа"],["Харун","","Пророк, брат Мусы"],["Закария","","Пророк, отец Яхьи"],["Идрис","","Пророк, упомянутый в Коране"],["Ильяс","","Пророк, упомянутый в Коране"],["Худ","","Пророк, о нём сура «Худ»"],["Шуайб","","Пророк, упомянутый в Коране"],["Айюб","","Пророк, пример терпения"],["Лукман","","Мудрец, о нём сура «Лукман»"],["Мустафа","избранный","Одно из прозваний Пророка ﷺ"],["Хамза","","Сподвижник, дядя Пророка ﷺ"],["Джафар","ручей","Сподвижник, двоюродный брат Пророка ﷺ"],["Саад","счастье, удача","Сподвижник Саад ибн Абу Ваккас"],["Зубайр","","Сподвижник Пророка ﷺ"],["Муаз","","Сподвижник Муаз ибн Джабаль"],["Талха","","Сподвижник Пророка ﷺ"],["Ислам","покорность Аллаху",""],["Рашид","идущий верным путём",""],["Мансур","получающий помощь, победоносный",""],["Хаким","мудрый",""],["Тахир","чистый",""],["Камиль","совершенный",""],["Фарид","единственный, несравненный",""],["Амир","правитель",""],["Нуриддин","свет религии",""]],
  girls:[["Марьям","","Единственная женщина, названная в Коране по имени, о ней сура «Марьям»"],
   ["Хадиджа","","Жена Пророка ﷺ, первой поверила ему"],["Аиша","живущая","Жена Пророка ﷺ, передала множество хадисов"],
   ["Фатима","","Дочь Пророка ﷺ"],["Зайнаб","","Дочь Пророка ﷺ"],["Рукайя","","Дочь Пророка ﷺ"],
@@ -6599,7 +6781,8 @@ var KID_NAMES = {
   ["Хаджар","","Мать пророка Исмаила"],["Асия","","Так по преданиям звали праведную жену Фараона, о которой сказано в Коране (66:11)"],
   ["Нур","свет",""],["Салиха","праведная",""],["Латифа","мягкая, добрая",""],["Мунира","светлая, сияющая",""],
   ["Амира","предводительница",""],["Карима","щедрая, благородная",""],["Райхана","благоуханное растение",""],
-  ["Ясмин","жасмин",""],["Сальма","мирная, спокойная",""]]
+  ["Ясмин","жасмин",""],["Сальма","мирная, спокойная",""],
+  ["Сара","","Жена пророка Ибрахима, мать пророка Исхака"],["Хафса","","Жена Пророка ﷺ, дочь Умара"],["Маймуна","благословенная","Жена Пророка ﷺ"],["Джувайрия","","Жена Пророка ﷺ"],["Сауда","","Жена Пророка ﷺ"],["Асма","","Сподвижница, дочь Абу Бакра"],["Шифа","исцеление","Сподвижница аш-Шифа"],["Захра","цветок, сияющая","Прозвание Фатимы, дочери Пророка ﷺ"],["Иман","вера",""],["Мумина","верующая",""],["Муслима","покорная Аллаху",""],["Сабира","терпеливая",""],["Разия","довольная",""],["Саида","счастливая",""],["Хабиба","любимая",""],["Хадия","наставляющая на верный путь",""],["Джамиля","красивая",""],["Камила","совершенная",""],["Фарида","единственная, несравненная",""],["Малика","царица, владычица",""],["Наима","живущая в благополучии",""],["Лейла","ночь",""],["Мадина","город","Так называется город Пророка ﷺ"]]
 };
 
 function kidStore(){
@@ -12774,7 +12957,7 @@ function viewSettings(){
    ============================================================ */
 var BK_KEYS = ["fav","tasbih","tasbihTotal","read","dcnt","practice","orders","readDay","done","salah","myduas","goals",
   "namesRead","daily","shukrNotes","shukr","checks","sunnah","health","pauses","qada","points","pointsDay",
-  "fin","todos","quiz","azkarLifetime","qLast","qMax","qMarks","qplan","hifz","zakat","trip","kids",
+  "fin","todos","quiz","azkarLifetime","qLast","qMax","qMarks","qplan","hifz","zakat","trip","kids","finReqs",
   "name","city","method","madhab","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll"];
 
 /* Что человек потеряет, если копии не будет. Считаем по тем же данным,
@@ -13795,7 +13978,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -14313,7 +14496,9 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.buyplan!==undefined){ checkoutKeepInputs(); V.buyPlan = parseInt(d.buyplan, 10) || 0; sheetBuy(V.buyId, V.buyTar); return; }
   if(d.paynext){ finPayNext(d.paynext); return; }
   if(d.finpartner){ finPartnerGo(d.finpartner); return; }
-  if(d.finreq){ var fr = d.finreq.split(":"); sheetFinRequest(fr[0], fr[1]); return; }
+  if(d.finreq){ var fr = d.finreq.split(":"); V.finKind = fr[0]; V.finPartner = fr[1]; sheetFinRequest(fr[0], fr[1]); return; }
+  if(d.fincat){ finKeepInputs(); V.finCat = V.finCat === d.fincat ? "" : d.fincat; sheetFinRequest(V.finKind || "murabaha", V.finPartner || ""); return; }
+  if(d.fincatgo){ V.finCat = d.fincatgo; V.finKind = "murabaha"; V.finPartner = ""; sheetFinRequest("murabaha", ""); return; }
   if(d.finsend){ var fs2 = d.finsend.split(":"); finSend(fs2[0], fs2[1]); return; }
   if(d.ordcheck){ ordersCheck(); toast("Проверяем оплату..."); return; }
   if(d.lesson){
