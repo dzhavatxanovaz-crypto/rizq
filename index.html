@@ -3453,6 +3453,11 @@ function duaOfDay(){
 function ayatOfDay(){ return AYAT[dayIndex() % AYAT.length]; }
 
 function viewHome(){
+  if(OLD_HOST) return '<button class="card" data-movesheet="1" style="display:block;width:100%;text-align:left;border-color:var(--accent-ink);margin-bottom:12px">'+
+    '<b style="font-size:15px">RIZQ переехал на rizq.javattigroup.ru</b>'+
+    '<div style="font-size:13.5px;color:var(--ink-2);margin-top:4px">Нажмите, чтобы перенести записи и открыть новый адрес</div></button>' + viewHomeMain();
+}
+function viewHomeMain(){
   var d = duaOfDay(), a = ayatOfDay();
   var tn = timesNow(), np = nextPrayer();
   var h = ['<div class="stack">'];
@@ -3715,7 +3720,8 @@ function courseCard(c){
 /* ============================================================
    ЭКРАН: ПОДЕЛИТЬСЯ И УСТАНОВИТЬ
    ============================================================ */
-var APP_URL = "https://dzhavatxanovaz-crypto.github.io/rizq/";
+var APP_URL = "https://rizq.javattigroup.ru/";
+var OLD_HOST = /github\.io$/.test(location.hostname);
 var SHARE_TEXT = "Ассаламу алейкум! Нашла приложение «RIZQ»: время намаза, Коран, азкары, дуа и знания о религии. Бесплатно и без чужой рекламы.";
 
 /* Экраны, которые можно открыть ссылкой. Белый список, а не любое значение:
@@ -13181,6 +13187,45 @@ function qShareAyah(i){
   copyText(text);
 }
 
+/* ---------- переезд со старого адреса ---------- */
+function moveHasData(){
+  var d = backupData().data, n = 0;
+  for(var k in d){
+    var v = d[k];
+    if(v && typeof v === "object" && (v.length || Object.keys(v).length)) n++;
+    else if(typeof v === "number" && v > 0) n++;
+  }
+  return n > 2;
+}
+function sheetMove(){
+  var has = moveHasData();
+  sheet('<h3>RIZQ переехал</h3>'+
+    '<p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 12px">Новый адрес приложения: <b>rizq.javattigroup.ru</b>. Здесь оно больше не обновляется.</p>'+
+    (has
+      ? '<p class="note" style="margin:0 0 12px">Ваши записи - трекер, дуа, дневники, заучивание - хранятся на этом адресе. Перенесите их: приложение сохранит зашифрованную копию и скопирует код, а на новом адресе останется его вставить.</p>'+
+        '<button class="btn" data-movego="1">Перенести мои записи</button>'
+      : '<a class="btn" style="display:block;text-align:center;text-decoration:none" href="'+APP_URL+'">Открыть RIZQ на новом адресе</a>')+
+    (VT.code ? '<p class="note" style="margin:12px 0 0">Код вашей копии: <b style="font-family:ui-monospace,monospace">'+esc(VT.code)+'</b></p>' : '')+
+    '<p class="note" style="margin:12px 0 0">После переноса добавьте новый адрес на экран «Домой», а старый значок можно удалить.</p>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Позже</button>');
+}
+function moveGo(){
+  if(!vaultOk()){ toast("Этот браузер не умеет шифровать копию - откройте новый адрес и введите записи заново"); return; }
+  if(!VT.code){ VT.code = vaultNewCode(); VT.at = 0; vaultStore(); }
+  toast("Сохраняем копию...");
+  vaultPush().then(function(ok){
+    if(!ok){ toast("Не получилось сохранить копию - проверьте интернет"); return; }
+    var go = function(){ location.href = APP_URL + "#move"; };
+    try{ navigator.clipboard.writeText(VT.code).then(go, function(){ sheetMoveCode(); }); }catch(e){ sheetMoveCode(); }
+  });
+}
+/* Буфер обмена недоступен - код показываем, человек копирует сам */
+function sheetMoveCode(){
+  sheet('<h3>Код переноса</h3><p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 12px">Скопируйте или запишите код - на новом адресе его нужно будет вставить.</p>'+
+    '<div style="font-family:ui-monospace,monospace;font-size:20px;letter-spacing:.06em;text-align:center;padding:12px;border-radius:12px;background:var(--surface-2)">'+esc(VT.code)+'</div>'+
+    '<a class="btn" style="display:block;text-align:center;text-decoration:none;margin-top:12px" href="'+APP_URL+'#move">Открыть новый адрес</a>');
+}
+
 function sheetBackup(){
   var c = backupCount(S), lines = backupLines(c);
   sheet('<h3>Копия данных</h3>'+
@@ -13981,7 +14026,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -13999,6 +14044,8 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.bkPaste!==undefined){ backupFromText(); return; }
   if(d.bkApply!==undefined){ backupApply(); return; }
   if(d.jopen!==undefined){ rTrack("open_in_javatti", d.jopen); return; }
+  if(d.movego!==undefined){ moveGo(); return; }
+  if(d.movesheet!==undefined){ sheetMove(); return; }
   if(d.von!==undefined){ vaultEnable(); return; }
   if(d.voff!==undefined){ vaultOff(); return; }
   if(d.vcopy!==undefined){ copyText(VT.code); return; }
@@ -14642,8 +14689,22 @@ signupFlush();
 pushSync(false);
 document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible") pushSoon(); });
 
+/* переезд: старый адрес показывает окно, новый принимает код */
+var MOVE_IN = !OLD_HOST && location.hash === "#move";
+if(OLD_HOST) setTimeout(sheetMove, 600);
+if(MOVE_IN){
+  try{ history.replaceState(null, "", location.pathname); }catch(e){}
+  S.welcomed = true; save();
+  setTimeout(function(){
+    sheetBackup();
+    var inp = document.getElementById("vCode");
+    if(inp){ inp.focus(); inp.scrollIntoView({ block:"center" }); }
+    toast("Вставьте код переноса - он уже скопирован");
+  }, 600);
+}
+
 /* первый запуск: пока город не выбран, время намаза чужое */
-if(!S.welcomed) setTimeout(sheetWelcome, 700);
+if(!S.welcomed && !OLD_HOST) setTimeout(sheetWelcome, 700);
 
 </script>
 
