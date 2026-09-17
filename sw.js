@@ -1,9 +1,17 @@
 /* Ризк - офлайн-кэш. Меняйте номер версии при каждом обновлении приложения. */
-var CACHE = "rizq-v92";
+var CACHE = "rizq-v93";
 var ASSETS = [
   "./",
   "./index.html",
   "./fonts.css",
+  /* основные наборы шрифтов - чтобы без интернета текст выглядел так же; остальные наборы кэшируются при первом использовании */
+  "./fonts/inter-cyrillic.woff2",
+  "./fonts/inter-latin.woff2",
+  "./fonts/montserrat-cyrillic.woff2",
+  "./fonts/montserrat-latin.woff2",
+  "./fonts/marcellus-latin.woff2",
+  "./fonts/noto-naskh-arabic-arabic.woff2",
+  "./fonts/noto-naskh-arabic-latin.woff2",
   "./privacy.html",
   "./manifest.webmanifest",
   "./posts.json",
