@@ -1041,7 +1041,7 @@ var HADITH_SRC = [{"num":1,"n":"Дела оцениваются по намер�
 var DEF = {
   fav:[], tasbih:{}, tasbihTotal:0, read:{}, dcnt:{}, practice:{}, readDay:"", bought:[], done:[], orders:[],
   theme:"", city:"mah", method:"mwl", madhab:1,
-  name:"", email:"", notifPrayer:true, notifDua:true, notifCourse:false, notifAzan:true,
+  name:"", email:"", notifPrayer:true, notifDua:true, notifTasks:true, notifCourse:false, notifAzan:true,
   salah:{}, myduas:[], goals:[], namesRead:{}, daily:{}, shukrNotes:{}, shukr:[], shukrMigrated:false, shukrOpen:false, salahOpen:false,
   checks:{}, sunnah:{}, sunnahOpen:false, health:{}, healthOpen:false, pauses:[],
   qada:{p:{}, done:{}, fast:0, fastDone:0, perDay:1, log:[]}, postSeen:"", points:0, pointsDay:{}, cat:{},
@@ -1054,7 +1054,7 @@ var DEF = {
   salahKid:false,
   trip:{},
   kids:{},
-  finReqs:[],
+  finReqs:[], finLimits:{}, debts:[], finRepeat:[],
   qplan:{on:false, days:0, startPage:1, startAt:"", log:{}},
   qoff:{juz:[], sura:[], reciter:""},
   zakat:{cash:"", bank:"", goods:"", debtsIn:"", debtsOut:"", goldG:"", silverG:"",
@@ -3327,9 +3327,9 @@ var ICONS = {
 var TABS = [
   {k:"home",   n:"Главная"},
   {k:"quran",  n:"Коран"},
+  {k:"income", n:"Ризкъ"},
   {k:"dua",    n:"Знания"},
   {k:"journal",n:"Журнал"},
-  {k:"income", n:"Ризкъ"},
   {k:"prof",   n:"Профиль"}
 ];
 function renderTabs(){
@@ -11368,6 +11368,137 @@ function finDayLabel(d){
   return new Date(parseInt(p[0],10), parseInt(p[1],10)-1, parseInt(p[2],10))
     .toLocaleDateString("ru-RU",{day:"numeric",month:"long"});
 }
+/* ---------- лимиты, долги, регулярные ---------- */
+function finLimits(){ if(!S.finLimits || typeof S.finLimits !== "object") S.finLimits = {}; return S.finLimits; }
+function debtsList(){ if(!S.debts || !S.debts.push) S.debts = []; return S.debts; }
+function finRepeatList(){ if(!S.finRepeat || !S.finRepeat.push) S.finRepeat = []; return S.finRepeat; }
+function debtsTotal(kind){
+  return debtsList().filter(function(x){ return x.kind === kind && !x.closed; })
+    .reduce(function(s, x){ return s + Math.max(0, (x.amount || 0) - (x.paid || 0)); }, 0);
+}
+/* Прогноз: сколько выйдет к концу месяца, если тратить так же */
+function finForecast(mk){
+  var now = new Date(), cur = finMonthKey(now);
+  var t = finTotals(mk);
+  if(mk !== cur) return null;
+  var day = now.getDate();
+  var days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  if(day < 3) return null;
+  return { perDay: Math.round(t.out / day), month: Math.round(t.out / day * days), days: days };
+}
+function finYearSadaqa(){
+  var y = String(new Date().getFullYear());
+  return (S.fin || []).filter(function(x){ return x.type === "out" && x.cat === "sadaqa" && String(x.d || "").slice(0, 4) === y; })
+    .reduce(function(s, x){ return s + x.amount; }, 0);
+}
+/* Выгрузка записей месяца в файл для таблиц */
+function finExport(mk){
+  var rows = [["Дата", "Тип", "Категория", "Сумма", "Комментарий"]];
+  finOf(mk).slice().sort(function(a, b){ return a.d < b.d ? -1 : 1; }).forEach(function(x){
+    rows.push([x.d, x.type === "in" ? "доход" : "расход", finCatName(x.type, x.cat), x.amount, x.note || ""]);
+  });
+  var csv = "\uFEFF" + rows.map(function(r){
+    return r.map(function(v){ return '"' + String(v).split('"').join('""') + '"'; }).join(";");
+  }).join("\r\n");
+  var name = "rizq-" + mk + ".csv";
+  try{
+    var blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+    toast("Файл " + name + " сохранён");
+  }catch(e){ toast("Не получилось сохранить файл"); }
+}
+/* Регулярные платежи: добавить все за выбранный месяц, по одному разу */
+function finRepeatApply(mk){
+  var list = finRepeatList(), added = 0;
+  var days = new Date(parseInt(mk.split("-")[0], 10), parseInt(mk.split("-")[1], 10), 0).getDate();
+  list.forEach(function(r){
+    var day = Math.min(Math.max(1, r.day || 1), days);
+    var d = mk + "-" + pad(day);
+    var exists = (S.fin || []).some(function(x){ return x.rep === r.id && String(x.d).slice(0, 7) === mk; });
+    if(exists) return;
+    S.fin.push({ id: "f" + Date.now() + Math.round(Math.random() * 1000), d: d, type: r.type, cat: r.cat,
+      amount: r.amount, note: r.note || "", ts: Date.now(), rep: r.id });
+    added++;
+  });
+  save(); render();
+  toast(added ? "Добавлено записей: " + added : "Все регулярные за этот месяц уже записаны");
+}
+function sheetFinLimit(cat){
+  var cur = finLimits()[cat] || "";
+  sheet('<h3>Лимит: '+esc(finCatName("out", cat))+'</h3>'+
+    '<p class="note" style="margin:0 0 12px">Сколько вы готовы тратить на это в месяц. Приложение покажет, сколько осталось, и предупредит, когда лимит подойдёт к концу. Пусто - лимита нет.</p>'+
+    '<input class="search" id="finLimitVal" type="number" inputmode="numeric" min="0" placeholder="Сумма в месяц, ₽" value="'+esc(cur)+'">'+
+    '<button class="btn" style="margin-top:12px" data-finlimsave="'+cat+'">Сохранить</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
+}
+function sheetFinLimits(){
+  var lset = finLimits();
+  sheet('<h3>Лимиты по категориям</h3>'+
+    '<p class="note" style="margin:0 0 12px">Лимит - это не запрет, а ориентир на месяц. Нажмите категорию, чтобы поставить или изменить.</p>'+
+    '<div class="rows">'+FIN_CATS.out.map(function(c){
+      var v = lset[c[0]] || 0;
+      return '<button class="row" data-finlim="'+c[0]+'" style="width:100%;text-align:left">'+
+        '<span style="flex:1">'+esc(c[1])+'</span>'+
+        '<span style="color:'+(v ? "var(--ink)" : "var(--ink-3)")+'">'+(v ? money(v) : "нет")+'</span></button>';
+    }).join("")+'</div>'+
+    '<button class="btn ghost" style="margin-top:12px" data-scrim="1">Закрыть</button>');
+}
+function sheetDebt(kind){
+  var mine = kind === "out";
+  sheet('<h3>'+(mine ? "Я должен(на)" : "Мне должны")+'</h3>'+
+    '<p class="note" style="margin:0 0 12px">В Коране самый длинный аят - о том, чтобы долг записывали (сура «Аль-Бакара», 2:282). Запись останется на этом телефоне.</p>'+
+    '<label class="eyebrow">Кому</label>'+
+    '<input class="search" id="dbWho" style="margin:6px 0 10px" placeholder="Имя">'+
+    '<div style="display:flex;gap:8px">'+
+      '<div style="flex:1"><label class="eyebrow">Сумма, ₽</label><input class="search" id="dbAmount" type="number" inputmode="numeric" min="0" style="margin:6px 0 10px"></div>'+
+      '<div style="flex:1"><label class="eyebrow">Вернуть до</label><input class="search" id="dbDue" type="date" style="margin:6px 0 10px"></div>'+
+    '</div>'+
+    '<label class="eyebrow">Заметка</label>'+
+    '<input class="search" id="dbNote" style="margin:6px 0 4px" placeholder="За что, свидетели, условия">'+
+    '<button class="btn" style="margin-top:12px" data-dbadd="'+kind+'">Записать долг</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
+}
+function sheetDebtPay(id){
+  var d = debtsList().filter(function(x){ return x.id === id; })[0];
+  if(!d) return;
+  var left = Math.max(0, (d.amount || 0) - (d.paid || 0));
+  sheet('<h3>'+(d.kind === "out" ? "Вернуть долг" : "Получить долг")+'</h3>'+
+    '<p class="note" style="margin:0 0 12px">'+esc(d.who || "")+' · осталось '+money(left)+'</p>'+
+    '<input class="search" id="dbPay" type="number" inputmode="numeric" min="0" placeholder="Сумма, ₽" value="'+left+'">'+
+    '<label style="display:flex;align-items:flex-start;gap:9px;margin-top:12px;font-size:13px;color:var(--ink-2);line-height:1.5">'+
+      '<input type="checkbox" id="dbFin" style="margin-top:2px;flex:none"'+(d.kind === "out" ? " checked" : "")+'>'+
+      '<span>Записать это в '+(d.kind === "out" ? "расходы" : "доходы")+' за сегодня</span></label>'+
+    '<button class="btn" style="margin-top:12px" data-dbpay="'+id+'">Отметить</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
+}
+function sheetFinRepeat(){
+  var list = finRepeatList();
+  sheet('<h3>Регулярные платежи</h3>'+
+    '<p class="note" style="margin:0 0 12px">То, что повторяется каждый месяц: аренда, связь, садака, зарплата. Одной кнопкой добавляются в любой месяц.</p>'+
+    (list.length ? '<div class="rows" style="margin-bottom:12px">'+list.map(function(r){
+      return '<div class="row"><span style="flex:1">'+esc(finCatName(r.type, r.cat))+(r.note ? ' · '+esc(r.note) : '')+
+        '<span style="display:block;font-size:12px;color:var(--ink-3)">'+(r.type === "in" ? "доход" : "расход")+' · '+money(r.amount)+' · '+r.day+' число</span></span>'+
+        '<button class="lock" data-finrepdel="'+r.id+'" style="color:var(--ink-3)">✕</button></div>';
+    }).join("")+'</div>' : '')+
+    '<div class="pill-row" style="justify-content:flex-start;margin:0 0 10px">'+
+      '<button class="pill'+(V.frType !== "in" ? " on" : "")+'" data-frtype="out">Расход</button>'+
+      '<button class="pill'+(V.frType === "in" ? " on" : "")+'" data-frtype="in">Доход</button></div>'+
+    '<div class="pill-row" style="justify-content:flex-start;margin:0 0 10px">'+
+      FIN_CATS[V.frType === "in" ? "in" : "out"].map(function(c){
+        return '<button class="pill'+(V.frCat === c[0] ? " on" : "")+'" data-frcat="'+c[0]+'">'+esc(c[1])+'</button>';
+      }).join("")+'</div>'+
+    '<div style="display:flex;gap:8px">'+
+      '<div style="flex:1"><label class="eyebrow">Сумма, ₽</label><input class="search" id="frAmount" type="number" inputmode="numeric" min="0" style="margin-top:6px"></div>'+
+      '<div style="width:110px"><label class="eyebrow">Число</label><input class="search" id="frDay" type="number" min="1" max="28" value="1" style="margin-top:6px"></div>'+
+    '</div>'+
+    '<input class="search" id="frNote" style="margin-top:10px" placeholder="Название, необязательно">'+
+    '<button class="btn" style="margin-top:12px" data-finrepadd="1">Добавить в список</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Закрыть</button>');
+}
+
 function viewFinance(){
   var mk = V.finMonth || finMonthKey(new Date());
   var type = V.finType || "out";
@@ -11392,6 +11523,26 @@ function viewFinance(){
     '<div class="stat"><b style="font-size:18px;color:'+(t.bal<0 ? "#C0392B" : "var(--accent-ink)")+'">'+t.bal.toLocaleString("ru-RU")+'</b><span>Остаток, ₽</span></div>'+
   '</div>');
 
+  /* месяц к месяцу и прогноз - чтобы видеть не только сумму, но и направление */
+  var prev = finTotals(finShift(mk, -1));
+  var fc = finForecast(mk);
+  if(prev.out || fc){
+    var diff = t.out - prev.out;
+    var pctd = prev.out ? Math.round(Math.abs(diff) * 100 / prev.out) : 0;
+    h.push('<section class="card" style="padding:13px 14px">'+
+      (prev.out
+        ? '<div style="font-size:13.5px;color:var(--ink-2);line-height:1.55">'+
+          'К прошлому месяцу: <b style="color:'+(diff > 0 ? "#C0392B" : "var(--emerald)")+'">'+
+          (diff > 0 ? "+" : "-")+money(Math.abs(diff))+(pctd ? " · "+pctd+"%" : "")+'</b>'+
+          ' <span style="color:var(--ink-3)">(было '+money(prev.out)+')</span></div>'
+        : '')+
+      (fc
+        ? '<div style="font-size:13.5px;color:var(--ink-2);line-height:1.55;margin-top:'+(prev.out ? "7px" : "0")+'">'+
+          'В среднем '+money(fc.perDay)+' в день. Если так же - за месяц выйдет около '+money(fc.month)+'.</div>'
+        : '')+
+    '</section>');
+  }
+
   h.push('<section class="card">'+
     '<div class="pill-row" style="justify-content:flex-start;margin-top:0">'+
       '<button class="pill'+(type==="out"?" on":"")+'" data-fintype="out">Расход</button>'+
@@ -11412,13 +11563,79 @@ function viewFinance(){
     h.push('<div class="sec-h"><h3>Куда уходит</h3><span class="more" style="color:var(--ink-3)">'+money(t.out)+'</span></div>');
     h.push('<section class="card">'+ rows.map(function(r){
       var pct = t.out ? Math.round(100*r[1]/t.out) : 0;
-      return '<div style="margin-bottom:11px">'+
+      var lim = finLimits()[r[0]] || 0;
+      var lpct = lim ? Math.min(100, Math.round(100*r[1]/lim)) : 0;
+      var over = lim && r[1] > lim;
+      return '<div style="margin-bottom:13px">'+
         '<div style="display:flex;align-items:baseline;font-size:13.5px;margin-bottom:5px">'+
-          '<span style="flex:1">'+esc(finCatName("out",r[0]))+'</span>'+
+          '<button style="flex:1;text-align:left" data-finlim="'+r[0]+'">'+esc(finCatName("out",r[0]))+
+            '<span style="color:var(--ink-3);font-size:12px"> ⚙</span></button>'+
           '<b style="font-variant-numeric:tabular-nums">'+money(r[1])+'</b>'+
           '<span style="color:var(--ink-3);margin-left:8px;font-size:12.5px">'+pct+'%</span></div>'+
-        '<div class="bar"><i style="width:'+pct+'%"></i></div></div>';
-    }).join("") +'</section>');
+        '<div class="bar"><i style="width:'+(lim ? lpct : pct)+'%'+(over ? ';background:#C0392B' : '')+'"></i></div>'+
+        (lim
+          ? '<div style="font-size:12px;color:'+(over ? "#C0392B" : "var(--ink-3)")+';margin-top:4px">'+
+            (over ? 'Лимит '+money(lim)+' превышен на '+money(r[1]-lim) : 'Лимит '+money(lim)+' · осталось '+money(lim-r[1]))+'</div>'
+          : '')+
+      '</div>';
+    }).join("") +
+    '<p style="font-size:12.5px;color:var(--ink-3);margin:2px 0 0;line-height:1.5">Нажмите на категорию, чтобы поставить лимит на месяц.</p>'+
+    '</section>');
+  }
+
+  /* долги: как велит аят о записи долга */
+  var dOut = debtsTotal("out"), dIn = debtsTotal("in");
+  var openDebts = debtsList().filter(function(x){ return !x.closed; });
+  h.push('<div class="sec-h" style="margin-top:6px"><h3>Долги</h3>'+
+    (openDebts.length ? '<span class="more" style="color:var(--ink-3)">'+openDebts.length+'</span>' : '')+'</div>');
+  h.push('<section class="card">'+
+    '<div style="display:flex;gap:10px">'+
+      '<div style="flex:1;background:var(--surface-2);border-radius:12px;padding:11px 12px">'+
+        '<div style="font-size:12px;color:var(--ink-3)">Я должен(на)</div>'+
+        '<b style="font-family:var(--f-display);font-size:17px;color:'+(dOut ? "#C0392B" : "var(--ink)")+'">'+money(dOut)+'</b></div>'+
+      '<div style="flex:1;background:var(--surface-2);border-radius:12px;padding:11px 12px">'+
+        '<div style="font-size:12px;color:var(--ink-3)">Мне должны</div>'+
+        '<b style="font-family:var(--f-display);font-size:17px;color:'+(dIn ? "var(--emerald)" : "var(--ink)")+'">'+money(dIn)+'</b></div>'+
+    '</div>'+
+    (openDebts.length ? '<div class="rows" style="margin-top:11px">'+openDebts.map(function(x){
+      var left = Math.max(0, (x.amount || 0) - (x.paid || 0));
+      var late = x.due && x.due < todayKey();
+      /* имя отдельной строкой, кнопка снизу: на узком экране ничего не сжимается */
+      return '<div class="lesson" style="display:block">'+
+        '<div style="display:flex;align-items:flex-start;gap:8px">'+
+          '<b style="flex:1;min-width:0;font-weight:400;font-size:14.5px;line-height:1.5">'+
+            (x.kind === "out" ? "Я → " : "← ")+esc(x.who || "")+(x.note ? ' · '+esc(x.note) : '')+'</b>'+
+          '<button class="lock" data-dbdel="'+x.id+'" style="flex:none;color:var(--ink-3)">✕</button></div>'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-top:5px">'+
+          '<span style="flex:1;font-size:13px;color:'+(late ? "#C0392B" : "var(--ink-3)")+'">'+money(left)+
+            (x.due ? ' · до '+esc(finDayLabel(x.due))+(late ? ' · просрочен' : '') : '')+'</span>'+
+          '<button class="btn sec sm" style="flex:none" data-dbpayopen="'+x.id+'">Отметить</button></div>'+
+      '</div>';
+    }).join("")+'</div>' : '')+
+    '<div style="display:flex;gap:8px;margin-top:11px">'+
+      '<button class="btn sec sm" style="flex:1" data-dbnew="out">Я должен(на)</button>'+
+      '<button class="btn sec sm" style="flex:1" data-dbnew="in">Мне должны</button>'+
+    '</div>'+
+    ((dOut || dIn) ? '<button class="btn ghost sm" style="width:100%;margin-top:8px" data-dbzakat="1">Подставить долги в расчёт закята</button>' : '')+
+    '<p style="font-size:12.5px;color:var(--ink-3);margin:9px 0 0;line-height:1.5">Записывать долг велит самый длинный аят Корана - сура «Аль-Бакара», 2:282.</p>'+
+  '</section>');
+
+  /* лимиты, регулярные платежи и выгрузка */
+  var limCount = Object.keys(finLimits()).filter(function(k){ return finLimits()[k]; }).length;
+  h.push('<section class="card" style="padding:12px 14px">'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
+      '<button class="btn sec sm" style="flex:1" data-finlims="1">Лимиты'+(limCount ? ' ('+limCount+')' : '')+'</button>'+
+      '<button class="btn sec sm" style="flex:1" data-finrep="1">Регулярные платежи'+(finRepeatList().length ? ' ('+finRepeatList().length+')' : '')+'</button>'+
+      (finRepeatList().length ? '<button class="btn sec sm" style="flex:1" data-finrepapply="'+mk+'">Добавить за этот месяц</button>' : '')+
+      (list.length ? '<button class="btn ghost sm" style="flex:1" data-finexport="'+mk+'">Выгрузить в файл</button>' : '')+
+    '</div></section>');
+
+  /* садака за год - отдельной строкой */
+  var sad = finYearSadaqa();
+  if(sad){
+    h.push('<section class="card" style="padding:12px 14px;display:flex;align-items:baseline;gap:8px">'+
+      '<span style="font-size:13.5px;color:var(--ink-2);flex:1">Садака с начала года</span>'+
+      '<b style="font-family:var(--f-display);font-size:16px;color:var(--emerald)">'+money(sad)+'</b></section>');
   }
 
   h.push('<button class="card flat" style="width:100%;text-align:left;padding:13px 15px;font-size:13.5px;color:var(--ink-2);line-height:1.55" data-open="zakat">'+
@@ -11707,6 +11924,49 @@ function plKeepDraft(){
   var e = document.getElementById("plGoalSel"); if(e) V.plGoal = e.value;
   var f = document.getElementById("plRepSel");  if(f) V.plRep = f.value;
 }
+/* Главное на день: задачи «Важно» на сегодня и просроченные. Больше трёх
+   главных дел в день не бывает - об этом говорим прямо. */
+function plFocus(td){
+  return plSort((S.todos || []).filter(function(x){
+    return !x.done && x.p === 1 && (!x.due || x.due <= td);
+  }));
+}
+/* Сколько сделано за последние 7 дней и сколько дней подряд что-то сделано */
+function plWeekStats(){
+  var days = [], streak = 0, total = 0, live = true;
+  for(var i = 6; i >= 0; i--){
+    var d = new Date(); d.setDate(d.getDate() - i);
+    var k = dayKey(d);
+    var n = (S.todos || []).filter(function(x){ return x.done && x.doneTs && dayKey(new Date(x.doneTs)) === k; }).length;
+    days.push({ k: k, n: n, d: d });
+    total += n;
+  }
+  for(var j = days.length - 1; j >= 0; j--){
+    if(days[j].n > 0 && live) streak++;
+    else if(j < days.length - 1) live = false;
+    else if(days[j].n === 0) live = true; /* сегодня ещё не поздно */
+  }
+  return { days: days, total: total, streak: streak, best: days.reduce(function(m, x){ return Math.max(m, x.n); }, 0) };
+}
+/* Ближайший незакрытый шаг цели - то, с чего продолжить */
+function plGoalNext(id){
+  return plSort((S.todos || []).filter(function(x){ return x.g === id && !x.done; }))[0] || null;
+}
+function plDaysLeft(due){
+  if(!due) return null;
+  var p2 = due.split("-");
+  var d = new Date(parseInt(p2[0],10), parseInt(p2[1],10)-1, parseInt(p2[2],10));
+  var t = new Date(); t.setHours(0,0,0,0);
+  return Math.round((d - t) / 86400000);
+}
+function plLeftLabel(due){
+  var n = plDaysLeft(due);
+  if(n === null) return "";
+  if(n < 0) return "срок прошёл " + plural(-n, "день", "дня", "дней") + " назад";
+  if(n === 0) return "срок сегодня";
+  return "осталось " + plural(n, "день", "дня", "дней");
+}
+
 function viewPlanner(){
   var view = V.plView || "today";
   var td = todayKey();
@@ -11736,7 +11996,44 @@ function viewPlanner(){
         '<span style="font-size:13.5px;color:#C0392B;flex:1">Просрочено: '+over.length+'</span>'+
         '<button class="btn sec sm" data-plpush="1">Перенести на сегодня</button></div>'
       : '')+
+    (todayList.length > 3
+      ? '<div style="display:flex;align-items:center;gap:10px;margin-top:10px">'+
+        '<span style="font-size:13px;color:var(--ink-3);flex:1">На сегодня '+plural(todayList.length,"задача","задачи","задач")+'. Успеть всё не обязательно</span>'+
+        '<button class="btn ghost sm" style="flex:none" data-plmove="tomorrow">Часть на завтра</button></div>'
+      : '')+
   '</section>');
+
+  /* главное на день */
+  var focus = plFocus(td);
+  h.push('<section class="card">'+
+    '<div style="display:flex;align-items:baseline;gap:8px">'+
+      '<b style="font-family:var(--f-display);font-size:15px">Главное на сегодня</b>'+
+      '<span style="margin-left:auto;font-size:13px;color:var(--ink-3)">'+(focus.length ? focus.length+' из 3' : 'не выбрано')+'</span></div>'+
+    (focus.length
+      ? '<div class="rows" style="margin-top:10px">'+focus.slice(0,3).map(function(x){ return plRow(x, td); }).join("")+'</div>'+
+        (focus.length > 3 ? '<p style="font-size:12.5px;color:var(--ink-3);margin:8px 0 0">Главных дел отмечено '+focus.length+'. Оставьте три - остальное станет обычными задачами и не будет давить.</p>' : '')
+      : '<p style="font-size:13.5px;color:var(--ink-2);line-height:1.55;margin:9px 0 0">'+
+        'Выберите до трёх дел, которые важнее остальных: нажмите «Важно» при добавлении задачи или откройте задачу и отметьте её важной. '+
+        'Остальное останется в списке ниже.</p>')+
+  '</section>');
+
+  /* неделя: сделано и серия */
+  var ws = plWeekStats();
+  if(ws.total || ws.streak){
+    h.push('<section class="card" style="padding:13px 14px">'+
+      '<div style="display:flex;align-items:baseline;gap:8px">'+
+        '<b style="font-family:var(--f-display);font-size:14px">За 7 дней</b>'+
+        '<span style="margin-left:auto;font-size:13px;color:var(--ink-2)">сделано '+ws.total+
+        (ws.streak > 1 ? ' · '+plural(ws.streak,"день","дня","дней")+' подряд' : '')+'</span></div>'+
+      '<div style="display:flex;align-items:flex-end;gap:5px;height:44px;margin-top:10px">'+
+        ws.days.map(function(x){
+          var hgt = ws.best ? Math.max(4, Math.round(38 * x.n / ws.best)) : 4;
+          return '<div style="flex:1;text-align:center">'+
+            '<div style="height:'+hgt+'px;border-radius:4px;background:'+(x.n?"var(--accent-ink)":"var(--surface-3)")+'"></div>'+
+            '<div style="font-size:10.5px;color:var(--ink-3);margin-top:4px">'+["вс","пн","вт","ср","чт","пт","сб"][x.d.getDay()]+'</div></div>';
+        }).join("")+
+      '</div></section>');
+  }
 
   /* неделя одним взглядом */
   h.push('<section class="card" style="padding:13px 14px">'+
@@ -11833,6 +12130,10 @@ function viewPlanner(){
 
   h.push('<section class="card">'+
     '<textarea class="search" id="plGoalInput" rows="2" style="resize:none;font-family:var(--f-body)" placeholder="Чего вы хотите достичь ради Аллаха?"></textarea>'+
+    '<div style="display:flex;gap:8px;margin-top:9px;align-items:center">'+
+      '<label style="flex:1;font-size:12.5px;color:var(--ink-3)">Срок, если он есть'+
+        '<input class="search" id="plGoalDate" type="date" style="margin-top:4px"></label>'+
+    '</div>'+
     '<button class="btn sec sm" style="margin-top:9px" data-plgoaladd="1">Добавить цель</button></section>');
 
   if(!goalsOpen.length && !goalsDone.length){
@@ -11848,11 +12149,17 @@ function viewPlanner(){
         '<div style="flex:1;min-width:0">'+
           '<b style="font-weight:400;font-size:14.5px;line-height:1.5;display:block">'+esc(g.t)+'</b>'+
           '<span style="font-size:12.5px;color:var(--ink-3)">'+
-            (st.total ? st.done+' из '+st.total+' задач' : 'задач пока нет')+'</span>'+
+            (st.total ? st.done+' из '+st.total+' задач' : 'задач пока нет')+
+            (g.due ? ' · '+esc(plLeftLabel(g.due)) : '')+'</span>'+
         '</div>'+
         '<button class="lock" data-delgoal="'+g.id+'" style="color:var(--ink-3)">✕</button>'+
       '</div>'+
       (st.total ? '<div class="bar" style="margin-top:10px"><i style="width:'+st.pct+'%"></i></div>' : '')+
+      (function(){
+        var nx = plGoalNext(g.id);
+        return nx ? '<div style="font-size:13px;color:var(--ink-2);line-height:1.5;margin-top:9px">'+
+          '<span style="color:var(--ink-3)">Следующий шаг: </span>'+esc(nx.t)+(nx.due ? ' · '+esc(plDueLabel(nx.due)) : '')+'</div>' : '';
+      })()+
       '<div style="display:flex;gap:8px;margin-top:11px">'+
         '<button class="btn sec sm" style="flex:1" data-plgoaltask="'+g.id+'">Добавить задачу к цели</button>'+
         (st.total ? '<button class="btn sec sm" style="flex:none" data-plgoalopen="'+g.id+'">'+(open?"Скрыть":"Показать")+'</button>' : '')+
@@ -12318,6 +12625,27 @@ function pushItems(){
         if(at > now) items.push({ at: new Date(at).toISOString(), title: "Время намаза - " + f.n, body: c.n + " · " + hhmm(h), tag: "prayer" });
       });
     }
+    /* Задачи с датой и временем: напоминание ровно на это время.
+       Не больше двадцати - чтобы расписание уведомлений не распухало. */
+    if(S.notifTasks !== false){
+      var dk = dayKey(day);
+      (S.todos || []).filter(function(x){ return !x.done && x.due === dk && x.tm; }).slice(0, 4).forEach(function(x){
+        var hm = String(x.tm).split(":");
+        var atT = new Date(day.getFullYear(), day.getMonth(), day.getDate(), parseInt(hm[0], 10), parseInt(hm[1], 10), 0).getTime();
+        if(atT > now) items.push({ at: new Date(atT).toISOString(), title: "Задача: " + String(x.t).slice(0, 60), body: x.tm, tag: "todo" });
+      });
+    }
+    /* Долг с датой: напоминание утром того дня, на который назначен возврат. */
+    if(S.notifTasks !== false){
+      var dkk = dayKey(day);
+      (S.debts || []).filter(function(x){ return !x.closed && x.due === dkk; }).slice(0, 2).forEach(function(x){
+        var atD = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 10, 0, 0).getTime();
+        var leftD = Math.max(0, (x.amount || 0) - (x.paid || 0));
+        if(atD > now) items.push({ at: new Date(atD).toISOString(),
+          title: (x.kind === "out" ? "Вернуть долг: " : "Получить долг: ") + String(x.who || "").slice(0, 40),
+          body: money(leftD), tag: "debt" });
+      });
+    }
     if(S.notifDua && pool.length){
       var morning = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 8, 0, 0).getTime();
       var dua = pool[(dayIndex() + k) % pool.length];
@@ -12330,7 +12658,12 @@ function pushItems(){
    иначе не чаще раза в шесть часов. */
 function pushSig(){
   var c = currentCity();
-  return [c.lat, c.lng, c.tz, S.method, S.madhab, S.notifPrayer ? 1 : 0, S.notifDua ? 1 : 0, pauseNow() ? 1 : 0, todayKey()].join("|");
+  var tasks = (S.todos || []).filter(function(x){ return !x.done && x.due && x.tm; })
+    .map(function(x){ return x.due + x.tm + x.id; }).join(",") + "|" +
+    (S.debts || []).filter(function(x){ return !x.closed && x.due; })
+    .map(function(x){ return x.due + x.id; }).join(",");
+  return [c.lat, c.lng, c.tz, S.method, S.madhab, S.notifPrayer ? 1 : 0, S.notifDua ? 1 : 0,
+          S.notifTasks === false ? 0 : 1, pauseNow() ? 1 : 0, todayKey(), tasks].join("|");
 }
 function pushSync(force){
   if(!pushOn() || !pushSupported() || PUSH_BUSY) return;
@@ -12884,6 +13217,7 @@ function viewProf(){
     swRow("notifPrayer","🕌","Напоминания о намазе") +
     swRow("notifAzan","🔊","Звук азана") +
     swRow("notifDua","✦","Дуа дня утром") +
+    swRow("notifTasks","✓","Напоминания о задачах со временем") +
     '<button class="row" data-pushtoggle="1"><span class="ic">🔔</span>При закрытом приложении'+
       '<span class="sw'+(pushOn()?" on":"")+'"></span></button>'+
     '</div>');
@@ -12977,7 +13311,7 @@ function viewSettings(){
    ============================================================ */
 var BK_KEYS = ["fav","tasbih","tasbihTotal","read","dcnt","practice","orders","readDay","done","salah","myduas","goals",
   "namesRead","daily","shukrNotes","shukr","checks","sunnah","health","pauses","qada","points","pointsDay",
-  "fin","todos","quiz","azkarLifetime","qLast","qMax","qMarks","qplan","hifz","zakat","trip","kids","finReqs",
+  "fin","finLimits","debts","finRepeat","todos","quiz","azkarLifetime","qLast","qMax","qMarks","qplan","hifz","zakat","trip","kids","finReqs",
   "name","city","method","madhab","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll"];
 
 /* Что человек потеряет, если копии не будет. Считаем по тем же данным,
@@ -14037,7 +14371,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -14392,6 +14726,82 @@ document.getElementById("app").addEventListener("click", function(ev){
     toast(ftype === "in" ? "Доход записан" : "Расход записан");
     return;
   }
+  if(d.finlims!==undefined){ sheetFinLimits(); return; }
+  if(d.finlim){ sheetFinLimit(d.finlim); return; }
+  if(d.finlimsave){
+    var lv = document.getElementById("finLimitVal");
+    var lval = Math.max(0, Math.round(Number(lv && lv.value) || 0));
+    if(lval) finLimits()[d.finlimsave] = lval; else delete finLimits()[d.finlimsave];
+    save(); sheetFinLimits(); render();
+    toast(lval ? "Лимит сохранён" : "Лимит убран");
+    return;
+  }
+  if(d.dbnew){ sheetDebt(d.dbnew); return; }
+  if(d.dbadd){
+    var who = (document.getElementById("dbWho") || {}).value || "";
+    var dam = Math.max(0, Math.round(Number((document.getElementById("dbAmount") || {}).value) || 0));
+    if(!who.trim()){ toast("Напишите, с кем долг"); return; }
+    if(!dam){ toast("Укажите сумму"); return; }
+    debtsList().unshift({ id: "db" + Date.now(), kind: d.dbadd, who: who.trim().slice(0, 80), amount: dam, paid: 0,
+      due: ((document.getElementById("dbDue") || {}).value || "").slice(0, 10),
+      note: ((document.getElementById("dbNote") || {}).value || "").trim().slice(0, 140), ts: Date.now() });
+    save(); closeSheet(); render(); toast("Долг записан");
+    return;
+  }
+  if(d.dbpayopen){ sheetDebtPay(d.dbpayopen); return; }
+  if(d.dbpay){
+    var dbt = debtsList().filter(function(x){ return x.id === d.dbpay; })[0];
+    if(!dbt) return;
+    var pay = Math.max(0, Math.round(Number((document.getElementById("dbPay") || {}).value) || 0));
+    if(!pay){ toast("Укажите сумму"); return; }
+    dbt.paid = (dbt.paid || 0) + pay;
+    if(dbt.paid >= dbt.amount){ dbt.closed = true; dbt.closedTs = Date.now(); }
+    var alsoFin = document.getElementById("dbFin");
+    if(alsoFin && alsoFin.checked){
+      if(!S.fin) S.fin = [];
+      S.fin.push({ id: "f" + Date.now(), d: todayKey(), type: dbt.kind === "out" ? "out" : "in",
+        cat: dbt.kind === "out" ? "other_out" : "other_in", amount: pay,
+        note: "Возврат долга: " + (dbt.who || ""), ts: Date.now() });
+    }
+    save(); closeSheet(); render();
+    toast(dbt.closed ? "Долг закрыт, альхамду лиЛлях" : "Отмечено");
+    return;
+  }
+  if(d.dbdel){
+    if(!window.confirm("Удалить запись о долге?")) return;
+    S.debts = debtsList().filter(function(x){ return x.id !== d.dbdel; });
+    save(); render(); return;
+  }
+  if(d.dbzakat){
+    /* Долги влияют на закят: свои вычитаются, чужие прибавляются, если вернут. */
+    if(!S.zakat || typeof S.zakat !== "object") S.zakat = {};
+    S.zakat.debtsOut = String(debtsTotal("out"));
+    S.zakat.debtsIn = String(debtsTotal("in"));
+    save(); open("zakat", null);
+    toast("Суммы долгов подставлены в расчёт");
+    return;
+  }
+  if(d.finrep!==undefined){ sheetFinRepeat(); return; }
+  if(d.frtype){ V.frType = d.frtype; V.frCat = ""; sheetFinRepeat(); return; }
+  if(d.frcat){ V.frCat = d.frcat; sheetFinRepeat(); return; }
+  if(d.finrepadd!==undefined){
+    var ram = Math.max(0, Math.round(Number((document.getElementById("frAmount") || {}).value) || 0));
+    var rday = Math.min(28, Math.max(1, Math.round(Number((document.getElementById("frDay") || {}).value) || 1)));
+    var rtype = V.frType === "in" ? "in" : "out";
+    var rcat = V.frCat || FIN_CATS[rtype][0][0];
+    if(!ram){ toast("Укажите сумму"); return; }
+    finRepeatList().push({ id: "r" + Date.now(), type: rtype, cat: rcat, amount: ram, day: rday,
+      note: ((document.getElementById("frNote") || {}).value || "").trim().slice(0, 80) });
+    V.frCat = "";
+    save(); sheetFinRepeat(); render(); toast("Добавлено в регулярные");
+    return;
+  }
+  if(d.finrepdel){
+    S.finRepeat = finRepeatList().filter(function(x){ return x.id !== d.finrepdel; });
+    save(); sheetFinRepeat(); render(); return;
+  }
+  if(d.finrepapply){ finRepeatApply(d.finrepapply); return; }
+  if(d.finexport){ finExport(d.finexport); return; }
   if(d.findel){
     S.fin = (S.fin||[]).filter(function(x){ return x.id !== d.findel; });
     save(); render(); return;
@@ -14514,6 +14924,18 @@ document.getElementById("app").addEventListener("click", function(ev){
     V.plEditText = V.plEditDate = V.plEditTime = V.plEditGoal = V.plEditRep = undefined;
     render(); toast("Сохранено"); return;
   }
+  if(d.plmove === "tomorrow"){
+    /* Разгрузить день: всё, кроме главного, уезжает на завтра. */
+    var tmv = new Date(); tmv.setDate(tmv.getDate() + 1);
+    var tk = dayKey(tmv), tdk = todayKey(), moved = 0;
+    (S.todos || []).forEach(function(x){
+      if(x.done || x.p === 1) return;
+      if(!x.due || x.due <= tdk){ x.due = tk; moved++; }
+    });
+    save(); render();
+    toast(moved ? "Перенесено на завтра: " + moved : "Переносить нечего: остались только главные дела");
+    return;
+  }
   if(d.plpush!==undefined){
     var tdk = todayKey(), moved = 0;
     (S.todos||[]).forEach(function(x){
@@ -14531,7 +14953,10 @@ document.getElementById("app").addEventListener("click", function(ev){
     var gi = document.getElementById("plGoalInput");
     var gtx = String(gi && gi.value || "").trim();
     if(!gtx){ toast("Напишите свою цель"); return; }
-    S.goals.unshift({id:"g"+Date.now(), t:gtx, ts:Date.now(), done:false});
+    var gdEl = document.getElementById("plGoalDate");
+    var gdue = gdEl && /^\d{4}-\d{2}-\d{2}$/.test(gdEl.value) ? gdEl.value : "";
+    S.goals.unshift({id:"g"+Date.now(), t:gtx, ts:Date.now(), done:false, due:gdue});
+    if(gdEl) gdEl.value = "";
     save(); render(); toast("Записано"); return;
   }
   if(d.plgoalopen){ V.plGoalOpen = (V.plGoalOpen === d.plgoalopen) ? null : d.plgoalopen; render(); return; }
@@ -14582,7 +15007,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.pushtoggle!==undefined){ if(pushOn()) pushDisable(); else pushEnable(); return; }
   if(d.sw){
     S[d.sw] = !S[d.sw]; save(); render();
-    if(d.sw === "notifPrayer" || d.sw === "notifDua") pushSync(true);
+    if(d.sw === "notifPrayer" || d.sw === "notifDua" || d.sw === "notifTasks") pushSync(true);
     if(S[d.sw] && (d.sw === "notifPrayer" || d.sw === "notifDua")){
       notifAsk().then(function(r){
         if(r === "granted"){ toast("Напоминания включены"); }
