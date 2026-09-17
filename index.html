@@ -268,7 +268,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* ---------- screens ---------- */
 .screen{
   flex:1;overflow-y:auto;overflow-x:hidden;
-  padding:16px 16px 104px;
+  padding:16px 16px 88px;
   -webkit-overflow-scrolling:touch;
   scrollbar-width:thin;
 }
@@ -599,14 +599,17 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   display:grid;grid-template-columns:repeat(6,1fr);
   background:var(--nav-bg);backdrop-filter:blur(14px);
   border-top:1px solid var(--line);
-  padding:8px 4px calc(8px + env(safe-area-inset-bottom));
+  padding:4px 4px calc(5px + env(safe-area-inset-bottom));
+  transition:transform .22s cubic-bezier(.2,.8,.3,1);
 }
-.tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 2px;color:var(--ink-3);position:relative}
+/* при чтении панель уезжает вниз и не отнимает высоту */
+.tabbar.hide{transform:translateY(calc(100% + 4px))}
+.tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:3px 2px;color:var(--ink-3);position:relative}
 .tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.tab span{font-size:10.5px;font-weight:500;letter-spacing:-.01em}
-.tab svg{width:21px;height:21px}
+.tab span{font-size:10px;font-weight:500;letter-spacing:-.01em}
+.tab svg{width:20px;height:20px}
 .tab.on{color:var(--accent-ink)}
-.tab.on::before{content:"";position:absolute;top:-8px;width:22px;height:2.5px;border-radius:0 0 3px 3px;background:var(--gold)}
+.tab.on::before{content:"";position:absolute;top:-4px;width:22px;height:2.5px;border-radius:0 0 3px 3px;background:var(--gold)}
 
 /* sheet / modal */
 .scrim{position:absolute;inset:0;z-index:40;background:rgba(10,16,42,.55);backdrop-filter:blur(2px);display:flex;align-items:flex-end;animation:fade .2s}
@@ -684,7 +687,7 @@ button, a{ -webkit-tap-highlight-color:transparent }
 
 /* мини-плеер: виден на любой вкладке, пока звучит аят - иначе паузу негде нажать */
 .miniplayer{
-  position:absolute;left:10px;right:10px;bottom:calc(66px + env(safe-area-inset-bottom));z-index:30;
+  position:absolute;left:10px;right:10px;bottom:calc(56px + env(safe-area-inset-bottom));z-index:30;
   display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:16px;
   background:linear-gradient(150deg,var(--sapphire),var(--sapphire-3));
   border:1px solid rgba(212,175,55,.45);box-shadow:var(--shadow-lg);color:#fff;
@@ -2199,7 +2202,6 @@ var COURSES = [
 var COURSE_ORDER = ["ai", "sunnah", "dtd"];
 COURSES.sort(function(a,b){ return COURSE_ORDER.indexOf(a.id) - COURSE_ORDER.indexOf(b.id); });
 
-var BUNDLE = {price:24900, full:26890};
 /* Клуб JAVATTI живёт в приложении JAVATTI; оплата та же - CRM школы и Prodamus. */
 var CLUB = { id:"club", ic:"◇", n:"Клуб JAVATTI", start:"Открывается сразу после оплаты", price:3000,
   short:"Приложение JAVATTI: готовые решения на нейросетях для бизнеса, эфиры школы и сообщество предпринимателей. Разделы здоровья, жизни и гардероба - с кураторами.",
@@ -3340,6 +3342,7 @@ function renderTabs(){
       (un? '<span style="position:absolute;top:2px;left:calc(50% + 7px);min-width:15px;height:15px;padding:0 4px;border-radius:8px;background:var(--gold);color:#1E2A5A;font-size:10px;font-weight:700;line-height:15px;text-align:center">'+un+'</span>' : '')+
       '</button>';
   }).join("");
+  tabbarShow();
 }
 
 /* ---------- шапка ---------- */
@@ -12343,7 +12346,6 @@ function javattiUrl(course, token){
 function viewCourses(){
   var h = ['<div class="stack">'];
   var paid = COURSES.filter(function(c){ return c.price; });
-  var needBundle = paid.length>1 && paid.some(function(c){ return !bought(c.id); });
   h.push(clubCard());
   COURSES.forEach(function(c){
     h.push(courseCard(c));
@@ -12352,17 +12354,6 @@ function viewCourses(){
   });
   h.push('<div class="sec-h" style="margin-top:8px"><h3>Книга</h3></div>');
   h.push(bookCard());
-  if(needBundle){
-    h.push('<section class="card" style="border-color:rgba(212,175,55,.45)">'+
-      '<div class="eyebrow" style="color:var(--accent-ink)">Комплект</div>'+
-      '<h4 style="font-family:var(--f-display);font-size:16.5px;margin:6px 0 4px">'+esc(paid.map(function(c){return c.n;}).join(" + "))+'</h4>'+
-      '<p style="font-size:14px;color:var(--ink-2);margin:0;line-height:1.5">Оба курса вместе выгоднее, чем по отдельности. Доступ навсегда.</p>'+
-      '<div style="display:flex;align-items:baseline;gap:9px;margin:11px 0 12px">'+
-        '<span class="price" style="font-size:21px">'+money(BUNDLE.price)+'</span>'+
-        '<span style="font-size:14.5px;color:var(--ink-3);text-decoration:line-through">'+money(BUNDLE.full)+'</span>'+
-        '<span class="chip" style="margin-left:auto">−'+Math.round((1-BUNDLE.price/BUNDLE.full)*100)+'%</span></div>'+
-      '<button class="btn" data-buy="bundle">Купить комплект</button></section>');
-  }
   h.push(waCard(
     'Записаться на обучение',
     'Ответим на вопросы о программах, тарифах и рассрочке',
@@ -13692,7 +13683,6 @@ function digitsOf(v){ return String(v||"").split("").filter(function(ch){ return
    и отдаёт ссылку Prodamus. После оплаты приложение само узнаёт об этом
    и открывает доступ, а данные для входа приходят на почту. */
 function sheetBuy(id, tariff){
-  if(id === "bundle"){ sheetBundle(); return; }
   var isBook = id === BOOK1.id;
   var c = isBook ? null : (id === CLUB.id ? CLUB : COURSES.filter(function(x){ return x.id === id; })[0]);
   if(!isBook && !c) return;
@@ -13732,14 +13722,6 @@ function sheetBuy(id, tariff){
     (plan ? '<p class="note" style="margin-top:10px">Рассрочка от школы JAVATTI без процентов и штрафов. После первого взноса разделы программы открываются по одному раз в неделю, после полной оплаты - вся программа сразу. Если взнос просрочен, уроки закрываются до оплаты. О следующих взносах напомним за 3 дня, оплатить можно по ссылке в сообщении или в профиле.</p>' : '')+
     '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>'+
     '<p class="note" style="margin-top:12px">Оплата картой или по СБП на защищённой странице Prodamus. После оплаты доступ откроется сам: данные для входа придут на почту, а в приложении появится отметка.</p>');
-}
-
-/* Комплект пока оформляет менеджер: состав и цена комплекта уточняются. */
-function sheetBundle(){
-  sheet('<h3>Комплект программ</h3>'+
-    '<p class="note" style="margin:0 0 14px">Комплект оформляем через менеджера: он подберёт состав и пришлёт ссылку на оплату.</p>'+
-    '<a class="btn" style="text-decoration:none;display:block;text-align:center" href="https://wa.me/'+digitsOf(CONTACT.tel)+'?text='+encodeURIComponent("Здравствуйте! Хочу оформить комплект программ")+'" target="_blank" rel="noopener">Написать в WhatsApp</a>'+
-    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Закрыть</button>');
 }
 
 /* Сохраняем то, что человек уже ввёл, - при смене тарифа окно перерисовывается. */
@@ -15095,6 +15077,19 @@ setInterval(function(){
 }, 60000);
 
 /* запоминаем, до какого аята дочитали при прокрутке */
+/* Панель прячется при листании вниз и возвращается при движении вверх.
+   Порог в 10 px - чтобы дрожание пальца её не дёргало. */
+var TB_Y = 0, TB_HID = false;
+function tabbarShow(){ if(TB_HID){ $tabbar.classList.remove("hide"); TB_HID = false; } TB_Y = $screen.scrollTop; }
+$screen.addEventListener("scroll", function(){
+  var y = $screen.scrollTop;
+  if(y < 80){ tabbarShow(); return; }
+  var d = y - TB_Y;
+  if(d > 10 && !TB_HID){ $tabbar.classList.add("hide"); TB_HID = true; TB_Y = y; }
+  else if(d < -10){ tabbarShow(); }
+  else if(d > 10) TB_Y = y;
+}, {passive:true});
+
 $screen.addEventListener("scroll", function(){
   if(V.view !== "reader") return;
   var nodes = document.querySelectorAll(".ayah");
