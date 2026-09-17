@@ -2140,7 +2140,7 @@ var ZIKRS = [
    нейросетям. Пока адрес не заполнен, блок не показывается: вести человека
    по несуществующей ссылке хуже, чем не показать блок вовсе.
    Заполнить один раз после публикации Вольта. */
-var VOLT_URL = "https://dzhavatxanovaz-crypto.github.io/volt/";
+var VOLT_URL = "https://app.javattigroup.ru/";
 
 var COURSES = [
 {
@@ -2203,7 +2203,7 @@ var BUNDLE = {price:24900, full:26890};
 /* Клуб JAVATTI живёт в приложении JAVATTI; оплата та же - CRM школы и Prodamus. */
 var CLUB = { id:"club", ic:"◇", n:"Клуб JAVATTI", start:"Открывается сразу после оплаты", price:3000,
   short:"Приложение JAVATTI: готовые решения на нейросетях для бизнеса, эфиры школы и сообщество предпринимателей. Разделы здоровья, жизни и гардероба - с кураторами.",
-  url:"https://crm.javattigroup.ru/app/" };
+  url:"https://app.javattigroup.ru/" };
 var CONTACT = {phone:"+7 928 593-60-69", tel:"+79285936069", email:"dzhavatxanova@mail.ru", school:"Школа бизнеса JAVATTI"};
 
 /* ============================================================
@@ -12017,8 +12017,10 @@ function rTrack(event, product){
 }
 var R_SEEN = {};
 function rTrackOnce(event, product){ var k = event + ":" + product; if(R_SEEN[k]) return; R_SEEN[k] = 1; rTrack(event, product); }
+/* Приложение JAVATTI - короткий адрес (17.09.2026) */
+var JAVATTI_APP_URL = "https://app.javattigroup.ru/";
 function javattiUrl(course, token){
-  return CRM_URL + "/app/" + (course ? "?course=" + encodeURIComponent(course) : "?tab=learn") +
+  return JAVATTI_APP_URL + (course ? "?course=" + encodeURIComponent(course) : "?tab=learn") +
     "#from=rizq&vid=" + rizqVisitor() + (token ? "&t=" + encodeURIComponent(token) : "");
 }
 
