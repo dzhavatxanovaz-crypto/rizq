@@ -4134,6 +4134,13 @@ function viewDua(){
         '<b>'+esc(g[2])+'</b><span>'+esc(g[3])+'</span></button>';
     }).join("")+'</div>');
 
+  /* «Азкары» - первыми, перед «Детям» (просьба Заиры 17.09.2026) */
+  KNOW.filter(function(k){ return k.id === "azkar"; }).forEach(function(k){
+    h.push('<button class="cat-wide" data-know="'+k.id+'">'+
+      '<span class="cw-ic">'+k.ic+'</span>'+
+      '<span class="cw-t"><b>'+esc(k.n)+'</b><span>'+esc(knowCount(k.id))+'</span></span>'+
+      '<span class="cw-go">›</span></button>');
+  });
   h.push('<button class="cat-wide gold" data-open="kids">'+
     '<span class="cw-ic">✧</span>'+
     '<span class="cw-t"><b>Детям</b><span>истории пророков, перед сном, дуа, имена</span></span>'+
@@ -4148,6 +4155,7 @@ function viewDua(){
     '<span class="cw-go">›</span></button>');
 
   KNOW.forEach(function(k){
+    if(k.id === "azkar") return;
     h.push('<button class="cat-wide'+(k.id==="book"?" gold":"")+'" data-know="'+k.id+'">'+
       '<span class="cw-ic">'+k.ic+'</span>'+
       '<span class="cw-t"><b>'+esc(k.n)+'</b><span>'+esc(knowCount(k.id))+'</span></span>'+
