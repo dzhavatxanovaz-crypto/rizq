@@ -437,6 +437,58 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 }
 .cat.hi .ic{color:#3E9B72}
 .cat.hi::after{background:rgba(45,106,79,.12)}
+/* халяль рядом */
+.hl-head .hl-h1{font-family:var(--f-display);font-size:22px;font-weight:700;margin-top:6px}
+.hl-head .hl-sub{font-size:13.5px;color:var(--ink-2);line-height:1.5;margin-top:5px}
+.hl-f{display:flex;gap:7px;flex-wrap:wrap}
+.hl-city{display:flex;gap:8px;align-items:center;margin-top:12px}
+.hl-city select{flex:1;min-width:0;margin:0}
+.hl-city .btn{width:auto;flex:none}
+.hl-f .chip{cursor:pointer;font-size:13px;padding:7px 12px}
+.hl-f .chip.on{background:var(--accent-ink);color:var(--surface);border-color:var(--accent-ink)}
+.hl-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:13px 14px;box-shadow:var(--shadow)}
+.hl-top{display:flex;gap:10px;align-items:flex-start}
+.hl-n{flex:1;min-width:0}
+.hl-n b{display:block;font-family:var(--f-display);font-size:15.5px;font-weight:600;line-height:1.3}
+.hl-n span{display:block;font-size:12.5px;color:var(--ink-3);margin-top:3px;line-height:1.4}
+.hl-d{flex:none;text-align:right}
+.hl-d b{display:block;font-size:14.5px;color:var(--accent-ink);font-variant-numeric:tabular-nums}
+.hl-d span{display:block;font-size:11.5px;color:var(--ink-3);margin-top:2px}
+.hl-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.hl-tag{font-size:11.5px;padding:3px 8px;border-radius:99px;border:1px solid var(--line);color:var(--ink-2);background:var(--surface-2)}
+.hl-tag.ok{border-color:rgba(45,106,79,.4);background:rgba(45,106,79,.12)}
+.hl-tag.gold{border-color:rgba(212,175,55,.6);background:rgba(212,175,55,.16);color:var(--accent-ink);font-weight:600}
+.hl-cert{font-size:12.5px;color:var(--ink-2);margin-top:8px;line-height:1.45}
+.hl-when{font-size:13px;color:var(--ink-2);margin-top:9px;padding:7px 10px;border-radius:10px;background:var(--surface-2)}
+.hl-when.ok{background:rgba(45,106,79,.12)}
+.hl-act{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:11px}
+.hl-act .btn{width:auto;flex:none;text-decoration:none}
+.hl-err{margin-left:auto;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);color:var(--ink-3);font-weight:700;background:none}
+.hl-empty b{display:block;font-size:15px}
+.hl-tag.warn{border-color:rgba(200,80,60,.45);background:rgba(200,80,60,.12)}
+.hl-rate{font-size:13px;color:var(--ink-2);margin-top:7px}
+.hl-rate .st,.hl-rv .st{color:#D4AF37;letter-spacing:1px}
+.hl-rank{font-family:var(--f-display);font-size:13px;font-weight:700;color:var(--accent-ink);margin:4px 0 -4px 4px}
+.hl-form{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-md);padding:12px}
+.hl-stars{display:flex;gap:4px;margin:8px 0 6px}
+.hl-stars button{font-size:30px;line-height:1;color:var(--line);background:none;border:none;padding:2px}
+.hl-stars button.on{color:#D4AF37}
+.hl-q{display:flex;flex-direction:column;gap:6px;margin:10px 0 2px}
+.hl-q span{font-size:13.5px;color:var(--ink-2)}
+.hl-q div{display:flex;gap:6px;flex-wrap:wrap}
+.hl-q .chip{cursor:pointer}
+.hl-q .chip.on{background:var(--accent-ink);color:var(--surface);border-color:var(--accent-ink)}
+.hl-cb{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-2);margin:10px 0}
+.hl-rv{border-top:1px solid var(--line-soft);padding:10px 0}
+.hl-rv-h{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.hl-rv-h b{font-size:14px}
+.hl-rv-h .d{margin-left:auto;font-size:12px;color:var(--ink-3)}
+.hl-rv-f{font-size:12.5px;color:var(--accent-ink);margin-top:3px}
+.hl-rv-t{font-size:14px;line-height:1.5;margin-top:4px;white-space:pre-wrap;overflow-wrap:anywhere}
+.hl-rv-a{font-size:12px;color:var(--ink-3);background:none;border:none;padding:4px 0;margin-top:2px;text-decoration:underline}
+.hl-empty span{display:block;font-size:13.5px;color:var(--ink-3);margin-top:4px;line-height:1.5}
+.hl-own b{display:block;font-family:var(--f-display);font-size:15.5px;font-weight:600;line-height:1.35}
+.hl-own span{display:block;font-size:13.5px;color:var(--ink-2);margin-top:5px;line-height:1.5}
 
 /* тасбих на главной - широкая карточка со счётчиком */
 .tasbih-cta{
@@ -1184,6 +1236,10 @@ var CITIES = [
   {id:"izb", n:"Избербаш",          lat:42.5667, lng:47.8667, tz:3},
   {id:"kzl", n:"Кизляр",            lat:43.8464, lng:46.7167, tz:3},
   {id:"bui", n:"Буйнакск",          lat:42.8203, lng:47.1181, tz:3},
+  {id:"msk", n:"Москва",            lat:55.7558, lng:37.6173, tz:3},
+  {id:"spb", n:"Санкт-Петербург",   lat:59.9311, lng:30.3609, tz:3},
+  {id:"kdr", n:"Краснодар",         lat:45.0355, lng:38.9753, tz:3},
+  {id:"rnd", n:"Ростов-на-Дону",    lat:47.2357, lng:39.7015, tz:3},
   {id:"gro", n:"Грозный",           lat:43.3169, lng:45.6981, tz:3},
   {id:"nal", n:"Нальчик",           lat:43.4981, lng:43.6189, tz:3},
   {id:"maz", n:"Магас",             lat:43.1667, lng:44.8125, tz:3},
@@ -1191,13 +1247,9 @@ var CITIES = [
   {id:"chr", n:"Черкесск",          lat:44.2269, lng:42.0578, tz:3},
   {id:"myk", n:"Майкоп",            lat:44.6098, lng:40.1006, tz:3},
   {id:"stv", n:"Ставрополь",        lat:45.0428, lng:41.9734, tz:3},
-  {id:"kdr", n:"Краснодар",         lat:45.0355, lng:38.9753, tz:3},
   {id:"soc", n:"Сочи",              lat:43.5855, lng:39.7231, tz:3},
-  {id:"rnd", n:"Ростов-на-Дону",    lat:47.2357, lng:39.7015, tz:3},
   {id:"vlg", n:"Волгоград",         lat:48.7080, lng:44.5133, tz:3},
   {id:"ast", n:"Астрахань",         lat:46.3497, lng:48.0408, tz:4},
-  {id:"msk", n:"Москва",            lat:55.7558, lng:37.6173, tz:3},
-  {id:"spb", n:"Санкт-Петербург",   lat:59.9311, lng:30.3609, tz:3},
   {id:"klg", n:"Калининград",       lat:54.7104, lng:20.4522, tz:2},
   {id:"nng", n:"Нижний Новгород",   lat:56.3269, lng:44.0059, tz:3},
   {id:"kaz", n:"Казань",            lat:55.7963, lng:49.1088, tz:3},
@@ -3431,6 +3483,7 @@ function renderHdr(){
         : V.view==="hadithOne" ? "Хадис ан-Навави"
         : V.view==="suras" ? "Короткие суры"
         : V.view==="qibla" ? "Кибла"
+        : V.view==="halal" ? "Халяль рядом"
         : V.view==="calendar" ? "Исламский календарь"
         : V.view==="zakat" ? "Калькулятор закята"
         : V.view==="mydua" ? "Мои дуа"
@@ -3710,6 +3763,10 @@ function viewHomeMain(){
     '<button class="cat" data-open="qibla"><div class="ic">✧</div><b>Кибла</b><span>'+Math.round(qiblaBearing())+'° от севера</span></button>'+
     '<button class="cat" data-open="live"><div class="ic" style="font-size:24px">🕋</div><b>Мекка онлайн</b><span>прямой эфир из Харама</span></button>'+
     '</div>');
+  h.push('<button class="cat-wide gold" data-open="halal" style="margin-top:10px">'+
+    '<span class="cw-ic">☪</span>'+
+    '<span class="cw-t"><b>Халяль рядом</b><span>еда, магазины и ближайшая мечеть</span></span>'+
+    '<span class="cw-go">›</span></button>');
 
   /* хадис дня */
   var hd = HADITHS.length ? HADITHS[dayIndex() % HADITHS.length] : null;
@@ -3778,7 +3835,7 @@ var SHARE_TEXT = "Ассаламу алейкум! Нашла приложени
 /* Экраны, которые можно открыть ссылкой. Белый список, а не любое значение:
    по чужой ссылке приложение не должно оказываться где угодно. */
 var DEEP_VIEWS = ["courses","sadaqa","zakat","names","hadith","sira","book1","qibla",
-                  "calendar","tasbih","suras","qduas","duaall","report","share","consulting","live","installment","kids","hajjtrip","salahpics"];
+                  "calendar","tasbih","suras","halal","qduas","duaall","report","share","consulting","live","installment","kids","hajjtrip","salahpics"];
 var DEEP_TABS  = ["home","quran","dua","journal","income","prof"];
 
 function deepOpen(){
@@ -4312,9 +4369,11 @@ function shareDua(id){
 
 function duaCard(d){
   d = duaFull(d);
-  var k = "dua:"+d.id, cnt = (S.dcnt||{})[d.id]||0;
-  /* прочитано: для азкаров с повтором - когда пройдены все повторы сегодня */
-  var fin = d.rep>1 ? cnt>=d.rep : !!S.read[d.id];
+  var k = "dua:"+d.id, cnt = (S.dcnt||{})[d.id]||0, need = d.rep>1 ? d.rep : 1;
+  /* Цифра видна всегда, и у того, что читают один раз: иначе непонятно,
+     отмечено уже или нет (просьба Заиры 19.09). Старая отметка без счётчика = 1. */
+  if(need===1 && S.read[d.id]) cnt = Math.max(cnt, 1);
+  var fin = cnt>=need;
   return '<article class="dua" id="dua-'+d.id+'">'+
     '<div class="dua-h"><b>'+esc(d.n)+'</b>'+
       (d.rep>1? '<span class="chip" style="margin-left:auto;flex:none">'+d.rep+'×</span>':'')+'</div>'+
@@ -4328,7 +4387,7 @@ function duaCard(d){
     '<div class="dua-f">'+
       '<button class="fav'+(isFav(k)?" on":"")+'" data-fav="'+k+'" aria-label="В избранное">'+(isFav(k)?"★":"☆")+'</button>'+
       '<button class="fav" data-dshare="'+d.id+'" aria-label="Поделиться" title="Поделиться">⤴</button>'+
-      '<button class="btn sec sm" data-count="'+d.id+'">Прочитал'+(d.rep>1? " · "+cnt+"/"+d.rep : "")+'</button>'+
+      '<button class="btn sec sm" data-count="'+d.id+'"'+(fin?' style="border-color:var(--emerald);color:var(--emerald)"':'')+'>Прочитал · '+cnt+'/'+need+'</button>'+
       '<span class="rep">'+(fin ? "✓ сегодня" : d.rep>1 ? (cnt ? "осталось "+(d.rep-cnt) : "повторить "+d.rep+" "+timesWord(d.rep)) : "")+'</span>'+
     '</div></article>';
 }
@@ -11037,6 +11096,431 @@ function viewQibla(){
 }
 
 /* ============================================================
+   ЭКРАН: ХАЛЯЛЬ РЯДОМ
+   Еда, магазины и места для намаза вокруг человека.
+   Данные - открытая карта OpenStreetMap, собранная заранее по городам
+   (scripts/halal-data.js) и лежащая рядом с приложением: работает
+   без интернета, а координаты человека не уходят никуда - расстояние
+   считает сам телефон. Приложение не выносит решений «халяль или нет»:
+   оно честно пишет, откуда сведения, и советует спросить сертификат.
+   ============================================================ */
+var HL = { city:null, data:null, loading:false, err:false };
+var HL_DAG = {mah:1,der:1,has:1,kas:1,izb:1,kzl:1,bui:1};
+var HL_KAVKAZ = {mah:1,der:1,has:1,kas:1,izb:1,kzl:1,bui:1,gro:1,nal:1,maz:1,vlk:1,chr:1};
+var HL_LABEL = {
+  cert:   {t:"Сертификат халяль", c:"gold"},
+  only:   {t:"На карте: только халяль", c:"ok"},
+  yes:    {t:"На карте: есть халяль", c:"ok"},
+  name:   {t:"Халяль в названии", c:""},
+  mosque: {t:"Мечеть", c:"ok"},
+  room:   {t:"Молельная комната", c:"ok"},
+  place:  {t:"", c:""}
+};
+var HL_FILTERS = [
+  {id:"all",  n:"Всё"},
+  {id:"food", n:"Еда"},
+  {id:"shop", n:"Магазины"},
+  {id:"pray", n:"Где помолиться"},
+  {id:"pr",   n:"Есть молельная комната"},
+  {id:"top",  n:"Рейтинг"}
+];
+
+function hlDist(a, b){
+  var R = 6371000, r = Math.PI/180;
+  var dLa = (b.lat-a.lat)*r, dLo = (b.lng-a.lng)*r;
+  var x = Math.sin(dLa/2)*Math.sin(dLa/2) + Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dLo/2)*Math.sin(dLo/2);
+  return 2*R*Math.asin(Math.sqrt(x));
+}
+/* откуда считаем: точное место (если человек разрешил), иначе центр выбранного города */
+function hlBase(){
+  if(V.hlPos) return {lat:V.hlPos.lat, lng:V.hlPos.lng, real:true};
+  /* город, выбранный прямо здесь (например, перед поездкой) - отдельно от города намаза */
+  var hc = S.hlCity ? CITIES.filter(function(c){ return c.id===S.hlCity; })[0] : null;
+  if(hc) return {lat:hc.lat, lng:hc.lng, real:false, city:hc.id};
+  if(S.city==="gps" && S.gps) return {lat:S.gps.lat, lng:S.gps.lng, real:true};
+  var c = currentCity();
+  return {lat:c.lat, lng:c.lng, real:false};
+}
+/* файл какого города нужен: выбранный, а при GPS - ближайший в пределах 70 км */
+function hlCityId(){
+  var b = hlBase();
+  if(b.city) return b.city;
+  if(!b.real && S.city && S.city!=="gps") return S.city;
+  var best = null, bd = 1e12;
+  CITIES.forEach(function(c){ var d = hlDist(b, c); if(d < bd){ bd = d; best = c; } });
+  return (best && bd < 70000) ? best.id : null;
+}
+function hlLoad(){
+  var id = hlCityId();
+  if(HL.city === id && (HL.data || HL.loading || HL.err)) return;
+  HL.city = id; HL.data = null; HL.err = false;
+  if(!id){ return; }
+  HL.loading = true;
+  fetch("halal/"+id+".json")
+    .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+    .then(function(j){ if(HL.city!==id) return; HL.data = j; HL.loading = false; if(V.view==="halal") render(); })
+    .catch(function(){ if(HL.city!==id) return; HL.loading = false; HL.err = true; if(V.view==="halal") render(); });
+}
+function hlWalkMin(m){ return Math.max(1, Math.round(m*1.25/75)); } /* 4,5 км/ч и поправка на улицы */
+function hlDistText(m){ return m < 1000 ? (Math.round(m/10)*10)+" м" : (m/1000).toFixed(m < 10000 ? 1 : 0).replace(".", ",")+" км"; }
+function hlHours(h){
+  if(!h) return "";
+  if(h === "24/7") return "круглосуточно";
+  var D = {Mo:"пн",Tu:"вт",We:"ср",Th:"чт",Fr:"пт",Sa:"сб",Su:"вс",off:"выходной"};
+  return String(h).replace(/\b(Mo|Tu|We|Th|Fr|Sa|Su|off)\b/g, function(x){ return D[x]; }).replace(/;\s*/g, "; ");
+}
+function hlGroup(x){ return (x.k==="mosque" || x.k==="room") ? "pray" : x.k; }
+
+/* ---------- отзывы ----------
+   Хранятся на нашем сервере в России (сервис rizq-reviews, тот же адрес).
+   Телефонов и почты нет: имя человек пишет сам, устройство - случайный номер. */
+var HL_API = "api/reviews";
+var HLR = { city:null, sum:{}, loading:false };
+function hlDevice(){
+  if(!S.hlDev){
+    var a = "", abc = "abcdefghijklmnopqrstuvwxyz0123456789";
+    for(var i = 0; i < 24; i++) a += abc.charAt(Math.floor(Math.random()*abc.length));
+    S.hlDev = a; save();
+  }
+  return S.hlDev;
+}
+function hlSumLoad(city, force){
+  if(!city || (HLR.city === city && !force && (HLR.loading || HLR.at))) return;
+  if(HLR.city !== city){
+    HLR.city = city; HLR.at = 0;
+    try{ HLR.sum = JSON.parse(localStorage.getItem("rizq.hlrev."+city) || "{}"); }catch(e){ HLR.sum = {}; }
+  }
+  if(!window.fetch) return;
+  HLR.loading = true;
+  fetch(HL_API+"/summary?city="+city)
+    .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+    .then(function(j){
+      if(HLR.city !== city) return;
+      HLR.sum = j || {}; HLR.at = Date.now(); HLR.loading = false;
+      try{ localStorage.setItem("rizq.hlrev."+city, JSON.stringify(HLR.sum)); }catch(e){}
+      if(V.view === "halal") render();
+    })
+    .catch(function(){ HLR.loading = false; HLR.at = Date.now(); });
+}
+function hlSum(x){ return HLR.sum[x.id] || null; }
+/* подтверждения людей: «да» больше, чем «нет», и хотя бы одно */
+function hlHasPr(x){ var r = hlSum(x); return !!x.pr || !!(r && r.pr && r.pr[0] > r.pr[1]); }
+
+/* место в рейтинге: средняя оценка, подтянутая к 4 при малом числе отзывов,
+   чтобы одна пятёрка не обгоняла двадцать отзывов со средней 4,8 */
+function hlScore(x){ var r = hlSum(x); return r ? (r.avg*r.n + 4*2)/(r.n + 2) : 0; }
+function hlStars(v){ var s = "", i; for(i = 1; i <= 5; i++) s += i <= Math.round(v) ? "★" : "☆"; return s; }
+function hlList(){
+  if(!HL.data) return [];
+  var b = hlBase(), f = V.hlF || "all";
+  if(f === "top"){
+    return HL.data.items.filter(function(x){ return !!hlSum(x); })
+      .map(function(x){ return {x:x, d:hlDist(b, x)}; })
+      .sort(function(a, c){ return hlScore(c.x) - hlScore(a.x) || c.x.n.localeCompare(a.x.n); });
+  }
+  return HL.data.items
+    .filter(function(x){ return f==="all" || (f==="pr" ? hlHasPr(x) : hlGroup(x)===f); })
+    .map(function(x){ return {x:x, d:hlDist(b, x)}; })
+    /* сертификат - выше при равной близости: в пределах 300 м он идёт первым */
+    .sort(function(a, c){ return (a.d - (a.x.l==="cert"?300:0)) - (c.d - (c.x.l==="cert"?300:0)); });
+}
+function hlRouteY(x){ return "https://yandex.ru/maps/?rtext=~"+x.lat+","+x.lng+"&rtt=pd"; }
+function hl2gis(x){ return "https://2gis.ru/geo/"+x.lng+","+x.lat; }
+function hlSearchY(){ var b = hlBase(); return "https://yandex.ru/maps/?text="+encodeURIComponent("халяль")+"&ll="+b.lng+","+b.lat+"&z=14"; }
+function hlSearch2(){ var b = hlBase(); return "https://2gis.ru/search/"+encodeURIComponent("халяль")+"?m="+b.lng+","+b.lat+"/14"; }
+
+function hlRateLine(x){
+  var r = hlSum(x);
+  if(!r) return '';
+  return '<div class="hl-rate"><span class="st">'+hlStars(r.avg)+'</span> <b>'+String(r.avg).replace(".", ",")+'</b> · '+
+    plural(r.n, "отзыв", "отзыва", "отзывов")+'</div>';
+}
+function hlFlagTags(x){
+  var r = hlSum(x) || {}, h = "";
+  if(x.k !== "mosque" && x.k !== "room"){
+    if(x.pr === 2) h += '<span class="hl-tag gold">Есть молельная комната · проверено</span>';
+    else if(hlHasPr(x)) h += '<span class="hl-tag ok">Есть молельная комната'+(r.pr && r.pr[0] ? ' · подтвердили '+r.pr[0] : ' · на карте')+'</span>';
+    if(r.cert) h += '<span class="hl-tag">Сертификат видели: '+r.cert+'</span>';
+  }
+  return h;
+}
+function hlCard(r, np){
+  var x = r.x, lb = HL_LABEL[x.l] || HL_LABEL.name, b = hlBase();
+  var name = x.n || (x.k==="room" ? "Молельная комната" : x.k==="mosque" ? "Мечеть" : "Без названия");
+  var walk = hlWalkMin(r.d);
+  var when = "";
+  /* мечеть: успеете ли к ближайшему намазу пешком (только если знаем, где человек) */
+  /* подсказка нужна, только когда намаз скоро: «до Фаджра 5 часов» ничего не даёт */
+  if(b.real && (x.k==="mosque" || x.k==="room") && np && np.key!=="sunrise" && r.d < 5000 && np.left*60 <= 90){
+    var left = Math.round(np.left*60);
+    when = walk + 5 <= left
+      ? '<div class="hl-when ok">Пешком '+walk+' мин · до намаза '+esc(np.name)+' '+left+' мин - успеваете</div>'
+      : '<div class="hl-when">Пешком '+walk+' мин · до намаза '+esc(np.name)+' '+left+' мин</div>';
+  }
+  var cert = (x.l==="cert" && x.c) ? '<div class="hl-cert">'+
+    esc([x.c.by ? "Выдал: "+x.c.by : "", x.c.no ? "№ "+x.c.no : "", x.c.to ? "действует до "+x.c.to : ""].filter(Boolean).join(" · "))+
+    (x.c.at ? '<br>Документ проверен '+esc(x.c.at) : '')+'</div>' : '';
+  return '<article class="hl-card">'+
+    '<div class="hl-top"><div class="hl-n"><b>'+esc(name)+'</b>'+
+      '<span>'+esc([x.s, x.a].filter(Boolean).join(" · ") || (x.k==="shop"?"магазин":x.k==="food"?"заведение":""))+'</span></div>'+
+      '<div class="hl-d"><b>'+hlDistText(r.d)+'</b>'+(b.real && r.d < 3000 ? '<span>'+walk+' мин пешком</span>' : '')+'</div></div>'+
+    hlRateLine(x)+
+    '<div class="hl-tags">'+(!lb.t || (hlGroup(x)==="pray" && name.toLowerCase().indexOf(lb.t.toLowerCase().split(" ").pop())>=0) ? '' : '<span class="hl-tag '+lb.c+'">'+esc(lb.t)+'</span>')+
+      hlFlagTags(x)+
+      (x.f ? '<span class="hl-tag ok">Есть место для женщин</span>' : '')+
+      (x.h ? '<span class="hl-tag">'+esc(hlHours(x.h))+'</span>' : '')+'</div>'+
+    cert + when +
+    '<div class="hl-act">'+
+      '<a class="btn sec sm" href="'+hlRouteY(x)+'" target="_blank" rel="noopener">Маршрут</a>'+
+      '<a class="btn sec sm" href="'+hl2gis(x)+'" target="_blank" rel="noopener">2ГИС</a>'+
+      (x.p ? '<a class="btn sec sm" href="tel:'+esc(String(x.p).replace(/[^0-9+]/g,""))+'">Позвонить</a>' : '')+
+      '<button class="btn sec sm" data-hlrev="'+esc(x.id)+'">Отзывы'+(hlSum(x) ? ' · '+hlSum(x).n : '')+'</button>'+
+      '<button class="hl-err" data-hlerr="'+esc(x.id)+'" aria-label="Сообщить об ошибке" title="Сообщить об ошибке">!</button>'+
+    '</div></article>';
+}
+
+function viewHalal(){
+  hlLoad();
+  var b = hlBase(), c = currentCity(), h = ['<div class="stack">'];
+  var cityName = HL.data ? HL.data.n : c.n;
+
+  h.push('<section class="card hl-head">'+
+    '<div class="eyebrow">'+(b.real ? "Рядом с вами" : "Центр города · "+esc(cityName))+'</div>'+
+    '<div class="hl-sub">Еда, магазины и места для намаза. Расстояние считает ваш телефон, место никуда не отправляется.</div>'+
+    '<div class="hl-city"><select id="hlCitySel" class="search" aria-label="Город">'+
+      '<option value=""'+(S.hlCity||V.hlPos?'':' selected')+'>Мой город · '+esc(c.n)+'</option>'+
+      CITIES.map(function(x){ return '<option value="'+x.id+'"'+(!V.hlPos && S.hlCity===x.id?' selected':'')+'>'+esc(x.n)+'</option>'; }).join("")+
+    '</select>'+
+    (b.real ? '' : '<button class="btn sm" data-hlgps="1">Рядом со мной</button>')+'</div>'+
+  '</section>');
+
+  if(HL.loading){ h.push('<div class="card flat" style="text-align:center;color:var(--ink-3)">Загружаем места...</div></div>'); return h.join(""); }
+
+  if(!HL.city || HL.err || !HL.data){
+    h.push('<div class="card flat hl-empty"><b>'+(HL.err ? "Не удалось загрузить список" : "В вашем районе нашего списка пока нет")+'</b>'+
+      '<span>'+(HL.err ? "Проверьте интернет: после первой загрузки список работает и без него." : "Поищите в картах - там больше мест, а мы добавим ваш город.")+'</span></div>');
+  } else {
+    hlSumLoad(HL.city);
+    var all = hlList(), cnt = {all:0, food:0, shop:0, pray:0, pr:0, top:0};
+    HL.data.items.forEach(function(x){
+      cnt.all++; cnt[hlGroup(x)]++;
+      if(hlHasPr(x) && hlGroup(x)!=="pray") cnt.pr++;
+      if(hlSum(x)) cnt.top++;
+    });
+    var np = null; try{ np = nextPrayer(); }catch(e){}
+
+    /* главное сразу: ближайшее место для намаза, если человек рядом */
+    if(b.real && (V.hlF||"all")==="all"){
+      var pr = all.filter(function(r){ return hlGroup(r.x)==="pray"; })[0];
+      if(pr && pr.d < 5000){
+        h.push('<div class="sec-h"><h3>Ближайшее место для намаза</h3></div>');
+        h.push(hlCard(pr, np));
+      }
+    }
+
+    h.push('<div class="hl-f">'+ HL_FILTERS.map(function(f){
+      return '<button class="chip'+((V.hlF||"all")===f.id?" on":"")+'" data-hlf="'+f.id+'">'+f.n+(f.id==="top" ? '' : ' · '+cnt[f.id])+'</button>';
+    }).join("") +'</div>');
+
+    if(HL_DAG[HL.city] && (V.hlF||"all")!=="top"){
+      h.push('<p class="disclaimer" style="margin:0">В Дагестане на картах почти никто не отмечает халяль, поэтому здесь собраны кафе и рестораны города. '+
+        'Есть ли молельная комната, подтверждают посетители в отзывах. Если место здесь не на своём месте, нажмите «!» на карточке - мы проверим и уберём.</p>');
+    } else if(HL_KAVKAZ[HL.city] && cnt.food + cnt.shop < 15 && (V.hlF||"all")!=="top"){
+      h.push('<p class="disclaimer" style="margin:0">На Кавказе заведения редко отмечают халяль на картах, поэтому еды в списке мало. '+
+        'Больше мест найдёте в Яндекс Картах и 2ГИС по кнопкам ниже.</p>');
+    }
+
+    /* ближайшая мечеть уже стоит сверху - в общем списке её не повторяем */
+    if(typeof pr !== "undefined" && pr && pr.d < 5000 && b.real && (V.hlF||"all")==="all") all = all.filter(function(r){ return r !== pr; });
+    var lim = V.hlLim || 30, shown = all.slice(0, lim);
+    if(!shown.length && (V.hlF||"all") !== "top") h.push('<div class="card flat hl-empty"><b>В этом разделе пока пусто</b><span>Загляните в карты по кнопкам ниже.</span></div>');
+    if((V.hlF||"all") === "top" && !all.length){
+      h.push('<div class="card flat hl-empty"><b>В этом городе пока нет оценок</b><span>Рейтинг складывается из отзывов. Откройте любое место и оцените его первым - кнопка «Отзывы» на карточке.</span></div>');
+    }
+    if((V.hlF||"all") === "top" && all.length) h.push('<p class="disclaimer" style="margin:0">Места по средней оценке посетителей в RIZQ. У мест с одним-двумя отзывами оценка подтянута к средней, чтобы одна пятёрка не обгоняла двадцать хороших отзывов.</p>');
+    h.push(shown.map(function(r, i){ return ((V.hlF||"all") === "top" ? '<div class="hl-rank">'+(i+1)+'</div>' : '')+hlCard(r, np); }).join(""));
+    if(all.length > lim) h.push('<button class="btn sec" data-hlmore="1">Показать ещё '+Math.min(30, all.length-lim)+' из '+(all.length-lim)+'</button>');
+  }
+
+  h.push('<div class="sec-h" style="margin-top:4px"><h3>Искать в картах</h3></div>'+
+    '<div class="hl-act" style="margin:0">'+
+      '<a class="btn sec sm" href="'+hlSearchY()+'" target="_blank" rel="noopener">«Халяль» в Яндекс Картах</a>'+
+      '<a class="btn sec sm" href="'+hlSearch2()+'" target="_blank" rel="noopener">«Халяль» в 2ГИС</a></div>');
+
+  h.push('<section class="card flat hl-own">'+
+    '<b>У вас кафе, магазин или мясная лавка с сертификатом?</b>'+
+    '<span>Пришлите документ - мы проверим его и добавим заведение с золотой меткой «Сертификат халяль». Это бесплатно.</span>'+
+    '<div class="hl-act"><button class="btn sm" data-hlown="1">Добавить заведение</button>'+
+    '<button class="btn sec sm" data-hlsug="1">Предложить место</button></div>'+
+  '</section>');
+
+  h.push('<p class="disclaimer">Метки «на карте» ставят сами заведения и жители города, это не проверка RIZQ. '+
+    'Если сомневаетесь, спросите у заведения сертификат: у него есть номер, срок действия и название органа, который его выдал. '+
+    'Как поступать в спорных случаях - вопрос к знающему человеку.<br>'+
+    'Данные карты: © участники OpenStreetMap'+(HL.data && HL.data.at ? ', обновлено '+esc(postDate(HL.data.at)) : '')+'.</p>');
+  h.push('</div>');
+  return h.join("");
+}
+
+function hlGps(){
+  if(!navigator.geolocation){ toast("Геолокация недоступна - список считается от центра города"); return; }
+  toast("Определяем, где вы...");
+  navigator.geolocation.getCurrentPosition(function(pos){
+    /* держим только в памяти этого сеанса: на сервер и в резервную копию не попадает */
+    V.hlPos = {lat:pos.coords.latitude, lng:pos.coords.longitude};
+    V.hlLim = 30;
+    render();
+  }, function(){
+    toast("Не получилось. Разрешите доступ к местоположению в настройках браузера.");
+  }, {timeout:9000, maximumAge:300000, enableHighAccuracy:true});
+}
+function hlErr(id){
+  var x = HL.data ? HL.data.items.filter(function(i){ return i.id===id; })[0] : null;
+  if(!x) return;
+  sheetHalalMsg("Сообщить об ошибке", "Ассаламу алейкум! В «Халяль рядом» (RIZQ) ошибка.\nМесто: "+(x.n||"без названия")+(x.a?", "+x.a:"")+"\nКод: "+x.id+
+    "\nЧто не так (закрылось, не халяль, другой адрес): ");
+}
+/* Сообщение нам: текст можно дописать, отправить в WhatsApp или скопировать.
+   «Скопировать» нужна там, где WhatsApp не открывается (компьютер без WhatsApp,
+   встроенный браузер другого приложения). */
+function hlPlace(id){ return HL.data ? HL.data.items.filter(function(i){ return i.id===id; })[0] : null; }
+function sheetHalalReviews(id){
+  var x = hlPlace(id); if(!x) return;
+  if(!V.hlRv || V.hlRv.id !== id) V.hlRv = { id:id, stars:0, pr:null, al:null, cert:0, text:"", name:S.hlName||"", items:null, err:false };
+  var R = V.hlRv, name = x.n || (x.k==="mosque" ? "Мечеть" : "Место");
+  if(R.items === null && !R.loading){
+    R.loading = true;
+    fetch(HL_API+"?place="+encodeURIComponent(id)+"&device="+hlDevice())
+      .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+      .then(function(j){ R.items = j.items || []; R.loading = false;
+        var mine = R.items.filter(function(i){ return i.mine; })[0];
+        if(mine && !R.touched){ R.stars = mine.rating; R.pr = mine.prayer; R.cert = mine.cert ? 1 : 0; R.text = mine.text || ""; R.name = mine.name === "Гость" ? "" : mine.name; }
+        if(V.hlRv === R) sheetHalalReviews(id); })
+      .catch(function(){ R.items = []; R.err = true; R.loading = false; if(V.hlRv === R) sheetHalalReviews(id); });
+  }
+  var food = x.k !== "mosque" && x.k !== "room";
+  var q = function(key, label, yes, no){
+    return '<div class="hl-q"><span>'+label+'</span><div>'+
+      [[1,yes],[0,no],[null,"Не знаю"]].map(function(o){
+        return '<button class="chip'+(R[key]===o[0]?" on":"")+'" data-hlq="'+key+':'+(o[0]===null?"n":o[0])+'">'+o[1]+'</button>';
+      }).join("")+'</div></div>';
+  };
+  var mine = (R.items||[]).filter(function(i){ return i.mine; })[0];
+  var list = R.loading ? '<p class="disclaimer">Загружаем отзывы...</p>'
+    : R.err ? '<p class="disclaimer">Отзывы не загрузились - проверьте интернет.</p>'
+    : !(R.items||[]).length ? '<p class="disclaimer">Отзывов пока нет. Станьте первым.</p>'
+    : R.items.map(function(i){
+        var fl = [];
+        if(i.prayer===1) fl.push("есть молельная комната"); else if(i.prayer===0) fl.push("молельной комнаты нет");
+        if(i.cert) fl.push("видел(а) сертификат");
+        return '<div class="hl-rv"><div class="hl-rv-h"><b>'+esc(i.name)+'</b><span class="st">'+hlStars(i.rating)+'</span><span class="d">'+esc(postDate(i.at))+'</span></div>'+
+          (fl.length ? '<div class="hl-rv-f">'+esc(fl.join(" · "))+'</div>' : '')+
+          (i.text ? '<div class="hl-rv-t">'+esc(i.text)+'</div>' : '')+
+          (i.mine ? '<button class="hl-rv-a" data-hlrvdel="'+i.id+'">Удалить мой отзыв</button>'
+                  : '<button class="hl-rv-a" data-hlrvrep="'+i.id+'">Пожаловаться</button>')+'</div>';
+      }).join("");
+  sheet('<h3>'+esc(name)+'</h3>'+
+    '<div class="hl-form">'+
+      '<div class="eyebrow">'+(mine ? "Ваш отзыв - можно поправить" : "Ваша оценка")+'</div>'+
+      '<div class="hl-stars">'+[1,2,3,4,5].map(function(n){ return '<button data-hlstar="'+n+'" aria-label="'+n+' из 5" class="'+(n<=R.stars?"on":"")+'">★</button>'; }).join("")+'</div>'+
+      (food ? q("pr", "Есть молельная комната?", "Есть", "Нет") +
+        '<label class="hl-cb"><input type="checkbox" id="hlCert"'+(R.cert?" checked":"")+'> Видел(а) сертификат халяль</label>' : '')+
+      '<textarea id="hlRvText" class="search" rows="3" maxlength="600" placeholder="Что понравилось, что нет. Без ссылок и телефонов">'+esc(R.text||"")+'</textarea>'+
+      '<input id="hlRvName" class="search" maxlength="40" style="margin-top:8px" placeholder="Имя (можно не писать)" value="'+esc(R.name||"")+'">'+
+      '<button class="btn" style="width:100%;margin-top:10px" data-hlrvsend="1">'+(mine ? "Сохранить отзыв" : "Опубликовать")+'</button>'+
+    '</div>'+
+    '<div class="sec-h" style="margin-top:14px"><h3>Отзывы'+((R.items||[]).length ? ' · '+R.items.length : '')+'</h3></div>'+ list +
+    '<p class="disclaimer" style="text-align:left">Отзыв видят все. Оскорбления, реклама и неправда о заведении удаляются. Имя - любое, телефон и почту мы не спрашиваем.</p>'+
+    '<button class="btn sec" style="width:100%" data-scrim="1">Закрыть</button>');
+}
+/* перед перерисовкой шторки сохраняем то, что человек уже набрал */
+function hlRvKeep(){
+  var R = V.hlRv; if(!R) return;
+  var t = document.getElementById("hlRvText"), n = document.getElementById("hlRvName"), c = document.getElementById("hlCert");
+  if(t) R.text = t.value; if(n) R.name = n.value; if(c) R.cert = c.checked ? 1 : 0;
+  R.touched = true;
+}
+function hlRvSend(){
+  hlRvKeep();
+  var R = V.hlRv; if(!R) return;
+  var x = hlPlace(R.id);
+  if(!R.stars){ toast("Поставьте оценку - от 1 до 5 звёзд"); return; }
+  S.hlName = String(R.name||"").trim(); save();
+  fetch(HL_API, { method:"POST", headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ place:R.id, city:HL.city, device:hlDevice(), rating:R.stars, text:R.text, name:R.name,
+      prayer:R.pr, cert:R.cert ? 1 : 0, pname: x ? x.n : "" }) })
+    .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); })
+    .then(function(o){
+      if(!o.ok){ toast(o.j && o.j.error ? o.j.error : "Не получилось, попробуйте ещё раз"); return; }
+      toast(o.j.status === "check" ? "Спасибо. Отзыв появится после проверки" : o.j.updated ? "Отзыв обновлён" : "Спасибо, отзыв опубликован");
+      R.items = null; R.touched = false;
+      hlSumLoad(HL.city, true);
+      sheetHalalReviews(R.id);
+    })
+    .catch(function(){ toast("Нет связи. Отзыв не отправлен - попробуйте, когда появится интернет"); });
+}
+function hlRvPost(path, id, msg){
+  fetch(HL_API+"/"+path, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ id:Number(id), device:hlDevice() }) })
+    .then(function(){ toast(msg); if(V.hlRv){ V.hlRv.items = null; hlSumLoad(HL.city, true); sheetHalalReviews(V.hlRv.id); } })
+    .catch(function(){ toast("Нет связи"); });
+}
+function sheetHalalMsg(title, text){
+  sheet('<h3>'+esc(title)+'</h3>'+
+    '<p style="font-size:13.5px;color:var(--ink-2);line-height:1.5;margin:0 0 10px">Допишите, что знаете, и отправьте нам. Мы проверим и обновим список.</p>'+
+    '<textarea id="hlTxt" class="search" rows="7" style="width:100%;resize:vertical;line-height:1.5">'+esc(text)+'</textarea>'+
+    '<button class="btn" style="width:100%;margin-top:10px" data-hlwa="1">Отправить в WhatsApp</button>'+
+    '<button class="btn sec" style="width:100%;margin-top:8px" data-hlcopy="1">Скопировать текст</button>'+
+    '<p class="disclaimer" style="text-align:left;padding:0;margin-top:8px">WhatsApp: '+esc(SUPPORT.phone)+'</p>'+
+    '<button class="btn sec" style="width:100%;margin-top:4px" data-scrim="1">Отмена</button>');
+}
+function hlMsgText(){ return String((document.getElementById("hlTxt")||{}).value || "").trim(); }
+function hlMsgWa(){
+  var t = hlMsgText(); if(!t) return;
+  var link = waLink(t), w = null;
+  try{ w = window.open(link, "_blank"); }catch(e){}
+  /* новое окно не открылось - уходим по ссылке в этой же вкладке */
+  if(!w) location.href = link;
+  closeSheet();
+}
+function sheetHalalOwner(){
+  sheet('<h3>Добавить заведение</h3>'+
+    '<p style="font-size:14px;color:var(--ink-2);line-height:1.55;margin:0 0 12px">Оставьте контакт - мы попросим фото сертификата, проверим его и добавим заведение с меткой «Сертификат халяль».</p>'+
+    '<input class="search" id="hoName" autocomplete="name" placeholder="Как к вам обращаться">'+
+    '<input class="search" id="hoPhone" type="tel" autocomplete="tel" style="margin-top:9px" placeholder="Телефон с WhatsApp">'+
+    '<input class="search" id="hoPlace" style="margin-top:9px" placeholder="Заведение и адрес">'+
+    '<input class="search" id="hoCert" style="margin-top:9px" placeholder="Кто выдал сертификат, если знаете">'+
+    '<label style="display:flex;align-items:flex-start;gap:9px;margin:12px 0;font-size:13px;color:var(--ink-2);line-height:1.5">'+
+      '<input type="checkbox" id="hoOk" style="margin-top:2px;flex:none">'+
+      '<span>Согласна на обработку персональных данных и на связь по указанным контактам (<a href="privacy.html" target="_blank" rel="noopener">политика</a>)</span></label>'+
+    '<button class="btn" style="width:100%" data-hlsend="1">Отправить</button>'+
+    '<button class="btn sec" style="width:100%;margin-top:8px" data-scrim="1">Отмена</button>');
+}
+function hlOwnerSend(){
+  var g = function(id){ return String((document.getElementById(id)||{}).value || "").trim(); };
+  var name = g("hoName"), phone = g("hoPhone"), place = g("hoPlace"), cert = g("hoCert");
+  var ok = document.getElementById("hoOk");
+  if(name.length < 2){ toast("Напишите, как к вам обращаться"); return; }
+  if(phone.replace(/\D/g, "").length < 10){ toast("Проверьте номер телефона"); return; }
+  if(place.length < 3){ toast("Напишите название и адрес заведения"); return; }
+  if(!ok || !ok.checked){ toast("Нужно согласие на обработку данных"); return; }
+  var note = "Халяль рядом: заведение с сертификатом\nГород: "+(HL.data ? HL.data.n : currentCity().n)+"\nЗаведение: "+place+(cert ? "\nСертификат: "+cert : "");
+  var done = function(){ closeSheet(); toast("Заявка отправлена. Мы свяжемся и попросим фото сертификата."); };
+  try{
+    fetch(LEAD_API, { method:"POST", headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ name:name, phone:phone, course:"Халяль рядом: добавить заведение", note:note,
+        source:"rizq", consent:true, utm:utmPayload() })
+    }).then(function(r){
+      if(r && r.ok) return done();
+      throw 0;
+    }).catch(function(){
+      /* сервер недоступен - не теряем заявку: отправляем тем же текстом в WhatsApp */
+      closeSheet();
+      sheetHalalMsg("Отправьте заявку в WhatsApp", "Ассаламу алейкум! "+note+"\nИмя: "+name+"\nТелефон: "+phone);
+    });
+  }catch(e){}
+}
+
+/* ============================================================
    ЭКРАН: КАЛЕНДАРЬ
    ============================================================ */
 function viewCalendar(){
@@ -14380,6 +14864,7 @@ function render(){
   else if(V.view==="hadithOne") html = viewHadithOne();
   else if(V.view==="suras") html = viewSuras();
   else if(V.view==="qibla") html = viewQibla();
+  else if(V.view==="halal") html = viewHalal();
   else if(V.view==="calendar") html = viewCalendar();
   else if(V.view==="zakat") html = viewZakat();
   else if(V.view==="mydua") html = viewMyDua();
@@ -14430,11 +14915,12 @@ document.getElementById("app").addEventListener("change", function(ev){
   if(!el || !el.id) return;
   if(el.id === "plTime" || el.id === "plDate"){ plKeepDraft(); render(); return; }
   if(el.id === "plGoalSel"){ V.plGoal = el.value; return; }
+  if(el.id === "hlCitySel"){ S.hlCity = el.value || ""; V.hlPos = null; V.hlLim = 30; save(); render(); return; }
   if(el.id === "plRepSel"){ V.plRep = el.value; return; }
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -14533,13 +15019,18 @@ document.getElementById("app").addEventListener("click", function(ev){
   }
   if(d.count){
     var dua = DUAS.filter(function(x){return x.id===d.count;})[0];
+    var was = !!S.read[dua.id];
     markRead(dua.id);
-    if(dua.rep>1){
+    if(!S.dcnt) S.dcnt = {};
+    if(!(dua.rep>1)){
+      S.dcnt[dua.id] = 1;
+      toast(was ? "Уже отмечено сегодня ✓" : "Отмечено ✓");
+    } else if(dua.rep>1){
       if(!S.dcnt) S.dcnt = {};
       S.dcnt[dua.id] = Math.min(dua.rep, (S.dcnt[dua.id]||0)+1);
       bumpTasbih();
       if(S.dcnt[dua.id]===dua.rep) toast("Машаа Аллах - "+dua.rep+" "+timesWord(dua.rep)+" завершено");
-    } else toast("Отмечено ✓");
+    }
     save(); render();
     var elx = document.getElementById("dua-"+dua.id); if(elx) elx.scrollIntoView({block:"center"});
     return;
@@ -14691,6 +15182,21 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.repday){ V.repDay = (V.repDay === d.repday) ? null : d.repday; render(); return; }
   if(d.salah){ toggleSalah(d.salah); syncSalahFlag(); save(); render(); return; }
   if(d.compass!==undefined){ startCompass(); return; }
+  if(d.hlf){ V.hlF = d.hlf; V.hlLim = 30; render(); return; }
+  if(d.hlgps!==undefined){ hlGps(); return; }
+  if(d.hlmore!==undefined){ V.hlLim = (V.hlLim||30) + 30; render(); return; }
+  if(d.hlown!==undefined){ sheetHalalOwner(); return; }
+  if(d.hlsend!==undefined){ hlOwnerSend(); return; }
+  if(d.hlerr){ hlErr(d.hlerr); return; }
+  if(d.hlrev){ V.hlRv = null; sheetHalalReviews(d.hlrev); return; }
+  if(d.hlstar){ hlRvKeep(); V.hlRv.stars = Number(d.hlstar); sheetHalalReviews(V.hlRv.id); return; }
+  if(d.hlq){ hlRvKeep(); var qq = d.hlq.split(":"); V.hlRv[qq[0]] = qq[1]==="n" ? null : Number(qq[1]); sheetHalalReviews(V.hlRv.id); return; }
+  if(d.hlrvsend!==undefined){ hlRvSend(); return; }
+  if(d.hlrvrep){ hlRvPost("report", d.hlrvrep, "Жалоба отправлена. Спасибо"); return; }
+  if(d.hlrvdel){ hlRvPost("delete", d.hlrvdel, "Отзыв удалён"); return; }
+  if(d.hlsug!==undefined){ sheetHalalMsg("Предложить место", "Ассаламу алейкум! Предлагаю место для «Халяль рядом» в RIZQ.\nГород: "+(HL.data ? HL.data.n : currentCity().n)+"\nНазвание: \nАдрес: \nПочему это халяль (сертификат, слова владельца, отметка): "); return; }
+  if(d.hlwa!==undefined){ hlMsgWa(); return; }
+  if(d.hlcopy!==undefined){ var tt = hlMsgText(); if(tt){ copyText(tt); toast("Текст скопирован - отправьте его нам в WhatsApp: "+SUPPORT.phone); } return; }
   if(d.nisab){ S.zakat.nisab = d.nisab; save(); render(); return; }
   if(d.zsave!==undefined){ zakatSave(); return; }
   if(d.zics!==undefined){ zakatICS(); return; }
