@@ -7907,12 +7907,20 @@ function navSave(){
   var key = (V.tab||"")+"|"+(V.view||"")+"|"+(V.p==null?"":V.p);
   if(key === NAV_LAST) return;
   NAV_LAST = key;
-  S.nav = {tab:V.tab, view:V.view||null, p:(V.p==null?null:V.p)};
+  S.nav = {tab:V.tab, view:V.view||null, p:(V.p==null?null:V.p), t:Date.now()};
   save();
+}
+/* Последний экран возвращаем только при быстром возврате: телефон выгрузил
+   приложение, пока человек отвечал в WhatsApp. Обычный запуск - всегда главная,
+   иначе RIZQ открывался на вчерашней записи журнала (жалоба Заиры 19.09). */
+var NAV_FRESH_MS = 10 * 60 * 1000;
+function navTouch(){
+  if(S.nav && S.nav.tab){ S.nav.t = Date.now(); save(); }
 }
 function navRestore(){
   var nv = S.nav;
   if(!nv || !nv.tab) return;
+  if(!nv.t || Date.now() - nv.t > NAV_FRESH_MS) return;
   if(nv.view && NAV_SKIP[nv.view]) return;
   V.tab = nv.tab;
   V.view = nv.view || null;
@@ -15187,6 +15195,8 @@ $screen.addEventListener("scroll", function(){
 utmCapture();
 quizLoad();
 navRestore();
+document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "hidden") navTouch(); });
+window.addEventListener("pagehide", navTouch);
 ordersCheck();
 if(ordersPending().length) ordersWatch();
 document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible") ordersCheck(); });
