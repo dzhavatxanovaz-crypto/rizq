@@ -1,5 +1,5 @@
 /* Ризк - офлайн-кэш. Меняйте номер версии при каждом обновлении приложения. */
-var CACHE = "rizq-v100";
+var CACHE = "rizq-v101";
 var ASSETS = [
   "./",
   "./index.html",
@@ -17,8 +17,10 @@ var ASSETS = [
   "./posts.json",
   "./sadaqa.json",
   "./icons/icon-192.png",
-  "./icons/icon-512.png",
-  "./audio/adhan.mp3"
+  "./icons/icon-512.png"
+  /* азан (1,4 МБ) сюда не кладём: на медленной связи он не давал офлайн-кэшу
+     установиться при первом входе, и потом приложение не открывалось без интернета.
+     Азан сохраняется в кэш при первом проигрывании (общее правило ниже). */
 ];
 
 /* каждый файл кладём отдельно: один недоступный адрес не должен ломать весь кэш */
@@ -108,16 +110,26 @@ self.addEventListener("fetch", function (e) {
 
   /* Сама страница приложения - сначала сеть: иначе исправление доходило бы
      до человека только со второго открытия. Без сети - из кэша, как раньше. */
+  /* Главная страница - сразу из памяти телефона, если она там есть: так RIZQ
+     открывается мгновенно и при плохой связи, и без неё. Раньше было «сначала
+     сеть»: на медленном интернете человек ждал, пока 2,9 МБ скачаются заново,
+     а при «сеть есть, но висит» приложение не открывалось совсем.
+     Новая версия приходит сама: при выпуске меняется номер кэша, браузер ставит
+     новый офлайн-кэш в фоне, и появляется плашка «Вышла новая версия». */
   if (e.request.mode === "navigate") {
+    var isApp = url.pathname === "/" || /\/index\.html$/.test(url.pathname) || /\/$/.test(url.pathname);
     e.respondWith(
-      fetch(e.request).then(function (resp) {
-        if (resp && resp.status === 200) {
-          var copy = resp.clone();
-          caches.open(CACHE).then(function (c) { c.put("./index.html", copy); });
-        }
-        return resp;
-      }).catch(function () {
-        return caches.match("./index.html").then(function (hit) { return hit || caches.match("./"); });
+      caches.match(isApp ? "./index.html" : e.request).then(function (hit) {
+        if (hit) return hit;
+        return fetch(e.request).then(function (resp) {
+          if (isApp && resp && resp.status === 200) {
+            var copy = resp.clone();
+            caches.open(CACHE).then(function (c) { c.put("./index.html", copy); });
+          }
+          return resp;
+        }).catch(function () {
+          return caches.match("./index.html").then(function (h) { return h || caches.match("./"); });
+        });
       })
     );
     return;

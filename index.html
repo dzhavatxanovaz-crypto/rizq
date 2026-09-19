@@ -7,7 +7,9 @@
    показываем понятное сообщение, а текст ошибки отправляем в CRM, чтобы найти и исправить причину. */
 (function(){
   var loaded = false, sent = 0;
-  window.addEventListener("load", function(){ loaded = true; });
+  /* «Загрузилось» = разобран код приложения. Ждать окончания загрузки шрифтов
+     и картинок (событие load) не нужно: на медленной связи это десятки секунд. */
+  document.addEventListener("DOMContentLoaded", function(){ loaded = true; });
   function report(msg, src, line){
     if(sent++ > 3) return;
     try{
@@ -31,7 +33,7 @@
 })();
 </script>
 <title>RIZQ: намаз и Коран</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Время намаза, Коран с аудио, азкары, имена Всевышнего, хадисы, кибла и калькулятор закята.">
 <meta name="theme-color" content="#1E2A5A">
 <meta name="color-scheme" content="light dark">
@@ -40,6 +42,20 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="RIZQ">
 <meta name="format-detection" content="telephone=no">
+<link rel="canonical" href="https://rizq.javattigroup.ru/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="RIZQ">
+<meta property="og:title" content="RIZQ: намаз, Коран и знания">
+<meta property="og:description" content="Время намаза и напоминания, Коран с аудио, азкары, имена Всевышнего, хадисы, кибла, закят, учёт доходов и расходов. Без рекламы, работает без интернета.">
+<meta property="og:url" content="https://rizq.javattigroup.ru/">
+<meta property="og:image" content="https://rizq.javattigroup.ru/icons/share-1200.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="RIZQ: намаз, Коран и знания">
+<meta name="twitter:description" content="Время намаза, Коран с аудио, азкары, кибла и закят. Без рекламы, работает без интернета.">
+<meta name="twitter:image" content="https://rizq.javattigroup.ru/icons/share-1200.png">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
@@ -338,7 +354,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .ptrack{position:relative;height:3px;background:var(--line);border-radius:3px;margin:0 0 14px}
 .ptrack i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--gold),#E4C25A);border-radius:3px}
 .ptrack i::after{content:"";position:absolute;right:-4px;top:-3px;width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px rgba(212,175,55,.25)}
-.plist{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.plist{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
 .pcell{
   text-align:center;padding:8px 2px;border-radius:12px;border:1px solid transparent;
 }
@@ -351,7 +367,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .city-row button{color:var(--accent-ink);font-weight:600;font-size:13.5px}
 
 /* stats */
-.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 10px;text-align:center;box-shadow:var(--shadow)}
 .stat b{display:block;font-family:var(--f-display);font-size:22px;font-variant-numeric:tabular-nums}
 .stat span{font-size:12px;color:var(--ink-3);line-height:1.3;display:block;margin-top:3px}
@@ -530,6 +546,16 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .row{display:flex;align-items:center;gap:12px;padding:14px 15px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);width:100%;text-align:left;font-size:15px}
 .row .ic{width:20px;text-align:center;color:var(--accent-ink)}
 .row .val{margin-left:auto;font-size:14px;color:var(--ink-3)}
+/* Размер текста: увеличиваем содержимое экрана и шторок, шапка и нижняя
+   панель остаются прежними - иначе на маленьком телефоне не хватит высоты. */
+:root[data-fs="l"] #screen, :root[data-fs="l"] .sheet{zoom:1.14}
+:root[data-fs="xl"] #screen, :root[data-fs="xl"] .sheet{zoom:1.26}
+:root[data-fs] .pcell .n{font-size:10.5px}
+:root[data-fs] .pcell .t{font-size:13px}
+:root[data-fs] .btn.sm{padding-left:10px;padding-right:10px}
+:root[data-fs] .dlbl{font-size:10px !important}
+:root[data-fs] .stat b{font-size:19px}
+:root[data-fs] .stat span{font-size:11px}
 .rows{display:flex;flex-direction:column;gap:8px}
 .sw{margin-left:auto;width:42px;height:25px;border-radius:99px;background:var(--line);position:relative;flex:none;transition:background .2s}
 .sw::after{content:"";position:absolute;top:2.5px;left:2.5px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
@@ -1057,7 +1083,7 @@ var DEF = {
   salahKid:false,
   trip:{},
   kids:{},
-  finReqs:[], finLimits:{}, debts:[], finRepeat:[],
+  finReqs:[], finLimits:{}, debts:[], finRepeat:[], fontSize:"",
   qplan:{on:false, days:0, startPage:1, startAt:"", log:{}},
   qoff:{juz:[], sura:[], reciter:""},
   zakat:{cash:"", bank:"", goods:"", debtsIn:"", debtsOut:"", goldG:"", silverG:"",
@@ -1070,7 +1096,15 @@ var S = (function(){
   }catch(e){}
   return JSON.parse(JSON.stringify(DEF));
 })();
-function save(){ try{ localStorage.setItem("rizq.v1", JSON.stringify(S)); }catch(e){} if(typeof VT !== "undefined" && VT && VT.code) vaultSoon(); }
+var SAVE_FAIL = false;
+function save(){
+  try{ localStorage.setItem("rizq.v1", JSON.stringify(S)); SAVE_FAIL = false; }
+  catch(e){
+    /* Причины ровно две: кончилось место или запись запрещена (приватный режим). */
+    if(!SAVE_FAIL){ SAVE_FAIL = true; setTimeout(function(){ if(typeof sheetSaveFail === "function") sheetSaveFail(); }, 400); }
+  }
+  if(typeof VT !== "undefined" && VT && VT.code) vaultSoon();
+}
 
 /* ---------- утилиты ---------- */
 function el(h){ var d=document.createElement("div"); d.innerHTML=h.trim(); return d; }
@@ -1122,6 +1156,19 @@ function applyTheme(){
   else document.documentElement.removeAttribute("data-theme");
 }
 applyTheme();
+
+/* ---------- размер текста ---------- */
+var FS_OPTS = [["","Обычный","как в системе"],["l","Крупнее","на 14% больше"],["xl","Самый крупный","на 28% больше"]];
+function fsName(){
+  for(var i=0;i<FS_OPTS.length;i++){ if(FS_OPTS[i][0] === (S.fontSize||"")) return FS_OPTS[i][1]; }
+  return "Обычный";
+}
+function applyFontSize(){
+  var f = S.fontSize;
+  if(f === "l" || f === "xl") document.documentElement.setAttribute("data-fs", f);
+  else document.documentElement.removeAttribute("data-fs");
+}
+applyFontSize();
 
 /* ============================================================
    ВРЕМЯ НАМАЗА - астрономический расчёт
@@ -3528,14 +3575,14 @@ function viewHomeMain(){
       '<div style="display:flex;align-items:center;gap:10px;margin:-2px 0 13px;padding:10px 12px;border-radius:10px;background:var(--surface-2);border:1px dashed var(--line)">'+
         '<span style="font-size:12.5px;line-height:1.45;color:var(--ink-2)">Пауза с '+esc(pauseDate(pz.from))+'. Серия сохраняется, пропуском эти дни не считаются.</span>'+
         '<button class="btn sec sm" style="flex:none;margin-left:auto" data-pauseopen="1">Изменить</button></div>' : '')+
-    '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">'+
+    '<div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px">'+
     DAILY.map(function(x){
       var on = !!rec[x.k];
       return '<button data-daily="'+x.k+'" style="display:flex;flex-direction:column;align-items:center;gap:6px">'+
         '<span style="width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:16.5px;line-height:1;'+
         'border:1.5px solid '+(on?"var(--emerald)":"var(--line)")+';background:'+(on?"var(--emerald)":"transparent")+';color:'+(on?"#fff":"var(--ink-3)")+'">'+
         (on?"✓":x.ic)+'</span>'+
-        '<span style="font-size:11.5px;text-align:center;line-height:1.25;color:'+(on?"var(--ink-2)":"var(--ink-3)")+'">'+x.n+'</span></button>';
+        '<span class="dlbl" style="font-size:11.5px;text-align:center;line-height:1.25;color:'+(on?"var(--ink-2)":"var(--ink-3)")+'">'+x.n+'</span></button>';
     }).join("") +'</div>'+
 
     '<button style="display:flex;align-items:center;gap:6px;width:100%;margin-top:12px;font-size:13px;color:var(--ink-3)" data-salahopen="1">'+
@@ -3595,7 +3642,7 @@ function viewHomeMain(){
                     : '<div style="text-align:center">'+inner+'</div>';
       }).join("")+
     '</div>'+
-    '<div style="display:flex;align-items:center;gap:10px;margin-top:13px;padding-top:12px;border-top:1px solid var(--line-soft)">'+
+    '<div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;margin-top:13px;padding-top:12px;border-top:1px solid var(--line-soft)">'+
       '<span style="font-size:13px;color:'+(st?"var(--accent-ink)":"var(--ink-3)")+';font-weight:600;line-height:1.4">'+
         (st ? "◈ серия: "+daysWord(st) : "серия начнётся с первого полного дня")+
         ((S.points||0) ? '<span style="color:var(--ink-3);font-weight:400"> · </span>'+plural(S.points||0,"балл","балла","баллов") : "")+'</span>'+
@@ -4013,6 +4060,7 @@ function buildIndex(){
    ["Хадж и умра в пути","чек-лист по шагам, счёт кругов","open:hajjtrip","хадж умра чек-лист чеклист таваф сай круги ихрам мекка паломничество камни джамарат арафат муздалифа мина сборы"],
    ["Детям","истории пророков, перед сном, дуа, имена","open:kids","дети детям ребенок ребёнок истории пророков сказки перед сном на ночь дуа для детей имена имя для ребенка мальчику девочке"],
    ["Исламская рассрочка","партнёры и покупка товара в рассрочку","open:installment","рассрочка исламская халяль мурабаха кредит без процентов частями взносы купить в рассрочку партнерское финансирование"],
+   ["Размер текста","крупный шрифт для чтения","go:prof","шрифт размер крупный текст мелко зрение увеличить"],
    ["Восполнение","пропущенные намазы и посты","open:qada","каза восполнение пропущенный намаз пост долг восполнить казаа qada"],
    ["Куда помочь","сборы, которые мы посмотрели","open:sadaqa","садака милостыня помочь сбор пожертвование благотворительность нуждающимся закят раздать туба tooba"],
   ].forEach(function(x){ add(x[0], x[1], x[2], x[3], "Разделы"); });
@@ -13205,6 +13253,7 @@ function viewProf(){
   h.push('<div class="sec-h"><h3>Настройки</h3></div>');
   h.push('<div class="rows">'+
     '<button class="row" data-open="settings"><span class="ic">⚙</span>Город и расчёт намаза<span class="val">'+esc(currentCity().n)+'</span></button>'+
+    '<button class="row" data-fsopen="1"><span class="ic" style="font-family:var(--f-display);font-size:14px">Aa</span>Размер текста<span class="val">'+esc(fsName())+'</span></button>'+
     swRow("notifPrayer","🕌","Напоминания о намазе") +
     swRow("notifAzan","🔊","Звук азана") +
     swRow("notifDua","✦","Дуа дня утром") +
@@ -13302,7 +13351,7 @@ function viewSettings(){
    ============================================================ */
 var BK_KEYS = ["fav","tasbih","tasbihTotal","read","dcnt","practice","orders","readDay","done","salah","myduas","goals",
   "namesRead","daily","shukrNotes","shukr","checks","sunnah","health","pauses","qada","points","pointsDay",
-  "fin","finLimits","debts","finRepeat","todos","quiz","azkarLifetime","qLast","qMax","qMarks","qplan","hifz","zakat","trip","kids","finReqs",
+  "fin","finLimits","debts","finRepeat","fontSize","todos","quiz","azkarLifetime","qLast","qMax","qMarks","qplan","hifz","zakat","trip","kids","finReqs",
   "name","city","method","madhab","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll"];
 
 /* Что человек потеряет, если копии не будет. Считаем по тем же данным,
@@ -14061,6 +14110,30 @@ function sheetWeekGift(lap){
   );
 }
 
+/* Выбор размера: сразу видно на самом окне, каким станет текст. */
+function sheetFontSize(){
+  sheet('<h3>Размер текста</h3>'+
+    '<p class="note" style="margin:0 0 14px">Крупнее станут тексты внутри разделов: аяты, дуа, записи. Ещё текст можно увеличить двумя пальцами прямо на экране.</p>'+
+    '<div class="rows">'+FS_OPTS.map(function(o){
+      var on = (S.fontSize||"") === o[0];
+      return '<button class="row" data-fsset="'+(o[0]||"n")+'">'+
+        '<span class="ic">'+(on ? "◉" : "○")+'</span><span style="flex:1">'+esc(o[1])+
+        '<span style="display:block;font-size:12.5px;color:var(--ink-3)">'+esc(o[2])+'</span></span></button>';
+    }).join("")+'</div>'+
+    '<button class="btn ghost" style="margin-top:12px" data-scrim="1">Закрыть</button>');
+}
+/* Окно показывается один раз за запуск: повторять при каждом нажатии - мучение. */
+function sheetSaveFail(){
+  sheet('<h3>Записи не сохраняются</h3>'+
+    '<p class="note" style="margin:0 0 12px">Браузер не даёт приложению сохранить данные на этом телефоне. Обычно причина одна из двух:</p>'+
+    '<div class="rows" style="margin-bottom:12px">'+
+      '<div class="row" style="align-items:flex-start"><span class="ic">◷</span><span style="flex:1">Закончилось место. Больше всего занимает скачанное аудио Корана - его можно удалить и скачать заново позже.</span></div>'+
+      '<div class="row" style="align-items:flex-start"><span class="ic">◐</span><span style="flex:1">Открыт приватный режим (инкогнито). В нём браузер стирает всё при закрытии вкладки - откройте приложение в обычном окне.</span></div>'+
+    '</div>'+
+    '<button class="btn" data-qoffclear="1">Удалить скачанное аудио Корана</button>'+
+    '<button class="btn sec" style="margin-top:8px" data-open="backup">Сделать копию записей</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Закрыть</button>');
+}
 function sheetWhy(){
   sheet(
     '<div style="text-align:center;padding:6px 0 2px">'+
@@ -14353,7 +14426,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -15005,6 +15078,12 @@ document.getElementById("app").addEventListener("click", function(ev){
     toast(S.theme==="dark"?"Тёмная тема":S.theme==="light"?"Светлая тема":"Тема как в системе");
     return;
   }
+  if(d.fsopen!==undefined){ sheetFontSize(); return; }
+  if(d.fsset){
+    S.fontSize = d.fsset === "n" ? "" : d.fsset;
+    save(); applyFontSize(); sheetFontSize(); render();
+    return;
+  }
   if(d.why!==undefined){ sheetWhy(); return; }
   if(d.logout!==undefined){ S.name=""; S.email=""; save(); render(); toast("Вы вышли"); return; }
   if(d.saveacc!==undefined){ accountSave(); return; }
@@ -15144,17 +15223,23 @@ if(!S.welcomed && !OLD_HOST) setTimeout(sheetWelcome, 700);
 (function(){
   var s = document.getElementById("splash");
   if(!s) return;
+  var done = false;
   function hide(){
+    if(done) return; done = true;
     s.classList.add("hide");
     setTimeout(function(){ if(s.parentNode) s.parentNode.removeChild(s); }, 600);
   }
-  if(document.readyState === "complete") setTimeout(hide, 700);
-  else window.addEventListener("load", function(){ setTimeout(hide, 700); });
-  setTimeout(hide, 4000);
+  /* Заставка уходит, как только приложение готово, - не дожидаясь шрифтов и
+     картинок: раньше она ждала событие load и на медленной связи висела 10+ секунд. */
+  if(document.readyState !== "loading") setTimeout(hide, 150);
+  else document.addEventListener("DOMContentLoaded", function(){ setTimeout(hide, 150); });
+  setTimeout(hide, 2500);
 })();
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
-  window.addEventListener("load", function () {
+  /* Офлайн-кэш регистрируем сразу, а не после загрузки всех шрифтов:
+     чем раньше он встанет, тем раньше RIZQ начнёт открываться без интернета. */
+  (function (start) { if (document.readyState !== "loading") start(); else document.addEventListener("DOMContentLoaded", start); })(function () {
     navigator.serviceWorker.register("sw.js").then(function(reg){
       document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible") reg.update().catch(function(){}); });
     }).catch(function(){});
