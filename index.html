@@ -463,6 +463,13 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hl-when.ok{background:rgba(45,106,79,.12)}
 .hl-act{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:11px}
 .hl-act .btn{width:auto;flex:none;text-decoration:none}
+.hl-card .hl-act:not(.hl-act2){gap:6px}
+.hl-card .hl-act .btn.sm{padding-left:11px;padding-right:11px;font-size:13.5px}
+.hl-act2{margin-top:8px;gap:14px}
+.hl-tags:empty{display:none}
+.hl-link{font-size:13px;color:var(--accent-ink);text-decoration:none;font-weight:600;padding:6px 0}
+.hl-ics{margin-left:auto;display:flex;gap:8px}
+.hl-ics .hl-err{margin-left:0}
 .hl-err{margin-left:auto;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);color:var(--ink-3);font-weight:700;background:none}
 .hl-empty b{display:block;font-size:15px}
 .hl-tag.warn{border-color:rgba(200,80,60,.45);background:rgba(200,80,60,.12)}
@@ -3854,6 +3861,11 @@ function deepOpen(){
       return true;
     }
     var mv = q.match(/[?&]open=([a-zA-Z0-9_]+)/);
+    if(mv && mv[1] === "halal"){
+      var hc = q.match(/[?&]city=([a-z0-9]{2,5})/), hq = q.match(/[?&]q=([^&]*)/);
+      if(hc && CITIES.some(function(c){ return c.id === hc[1]; })){ S.hlCity = hc[1]; V.hlPos = null; }
+      if(hq){ try{ V.hlQ = decodeURIComponent(hq[1].split("+").join(" ")).slice(0, 80); }catch(e){} }
+    }
     if(mv && DEEP_VIEWS.indexOf(mv[1]) >= 0){
       /* Курсы живут на своей вкладке: без неё нижнее меню покажет чужой раздел. */
       V.tab = (mv[1]==="courses" || mv[1]==="consulting") ? "income" : mv[1]==="halal" ? "home" : "dua";
@@ -11174,7 +11186,9 @@ function hlApply(){
   if(!HL.data) return;
   var ov = HL.ov || {}, edit = ov.edit || {}, hide = {};
   (ov.hide || []).forEach(function(i){ hide[i] = 1; });
-  HL.all = (HL.raw || []).map(function(x){ return edit[x.id] ? Object.assign({}, x, edit[x.id]) : x; }).concat(ov.add || []);
+  var cc = CITIES.filter(function(c){ return c.id === HL.data.city; })[0];
+  var near = (ov.add || []).filter(function(x){ return !cc || hlDist(cc, x) < 60000; });
+  HL.all = (HL.raw || []).map(function(x){ return edit[x.id] ? Object.assign({}, x, edit[x.id]) : x; }).concat(near);
   HL.hide = hide;
   HL.data.items = HL.all.filter(function(x){ return !hide[x.id]; });
 }
@@ -11260,11 +11274,70 @@ function hlList(){
     /* сертификат - выше при равной близости: в пределах 300 м он идёт первым */
     .sort(function(a, c){ return (a.d - (a.x.l==="cert"?300:0)) - (c.d - (c.x.l==="cert"?300:0)); });
 }
-function hlRouteY(x){ return "https://yandex.ru/maps/?rtext=~"+x.lat+","+x.lng+"&rtt=pd"; }
-function hl2gis(x){ return "https://2gis.ru/geo/"+x.lng+","+x.lat; }
+function hlRouteY(x, d){ return "https://yandex.ru/maps/?rtext=~"+x.lat+","+x.lng+"&rtt="+(d != null && d > 2500 ? "auto" : "pd"); }
+function hlName(x){ return x.n || (x.k==="room" ? "Молельная комната" : x.k==="mosque" ? "Мечеть" : ""); }
+/* карточка заведения: у Яндекса и 2ГИС есть фото, меню и отзывы, которых нет в открытой карте */
+function hlOrgY(x){ return "https://yandex.ru/maps/?text="+encodeURIComponent(hlName(x) || "мечеть")+"&ll="+x.lng+","+x.lat+"&z=17"; }
+function hl2gis(x){ return "https://2gis.ru/search/"+encodeURIComponent(hlName(x) || "мечеть")+"?m="+x.lng+","+x.lat+"/18"; }
+/* открыто ли сейчас - по часам с карты. Понимаем простые записи вида «Mo-Su 10:00-23:00»,
+   «Mo-Fr 09:00-18:00; Sa 10:00-16:00», «24/7», перерывы через запятую и работу за полночь.
+   Если запись сложнее - молчим, а не гадаем. */
+function hlOpenNow(h){
+  if(!h) return null;
+  if(h === "24/7") return {open:true, until:"круглосуточно"};
+  var DAYS = ["Su","Mo","Tu","We","Th","Fr","Sa"], now = new Date(), wd = now.getDay(), mins = now.getHours()*60 + now.getMinutes();
+  var inDays = function(spec, d){
+    if(!spec) return true;
+    return spec.split(",").some(function(part){
+      var m = part.match(/^(Mo|Tu|We|Th|Fr|Sa|Su)(?:-(Mo|Tu|We|Th|Fr|Sa|Su))?$/);
+      if(!m) throw 0;
+      var a = DAYS.indexOf(m[1]), b = m[2] ? DAYS.indexOf(m[2]) : a;
+      return a <= b ? (d >= a && d <= b) : (d >= a || d <= b);
+    });
+  };
+  var t2m = function(t){ var p = t.split(":"); return Number(p[0])*60 + Number(p[1]); };
+  try{
+    var rules = String(h).split(";").map(function(r){ return r.trim(); }).filter(Boolean);
+    var res = null;
+    rules.forEach(function(r){
+      var m = r.match(/^((?:Mo|Tu|We|Th|Fr|Sa|Su)(?:-(?:Mo|Tu|We|Th|Fr|Sa|Su))?(?:,(?:Mo|Tu|We|Th|Fr|Sa|Su)(?:-(?:Mo|Tu|We|Th|Fr|Sa|Su))?)*)?\s*(off|closed|[\d:,\- ]+)$/);
+      if(!m) throw 0;
+      var spec = m[1], times = m[2].trim();
+      /* правило на сегодня; и вчерашнее, если оно тянется за полночь */
+      [[wd, 0], [(wd+6)%7, 1440]].forEach(function(pair){
+        if(!inDays(spec, pair[0])) return;
+        if(times === "off" || times === "closed"){ if(pair[1] === 0) res = res || {open:false}; return; }
+        times.split(",").forEach(function(iv){
+          var q = iv.trim().match(/^(\d{1,2}:\d{2})-(\d{1,2}:\d{2})$/); if(!q) throw 0;
+          var a = t2m(q[1]), b = t2m(q[2]); if(b <= a) b += 1440;
+          var cur = mins + pair[1];
+          if(cur >= a && cur < b) res = {open:true, until: q[2] === "24:00" ? "00:00" : q[2]};
+          else if(pair[1] === 0 && !(res && res.open)) res = {open:false};
+        });
+      });
+    });
+    /* сегодняшнего дня нет в расписании - значит, выходной */
+    return res || {open:false};
+  }catch(e){ return null; }
+}
+/* поделиться местом: ссылка открывает RIZQ сразу на этом месте */
+function hlShare(id){
+  var x = hlPlace(id); if(!x) return;
+  var link = APP_URL + "?open=halal&city=" + HL.city + "&q=" + encodeURIComponent(hlName(x));
+  var text = hlName(x) + (x.a ? ", " + x.a : "") + " - нашла в RIZQ, раздел «Халяль рядом»:";
+  if(navigator.share){ navigator.share({ title: hlName(x), text: text, url: link }).catch(function(){}); }
+  else { copyText(text + " " + link); toast("Ссылка скопирована - вставьте её в сообщение"); }
+}
 function hlSearchY(){ var b = hlBase(); return "https://yandex.ru/maps/?text="+encodeURIComponent("халяль")+"&ll="+b.lng+","+b.lat+"&z=14"; }
 function hlSearch2(){ var b = hlBase(); return "https://2gis.ru/search/"+encodeURIComponent("халяль")+"?m="+b.lng+","+b.lat+"/14"; }
 
+function hlOpenTag(x){
+  if(!x.h) return '';
+  var o = hlOpenNow(x.h);
+  if(!o) return '<span class="hl-tag">'+esc(hlHours(x.h))+'</span>';
+  return o.open ? '<span class="hl-tag ok">Открыто'+(o.until === "круглосуточно" ? ' круглосуточно' : o.until === "00:00" ? ' до полуночи' : ' до '+esc(o.until))+'</span>'
+                : '<span class="hl-tag">Сейчас закрыто · '+esc(hlHours(x.h))+'</span>';
+}
 function hlRateLine(x){
   var r = hlSum(x);
   if(!r) return '';
@@ -11304,14 +11377,20 @@ function hlCard(r, np){
     '<div class="hl-tags">'+(!lb.t || (hlGroup(x)==="pray" && name.toLowerCase().indexOf(lb.t.toLowerCase().split(" ").pop())>=0) ? '' : '<span class="hl-tag '+lb.c+'">'+esc(lb.t)+'</span>')+
       hlFlagTags(x)+
       (x.f ? '<span class="hl-tag ok">Есть место для женщин</span>' : '')+
-      (x.h ? '<span class="hl-tag">'+esc(hlHours(x.h))+'</span>' : '')+'</div>'+
+      hlOpenTag(x)+'</div>'+
     cert + when +
     '<div class="hl-act">'+
-      '<a class="btn sec sm" href="'+hlRouteY(x)+'" target="_blank" rel="noopener">Маршрут</a>'+
-      '<a class="btn sec sm" href="'+hl2gis(x)+'" target="_blank" rel="noopener">2ГИС</a>'+
-      (x.p ? '<a class="btn sec sm" href="tel:'+esc(String(x.p).replace(/[^0-9+]/g,""))+'">Позвонить</a>' : '')+
+      '<a class="btn sm" href="'+hlRouteY(x, r.d)+'" target="_blank" rel="noopener">Маршрут</a>'+
+      '<a class="btn sec sm" href="'+hlOrgY(x)+'" target="_blank" rel="noopener">'+(x.k==="food" ? "Фото, меню" : "На карте")+'</a>'+
       '<button class="btn sec sm" data-hlrev="'+esc(x.id)+'">Отзывы'+(hlSum(x) ? ' · '+hlSum(x).n : '')+'</button>'+
-      '<button class="hl-err" data-hlerr="'+esc(x.id)+'" aria-label="Сообщить об ошибке" title="Сообщить об ошибке">!</button>'+
+    '</div>'+
+    '<div class="hl-act hl-act2">'+
+      '<a class="hl-link" href="'+hl2gis(x)+'" target="_blank" rel="noopener">2ГИС</a>'+
+      (x.p ? '<a class="hl-link" href="tel:'+esc(String(x.p).replace(/[^0-9+]/g,""))+'">Позвонить</a>' : '')+
+      '<span class="hl-ics">'+
+        '<button class="hl-err" data-hlshare="'+esc(x.id)+'" aria-label="Поделиться" title="Поделиться">⤴</button>'+
+        '<button class="hl-err" data-hlerr="'+esc(x.id)+'" aria-label="Сообщить об ошибке" title="Сообщить об ошибке">!</button>'+
+      '</span>'+
     '</div></article>';
 }
 
@@ -11347,9 +11426,11 @@ function viewHalal(){
 
     /* главное сразу: ближайшее место для намаза, если человек рядом */
     if(b.real && (V.hlF||"all")==="all"){
-      var pr = all.filter(function(r){ return hlGroup(r.x)==="pray"; })[0];
+      var jumua = new Date().getDay() === 5 && np && (np.key === "dhuhr" || np.key === "sunrise" || np.key === "fajr");
+      var pr = all.filter(function(r){ return jumua ? r.x.k === "mosque" : hlGroup(r.x)==="pray"; })[0];
       if(pr && pr.d < 5000){
-        h.push('<div class="sec-h"><h3>Ближайшее место для намаза</h3></div>');
+        h.push('<div class="sec-h"><h3>'+(jumua ? "Ближайшая мечеть к пятничному намазу" : "Ближайшее место для намаза")+'</h3></div>');
+        if(jumua) h.push('<p class="disclaimer" style="margin:0">Время хутбы и джума-намаза в разных мечетях своё - уточните в мечети заранее.</p>');
         h.push(hlCard(pr, np));
       }
     }
@@ -15217,7 +15298,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-hlshare],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -15492,6 +15573,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.hlrvrep){ hlRvPost("report", d.hlrvrep, "Жалоба отправлена. Спасибо"); return; }
   if(d.hlrvdel){ hlRvPost("delete", d.hlrvdel, "Отзыв удалён"); return; }
   if(d.adm){ admClick(d.adm); return; }
+  if(d.hlshare){ hlShare(d.hlshare); return; }
   if(d.hlsug!==undefined){ sheetHalalMsg("Предложить место", "Ассаламу алейкум! Предлагаю место для «Халяль рядом» в RIZQ.\nГород: "+(HL.data ? HL.data.n : currentCity().n)+"\nНазвание: \nАдрес: \nПочему это халяль (сертификат, слова владельца, отметка): "); return; }
   if(d.hlwa!==undefined){ hlMsgWa(); return; }
   if(d.hlcopy!==undefined){ var tt = hlMsgText(); if(tt){ copyText(tt); toast("Текст скопирован - отправьте его нам в WhatsApp: "+SUPPORT.phone); } return; }
