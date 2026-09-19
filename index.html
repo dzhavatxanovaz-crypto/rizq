@@ -3487,6 +3487,7 @@ function renderHdr(){
         : V.view==="suras" ? "Короткие суры"
         : V.view==="qibla" ? "Кибла"
         : V.view==="halal" ? "Халяль рядом"
+        : V.view==="admin" ? "Управление"
         : V.view==="calendar" ? "Исламский календарь"
         : V.view==="zakat" ? "Калькулятор закята"
         : V.view==="mydua" ? "Мои дуа"
@@ -10915,8 +10916,9 @@ function postsAll(){
 }
 function postsLoad(){
   if(!window.fetch) return;
-  fetch("posts.json")
-    .then(function(r){ return r.ok ? r.json() : null; })
+  fetch("api/content/posts")
+    .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+    .catch(function(){ return fetch("posts.json").then(function(r){ return r.ok ? r.json() : null; }); })
     .then(function(j){
       if(j && j.length){
         try{ localStorage.setItem("rizq.posts", JSON.stringify(j)); }catch(e){}
@@ -11156,13 +11158,37 @@ function hlCityId(){
 function hlLoad(){
   var id = hlCityId();
   if(HL.city === id && (HL.data || HL.loading || HL.err)) return;
-  HL.city = id; HL.data = null; HL.err = false;
+  HL.city = id; HL.data = null; HL.err = false; HL.all = []; HL.hide = {};
   if(!id){ return; }
   HL.loading = true;
+  try{ HL.ov = JSON.parse(localStorage.getItem("rizq.hlov."+id) || "null"); }catch(e){ HL.ov = null; }
   fetch("halal/"+id+".json")
     .then(function(r){ if(!r.ok) throw 0; return r.json(); })
-    .then(function(j){ if(HL.city!==id) return; HL.data = j; HL.loading = false; if(V.view==="halal") render(); })
-    .catch(function(){ if(HL.city!==id) return; HL.loading = false; HL.err = true; if(V.view==="halal") render(); });
+    .then(function(j){ if(HL.city!==id) return; HL.raw = j.items; HL.data = j; hlApply(); HL.loading = false; hlOvLoad(id); if(V.view==="halal" || V.view==="admin") render(); })
+    .catch(function(){ if(HL.city!==id) return; HL.loading = false; HL.err = true; if(V.view==="halal" || V.view==="admin") render(); });
+}
+/* Правки из «Управления»: добавленные места, исправления и скрытые.
+   Лежат на сервере отдельно от файлов карты и накладываются поверх - поэтому
+   видны всем сразу. Последняя версия хранится в телефоне на случай без интернета. */
+function hlApply(){
+  if(!HL.data) return;
+  var ov = HL.ov || {}, edit = ov.edit || {}, hide = {};
+  (ov.hide || []).forEach(function(i){ hide[i] = 1; });
+  HL.all = (HL.raw || []).map(function(x){ return edit[x.id] ? Object.assign({}, x, edit[x.id]) : x; }).concat(ov.add || []);
+  HL.hide = hide;
+  HL.data.items = HL.all.filter(function(x){ return !hide[x.id]; });
+}
+function hlOvLoad(city, force){
+  if(!city || !window.fetch) return;
+  fetch("api/content/places?city="+city+(force ? "&t="+Date.now() : ""))
+    .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+    .then(function(j){
+      if(HL.city !== city) return;
+      HL.ov = j; hlApply();
+      try{ localStorage.setItem("rizq.hlov."+city, JSON.stringify(j)); }catch(e){}
+      if(V.view==="halal" || V.view==="admin") render();
+    })
+    .catch(function(){});
 }
 function hlWalkMin(m){ return Math.max(1, Math.round(m*1.25/75)); } /* 4,5 км/ч и поправка на улицы */
 function hlDistText(m){ return m < 1000 ? (Math.round(m/10)*10)+" м" : (m/1000).toFixed(m < 10000 ? 1 : 0).replace(".", ",")+" км"; }
@@ -11208,6 +11234,7 @@ function hlSumLoad(city, force){
 function hlSum(x){ return HLR.sum[x.id] || null; }
 /* подтверждения людей: «да» больше, чем «нет», и хотя бы одно */
 function hlHasPr(x){
+  if(x.pr === 0) return false; /* администратор снял отметку */
   var r = hlSum(x);
   if(r && r.pr && r.pr[1] > r.pr[0]) return false; /* посетители чаще отвечают «нет» - отметку снимаем */
   return !!x.pr || !!(r && r.pr && r.pr[0] > r.pr[1]);
@@ -11475,6 +11502,256 @@ function hlRvPost(path, id, msg){
     .then(function(){ toast(msg); if(V.hlRv){ V.hlRv.items = null; hlSumLoad(HL.city, true); sheetHalalReviews(V.hlRv.id); } })
     .catch(function(){ toast("Нет связи"); });
 }
+/* ============================================================
+   УПРАВЛЕНИЕ ПРИЛОЖЕНИЕМ (только для администратора CRM)
+   Вход той же почтой и паролем, что в CRM. Правки уходят на наш сервер
+   и видны всем сразу, без выпуска новой версии приложения.
+   ============================================================ */
+var ADM = { tab:"reviews", items:null, loading:false, err:"", city:null, posts:null, log:null, q:"" };
+function admApi(path, body){
+  var o = { headers:{ "Authorization":"Bearer "+(S.admTok||"") } };
+  if(body !== undefined){ o.method = "POST"; o.headers["Content-Type"] = "application/json"; o.body = JSON.stringify(body); }
+  return fetch("api/admin/"+path, o).then(function(r){
+    return r.json().catch(function(){ return {}; }).then(function(j){
+      if(r.status === 401 && path !== "login"){ S.admTok = ""; S.admName = ""; save(); if(V.view==="admin") render(); throw new Error("Войдите заново"); }
+      if(!r.ok) throw new Error(j.error || "Не получилось");
+      return j;
+    });
+  });
+}
+function sheetAdmLogin(step){
+  sheet('<h3>Управление приложением</h3>'+
+    '<p style="font-size:13.5px;color:var(--ink-2);line-height:1.5;margin:0 0 12px">Вход - той же почтой и паролем, что в CRM. Доступ только у администратора.</p>'+
+    (step && step.pending
+      ? '<input class="search" id="admCode" inputmode="numeric" autocomplete="one-time-code" placeholder="Код из приложения-аутентификатора">'
+      : '<input class="search" id="admMail" type="email" autocomplete="username" placeholder="Почта">'+
+        '<input class="search" id="admPass" type="password" autocomplete="current-password" style="margin-top:9px" placeholder="Пароль">')+
+    '<button class="btn" style="width:100%;margin-top:12px" data-adm="login'+(step && step.pending ? ':'+esc(step.pending) : '')+'">Войти</button>'+
+    '<button class="btn sec" style="width:100%;margin-top:8px" data-scrim="1">Отмена</button>');
+}
+function admLogin(pending){
+  var g = function(id){ return String((document.getElementById(id)||{}).value || "").trim(); };
+  var body = pending ? { pendingToken:pending, code:g("admCode") } : { email:g("admMail"), password:(document.getElementById("admPass")||{}).value || "" };
+  if(!pending && (!body.email || !body.password)){ toast("Введите почту и пароль"); return; }
+  admApi("login", body).then(function(j){
+    if(j.needs2fa){ sheetAdmLogin({pending:j.pendingToken}); return; }
+    S.admTok = j.token; S.admName = j.name || ""; save();
+    closeSheet(); open("admin"); toast("Вы вошли как администратор");
+  }).catch(function(e){ toast(e.message); });
+}
+function admLoad(){
+  if(ADM.loading) return;
+  ADM.loading = true; ADM.err = "";
+  var t = ADM.tab;
+  var p = t === "reviews" ? admApi("reviews").then(function(j){ ADM.items = j.items; })
+        : t === "posts" ? admApi("posts").then(function(j){ ADM.posts = j; })
+        : t === "log" ? admApi("log").then(function(j){ ADM.log = j.items; })
+        : Promise.resolve();
+  p.catch(function(e){ ADM.err = e.message; }).then(function(){ ADM.loading = false; if(V.view==="admin") render(); });
+}
+var ADM_ST = { ok:"виден всем", hidden:"скрыт", check:"на проверке (брань)" };
+function viewAdmin(){
+  if(!S.admTok){
+    return '<div class="stack"><div class="card flat hl-empty"><b>Нужно войти</b><span>Управление доступно администратору CRM.</span></div>'+
+      '<button class="btn" data-adm="loginsheet">Войти</button></div>';
+  }
+  var h = ['<div class="stack">'];
+  h.push('<div class="card flat" style="display:flex;align-items:center;gap:10px"><div style="flex:1;font-size:13.5px;color:var(--ink-2)">Вы вошли: <b>'+esc(S.admName||"администратор")+'</b>. Правки видны всем сразу.</div>'+
+    '<button class="btn sec sm" style="width:auto" data-adm="logout">Выйти</button></div>');
+  h.push('<div class="hl-f">'+[["reviews","Отзывы"],["places","Места"],["posts","Журнал"],["log","История"]].map(function(t){
+    return '<button class="chip'+(ADM.tab===t[0]?" on":"")+'" data-adm="tab:'+t[0]+'">'+t[1]+'</button>';
+  }).join("")+'</div>');
+  if(ADM.err) h.push('<p class="disclaimer" style="margin:0">'+esc(ADM.err)+'</p>');
+
+  if(ADM.tab === "reviews"){
+    if(ADM.items === null){ admLoad(); h.push('<p class="disclaimer">Загружаем...</p>'); }
+    else if(!ADM.items.length) h.push('<div class="card flat hl-empty"><b>Отзывов пока нет</b></div>');
+    else h.push(ADM.items.map(function(r){
+      return '<article class="hl-card"><div class="hl-rv-h"><b>'+esc(r.pname||r.place)+'</b><span class="st">'+hlStars(r.rating)+'</span>'+
+        '<span class="d">'+esc(r.city)+' · '+esc(String(r.at).slice(0,10))+'</span></div>'+
+        '<div class="hl-rv-f">'+esc(r.name||"Гость")+' · '+esc(ADM_ST[r.status]||r.status)+(r.reports ? ' · жалоб: '+r.reports : '')+'</div>'+
+        (r.text ? '<div class="hl-rv-t">'+esc(r.text)+'</div>' : '')+
+        '<div class="hl-act">'+
+          (r.status === "ok" ? '<button class="btn sec sm" data-adm="rv:hide:'+r.id+'">Скрыть</button>' : '<button class="btn sec sm" data-adm="rv:show:'+r.id+'">Показать</button>')+
+          '<button class="btn sec sm" data-adm="rv:delete:'+r.id+'">Удалить</button></div></article>';
+    }).join(""));
+  }
+
+  if(ADM.tab === "places"){
+    var cid = ADM.city || S.hlCity || (S.city !== "gps" ? S.city : "") || "mah";
+    ADM.city = cid;
+    h.push('<div class="hl-city"><select id="admCity" class="search">'+CITIES.map(function(x){ return '<option value="'+x.id+'"'+(x.id===cid?" selected":"")+'>'+esc(x.n)+'</option>'; }).join("")+'</select>'+
+      '<button class="btn sm" data-adm="placenew">Добавить место</button></div>');
+    /* список мест берём тем же загрузчиком, что и «Халяль рядом» */
+    if(S.hlCity !== cid){ S.hlCity = cid; V.hlPos = null; }
+    hlLoad();
+    if(!HL.data){ h.push('<p class="disclaimer">'+(HL.err ? "Список не загрузился" : "Загружаем места...")+'</p>'); }
+    else {
+      h.push('<input class="search" id="admQ" placeholder="Найти место по названию или улице" value="'+esc(ADM.q)+'" autocomplete="off">');
+      var q = ADM.q.trim().toLowerCase();
+      var ord = {food:0, shop:1, room:2, mosque:3};
+      var list = HL.all.filter(function(x){ return !q || ((x.n||"")+" "+(x.a||"")).toLowerCase().indexOf(q) >= 0; })
+        .sort(function(a, b){ return (ord[a.k]||0) - (ord[b.k]||0) || (a.n ? 0 : 1) - (b.n ? 0 : 1) || String(a.n||"").localeCompare(String(b.n||""), "ru"); });
+      h.push('<p class="disclaimer" style="margin:0">Мест: '+list.length+'. Убранное из списка можно вернуть.</p>');
+      h.push(list.slice(0, 60).map(function(x){
+        var gone = HL.hide[x.id];
+        var pr = x.k !== "mosque" && x.k !== "room";
+        return '<article class="hl-card"'+(gone?' style="opacity:.55"':'')+'><div class="hl-n"><b>'+esc(x.n||"Без названия")+'</b><span>'+esc([x.s, x.a].filter(Boolean).join(" · "))+'</span></div>'+
+          '<div class="hl-tags">'+(gone ? '<span class="hl-tag warn">Убрано из списка</span>' : '')+(pr && hlHasPr(x) ? '<span class="hl-tag ok">Молельная комната</span>' : '')+
+          (x.l === "cert" ? '<span class="hl-tag gold">Сертификат</span>' : '')+(String(x.id).indexOf("a-")===0 ? '<span class="hl-tag">Добавлено вами</span>' : '')+'</div>'+
+          '<div class="hl-act">'+
+            '<button class="btn sec sm" data-adm="pl:'+(gone?"show":"hide")+':'+esc(x.id)+'">'+(gone?"Вернуть":"Убрать")+'</button>'+
+            (pr ? '<button class="btn sec sm" data-adm="pl:pr'+(hlHasPr(x)?"0":"1")+':'+esc(x.id)+'">'+(hlHasPr(x)?"Нет комнаты":"Есть комната")+'</button>' : '')+
+            '<button class="btn sec sm" data-adm="placeedit:'+esc(x.id)+'">Править</button></div></article>';
+      }).join(""));
+      if(list.length > 60) h.push('<p class="disclaimer">Показаны первые 60 - уточните поиск.</p>');
+    }
+  }
+
+  if(ADM.tab === "posts"){
+    h.push('<button class="btn" data-adm="postnew">Новая запись в журнал</button>');
+    if(ADM.posts === null){ admLoad(); h.push('<p class="disclaimer">Загружаем...</p>'); }
+    else h.push(ADM.posts.map(function(p){
+      return '<article class="hl-card"'+(p._hidden?' style="opacity:.55"':'')+'><div class="hl-n"><b>'+esc(p.n||"")+'</b><span>'+esc(postDate(p.d)+((rubric(p.r)||{}).n ? " · "+rubric(p.r).n : ""))+'</span></div>'+
+        '<div class="hl-tags">'+(p._hidden ? '<span class="hl-tag warn">Скрыта</span>' : '')+(p._new ? '<span class="hl-tag">Ваша</span>' : p._edited ? '<span class="hl-tag">Исправлена</span>' : '')+'</div>'+
+        '<div class="hl-act"><button class="btn sec sm" data-adm="postedit:'+esc(p.id)+'">Править</button>'+
+        '<button class="btn sec sm" data-adm="po:'+(p._hidden?"show":"hide")+':'+esc(p.id)+'">'+(p._hidden?"Показать":"Скрыть")+'</button></div></article>';
+    }).join(""));
+  }
+
+  if(ADM.tab === "log"){
+    var AN = {login:"вход", review_hide:"скрыт отзыв", review_show:"показан отзыв", review_delete:"удалён отзыв", place_add:"добавлено место", place_edit:"исправлено место",
+      place_hide:"убрано место", place_show:"возвращено место", post_add:"новая запись", post_edit:"исправлена запись", post_hide:"скрыта запись", post_show:"показана запись"};
+    if(ADM.log === null){ admLoad(); h.push('<p class="disclaimer">Загружаем...</p>'); }
+    else h.push('<div class="rows">'+ADM.log.map(function(l){
+      return '<div class="row"><div><div style="font-size:14px">'+esc(AN[l.action]||l.action)+(l.target ? ' · '+esc(l.target) : '')+'</div>'+
+        '<div style="font-size:12px;color:var(--ink-3)">'+esc(l.who||"")+' · '+esc(l.at)+'</div></div></div>';
+    }).join("")+'</div>');
+  }
+  h.push('</div>');
+  return h.join("");
+}
+
+/* ---------- правка места ---------- */
+function admPlace(id){ return id ? HL.all.filter(function(x){ return x.id === id; })[0] : null; }
+function sheetAdmPlace(id){
+  var x = admPlace(id) || { k:"food", s:"ресторан" };
+  var f = function(key, ph, val){ return '<input class="search" id="ap_'+key+'" style="margin-top:8px" placeholder="'+ph+'" value="'+esc(val==null?"":val)+'">'; };
+  sheet('<h3>'+(id ? "Править место" : "Новое место")+'</h3>'+
+    '<select id="ap_k" class="search">'+[["food","Еда"],["shop","Магазин"],["mosque","Мечеть"],["room","Молельная комната"]].map(function(o){ return '<option value="'+o[0]+'"'+(x.k===o[0]?" selected":"")+'>'+o[1]+'</option>'; }).join("")+'</select>'+
+    f("n","Название",x.n)+f("s","Тип: ресторан, кафе, мясная лавка...",x.s)+f("a","Адрес: улица, дом",x.a)+f("h","Часы: например, пн-вс 10:00-23:00",x.h)+f("p","Телефон",x.p)+
+    '<div class="eyebrow" style="margin-top:12px">Где на карте</div>'+
+    '<input class="search" id="ap_ll" style="margin-top:6px" placeholder="Ссылка из Яндекс Карт или «42.98, 47.50»" value="'+(x.lat!=null ? x.lat+", "+x.lng : "")+'">'+
+    '<button class="btn sec sm" style="margin-top:8px;width:auto" data-adm="here">Я сейчас здесь</button>'+
+    '<label class="hl-cb"><input type="checkbox" id="ap_pr"'+(hlHasPr(x)?" checked":"")+'> Есть молельная комната</label>'+
+    '<div class="eyebrow" style="margin-top:6px">Сертификат халяль, если видели документ</div>'+
+    f("cby","Кто выдал",x.c&&x.c.by)+f("cno","Номер",x.c&&x.c.no)+f("cto","Действует до",x.c&&x.c.to)+
+    '<button class="btn" style="width:100%;margin-top:12px" data-adm="placesave:'+esc(id||"")+'">Сохранить</button>'+
+    '<button class="btn sec" style="width:100%;margin-top:8px" data-scrim="1">Отмена</button>');
+}
+/* координаты из ссылки Яндекса (ll=долгота,широта или pt=...) или из пары чисел */
+function admParseLL(s){
+  s = String(s||"");
+  var m = s.match(/[?&](?:ll|pt|whatshere%5Bpoint%5D|whatshere\[point\])=([-\d.]+)(?:%2C|,)([-\d.]+)/);
+  if(m) return {lat:+m[2], lng:+m[1]};
+  m = s.match(/(-?\d{1,2}\.\d+)\s*[,; ]\s*(-?\d{1,3}\.\d+)/);
+  if(m) return {lat:+m[1], lng:+m[2]};
+  return null;
+}
+function admPlaceSave(id){
+  var g = function(k){ return String((document.getElementById("ap_"+k)||{}).value || "").trim(); };
+  var ll = admParseLL(g("ll"));
+  if(!g("n")){ toast("Напишите название"); return; }
+  if(!ll){ toast("Укажите место на карте: вставьте ссылку из Яндекс Карт или нажмите «Я сейчас здесь»"); return; }
+  var data = { k:g("k"), n:g("n"), s:g("s"), a:g("a"), h:g("h"), p:g("p"), lat:ll.lat, lng:ll.lng,
+    pr: (document.getElementById("ap_pr")||{}).checked ? 1 : 0,
+    cert: g("cby") ? { by:g("cby"), no:g("cno"), to:g("cto") } : null };
+  admApi("places", { city:ADM.city, id:id||"", data:data }).then(function(){
+    closeSheet(); toast(id ? "Место исправлено" : "Место добавлено"); hlOvLoad(ADM.city, true);
+  }).catch(function(e){ toast(e.message); });
+}
+
+/* ---------- правка записи журнала ----------
+   Текст пишется как обычно: абзацы через пустую строку, строка с «## » в начале - подзаголовок.
+   Арабские блоки и кнопки-переходы из старых записей остаются на месте в виде меток [[блок N]]. */
+function admPostText(body){
+  var out = [];
+  (body||[]).forEach(function(b, i){
+    if(b.ar || b.jump) out.push("[[блок "+(i+1)+"]]");
+    else { if(b.t) out.push("## "+b.t); if(b.p) out.push(b.p); }
+  });
+  return out.join("\n\n");
+}
+function admPostBody(text, old){
+  var body = [], cur = null;
+  String(text||"").replace(/\r/g,"").split(/\n\s*\n/).forEach(function(chunk){
+    chunk = chunk.trim(); if(!chunk) return;
+    var m = chunk.match(/^\[\[блок (\d+)\]\]$/);
+    if(m){ var ob = (old||[])[Number(m[1])-1]; if(ob){ body.push(ob); cur = null; } return; }
+    if(chunk.indexOf("## ") === 0){
+      var lines = chunk.split("\n"); cur = { t:lines[0].slice(3).trim() };
+      var rest = lines.slice(1).join("\n").trim(); if(rest) cur.p = rest;
+      body.push(cur); return;
+    }
+    if(cur && !cur.p){ cur.p = chunk; cur = null; } else { body.push({ p:chunk }); cur = null; }
+  });
+  return body;
+}
+function sheetAdmPost(id){
+  var p = id ? (ADM.posts||[]).filter(function(x){ return x.id === id; })[0] : null;
+  p = p || { d:new Date().toISOString().slice(0,10), r:"novoe", body:[] };
+  sheet('<h3>'+(id ? "Править запись" : "Новая запись")+'</h3>'+
+    '<input class="search" id="ep_n" placeholder="Заголовок" value="'+esc(p.n||"")+'">'+
+    '<input class="search" id="ep_s" style="margin-top:8px" placeholder="Подзаголовок - одна строка" value="'+esc(p.s||"")+'">'+
+    '<div style="display:flex;gap:8px;margin-top:8px"><select id="ep_r" class="search" style="flex:1">'+RUBRICS.map(function(r){ return '<option value="'+r.id+'"'+(p.r===r.id?" selected":"")+'>'+esc(r.n)+'</option>'; }).join("")+'</select>'+
+    '<input class="search" id="ep_d" type="date" style="flex:1" value="'+esc(p.d||"")+'"></div>'+
+    '<textarea id="ep_t" class="search" rows="12" style="margin-top:8px;line-height:1.5" placeholder="Абзацы через пустую строку. Подзаголовок - строка с ## в начале.">'+esc(admPostText(p.body))+'</textarea>'+
+    '<p class="disclaimer" style="text-align:left;padding:0;margin:6px 0 0">Длинные тире сервер сам заменит на дефис.</p>'+
+    '<button class="btn" style="width:100%;margin-top:10px" data-adm="postsave:'+esc(id||"")+'">'+(id ? "Сохранить" : "Опубликовать")+'</button>'+
+    '<button class="btn sec" style="width:100%;margin-top:8px" data-scrim="1">Отмена</button>');
+}
+function admPostSave(id){
+  var g = function(k){ return String((document.getElementById("ep_"+k)||{}).value || "").trim(); };
+  var old = id ? ((ADM.posts||[]).filter(function(x){ return x.id === id; })[0] || {}).body : [];
+  var body = admPostBody((document.getElementById("ep_t")||{}).value, old);
+  if(!g("n")){ toast("Напишите заголовок"); return; }
+  if(!body.length){ toast("Напишите хотя бы один абзац"); return; }
+  admApi("posts", { id:id||"", data:{ n:g("n"), s:g("s"), r:g("r"), d:g("d"), body:body } }).then(function(){
+    closeSheet(); toast(id ? "Запись исправлена" : "Запись опубликована"); ADM.posts = null; postsLoad(); render();
+  }).catch(function(e){ toast(e.message); });
+}
+
+function admClick(a){
+  var p = String(a).split(":"), cmd = p[0];
+  if(cmd === "entry"){ if(S.admTok) open("admin"); else sheetAdmLogin(); return; }
+  if(cmd === "loginsheet"){ sheetAdmLogin(); return; }
+  if(cmd === "login"){ admLogin(p.slice(1).join(":")); return; }
+  if(cmd === "logout"){ admApi("logout", {}).catch(function(){}); S.admTok = ""; S.admName = ""; save(); back(); toast("Вы вышли"); return; }
+  if(cmd === "tab"){ ADM.tab = p[1]; ADM.items = ADM.posts = ADM.log = null; render(); return; }
+  if(cmd === "rv"){ admApi("reviews", { id:Number(p[2]), action:p[1] }).then(function(){ ADM.items = null; toast(p[1]==="delete"?"Отзыв удалён":p[1]==="hide"?"Отзыв скрыт":"Отзыв показан"); hlSumLoad(HL.city, true); render(); }).catch(function(e){ toast(e.message); }); return; }
+  if(cmd === "pl"){
+    var id = p.slice(2).join(":"), act = p[1];
+    var req = act === "hide" || act === "show" ? { city:ADM.city, id:id, action:act } : { city:ADM.city, id:id, data:{ pr: act === "pr1" ? 1 : 0 } };
+    admApi("places", req).then(function(){ toast(act==="hide"?"Убрано из списка":act==="show"?"Возвращено":act==="pr1"?"Отмечена молельная комната":"Отметка снята"); hlOvLoad(ADM.city, true); }).catch(function(e){ toast(e.message); });
+    return;
+  }
+  if(cmd === "placenew"){ sheetAdmPlace(""); return; }
+  if(cmd === "placeedit"){ sheetAdmPlace(p.slice(1).join(":")); return; }
+  if(cmd === "placesave"){ admPlaceSave(p.slice(1).join(":")); return; }
+  if(cmd === "here"){
+    if(!navigator.geolocation){ toast("Геолокация недоступна"); return; }
+    navigator.geolocation.getCurrentPosition(function(pos){
+      var el = document.getElementById("ap_ll"); if(el) el.value = pos.coords.latitude.toFixed(5)+", "+pos.coords.longitude.toFixed(5);
+      toast("Координаты вставлены");
+    }, function(){ toast("Не получилось определить место"); }, {timeout:9000, enableHighAccuracy:true});
+    return;
+  }
+  if(cmd === "postnew"){ sheetAdmPost(""); return; }
+  if(cmd === "postedit"){ sheetAdmPost(p.slice(1).join(":")); return; }
+  if(cmd === "postsave"){ admPostSave(p.slice(1).join(":")); return; }
+  if(cmd === "po"){ admApi("posts", { id:p.slice(2).join(":"), action:p[1] }).then(function(){ ADM.posts = null; postsLoad(); toast(p[1]==="hide"?"Запись скрыта":"Запись показана"); render(); }).catch(function(e){ toast(e.message); }); return; }
+}
+
 function sheetHalalMsg(title, text){
   sheet('<h3>'+esc(title)+'</h3>'+
     '<p style="font-size:13.5px;color:var(--ink-2);line-height:1.5;margin:0 0 10px">Допишите, что знаете, и отправьте нам. Мы проверим и обновим список.</p>'+
@@ -13839,6 +14116,9 @@ function viewSettings(){
   }).join("") +'</div>');
 
   h.push('<p class="disclaimer">Расчёт астрономический. Сверьте с местной мечетью: в некоторых городах приняты поправки в 1-3 минуты.</p>');
+  h.push('<div class="rows" style="margin-top:6px"><button class="row" data-adm="entry"><span class="ic">⚿</span>'+
+    '<div><div style="font-size:14.5px">Управление приложением</div><div style="font-size:12.5px;color:var(--ink-3)">'+(S.admTok ? "Вы вошли как администратор" : "Для администратора")+'</div></div>'+
+    '<span class="val">›</span></button></div>');
   h.push('</div>');
   return h.join("");
 }
@@ -14876,6 +15156,7 @@ function render(){
   else if(V.view==="suras") html = viewSuras();
   else if(V.view==="qibla") html = viewQibla();
   else if(V.view==="halal") html = viewHalal();
+  else if(V.view==="admin") html = viewAdmin();
   else if(V.view==="calendar") html = viewCalendar();
   else if(V.view==="zakat") html = viewZakat();
   else if(V.view==="mydua") html = viewMyDua();
@@ -14909,6 +15190,8 @@ function render(){
   if(s && V.q){ s.focus(); s.setSelectionRange(s.value.length, s.value.length); }
   var hq = document.getElementById("hlQ");
   if(hq && V.hlQ){ hq.focus(); hq.setSelectionRange(hq.value.length, hq.value.length); }
+  var aq = document.getElementById("admQ");
+  if(aq && ADM.q){ aq.focus(); aq.setSelectionRange(aq.value.length, aq.value.length); }
   /* открытку рисуем после вставки разметки: раньше canvas ещё нет на экране */
   if(V.view==="name" && typeof V.p === "number") nameCardRender(V.p);
   navSave();
@@ -14928,12 +15211,13 @@ document.getElementById("app").addEventListener("change", function(ev){
   if(!el || !el.id) return;
   if(el.id === "plTime" || el.id === "plDate"){ plKeepDraft(); render(); return; }
   if(el.id === "plGoalSel"){ V.plGoal = el.value; return; }
+  if(el.id === "admCity"){ ADM.city = el.value; ADM.q = ""; S.hlCity = el.value; V.hlPos = null; save(); render(); return; }
   if(el.id === "hlCitySel"){ S.hlCity = el.value || ""; V.hlPos = null; V.hlLim = 30; V.hlQ = ""; save(); render(); return; }
   if(el.id === "plRepSel"){ V.plRep = el.value; return; }
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -15207,6 +15491,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.hlrvsend!==undefined){ hlRvSend(); return; }
   if(d.hlrvrep){ hlRvPost("report", d.hlrvrep, "Жалоба отправлена. Спасибо"); return; }
   if(d.hlrvdel){ hlRvPost("delete", d.hlrvdel, "Отзыв удалён"); return; }
+  if(d.adm){ admClick(d.adm); return; }
   if(d.hlsug!==undefined){ sheetHalalMsg("Предложить место", "Ассаламу алейкум! Предлагаю место для «Халяль рядом» в RIZQ.\nГород: "+(HL.data ? HL.data.n : currentCity().n)+"\nНазвание: \nАдрес: \nПочему это халяль (сертификат, слова владельца, отметка): "); return; }
   if(d.hlwa!==undefined){ hlMsgWa(); return; }
   if(d.hlcopy!==undefined){ var tt = hlMsgText(); if(tt){ copyText(tt); toast("Текст скопирован - отправьте его нам в WhatsApp: "+SUPPORT.phone); } return; }
@@ -15627,6 +15912,7 @@ $screen.addEventListener("input", function(ev){
   var t = ev.target;
   if(t.id==="nameSearch" || t.id==="hadSearch" || t.id==="qSearchInput" || t.id==="knowSearch"){ V.q = t.value; render(); return; }
   if(t.id==="hlQ"){ V.hlQ = t.value; V.hlLim = 30; render(); return; }
+  if(t.id==="admQ"){ ADM.q = t.value; render(); return; }
   /* ползунки: обновляем подпись без перерисовки, иначе слетает перетаскивание */
   function lbl(node, text){ if(node.nextElementSibling) node.nextElementSibling.textContent = text; }
   if(t.dataset && t.dataset.qspeed){
