@@ -682,6 +682,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 }
 /* при чтении панель уезжает вниз и не отнимает высоту */
 .tabbar.hide{transform:translateY(calc(100% + 4px))}
+#hdr{transition:margin-top .25s ease;flex:none}
+@media (prefers-reduced-motion: reduce){ #hdr{transition:none} }
 .tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:3px 2px;color:var(--ink-3);position:relative}
 .tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .tab span{font-size:10px;font-weight:500;letter-spacing:-.01em}
@@ -3452,6 +3454,7 @@ function greetAr(){
   return {ar:"مَسَاءُ الْخَيْر", ru:"Добрый вечер"};
 }
 function renderHdr(){
+  if(V.view || V.tab !== "home") hdrShow(); /* уезжает только шапка главной */
   var titles = {dua:"Знания", courses:"Обучение", journal:"Журнал", fav:"Избранное", prof:"Профиль", quran:"Коран", income:"Ризкъ"};
   if(V.view){
     var t = V.view==="cat" ? (CATS.filter(function(c){return c.id===V.p})[0]||{}).n
@@ -15684,14 +15687,25 @@ setInterval(function(){
 /* Панель прячется при листании вниз и возвращается при движении вверх.
    Порог в 10 px - чтобы дрожание пальца её не дёргало. */
 var TB_Y = 0, TB_HID = false;
-function tabbarShow(){ if(TB_HID){ $tabbar.classList.remove("hide"); TB_HID = false; } TB_Y = $screen.scrollTop; }
+function tabbarShow(){ if(TB_HID){ $tabbar.classList.remove("hide"); TB_HID = false; } TB_Y = $screen.scrollTop; hdrShow(); }
+/* Шапка главной уезжает вверх вместе с нижней панелью (просьба Заиры 19.09).
+   Полоска под вырезом камеры остаётся, чтобы текст не заезжал под часы и значки. */
+var HD_HID = false;
+function hdrShow(){ if(HD_HID){ $hdr.style.marginTop = ""; HD_HID = false; } }
+function hdrHide(){
+  if(HD_HID || V.view || V.tab !== "home") return;
+  var h = $hdr.firstChild; if(!h) return;
+  var safe = Math.max(0, (parseFloat(getComputedStyle(h).paddingTop) || 0) - 18);
+  $hdr.style.marginTop = -($hdr.offsetHeight - safe) + "px";
+  HD_HID = true;
+}
 $screen.addEventListener("scroll", function(){
   var y = $screen.scrollTop;
   if(y < 80){ tabbarShow(); return; }
   var d = y - TB_Y;
-  if(d > 10 && !TB_HID){ $tabbar.classList.add("hide"); TB_HID = true; TB_Y = y; }
+  if(d > 10 && !TB_HID){ $tabbar.classList.add("hide"); TB_HID = true; TB_Y = y; hdrHide(); }
   else if(d < -10){ tabbarShow(); }
-  else if(d > 10) TB_Y = y;
+  else if(d > 10){ TB_Y = y; hdrHide(); }
 }, {passive:true});
 
 $screen.addEventListener("scroll", function(){
