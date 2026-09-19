@@ -1,5 +1,5 @@
 /* Ризк - офлайн-кэш. Меняйте номер версии при каждом обновлении приложения. */
-var CACHE = "rizq-v104";
+var CACHE = "rizq-v105";
 var ASSETS = [
   "./",
   "./index.html",
@@ -93,7 +93,7 @@ self.addEventListener("fetch", function (e) {
   /* Журнал и подборка сборов обновляются без пересборки приложения, поэтому
      для них сначала сеть, а кэш - запасной вариант. Иначе правка файла на
      хостинге не дошла бы до тех, у кого он уже лежит в кэше. */
-  if (url.pathname.indexOf("posts.json") !== -1 || url.pathname.indexOf("sadaqa.json") !== -1) {
+  if (url.pathname.indexOf("posts.json") !== -1 || url.pathname.indexOf("sadaqa.json") !== -1 || url.pathname.indexOf("/halal/") !== -1) {
     e.respondWith(
       fetch(e.request).then(function (resp) {
         if (resp && resp.status === 200) {

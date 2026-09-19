@@ -3852,7 +3852,7 @@ function deepOpen(){
     var mv = q.match(/[?&]open=([a-zA-Z0-9_]+)/);
     if(mv && DEEP_VIEWS.indexOf(mv[1]) >= 0){
       /* Курсы живут на своей вкладке: без неё нижнее меню покажет чужой раздел. */
-      V.tab = (mv[1]==="courses" || mv[1]==="consulting") ? "income" : "dua";
+      V.tab = (mv[1]==="courses" || mv[1]==="consulting") ? "income" : mv[1]==="halal" ? "home" : "dua";
       open(mv[1], null);
       return true;
     }
@@ -11166,8 +11166,8 @@ function hlDistText(m){ return m < 1000 ? (Math.round(m/10)*10)+" м" : (m/1000)
 function hlHours(h){
   if(!h) return "";
   if(h === "24/7") return "круглосуточно";
-  var D = {Mo:"пн",Tu:"вт",We:"ср",Th:"чт",Fr:"пт",Sa:"сб",Su:"вс",off:"выходной"};
-  return String(h).replace(/\b(Mo|Tu|We|Th|Fr|Sa|Su|off)\b/g, function(x){ return D[x]; }).replace(/;\s*/g, "; ");
+  var D = {Mo:"пн",Tu:"вт",We:"ср",Th:"чт",Fr:"пт",Sa:"сб",Su:"вс",off:"выходной",closed:"закрыто",PH:"праздники"};
+  return String(h).replace(/\b(Mo|Tu|We|Th|Fr|Sa|Su|off|closed|PH)\b/g, function(x){ return D[x]; }).replace(/;\s*/g, "; ");
 }
 function hlGroup(x){ return (x.k==="mosque" || x.k==="room") ? "pray" : x.k; }
 
@@ -11204,7 +11204,11 @@ function hlSumLoad(city, force){
 }
 function hlSum(x){ return HLR.sum[x.id] || null; }
 /* подтверждения людей: «да» больше, чем «нет», и хотя бы одно */
-function hlHasPr(x){ var r = hlSum(x); return !!x.pr || !!(r && r.pr && r.pr[0] > r.pr[1]); }
+function hlHasPr(x){
+  var r = hlSum(x);
+  if(r && r.pr && r.pr[1] > r.pr[0]) return false; /* посетители чаще отвечают «нет» - отметку снимаем */
+  return !!x.pr || !!(r && r.pr && r.pr[0] > r.pr[1]);
+}
 
 /* место в рейтинге: средняя оценка, подтянутая к 4 при малом числе отзывов,
    чтобы одна пятёрка не обгоняла двадцать отзывов со средней 4,8 */
@@ -11218,8 +11222,10 @@ function hlList(){
       .map(function(x){ return {x:x, d:hlDist(b, x)}; })
       .sort(function(a, c){ return hlScore(c.x) - hlScore(a.x) || c.x.n.localeCompare(a.x.n); });
   }
+  var q = String(V.hlQ || "").trim().toLowerCase();
   return HL.data.items
     .filter(function(x){ return f==="all" || (f==="pr" ? hlHasPr(x) : hlGroup(x)===f); })
+    .filter(function(x){ return !q || ((x.n||"")+" "+(x.a||"")+" "+(x.s||"")).toLowerCase().indexOf(q) >= 0; })
     .map(function(x){ return {x:x, d:hlDist(b, x)}; })
     /* сертификат - выше при равной близости: в пределах 300 м он идёт первым */
     .sort(function(a, c){ return (a.d - (a.x.l==="cert"?300:0)) - (c.d - (c.x.l==="cert"?300:0)); });
@@ -11239,7 +11245,7 @@ function hlFlagTags(x){
   var r = hlSum(x) || {}, h = "";
   if(x.k !== "mosque" && x.k !== "room"){
     if(x.pr === 2) h += '<span class="hl-tag gold">Есть молельная комната · проверено</span>';
-    else if(hlHasPr(x)) h += '<span class="hl-tag ok">Есть молельная комната'+(r.pr && r.pr[0] ? ' · подтвердили '+r.pr[0] : ' · на карте')+'</span>';
+    else if(hlHasPr(x)) h += '<span class="hl-tag ok">Есть молельная комната'+(r.pr && r.pr[0] ? ' · подтвердили '+r.pr[0] : x.pr === 1 ? ' · на карте' : '')+'</span>';
     if(r.cert) h += '<span class="hl-tag">Сертификат видели: '+r.cert+'</span>';
   }
   return h;
@@ -11318,13 +11324,14 @@ function viewHalal(){
       }
     }
 
+    h.push('<input class="search" id="hlQ" placeholder="Найти по названию или улице" value="'+esc(V.hlQ||"")+'" autocomplete="off">');
     h.push('<div class="hl-f">'+ HL_FILTERS.map(function(f){
       return '<button class="chip'+((V.hlF||"all")===f.id?" on":"")+'" data-hlf="'+f.id+'">'+f.n+(f.id==="top" ? '' : ' · '+cnt[f.id])+'</button>';
     }).join("") +'</div>');
 
     if(HL_DAG[HL.city] && (V.hlF||"all")!=="top"){
       h.push('<p class="disclaimer" style="margin:0">В Дагестане на картах почти никто не отмечает халяль, поэтому здесь собраны кафе и рестораны города. '+
-        'Есть ли молельная комната, подтверждают посетители в отзывах. Если место здесь не на своём месте, нажмите «!» на карточке - мы проверим и уберём.</p>');
+        'Если молельной комнаты в заведении нет, ответьте «Нет» в отзыве или нажмите «!» на карточке - мы проверим и поправим.</p>');
     } else if(HL_KAVKAZ[HL.city] && cnt.food + cnt.shop < 15 && (V.hlF||"all")!=="top"){
       h.push('<p class="disclaimer" style="margin:0">На Кавказе заведения редко отмечают халяль на картах, поэтому еды в списке мало. '+
         'Больше мест найдёте в Яндекс Картах и 2ГИС по кнопкам ниже.</p>');
@@ -11333,7 +11340,8 @@ function viewHalal(){
     /* ближайшая мечеть уже стоит сверху - в общем списке её не повторяем */
     if(typeof pr !== "undefined" && pr && pr.d < 5000 && b.real && (V.hlF||"all")==="all") all = all.filter(function(r){ return r !== pr; });
     var lim = V.hlLim || 30, shown = all.slice(0, lim);
-    if(!shown.length && (V.hlF||"all") !== "top") h.push('<div class="card flat hl-empty"><b>В этом разделе пока пусто</b><span>Загляните в карты по кнопкам ниже.</span></div>');
+    if(!shown.length && V.hlQ) h.push('<div class="card flat hl-empty"><b>По запросу «'+esc(V.hlQ)+'» ничего не нашлось</b><span>Проверьте написание или поищите в картах по кнопкам ниже. Если места нет в списке - предложите его.</span></div>');
+    else if(!shown.length && (V.hlF||"all") !== "top") h.push('<div class="card flat hl-empty"><b>В этом разделе пока пусто</b><span>Загляните в карты по кнопкам ниже.</span></div>');
     if((V.hlF||"all") === "top" && !all.length){
       h.push('<div class="card flat hl-empty"><b>В этом городе пока нет оценок</b><span>Рейтинг складывается из отзывов. Откройте любое место и оцените его первым - кнопка «Отзывы» на карточке.</span></div>');
     }
@@ -14896,6 +14904,8 @@ function render(){
   $screen.classList.remove("in"); void $screen.offsetWidth; $screen.classList.add("in");
   var s = document.getElementById("nameSearch") || document.getElementById("hadSearch") || document.getElementById("qSearchInput") || document.getElementById("knowSearch");
   if(s && V.q){ s.focus(); s.setSelectionRange(s.value.length, s.value.length); }
+  var hq = document.getElementById("hlQ");
+  if(hq && V.hlQ){ hq.focus(); hq.setSelectionRange(hq.value.length, hq.value.length); }
   /* открытку рисуем после вставки разметки: раньше canvas ещё нет на экране */
   if(V.view==="name" && typeof V.p === "number") nameCardRender(V.p);
   navSave();
@@ -14915,7 +14925,7 @@ document.getElementById("app").addEventListener("change", function(ev){
   if(!el || !el.id) return;
   if(el.id === "plTime" || el.id === "plDate"){ plKeepDraft(); render(); return; }
   if(el.id === "plGoalSel"){ V.plGoal = el.value; return; }
-  if(el.id === "hlCitySel"){ S.hlCity = el.value || ""; V.hlPos = null; V.hlLim = 30; save(); render(); return; }
+  if(el.id === "hlCitySel"){ S.hlCity = el.value || ""; V.hlPos = null; V.hlLim = 30; V.hlQ = ""; save(); render(); return; }
   if(el.id === "plRepSel"){ V.plRep = el.value; return; }
 });
 document.getElementById("app").addEventListener("click", function(ev){
@@ -15613,6 +15623,7 @@ document.getElementById("app").addEventListener("click", function(ev){
 $screen.addEventListener("input", function(ev){
   var t = ev.target;
   if(t.id==="nameSearch" || t.id==="hadSearch" || t.id==="qSearchInput" || t.id==="knowSearch"){ V.q = t.value; render(); return; }
+  if(t.id==="hlQ"){ V.hlQ = t.value; V.hlLim = 30; render(); return; }
   /* ползунки: обновляем подпись без перерисовки, иначе слетает перетаскивание */
   function lbl(node, text){ if(node.nextElementSibling) node.nextElementSibling.textContent = text; }
   if(t.dataset && t.dataset.qspeed){
