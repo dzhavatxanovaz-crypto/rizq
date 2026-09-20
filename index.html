@@ -473,6 +473,44 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .top-n{font-family:var(--f-display);font-weight:700;font-size:15px;color:var(--ink-2)}
 .top-n.gold{color:var(--accent-ink)}
 .top-row.mine{background:rgba(212,175,55,.10)}
+.dash{background:linear-gradient(155deg, rgba(212,175,55,.14), rgba(212,175,55,.02));border-color:rgba(212,175,55,.35)}
+.dash-top{display:flex;gap:14px;align-items:center}
+.dash-top>div:first-child{flex:1;min-width:0}
+.dash-h1{font-family:var(--f-display);font-size:21px;font-weight:700;margin-top:4px;line-height:1.2}
+.dash-sub{font-size:13px;color:var(--ink-2);margin-top:5px;line-height:1.45}
+.dash-ring{position:relative;width:104px;height:104px;flex:none}
+.dash-ring svg{width:100%;height:100%;display:block}
+.dash-ring-in{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.dash-ring-in b{font-family:var(--f-display);font-size:26px;font-weight:700;display:block;line-height:1}
+.dash-ring-in span{font-size:11px;color:var(--ink-3)}
+.dash-bars{display:flex;gap:6px;align-items:flex-end;margin-top:16px}
+.dash-bar{flex:1;text-align:center}
+.dash-bar i{display:block;background:rgba(212,175,55,.45);border-radius:6px 6px 3px 3px;margin:0 auto;width:100%}
+.dash-bar.today i{background:#D4AF37}
+.dash-bar span{display:block;font-size:10.5px;color:var(--ink-3);margin-top:5px}
+.dash-bar em{display:block;font-style:normal;font-size:10.5px;color:var(--ink-2);height:13px}
+.dash-st{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:14px}
+.dash-st>div{text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 2px;min-width:0}
+.dash-st b{display:block;font-family:var(--f-display);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis}
+.dash-st span{display:block;font-size:10.5px;color:var(--ink-3);margin-top:2px}
+.podium{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:end;margin-top:2px}
+.pod-n{font-size:12px;color:var(--ink-2);text-align:center;margin-bottom:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pod-b{border-radius:12px 12px 0 0;background:var(--surface-2);border:1px solid var(--line);border-bottom:none;text-align:center;padding:9px 4px}
+.pod-b b{display:block;font-family:var(--f-display);font-size:17px;font-weight:700}
+.pod-b span{display:block;font-size:11.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.pod.one .pod-b{background:linear-gradient(160deg, rgba(212,175,55,.3), rgba(212,175,55,.08));border-color:rgba(212,175,55,.55);padding:20px 4px}
+.pod.two .pod-b{padding:14px 4px}
+.top-line{font-size:11.5px;color:var(--accent-ink);text-align:center;padding:5px 0;border-top:1px dashed rgba(212,175,55,.5)}
+.top-lig{display:flex;gap:6px;margin-top:10px}
+.top-lig span{flex:1;text-align:center;font-size:11px;padding:5px 0;border-radius:8px;background:var(--surface-2);color:var(--ink-3);border:1px solid var(--line)}
+.top-lig span.on{background:rgba(212,175,55,.2);color:var(--accent-ink);border-color:rgba(212,175,55,.5);font-weight:600}
+.top-lig span.past{color:var(--ink-2)}
+.badges{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.badge{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:11px 12px;opacity:.75}
+.badge.on{opacity:1;border-color:rgba(212,175,55,.5);background:linear-gradient(150deg, rgba(212,175,55,.14), rgba(212,175,55,.03))}
+.badge b{display:block;font-family:var(--f-display);font-size:14px;font-weight:600;line-height:1.25}
+.badge span{display:block;font-size:11.5px;color:var(--ink-3);margin-top:3px;line-height:1.35}
+.badge i{display:block;font-style:normal;font-size:11.5px;color:var(--accent-ink);margin-top:6px;font-weight:600}
 .hl-link{font-size:13px;color:var(--accent-ink);text-decoration:none;font-weight:600;padding:6px 0}
 .hl-ics{margin-left:auto;display:flex;gap:8px}
 .hl-ics .hl-err{margin-left:0}
@@ -3781,6 +3819,15 @@ function viewHomeMain(){
     '<button class="cat" data-open="qibla"><div class="ic">✧</div><b>Кибла</b><span>'+Math.round(qiblaBearing())+'° от севера</span></button>'+
     '<button class="cat" data-open="live"><div class="ic" style="font-size:24px">🕋</div><b>Мекка онлайн</b><span>прямой эфир из Харама</span></button>'+
     '</div>');
+  var scH = scoreState(), scMe = S.scoreMe;
+  h.push('<button class="cat-wide" data-open="top" style="margin-top:10px">'+
+    '<span class="cw-ic">◈</span>'+
+    '<span class="cw-t"><b>Рейтинг участников</b><span>'+
+      (scH.on
+        ? (scMe && scMe.place ? esc((scMe.leagueName ? scMe.leagueName+" лига · " : "")+"ваше место "+scMe.place+(scMe.gap ? " · до следующего "+scMe.gap : ""))
+                              : "считаем ваше место")
+        : "неделя начинается заново каждый понедельник")+'</span></span>'+
+    '<span class="cw-go">›</span></button>');
   h.push('<button class="cat-wide gold" data-open="halal" style="margin-top:10px">'+
     '<span class="cw-ic">☪</span>'+
     '<span class="cw-t"><b>Халяль рядом</b><span>еда, магазины и ближайшая мечеть</span></span>'+
@@ -11126,7 +11173,7 @@ function viewQibla(){
    имён и страниц Корана. Что он читал и о чём просил - остаётся на телефоне.
    Можно участвовать скрытно: в списке его нет, своё место видит.
    ============================================================ */
-var TOP = { period:"week", data:null, loading:false, err:"" };
+var TOP = { period:"league", data:null, loading:false, err:"" };
 var SC_SENT = 0;
 function scoreState(){
   if(!S.score) S.score = { on:0, name:"", shown:1 };
@@ -11153,7 +11200,8 @@ function scoreSync(force){
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(j){
       if(!j) return;
-      S.scoreMe = { week:j.week, all:j.all, awards:j.awards || [], at:Date.now() };
+      S.scoreMe = { week:j.week, all:j.all, place:j.place, of:j.of, gap:j.gap, league:j.league, leagueName:j.leagueName,
+        awards:j.awards || [], at:Date.now() };
       save();
       var fresh = (j.awards || []).filter(function(a){ return !a.seen; });
       if(fresh.length){ toast("Вам вручили награду: " + fresh[0].title); scoreSeen(); }
@@ -11197,27 +11245,70 @@ function scoreOff(){
 function topLoad(force){
   if(TOP.loading) return;
   TOP.loading = true; TOP.err = "";
-  fetch("api/score/top?period="+TOP.period+"&device="+hlDevice())
+  fetch(TOP.period === "months" ? "api/score/months" : "api/score/top?period="+TOP.period+"&device="+hlDevice())
     .then(function(r){ if(!r.ok) throw 0; return r.json(); })
     .then(function(j){ TOP.data = j; TOP.loading = false; if(V.view==="top") render(); })
     .catch(function(){ TOP.loading = false; TOP.err = "Список не загрузился - проверьте интернет"; if(V.view==="top") render(); });
 }
-var TOP_PERIODS = [["week","Неделя"],["month","Месяц"],["all","Всё время"]];
+var TOP_PERIODS = [["league","Моя лига"],["month","Месяц"],["all","Всё время"],["months","Лучшие по месяцам"]];
+/* Из чего складываются баллы - чтобы человек понимал, на что влияет каждое действие */
+var SCORE_WHY = [
+  ["Отмеченный намаз", POINTS.fard],
+  ["Сунна-намаз", POINTS.sunnah],
+  ["Дело из «Моего дня»: Коран, садака, шукр", POINTS.daily],
+  ["Прочитанный азкар", POINTS.azkar],
+  ["Круг зикра на тасбихе", POINTS.tasbih],
+  ["Названное имя Всевышнего", POINTS.name],
+  ["Верный ответ в тесте", POINTS.quiz]
+];
+function scoreWhyHtml(){
+  return '<section class="card"><div class="eyebrow">Из чего складываются баллы</div>'+
+    '<div class="rows" style="margin-top:9px">'+SCORE_WHY.map(function(r){
+      return '<div class="row"><div style="font-size:14px">'+esc(r[0])+'</div>'+
+        '<span class="val" style="color:var(--accent-ink);font-weight:600">+'+r[1]+'</span></div>';
+    }).join("")+'</div>'+
+    '<p class="disclaimer" style="text-align:left;padding:0;margin:9px 0 0">Баллы начисляются один раз в день за каждое дело. '+
+      'Пропущенный день не отнимает баллы, но прерывает серию.</p></section>';
+}
+/* показатели участника одной строкой */
+function topStats(x){
+  var p = [];
+  if(x.streak) p.push("серия "+plural(x.streak,"день","дня","дней"));
+  if(x.azkars) p.push("азкаров "+x.azkars);
+  if(x.tasbih) p.push("зикров "+x.tasbih);
+  if(x.names) p.push("имён "+x.names+"/99");
+  if(x.quran) p.push("Коран "+x.quran+" стр.");
+  return p.join(" · ");
+}
+/* Значки. Считаются на самом телефоне по вашим же числам, поэтому видны и без интернета
+   и не зависят от того, участвуете ли вы в общем рейтинге. */
+var BADGES = [
+  {id:"s7",   n:"Неделя подряд",       d:"7 дней без пропусков",        get:function(v){ return v.streak; },  need:7},
+  {id:"s30",  n:"Месяц подряд",        d:"30 дней без пропусков",       get:function(v){ return v.streak; },  need:30},
+  {id:"s100", n:"Сто дней",            d:"100 дней подряд",             get:function(v){ return v.streak; },  need:100},
+  {id:"s365", n:"Год",                 d:"365 дней подряд",             get:function(v){ return v.streak; },  need:365},
+  {id:"a100", n:"Сто азкаров",         d:"100 отмеченных азкаров",      get:function(v){ return v.azkars; },  need:100},
+  {id:"a1000",n:"Тысяча азкаров",      d:"1000 отмеченных азкаров",     get:function(v){ return v.azkars; },  need:1000},
+  {id:"t1000",n:"Тысяча зикров",       d:"1000 произнесённых зикров",   get:function(v){ return v.tasbih; },  need:1000},
+  {id:"t10k", n:"Десять тысяч зикров", d:"10 000 произнесённых зикров", get:function(v){ return v.tasbih; },  need:10000},
+  {id:"n33",  n:"Треть имён",          d:"33 имени Всевышнего",         get:function(v){ return v.names; },   need:33},
+  {id:"n99",  n:"Все имена",           d:"99 имён Всевышнего",          get:function(v){ return v.names; },   need:99},
+  {id:"q100", n:"Сто страниц",         d:"100 страниц Корана",          get:function(v){ return v.quran; },   need:100},
+  {id:"q604", n:"Хатм",                d:"весь Коран, 604 страницы",    get:function(v){ return v.quran; },   need:604}
+];
+function badgeList(){
+  var v = scoreStats();
+  return BADGES.map(function(b){
+    var have = b.get(v) || 0;
+    return { id:b.id, n:b.n, d:b.d, have:have, need:b.need, done:have >= b.need, pct:Math.min(100, Math.round(have*100/b.need)) };
+  });
+}
 function viewTop(){
   var sc = scoreState(), h = ['<div class="stack">'];
   if(!TOP.data && !TOP.loading) topLoad();
 
-  var me = TOP.data && TOP.data.me;
-  h.push('<section class="card hl-head">'+
-    '<div class="eyebrow">Рейтинг участников</div>'+
-    '<div class="hl-sub" style="margin-top:6px">Баллы даются за постоянство: отмеченные намазы и азкары, зикр, имена Всевышнего, чтение Корана. '+
-      'Считает ваш телефон, а в рейтинг уходят только числа.</div>'+
-    (sc.on
-      ? (me ? '<div class="top-me"><b>'+(me.place ? "Ваше место: "+me.place : "Пока без места")+'</b><span>'+plural(me.points||0,"балл","балла","баллов")+(sc.shown ? '' : ' · вы скрыты в списке')+'</span></div>'
-            : '<div class="top-me"><span>Считаем ваше место...</span></div>')
-      : '<button class="btn sm" style="margin-top:12px" data-sc="sheet">Участвовать в рейтинге</button>')+
-  '</section>');
-
+  var me = TOP.data && TOP.data.me, d = TOP.data;
+  h.push(topDash(sc, d, me));
   var aw = (S.scoreMe && S.scoreMe.awards) || (TOP.data && TOP.data.awards) || [];
   if(aw.length){
     h.push('<div class="sec-h"><h3>Ваши награды</h3></div>');
@@ -11235,22 +11326,107 @@ function viewTop(){
     return '<button class="chip'+(TOP.period===p[0]?" on":"")+'" data-sc="period:'+p[0]+'">'+p[1]+'</button>';
   }).join("")+'</div>');
 
+  if(TOP.period === "months"){
+    if(!TOP.data || !TOP.data.months) h.push('<p class="disclaimer">Загружаем...</p>');
+    else if(!TOP.data.months.length) h.push('<div class="card flat hl-empty"><b>Месяц ещё не закончился</b><span>Здесь будут трое лучших каждого месяца.</span></div>');
+    else h.push(TOP.data.months.map(function(m){
+      var d = m.month.split("-"), MN = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+      return '<section class="card"><div class="eyebrow">'+esc(MN[Number(d[1])-1]+" "+d[0])+'</div>'+
+        '<div class="rows" style="margin-top:8px">'+m.items.map(function(x){
+          return '<div class="row"><span class="ic top-n'+(x.place<=3?" gold":"")+'">'+x.place+'</span>'+
+            '<div style="min-width:0"><div style="font-size:14.5px">'+esc(x.name)+'</div>'+
+            '<div style="font-size:12px;color:var(--ink-3)">'+esc(topStats(x))+'</div></div>'+
+            '<span class="val" style="font-variant-numeric:tabular-nums">'+x.points+'</span></div>';
+        }).join("")+'</div></section>';
+    }).join(""));
+    h.push(scoreWhyHtml());
+    h.push('</div>');
+    return h.join("");
+  }
   if(TOP.err) h.push('<p class="disclaimer" style="margin:0">'+esc(TOP.err)+'</p>');
   else if(!TOP.data) h.push('<p class="disclaimer">Загружаем...</p>');
   else if(!TOP.data.items.length) h.push('<div class="card flat hl-empty"><b>Пока никого нет</b><span>Рейтинг только начался. Включите участие - и вы первая.</span></div>');
-  else h.push('<div class="rows">'+TOP.data.items.map(function(x){
-    var mine = me && me.name === x.name && me.place === x.place;
+  else h.push('<div class="rows">'+TOP.data.items.map(function(x, i){
+    var mine = x.me || (me && me.name === x.name && me.place === x.place);
+    var line = TOP.period === "league" && TOP.data.up && (i + 1 === TOP.data.up) && TOP.data.items.length > TOP.data.up
+      ? '<div class="top-line">выше - подъём в следующую лигу</div>' : '';
     return '<div class="row top-row'+(mine?" mine":"")+'"><span class="ic top-n'+(x.place<=3?" gold":"")+'">'+x.place+'</span>'+
       '<div style="min-width:0"><div style="font-size:14.5px">'+esc(x.name)+'</div>'+
-      '<div style="font-size:12.5px;color:var(--ink-3)">'+(x.streak ? "серия "+plural(x.streak,"день","дня","дней") : "")+'</div></div>'+
-      '<span class="val" style="font-variant-numeric:tabular-nums">'+x.points+'</span></div>';
+      '<div style="font-size:12px;color:var(--ink-3);line-height:1.4">'+esc(topStats(x))+'</div></div>'+
+      '<span class="val" style="font-variant-numeric:tabular-nums">'+x.points+'</span></div>'+line;
   }).join("")+'</div>');
 
+  h.push(scoreWhyHtml());
+  var bl = badgeList(), got = bl.filter(function(b){ return b.done; });
+  h.push('<div class="sec-h" style="margin-top:6px"><h3>Значки</h3><span class="more" style="color:var(--ink-3)">'+got.length+' из '+bl.length+'</span></div>');
+  h.push('<div class="badges">'+bl.map(function(b){
+    return '<div class="badge'+(b.done?" on":"")+'"><b>'+esc(b.n)+'</b><span>'+esc(b.d)+'</span>'+
+      (b.done ? '<i>получен</i>' : '<div class="bar" style="margin-top:7px"><i style="width:'+b.pct+'%"></i></div>')+'</div>';
+  }).join("")+'</div>');
   if(sc.on) h.push('<button class="btn sec" data-sc="sheet">Изменить имя или выйти</button>');
   h.push('<p class="disclaimer">Баллы считает приложение на телефоне, поэтому список - не соревнование и не доказательство. '+
     'Награды вручает Заира, глядя на постоянство, а не только на цифры.</p>');
   h.push('</div>');
   return h.join("");
+}
+/* Дашборд рейтинга: своё место крупно, кольцо до лидера, столбики по дням недели,
+   подиум тройки и показатели. Всё рисуем сами, без сторонних библиотек. */
+function topRing(pct, big, small){
+  var r = 52, c = 2 * Math.PI * r, off = c * (1 - Math.max(0, Math.min(1, pct)));
+  return '<div class="dash-ring"><svg viewBox="0 0 120 120">'+
+    '<circle cx="60" cy="60" r="'+r+'" fill="none" stroke="var(--line)" stroke-width="9"/>'+
+    '<circle cx="60" cy="60" r="'+r+'" fill="none" stroke="#D4AF37" stroke-width="9" stroke-linecap="round"'+
+      ' stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 60 60)"/></svg>'+
+    '<div class="dash-ring-in"><b>'+esc(big)+'</b><span>'+esc(small)+'</span></div></div>';
+}
+function topWeekBars(days){
+  var D = ["пн","вт","ср","чт","пт","сб","вс"], by = {}, max = 1;
+  (days || []).forEach(function(x){ by[x.day] = x.points; if(x.points > max) max = x.points; });
+  var start = new Date(); start.setDate(start.getDate() - ((start.getDay() + 6) % 7));
+  var out = "";
+  for(var i = 0; i < 7; i++){
+    var dt = new Date(start); dt.setDate(start.getDate() + i);
+    var key = dayKey(dt), v = by[key] || 0, today = key === todayKey();
+    out += '<div class="dash-bar'+(today?" today":"")+'"><i style="height:'+Math.max(4, Math.round(v * 52 / max))+'px"></i>'+
+      '<span>'+D[i]+'</span><em>'+(v || "")+'</em></div>';
+  }
+  return '<div class="dash-bars">'+out+'</div>';
+}
+function topPodium(items){
+  if(!items || items.length < 3) return '';
+  var o = [items[1], items[0], items[2]], cls = ["two","one","three"];
+  return '<div class="podium">'+o.map(function(x, i){
+    return '<div class="pod '+cls[i]+'"><div class="pod-n">'+esc(String(x.name).slice(0, 12))+'</div>'+
+      '<div class="pod-b"><b>'+x.place+'</b><span>'+x.points+'</span></div></div>';
+  }).join("")+'</div>';
+}
+function topDash(sc, d, me){
+  var lig = d && d.leagueName ? d.leagueName + " лига" : "Рейтинг участников";
+  if(!sc.on){
+    return '<section class="card hl-head">'+
+      '<div class="eyebrow">Рейтинг участников</div>'+
+      '<div class="dash-h1">Кто держится каждый день</div>'+
+      '<div class="hl-sub" style="margin-top:6px">Неделя начинается заново каждый понедельник. Пятеро лучших поднимаются ступенью выше. '+
+        'Баллы - за постоянство: намазы, азкары, зикр, имена Всевышнего, чтение Корана.</div>'+
+      '<button class="btn sm" style="margin-top:12px" data-sc="sheet">Участвовать в рейтинге</button></section>';
+  }
+  var pct = me && me.top ? (me.points || 0) / Math.max(1, me.top) : 0;
+  var head = '<section class="card dash">'+
+    '<div class="dash-top"><div><div class="eyebrow">'+esc(TOP.period === "league" ? lig : "Рейтинг участников")+'</div>'+
+      '<div class="dash-h1">'+(me ? (me.place === 1 ? "Вы первая" : "Вы на " + me.place + " месте") : "Считаем место")+'</div>'+
+      '<div class="dash-sub">'+(me ? plural(me.points || 0, "балл", "балла", "баллов") + " за неделю" +
+        (me.gap ? " · до следующего места " + me.gap : "") : "подождите минуту")+'</div></div>'+
+      topRing(pct, me ? String(me.place || "-") : "-", me && me.of ? "из " + me.of : "место")+
+    '</div>'+
+    (me ? topWeekBars(me.days) : '')+
+    (me ? '<div class="dash-st">'+
+      [["серия", (me.streak||0)+" дн."], ["азкары", me.azkars||0], ["зикры", me.tasbih||0], ["имена", (me.names||0)+"/99"], ["Коран", (me.quran||0)+" стр."]]
+        .map(function(p){ return '<div><b>'+esc(String(p[1]))+'</b><span>'+p[0]+'</span></div>'; }).join("")+'</div>' : '')+
+    (d && d.names && TOP.period === "league" ? '<div class="top-lig">'+d.names.map(function(n, i){
+        return '<span class="'+(i+1 === d.league ? "on" : (i+1 < d.league ? "past" : ""))+'">'+esc(n.slice(0,3))+'</span>'; }).join("")+'</div>' : '')+
+    (sc.shown ? '' : '<p class="disclaimer" style="text-align:left;padding:0;margin:10px 0 0">Вы участвуете скрытно: в списке вас не видно.</p>')+
+  '</section>';
+  return head + (d && d.items ? topPodium(d.items) : '');
 }
 function scoreClick(a){
   var p = String(a).split(":");
@@ -11807,6 +11983,7 @@ function admLoad(){
   var p = t === "reviews" ? admApi("reviews").then(function(j){ ADM.items = j.items; })
         : t === "posts" ? admApi("posts").then(function(j){ ADM.posts = j; })
         : t === "users" ? admApi("users?sort="+(ADM.usort||"week")).then(function(j){ ADM.users = j.items; })
+        : t === "winners" ? admApi("week-winners").then(function(j){ ADM.win = j; })
         : t === "flags" ? admApi("flags").then(function(j){ ADM.flags = j.items; })
         : t === "log" ? admApi("log").then(function(j){ ADM.log = j.items; })
         : Promise.resolve();
@@ -11821,7 +11998,7 @@ function viewAdmin(){
   var h = ['<div class="stack">'];
   h.push('<div class="card flat" style="display:flex;align-items:center;gap:10px"><div style="flex:1;font-size:13.5px;color:var(--ink-2)">Вы вошли: <b>'+esc(S.admName||"администратор")+'</b>. Правки видны всем сразу.</div>'+
     '<button class="btn sec sm" style="width:auto" data-adm="logout">Выйти</button></div>');
-  h.push('<div class="hl-f">'+[["users","Люди"],["reviews","Отзывы"],["flags","Сообщения"],["places","Места"],["posts","Журнал"],["log","История"]].map(function(t){
+  h.push('<div class="hl-f">'+[["users","Люди"],["winners","Итоги недели"],["reviews","Отзывы"],["flags","Сообщения"],["places","Места"],["posts","Журнал"],["log","История"]].map(function(t){
     return '<button class="chip'+(ADM.tab===t[0]?" on":"")+'" data-adm="tab:'+t[0]+'">'+t[1]+'</button>';
   }).join("")+'</div>');
   if(ADM.err) h.push('<p class="disclaimer" style="margin:0">'+esc(ADM.err)+'</p>');
@@ -11838,6 +12015,26 @@ function viewAdmin(){
           (r.status === "ok" ? '<button class="btn sec sm" data-adm="rv:hide:'+r.id+'">Скрыть</button>' : '<button class="btn sec sm" data-adm="rv:show:'+r.id+'">Показать</button>')+
           '<button class="btn sec sm" data-adm="rv:delete:'+r.id+'">Удалить</button></div></article>';
     }).join(""));
+  }
+
+  if(ADM.tab === "winners"){
+    if(!ADM.win){ admLoad(); h.push('<p class="disclaimer">Загружаем...</p>'); }
+    else if(!ADM.win.leagues.length) h.push('<div class="card flat hl-empty"><b>Прошлая неделя пустая</b><span>Итоги появятся, когда участники наберут баллы.</span></div>');
+    else {
+      h.push('<p class="disclaimer" style="margin:0">Неделя с '+esc(postDate(ADM.win.week))+'. Нажмите на награду - она придёт человеку в приложение.</p>');
+      h.push(ADM.win.leagues.map(function(L){
+        return '<section class="card"><div class="eyebrow">'+esc(L.name)+' лига</div>'+
+          '<div class="rows" style="margin-top:8px">'+L.items.map(function(x){
+            return '<div class="row" style="align-items:flex-start"><span class="ic top-n'+(x.place<=3?" gold":"")+'">'+x.place+'</span>'+
+              '<div style="min-width:0;flex:1"><div style="font-size:14.5px">'+esc(x.name || "Без имени")+'</div>'+
+              '<div style="font-size:12px;color:var(--ink-3)">'+x.points+' баллов · серия '+x.streak+' дн.'+(x.city ? ' · '+esc(x.city) : '')+'</div>'+
+              '<div class="hl-act" style="margin-top:7px">'+ADM_PRIZES.map(function(p, pi){
+                return '<button class="btn sec sm" data-adm="prize:'+pi+':'+esc(x.device)+'">'+esc(p.n)+'</button>';
+              }).join("")+'<button class="btn sec sm" data-adm="award:'+esc(x.device)+'">Своя награда</button></div>'+
+              '</div></div>';
+          }).join("")+'</div></section>';
+      }).join(""));
+    }
   }
 
   if(ADM.tab === "users"){
@@ -12064,16 +12261,30 @@ function admCsv(){
     })
     .catch(function(){ toast("Не получилось выгрузить"); });
 }
+/* Готовые награды: нажатие сразу вручает её человеку. Что внутри - решает Заира,
+   тексты можно менять здесь. */
+var ADM_PRIZES = [
+  {n:"Месяц клуба", t:"Первое место недели", d:"Месяц клуба JAVATTI в подарок. Напишу вам в директ, как открыть доступ."},
+  {n:"Книга", t:"Призовое место недели", d:"Онлайн-книга «Девушка, которая смогла» в подарок. Напишу вам в директ."},
+  {n:"Разбор 30 минут", t:"Лучший результат месяца", d:"Личный разбор на 30 минут со мной. Напишу вам в директ, чтобы согласовать время."},
+  {n:"Дуа и слова", t:"За постоянство", d:"Ваше постоянство заметно. Прошу Аллаха принять ваши дела и умножить ваш удел."}
+];
 function admClick(a){
   var p = String(a).split(":"), cmd = p[0];
   if(cmd === "entry"){ if(S.admTok) open("admin"); else sheetAdmLogin(); return; }
   if(cmd === "loginsheet"){ sheetAdmLogin(); return; }
   if(cmd === "login"){ admLogin(p.slice(1).join(":")); return; }
   if(cmd === "logout"){ admApi("logout", {}).catch(function(){}); S.admTok = ""; S.admName = ""; save(); back(); toast("Вы вышли"); return; }
-  if(cmd === "tab"){ ADM.tab = p[1]; ADM.items = ADM.posts = ADM.log = ADM.flags = ADM.users = null; render(); return; }
+  if(cmd === "tab"){ ADM.tab = p[1]; ADM.items = ADM.posts = ADM.log = ADM.flags = ADM.users = ADM.win = null; render(); return; }
   if(cmd === "usort"){ ADM.usort = p[1]; ADM.users = null; render(); return; }
   if(cmd === "usr"){ admApi("users", { device:p.slice(2).join(":"), action:p[1] }).then(function(){ ADM.users = null; toast("Готово"); render(); }).catch(function(e){ toast(e.message); }); return; }
   if(cmd === "award"){ sheetAdmAward(p.slice(1).join(":")); return; }
+  if(cmd === "prize"){
+    var pz = ADM_PRIZES[Number(p[1])];
+    admApi("users", { device:p.slice(2).join(":"), action:"award", title:pz.t, note:pz.d })
+      .then(function(){ toast("Награда вручена: "+pz.n); ADM.win = null; render(); }).catch(function(e){ toast(e.message); });
+    return;
+  }
   if(cmd === "awardsave"){ admAwardSave(p.slice(1).join(":")); return; }
   if(cmd === "csv"){ admCsv(); return; }
   if(cmd === "plc"){ /* убрать или вернуть место прямо из сообщений */
