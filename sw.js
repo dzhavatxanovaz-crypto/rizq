@@ -1,5 +1,5 @@
 /* Ризк - офлайн-кэш. Меняйте номер версии при каждом обновлении приложения. */
-var CACHE = "rizq-v118";
+var CACHE = "rizq-v119";
 var ASSETS = [
   "./",
   "./index.html",
@@ -11,6 +11,8 @@ var ASSETS = [
   "./fonts/montserrat-latin.woff2",
   "./fonts/marcellus-latin.woff2",
   "./fonts/noto-naskh-arabic-arabic.woff2",
+  "./fonts/amiri-quran-arabic.woff2",
+  "./fonts/scheherazade-new-arabic.woff2",
   "./fonts/noto-naskh-arabic-latin.woff2",
   "./privacy.html",
   "./manifest.webmanifest",

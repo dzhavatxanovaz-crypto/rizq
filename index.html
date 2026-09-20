@@ -163,6 +163,8 @@
   --f-mark:"Marcellus",Georgia,"Times New Roman",serif;
   --f-body:"Inter",system-ui,"Segoe UI",sans-serif;
   --f-ar:"Noto Naskh Arabic","Segoe UI",serif;
+  /* шрифт чтения Корана - выбирается в настройках чтения */
+  --f-quran:"Noto Naskh Arabic","Segoe UI",serif;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
@@ -758,8 +760,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 }
 .ayah.now .ayah-n{background:var(--gold);border-color:var(--gold);color:var(--on-gold)}
 .ayah-ar{
-  font-family:var(--f-ar);direction:rtl;text-align:right;
-  font-size:var(--q-size,28px);line-height:2.25;color:var(--ink);
+  font-family:var(--f-quran);direction:rtl;text-align:right;
+  font-size:var(--q-size,28px);line-height:var(--q-lh,2.35);color:var(--ink);
 }
 .ayah-ru{font-size:calc(var(--q-size,28px) * .56);line-height:1.65;color:var(--ink-2);margin-top:11px}
 .ayah-acts{display:flex;gap:6px;margin-top:11px;opacity:.85;flex-wrap:wrap;align-items:center}
@@ -3477,6 +3479,21 @@ function openReader(from, to, kind, focus){
 function applyQSize(){
   document.documentElement.style.setProperty("--q-size", (S.qSize||28) + "px");
 }
+/* Шрифты чтения. «Мусхаф» - Amiri Quran: начертание, привычное по печатному мусхафу,
+   с полной огласовкой. «Крупный насх» - Scheherazade New, у него шире буквы и выше строка.
+   Оба свободные (OFL) и лежат рядом с приложением, интернет для них не нужен. */
+var QFONTS = [
+  {id:"naskh",  n:"Обычный насх",   d:"Noto Naskh Arabic, как было",         css:'"Noto Naskh Arabic","Segoe UI",serif', lh:2.35},
+  {id:"mushaf", n:"Как в мусхафе",  d:"Amiri Quran, печатное начертание",    css:'"Amiri Quran","Noto Naskh Arabic",serif', lh:2.55},
+  {id:"large",  n:"Крупный насх",   d:"Scheherazade New, шире и разборчивее", css:'"Scheherazade New","Noto Naskh Arabic",serif', lh:2.3}
+];
+function qFont(){ return QFONTS.filter(function(f){ return f.id === (S.qFont || "naskh"); })[0] || QFONTS[0]; }
+function applyQFont(){
+  var f = qFont();
+  document.documentElement.style.setProperty("--f-quran", f.css);
+  document.documentElement.style.setProperty("--q-lh", String(f.lh));
+}
+applyQFont();
 
 function back(){
   hdrShow(); tabbarShow();
@@ -6212,6 +6229,17 @@ function viewQSettings(){
         '<input class="slider" type="range" min="5" max="80" step="5" value="'+(S.qScroll||20)+'" data-qscrollspeed="1">'+
         '<span style="font-family:var(--f-display);font-weight:600;font-size:14.5px;min-width:44px;text-align:right">'+(S.qScroll||20)+'</span>'+
       '</div></section>'+
+
+    '<section class="card"><div class="eyebrow">Шрифт Корана</div>'+
+      '<div class="rows" style="margin-top:10px">'+ QFONTS.map(function(f){
+        return '<button class="row" data-qfont="'+f.id+'" style="align-items:flex-start">'+
+          '<span class="ic">'+((S.qFont||"naskh")===f.id?"◉":"○")+'</span>'+
+          '<div style="min-width:0;flex:1"><div style="font-size:14.5px">'+esc(f.n)+'</div>'+
+          '<div style="font-size:12.5px;color:var(--ink-3);margin-top:2px">'+esc(f.d)+'</div>'+
+          '<div style="font-family:'+f.css+';direction:rtl;font-size:22px;line-height:'+f.lh+';margin-top:6px;color:var(--ink)">'+
+            esc("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ")+'</div></div></button>';
+      }).join("") +'</div>'+
+      '<p class="disclaimer" style="text-align:left;padding:0;margin-top:8px">Шрифты свободные, лежат внутри приложения и работают без интернета.</p></section>'+
 
     '<section class="card"><div class="eyebrow">Размер арабского текста</div>'+
       '<div style="display:flex;align-items:center;gap:10px;margin-top:10px">'+
@@ -16147,7 +16175,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -16423,6 +16451,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.hlrvdel){ hlRvPost("delete", d.hlrvdel, "Отзыв удалён"); return; }
   if(d.adm){ admClick(d.adm); return; }
   if(d.qtfold!==undefined || d.bfold!==undefined){ return; }
+  if(d.qfont){ S.qFont = d.qfont; save(); applyQFont(); render(); toast("Шрифт: " + qFont().n); return; }
   if(d.qtgoal){ S.qtGoal = Number(d.qtgoal) || 10; save(); render(); toast("Цель чтения: "+d.qtgoal+" мин в день"); return; }
   if(d.sc){ scoreClick(d.sc); return; }
   if(d.hlshare){ hlShare(d.hlshare); return; }
