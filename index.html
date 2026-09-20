@@ -1314,6 +1314,7 @@ var CITIES = [
   {id:"izb", n:"Избербаш",          lat:42.5667, lng:47.8667, tz:3},
   {id:"kzl", n:"Кизляр",            lat:43.8464, lng:46.7167, tz:3},
   {id:"bui", n:"Буйнакск",          lat:42.8203, lng:47.1181, tz:3},
+  {id:"kzy", n:"Кизилюрт",          lat:43.2093, lng:46.8703, tz:3},
   {id:"msk", n:"Москва",            lat:55.7558, lng:37.6173, tz:3},
   {id:"spb", n:"Санкт-Петербург",   lat:59.9311, lng:30.3609, tz:3},
   {id:"kdr", n:"Краснодар",         lat:45.0355, lng:38.9753, tz:3},
@@ -11361,6 +11362,7 @@ function viewTop(){
         '<b style="font-family:var(--f-display);font-size:16px;display:block;margin:6px 0 4px">'+esc(a.title)+'</b>'+
         (a.note ? '<div style="font-size:14px;color:var(--ink-2);line-height:1.5">'+esc(a.note)+'</div>' : '')+
         (a.link ? '<a class="btn sm" style="margin-top:10px;text-decoration:none;display:inline-block" href="'+esc(a.link)+'" target="_blank" rel="noopener">Открыть</a>' : '')+
+        '<button class="btn sm" style="margin-top:10px" data-sc="prize:'+a.id+'">Получить подарок</button>'+
       '</section>';
     }).join(""));
   }
@@ -11500,6 +11502,34 @@ function topDash(sc, d, me){
 /* Поделиться результатом: текст сдержанный, без хвастовства - про постоянство, а не про поклонение. */
 /* «Золотая» -> «в золотой лиге»: без этого получалось «в золотая лиге» */
 function ligaIn(n){ return String(n||"").toLowerCase().replace(/ая$/, "ой") + " лиге"; }
+/* Подарок не должен потеряться: человек оставляет имя и телефон, в CRM появляется сделка
+   «Подарок за рейтинг», и Заира видит её в обычной работе. */
+function sheetPrizeClaim(id){
+  var a = ((S.scoreMe && S.scoreMe.awards) || []).filter(function(x){ return String(x.id) === String(id); })[0] || {};
+  sheet('<h3>Получить подарок</h3>'+
+    '<p style="font-size:13.5px;color:var(--ink-2);line-height:1.5;margin:0 0 12px">'+esc(a.title || "Награда")+'. Оставьте имя и телефон - откроем доступ и напишем вам.</p>'+
+    '<input class="search" id="pz_n" placeholder="Как к вам обращаться" value="'+esc(S.name || S.hlName || "")+'">'+
+    '<input class="search" id="pz_p" type="tel" style="margin-top:9px" placeholder="Телефон с WhatsApp" value="'+esc(S.phone || "")+'">'+
+    '<label style="display:flex;align-items:flex-start;gap:9px;margin-top:12px;font-size:13px;color:var(--ink-2);line-height:1.5">'+
+      '<input type="checkbox" id="pz_ok" style="margin-top:2px;flex:none"><span>Согласна на обработку персональных данных и на связь по указанным контактам (<a href="privacy.html" target="_blank" rel="noopener">политика</a>)</span></label>'+
+    '<button class="btn" style="width:100%;margin-top:12px" data-sc="prizesend:'+esc(String(id))+'">Отправить</button>'+
+    '<button class="btn sec" style="width:100%;margin-top:8px" data-scrim="1">Отмена</button>');
+}
+function prizeClaimSend(id){
+  var a = ((S.scoreMe && S.scoreMe.awards) || []).filter(function(x){ return String(x.id) === String(id); })[0] || {};
+  var name = String((document.getElementById("pz_n")||{}).value || "").trim();
+  var phone = String((document.getElementById("pz_p")||{}).value || "").trim();
+  var ok = document.getElementById("pz_ok");
+  if(name.length < 2){ toast("Напишите, как к вам обращаться"); return; }
+  if(phone.replace(/D/g, "").length < 10){ toast("Проверьте номер телефона"); return; }
+  if(!ok || !ok.checked){ toast("Нужно согласие на обработку данных"); return; }
+  S.name = S.name || name; S.phone = phone; save();
+  fetch(LEAD_API, { method:"POST", headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ name:name, phone:phone, course:"Подарок за рейтинг: " + (a.title || "награда"),
+      note:"Награда в рейтинге RIZQ: " + (a.title || "") + ". " + (a.note || ""), source:"rizq", consent:true, utm:utmPayload() }) })
+    .then(function(r){ if(!r.ok) throw 0; closeSheet(); toast("Готово. Мы свяжемся с вами и откроем доступ"); })
+    .catch(function(){ closeSheet(); window.open(waLink("Ассаламу алейкум! Я получила награду в рейтинге RIZQ: " + (a.title || "") + ". Имя: " + name + ", телефон: " + phone), "_blank"); });
+}
 function scoreShare(){
   var me = TOP.data && TOP.data.me, d = TOP.data, st = scoreStats();
   var t = "Держусь в RIZQ: " + (st.streak ? plural(st.streak, "день", "дня", "дней") + " подряд" : "начала путь") +
@@ -11529,6 +11559,8 @@ function scoreClick(a){
   if(p[0] === "on"){ scoreOn(); return; }
   if(p[0] === "off"){ scoreOff(); return; }
   if(p[0] === "share"){ scoreShare(); return; }
+  if(p[0] === "prize"){ sheetPrizeClaim(p[1]); return; }
+  if(p[0] === "prizesend"){ prizeClaimSend(p[1]); return; }
   if(p[0] === "period"){ TOP.period = p[1]; TOP.data = null; render(); topLoad(); return; }
 }
 
