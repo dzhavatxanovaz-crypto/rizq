@@ -441,6 +441,15 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hl-head .hl-h1{font-family:var(--f-display);font-size:22px;font-weight:700;margin-top:6px}
 .hl-head .hl-sub{font-size:13.5px;color:var(--ink-2);line-height:1.5;margin-top:5px}
 .hl-f{display:flex;gap:7px;flex-wrap:wrap}
+.hl-nums{display:flex;gap:8px;margin-top:11px}
+.hl-nums>div{flex:1;text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:9px 4px}
+.hl-nums b{display:block;font-family:var(--f-display);font-size:18px;font-weight:700;color:var(--accent-ink);font-variant-numeric:tabular-nums}
+.hl-nums span{display:block;font-size:10.5px;color:var(--ink-3);margin-top:2px;line-height:1.2}
+.hl-quick{display:flex;gap:7px;margin-top:11px}
+.hl-q-btn{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 4px;
+  font-size:12px;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:4px;line-height:1.2}
+.hl-q-btn span{font-size:17px;color:var(--accent-ink)}
+.hl-q-btn.on{border-color:rgba(212,175,55,.55);background:linear-gradient(150deg, rgba(212,175,55,.16), rgba(212,175,55,.03))}
 .hl-city{display:flex;gap:8px;align-items:center;margin-top:12px}
 .hl-city select{flex:1;min-width:0;margin:0}
 .hl-city .btn{width:auto;flex:none}
@@ -509,6 +518,29 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .dash-bar.today i{background:#D4AF37}
 .dash-bar span{display:block;font-size:10.5px;color:var(--ink-3);margin-top:5px}
 .dash-bar em{display:block;font-style:normal;font-size:10.5px;color:var(--ink-2);height:13px}
+.qt{background:linear-gradient(155deg, rgba(212,175,55,.10), rgba(212,175,55,.02));border-color:rgba(212,175,55,.3)}
+.qt-top{display:flex;gap:12px;align-items:center}
+.qt-top>div:first-child{flex:1;min-width:0}
+.qt-big{font-family:var(--f-display);font-size:26px;font-weight:700;margin-top:4px;line-height:1.1}
+.qt-sub{font-size:12.5px;color:var(--ink-2);margin-top:4px;line-height:1.4}
+.qt-ring{position:relative;width:72px;height:72px;flex:none}
+.qt-ring svg{width:100%;height:100%;display:block}
+.qt-ring b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-display);font-size:14px;font-weight:700}
+.qt-st{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:13px}
+.qt-st>div{text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:9px 4px}
+.qt-st b{display:block;font-family:var(--f-display);font-size:14px;font-weight:600}
+.qt-st span{display:block;font-size:10.5px;color:var(--ink-3);margin-top:2px}
+.qt-goal{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:12px;font-size:12.5px;color:var(--ink-2)}
+.qt-goal .chip{cursor:pointer;font-size:12px;padding:5px 9px}
+.qt-goal .chip.on{background:var(--accent-ink);color:var(--surface);border-color:var(--accent-ink)}
+.goal{margin-top:14px;padding:11px 12px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.goal-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.goal-h b{font-family:var(--f-display);font-size:14px;font-weight:600}
+.goal-h span{margin-left:auto;display:flex;gap:6px}
+.goal-h .chip{font-size:12px;padding:5px 9px;cursor:pointer}
+.goal-h .chip.on{background:var(--accent-ink);color:var(--surface);border-color:var(--accent-ink)}
+.goal-t{font-size:12.5px;color:var(--ink-2);margin-top:7px}
+.rec{margin-top:10px;font-size:12.5px;color:var(--ink-3)}
 .dash-st{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:14px}
 .dash-st>div{text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 2px;min-width:0}
 .dash-st b{display:block;font-family:var(--f-display);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis}
@@ -5810,6 +5842,80 @@ function viewQMarks(){
   return h.join("");
 }
 
+/* ============================================================
+   ВРЕМЯ С КОРАНОМ
+   Считается только когда открыт экран чтения и приложение на виду.
+   Хранится на телефоне по дням, никуда не отправляется. Смысл не в цифре,
+   а в привычке: видно, сколько минут в день у вас на самом деле выходит.
+   ============================================================ */
+var QT_STEP = 15; // шаг счёта, секунды
+function qtAll(){ if(!S.qTime) S.qTime = {}; return S.qTime; }
+function qtAdd(sec){
+  var t = qtAll(), k = todayKey();
+  t[k] = (t[k] || 0) + sec;
+  /* храним два года, дальше не нужно */
+  var keys = Object.keys(t);
+  if(keys.length > 800){ keys.sort(); keys.slice(0, keys.length - 800).forEach(function(x){ delete t[x]; }); }
+  save();
+}
+function qtSum(days){
+  var t = qtAll(), n = 0, d = new Date();
+  for(var i = 0; i < days; i++){
+    n += t[dayKey(d)] || 0;
+    d.setDate(d.getDate() - 1);
+  }
+  return n;
+}
+function qtTotal(){ var t = qtAll(), n = 0; for(var k in t) n += t[k]; return n; }
+/* «7 мин», «1 ч 20 мин», «нет» */
+function qtText(sec){
+  sec = Math.round(sec || 0);
+  if(sec < 60) return sec ? sec + " сек" : "0 мин";
+  var m = Math.round(sec / 60);
+  if(m < 60) return m + " мин";
+  var h = Math.floor(m / 60);
+  return h + " ч" + (m % 60 ? " " + (m % 60) + " мин" : "");
+}
+function qtBars(){
+  var D = ["пн","вт","ср","чт","пт","сб","вс"], t = qtAll(), max = 1, vals = [];
+  var start = new Date(); start.setDate(start.getDate() - ((start.getDay() + 6) % 7));
+  for(var i = 0; i < 7; i++){
+    var dt = new Date(start); dt.setDate(start.getDate() + i);
+    var k = dayKey(dt), v = t[k] || 0;
+    vals.push({ v:v, today:k === todayKey(), n:D[i] });
+    if(v > max) max = v;
+  }
+  return '<div class="dash-bars">'+vals.map(function(x){
+    return '<div class="dash-bar'+(x.today?" today":"")+'"><i style="height:'+Math.max(4, Math.round(x.v * 52 / max))+'px"></i>'+
+      '<span>'+x.n+'</span><em>'+(x.v ? Math.round(x.v/60) : "")+'</em></div>';
+  }).join("")+'</div>';
+}
+function qtCard(){
+  var today = qtSum(1), week = qtSum(7), month = qtSum(30), year = qtSum(365);
+  var goal = S.qtGoal || 10; // минут в день
+  var pct = Math.min(100, Math.round(today / (goal * 60) * 100));
+  return '<section class="card qt">'+
+    '<div class="qt-top"><div><div class="eyebrow">Время с Кораном</div>'+
+      '<div class="qt-big">'+esc(qtText(today))+'</div>'+
+      '<div class="qt-sub">'+(today >= goal * 60
+        ? 'Сегодняшняя цель выполнена, машаа Аллах'
+        : 'Сегодня · цель ' + goal + ' мин, осталось ' + qtText(goal * 60 - today))+'</div></div>'+
+      '<div class="qt-ring"><svg viewBox="0 0 96 96">'+
+        '<circle cx="48" cy="48" r="40" fill="none" stroke="var(--line)" stroke-width="8"/>'+
+        '<circle cx="48" cy="48" r="40" fill="none" stroke="#D4AF37" stroke-width="8" stroke-linecap="round" '+
+          'stroke-dasharray="251.3" stroke-dashoffset="'+(251.3 * (1 - pct/100)).toFixed(1)+'" transform="rotate(-90 48 48)"/>'+
+      '</svg><b>'+pct+'%</b></div>'+
+    '</div>'+
+    qtBars()+
+    '<div class="qt-st">'+
+      [["неделя", qtText(week)], ["месяц", qtText(month)], ["год", qtText(year)]].map(function(p){
+        return '<div><b>'+esc(p[1])+'</b><span>'+p[0]+'</span></div>'; }).join("")+'</div>'+
+    '<div class="qt-goal">Цель на день: '+[5,10,20,30].map(function(g){
+      return '<button class="chip'+(goal===g?" on":"")+'" data-qtgoal="'+g+'">'+g+' мин</button>'; }).join("")+'</div>'+
+    '<p class="disclaimer" style="text-align:left;padding:0;margin-top:9px">Время считается, пока открыт экран чтения. '+
+      'Оно остаётся в вашем телефоне: в рейтинг и на сервер не уходит.</p>'+
+  '</section>';
+}
 function viewQuranHome(){
   var h = ['<div class="stack">'];
 
@@ -5836,6 +5942,7 @@ function viewQuranHome(){
     '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
     '<div style="font-size:13px;color:var(--ink-3);margin-top:8px">'+((S.qMax||0)+1)+' из '+QTOTAL+' аятов · страница '+pageOf(S.qMax||0)+' из 604</div></section>');
 
+  h.push(qtCard());
   h.push(qPlanCard());
   h.push(hifzCard());
 
@@ -11228,6 +11335,9 @@ function scoreSync(force){
       if(!j) return;
       S.scoreMe = { week:j.week, all:j.all, place:j.place, of:j.of, gap:j.gap, league:j.league, leagueName:j.leagueName,
         awards:j.awards || [], at:Date.now() };
+      /* свой рекорд недели держим на телефоне: с собой прошлым соревноваться полезнее */
+      var wkp = (TOP.data && TOP.data.me && TOP.data.me.points) || 0;
+      if(wkp > (S.scoreBest || 0)){ S.scoreBest = wkp; }
       save();
       var fresh = (j.awards || []).filter(function(a){ return !a.seen; });
       if(fresh.length){ toast("Вам вручили награду: " + fresh[0].title); scoreSeen(); }
@@ -11464,14 +11574,32 @@ function zoneOf(me, d){
   if(d.items.length >= 8 && me.place > d.items.length - 5) return {k:"down", t:"Вы в зоне вылета"};
   return {k:"mid", t:"Держитесь: до подъёма " + Math.max(0, (d.items[(d.up||5)-1] ? d.items[(d.up||5)-1].points - me.points + 1 : 0)) + " баллов"};
 }
+/* Цель недели человек ставит себе сам: три, пять или семь дней. Это и есть привычка -
+   не обогнать других, а не пропускать. Считаем по дням, в которые были баллы. */
+var GOALS = [3, 5, 7];
+function goalDays(me){
+  var n = 0;
+  ((me && me.days) || []).forEach(function(x){ if(x.points > 0) n++; });
+  return n;
+}
+function goalHtml(me){
+  var g = S.scoreGoal || 5, done = goalDays(me), pct = Math.min(100, Math.round(done * 100 / g));
+  return '<div class="goal"><div class="goal-h"><b>Моя цель недели</b>'+
+    '<span>'+GOALS.map(function(x){ return '<button class="chip'+(g===x?" on":"")+'" data-sc="goal:'+x+'">'+x+' дн.</button>'; }).join("")+'</span></div>'+
+    '<div class="bar" style="margin-top:9px"><i style="width:'+pct+'%"></i></div>'+
+    '<div class="goal-t">'+(done >= g
+      ? 'Цель недели выполнена: ' + plural(done, "день", "дня", "дней") + ' из ' + g + '. Машаа Аллах'
+      : plural(done, "день", "дня", "дней") + ' из ' + g + ' · осталось ' + plural(g - done, "день", "дня", "дней"))+'</div></div>';
+}
 function topDash(sc, d, me){
   var lig = d && d.leagueName ? d.leagueName + " лига" : "Рейтинг участников";
   if(!sc.on){
     return '<section class="card dash dash-join">'+
       '<div class="eyebrow">Рейтинг участников</div>'+
-      '<div class="dash-h1">Кто держится каждый день</div>'+
-      '<div class="dash-sub">Каждый понедельник неделя начинается заново. Пятеро лучших поднимаются ступенью выше, '+
-        'последние пятеро опускаются. Баллы - за постоянство, а не за скорость.</div>'+
+      '<div class="dash-h1">Помогает завести привычку</div>'+
+      '<div class="dash-sub">Рейтинг придуман не ради соревнования. Он помогает закрепить полезные привычки: '+
+        'намаз вовремя, утренние и вечерние азкары, несколько страниц Корана каждый день. '+
+        'Каждый понедельник неделя начинается заново, и вернуться можно с любого места.</div>'+
       '<div class="lig-row">'+["Бронзовая","Серебряная","Золотая","Изумрудная","Алмазная"].map(function(n, i){
         return '<div class="lig-col">'+ligMedal(i+1, i+1)+'<span>'+esc(n.replace("ая",""))+'</span></div>'; }).join("")+'</div>'+
       '<button class="btn" style="width:100%;margin-top:14px" data-sc="sheet">Участвовать</button>'+
@@ -11488,7 +11616,9 @@ function topDash(sc, d, me){
       (TOP.period === "league" ? '<div class="dash-left">До конца недели '+esc(weekLeft())+'</div>' : '')+
       '</div></div>'+
     (zone ? '<div class="zone '+zone.k+'">'+esc(zone.t)+'</div>' : '')+
-    (me ? topWeekBars(me.days) : '')+
+    (me ? goalHtml(me) + topWeekBars(me.days) : '')+
+    (me && S.scoreBest ? '<div class="rec">Ваш рекорд недели: '+S.scoreBest+
+      (me.points >= S.scoreBest && me.points > 0 ? ' · сейчас вы его повторяете' : me.points ? ' · сейчас ' + me.points : '')+'</div>' : '')+
     (me ? '<div class="dash-st">'+
       [["серия", (me.streak||0)+" дн."], ["азкары", me.azkars||0], ["зикры", me.tasbih||0], ["имена", (me.names||0)+"/99"], ["Коран", (me.quran||0)+" стр."]]
         .map(function(p){ return '<div><b>'+esc(String(p[1]))+'</b><span>'+p[0]+'</span></div>'; }).join("")+'</div>' : '')+
@@ -11558,6 +11688,7 @@ function scoreClick(a){
   if(p[0] === "sheet"){ sheetScoreOn(); return; }
   if(p[0] === "on"){ scoreOn(); return; }
   if(p[0] === "off"){ scoreOff(); return; }
+  if(p[0] === "goal"){ S.scoreGoal = Number(p[1]) || 5; save(); render(); toast("Цель недели: " + p[1] + " дней"); return; }
   if(p[0] === "share"){ scoreShare(); return; }
   if(p[0] === "prize"){ sheetPrizeClaim(p[1]); return; }
   if(p[0] === "prizesend"){ prizeClaimSend(p[1]); return; }
@@ -11858,9 +11989,20 @@ function viewHalal(){
   var b = hlBase(), c = currentCity(), h = ['<div class="stack">'];
   var cityName = HL.data ? HL.data.n : c.n;
 
+  var cnt0 = {food:0, shop:0, pray:0};
+  if(HL.data) HL.data.items.forEach(function(x){ cnt0[hlGroup(x)]++; });
   h.push('<section class="card hl-head">'+
     '<div class="eyebrow">'+(b.real ? "Рядом с вами" : "Центр города · "+esc(cityName))+'</div>'+
-    '<div class="hl-sub">Еда, магазины и места для намаза. Расстояние считает ваш телефон, место никуда не отправляется.</div>'+
+    (HL.data ? '<div class="hl-nums">'+
+      [[cnt0.food, "заведений"], [cnt0.pray, "мечетей и комнат"], [cnt0.shop, "магазинов"]]
+        .filter(function(p){ return p[0]; })
+        .map(function(p){ return '<div><b>'+p[0]+'</b><span>'+p[1]+'</span></div>'; }).join("")+'</div>' : '')+
+    '<div class="hl-sub">Расстояние считает ваш телефон, ваше место никуда не отправляется.</div>'+
+    (HL.data ? '<div class="hl-quick">'+
+      [["food","Где поесть","◍"],["pray","Где помолиться","☾"],["shop","Магазины","◈"]]
+        .filter(function(q){ return cnt0[q[0]]; })
+        .map(function(q){ return '<button class="hl-q-btn'+((V.hlF||"all")===q[0]?" on":"")+'" data-hlf="'+q[0]+'">'+
+          '<span>'+q[2]+'</span>'+esc(q[1])+'</button>'; }).join("")+'</div>' : '')+
     '<div class="hl-city"><select id="hlCitySel" class="search" aria-label="Город">'+
       '<option value=""'+(S.hlCity||V.hlPos?'':' selected')+'>Мой город · '+esc(c.n)+'</option>'+
       CITIES.map(function(x){ return '<option value="'+x.id+'"'+(!V.hlPos && S.hlCity===x.id?' selected':'')+'>'+esc(x.n)+'</option>'; }).join("")+
@@ -15980,7 +16122,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -16255,6 +16397,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.hlrvrep){ hlRvPost("report", d.hlrvrep, "Жалоба отправлена. Спасибо"); return; }
   if(d.hlrvdel){ hlRvPost("delete", d.hlrvdel, "Отзыв удалён"); return; }
   if(d.adm){ admClick(d.adm); return; }
+  if(d.qtgoal){ S.qtGoal = Number(d.qtgoal) || 10; save(); render(); toast("Цель чтения: "+d.qtgoal+" мин в день"); return; }
   if(d.sc){ scoreClick(d.sc); return; }
   if(d.hlshare){ hlShare(d.hlshare); return; }
   if(d.hlflag){ var fp = d.hlflag.split(":"); hlFlag(fp[0], fp.slice(1).join(":")); return; }
@@ -16779,6 +16922,14 @@ utmCapture();
 quizLoad();
 navRestore();
 scoreSync();
+/* Время с Кораном: считаем, пока человек действительно читает - экран чтения открыт
+   и приложение на виду. Свернул или ушёл на другой экран - счёт останавливается. */
+setInterval(function(){
+  if(V.view !== "reader") return;
+  if(document.visibilityState && document.visibilityState !== "visible") return;
+  qtAdd(QT_STEP);
+  if(V.tab === "quran" && !V.view) render();
+}, QT_STEP * 1000);
 document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "hidden") navTouch(); });
 window.addEventListener("pagehide", navTouch);
 ordersCheck();
