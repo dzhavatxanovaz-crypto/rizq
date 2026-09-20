@@ -475,7 +475,27 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .top-row.mine{background:rgba(212,175,55,.10)}
 .dash{background:linear-gradient(155deg, rgba(212,175,55,.14), rgba(212,175,55,.02));border-color:rgba(212,175,55,.35)}
 .dash-top{display:flex;gap:14px;align-items:center}
-.dash-top>div:first-child{flex:1;min-width:0}
+.dash-info{flex:1;min-width:0}
+.dash-left{font-size:12px;color:var(--ink-3);margin-top:6px}
+.medal{position:relative;width:86px;height:86px;flex:none}
+.medal svg{width:100%;height:100%;display:block}
+.medal-in{position:absolute;inset:0;display:grid;place-items:center}
+.medal-in b{font-family:var(--f-display);font-size:30px;font-weight:700;line-height:1}
+.zone{margin-top:12px;padding:8px 12px;border-radius:10px;font-size:13px;text-align:center}
+.zone.up{background:rgba(45,106,79,.16);color:#3E9B72}
+.zone.mid{background:var(--surface-2);color:var(--ink-2)}
+.zone.down{background:rgba(200,80,60,.14);color:#E08A72}
+.lig-row{display:flex;gap:6px;margin-top:14px}
+.lig-col{flex:1;text-align:center}
+.lig-col .medal{width:100%;height:auto;aspect-ratio:1}
+.lig-col .medal-in b{font-size:16px}
+.lig-col span{display:block;font-size:10px;color:var(--ink-3);margin-top:3px}
+.ava-s{width:30px;height:30px;flex:none;border-radius:50%;display:grid;place-items:center;
+  background:rgba(212,175,55,.18);color:var(--accent-ink);font-family:var(--f-display);font-weight:600;font-size:14px}
+.pod .ava-s{margin:0 auto 5px}
+.you{font-size:10.5px;color:var(--accent-ink);border:1px solid rgba(212,175,55,.5);border-radius:99px;padding:2px 7px;flex:none}
+.prizes .ic{color:var(--accent-ink)}
+.dash-join .dash-sub{margin-top:8px}
 .dash-h1{font-family:var(--f-display);font-size:21px;font-weight:700;margin-top:4px;line-height:1.2}
 .dash-sub{font-size:13px;color:var(--ink-2);margin-top:5px;line-height:1.45}
 .dash-ring{position:relative;width:104px;height:104px;flex:none}
@@ -500,6 +520,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .pod-b span{display:block;font-size:11.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
 .pod.one .pod-b{background:linear-gradient(160deg, rgba(212,175,55,.3), rgba(212,175,55,.08));border-color:rgba(212,175,55,.55);padding:20px 4px}
 .pod.two .pod-b{padding:14px 4px}
+.fold{padding:12px 14px}
+.fold>summary{list-style:none;cursor:pointer;font-family:var(--f-display);font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.fold>summary::-webkit-details-marker{display:none}
+.fold>summary::after{content:"›";margin-left:auto;color:var(--accent-ink);font-size:19px;transform:rotate(90deg);transition:transform .2s}
+.fold[open]>summary::after{transform:rotate(-90deg)}
 .top-line{font-size:11.5px;color:var(--accent-ink);text-align:center;padding:5px 0;border-top:1px dashed rgba(212,175,55,.5)}
 .top-lig{display:flex;gap:6px;margin-top:10px}
 .top-lig span{flex:1;text-align:center;font-size:11px;padding:5px 0;border-radius:8px;background:var(--surface-2);color:var(--ink-3);border:1px solid var(--line)}
@@ -1175,7 +1200,7 @@ var HADITH_SRC = [{"num":1,"n":"Дела оцениваются по намер�
 var DEF = {
   fav:[], tasbih:{}, tasbihTotal:0, read:{}, dcnt:{}, practice:{}, readDay:"", bought:[], done:[], orders:[],
   theme:"", city:"mah", method:"mwl", madhab:1,
-  name:"", email:"", notifPrayer:true, notifDua:true, notifTasks:true, notifCourse:false, notifAzan:true,
+  name:"", email:"", notifPrayer:true, notifDua:true, notifTasks:true, notifScore:true, notifCourse:false, notifAzan:true,
   salah:{}, myduas:[], goals:[], namesRead:{}, daily:{}, shukrNotes:{}, shukr:[], shukrMigrated:false, shukrOpen:false, salahOpen:false,
   checks:{}, sunnah:{}, sunnahOpen:false, health:{}, healthOpen:false, pauses:[],
   qada:{p:{}, done:{}, fast:0, fastDone:0, perDay:1, log:[]}, postSeen:"", points:0, pointsDay:{}, cat:{},
@@ -11206,6 +11231,7 @@ function scoreSync(force){
       var fresh = (j.awards || []).filter(function(a){ return !a.seen; });
       if(fresh.length){ toast("Вам вручили награду: " + fresh[0].title); scoreSeen(); }
       if(V.view === "top" || V.tab === "prof") render();
+      pushSoon(); /* место изменилось - обновим текст напоминания */
     })
     .catch(function(){});
 }
@@ -11242,6 +11268,23 @@ function scoreOff(){
     body: JSON.stringify({ device:hlDevice(), off:1 }) }).catch(function(){});
   closeSheet(); render(); toast("Вы вышли из рейтинга, данные удалены");
 }
+var PRIZES = null;
+function prizesLoad(){
+  if(PRIZES || !window.fetch) return;
+  fetch("api/score/prizes").then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){ if(j){ PRIZES = j; if(V.view==="top") render(); } }).catch(function(){});
+}
+/* сколько осталось до конца недели - неделя заканчивается в воскресенье в полночь */
+function weekLeft(){
+  var now = new Date(), wd = (now.getDay() + 6) % 7;
+  var end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (7 - wd), 0, 0, 0);
+  var ms = end - now, d = Math.floor(ms / 864e5), h = Math.floor(ms / 36e5) % 24;
+  return d > 0 ? plural(d, "день", "дня", "дней") + " " + h + " ч" : h > 0 ? h + " ч " + (Math.floor(ms / 6e4) % 60) + " мин" : (Math.floor(ms / 6e4) % 60) + " мин";
+}
+function ava(name){
+  var n = String(name || "?").trim();
+  return '<span class="ava-s">'+esc((n[0] || "?").toUpperCase())+'</span>';
+}
 function topLoad(force){
   if(TOP.loading) return;
   TOP.loading = true; TOP.err = "";
@@ -11262,13 +11305,13 @@ var SCORE_WHY = [
   ["Верный ответ в тесте", POINTS.quiz]
 ];
 function scoreWhyHtml(){
-  return '<section class="card"><div class="eyebrow">Из чего складываются баллы</div>'+
+  return '<details class="card fold"><summary>Из чего складываются баллы</summary>'+
     '<div class="rows" style="margin-top:9px">'+SCORE_WHY.map(function(r){
       return '<div class="row"><div style="font-size:14px">'+esc(r[0])+'</div>'+
         '<span class="val" style="color:var(--accent-ink);font-weight:600">+'+r[1]+'</span></div>';
     }).join("")+'</div>'+
     '<p class="disclaimer" style="text-align:left;padding:0;margin:9px 0 0">Баллы начисляются один раз в день за каждое дело. '+
-      'Пропущенный день не отнимает баллы, но прерывает серию.</p></section>';
+      'Пропущенный день не отнимает баллы, но прерывает серию.</p></details>';
 }
 /* показатели участника одной строкой */
 function topStats(x){
@@ -11350,9 +11393,10 @@ function viewTop(){
     var mine = x.me || (me && me.name === x.name && me.place === x.place);
     var line = TOP.period === "league" && TOP.data.up && (i + 1 === TOP.data.up) && TOP.data.items.length > TOP.data.up
       ? '<div class="top-line">выше - подъём в следующую лигу</div>' : '';
-    return '<div class="row top-row'+(mine?" mine":"")+'"><span class="ic top-n'+(x.place<=3?" gold":"")+'">'+x.place+'</span>'+
+    return '<div class="row top-row'+(mine?" mine":"")+'"><span class="ic top-n'+(x.place<=3?" gold":"")+'">'+x.place+'</span>'+ava(x.name)+
       '<div style="min-width:0"><div style="font-size:14.5px">'+esc(x.name)+'</div>'+
       '<div style="font-size:12px;color:var(--ink-3);line-height:1.4">'+esc(topStats(x))+'</div></div>'+
+      (mine ? '<span class="you">вы</span>' : '')+
       '<span class="val" style="font-variant-numeric:tabular-nums">'+x.points+'</span></div>'+line;
   }).join("")+'</div>');
 
@@ -11396,28 +11440,52 @@ function topPodium(items){
   if(!items || items.length < 3) return '';
   var o = [items[1], items[0], items[2]], cls = ["two","one","three"];
   return '<div class="podium">'+o.map(function(x, i){
-    return '<div class="pod '+cls[i]+'"><div class="pod-n">'+esc(String(x.name).slice(0, 12))+'</div>'+
+    return '<div class="pod '+cls[i]+'">'+ava(x.name)+'<div class="pod-n">'+esc(String(x.name).slice(0, 12))+'</div>'+
       '<div class="pod-b"><b>'+x.place+'</b><span>'+x.points+'</span></div></div>';
   }).join("")+'</div>';
+}
+/* Медаль лиги: круг с номером ступени и лучами. Рисуем сами, без картинок. */
+function ligMedal(level, place){
+  var C = ["#B08D57","#9AA3AD","#D4AF37","#3E9B72","#7FC8E8"][(level||1)-1] || "#D4AF37";
+  return '<div class="medal"><svg viewBox="0 0 96 96">'+
+    '<circle cx="48" cy="48" r="40" fill="none" stroke="'+C+'" stroke-width="3" opacity=".55"/>'+
+    '<circle cx="48" cy="48" r="31" fill="'+C+'" opacity=".16"/>'+
+    [0,45,90,135,180,225,270,315].map(function(a){
+      var r1=44,r2=40,rad=a*Math.PI/180;
+      return '<line x1="'+(48+r1*Math.sin(rad)).toFixed(1)+'" y1="'+(48-r1*Math.cos(rad)).toFixed(1)+
+        '" x2="'+(48+r2*Math.sin(rad)).toFixed(1)+'" y2="'+(48-r2*Math.cos(rad)).toFixed(1)+'" stroke="'+C+'" stroke-width="2" opacity=".5"/>';
+    }).join("")+'</svg><div class="medal-in"><b>'+esc(String(place||"-"))+'</b></div></div>';
+}
+function zoneOf(me, d){
+  if(!me || !d || !d.items || d.items.length < 3) return null;
+  if(me.place <= (d.up || 5)) return {k:"up", t:"Вы в зоне подъёма"};
+  if(d.items.length >= 8 && me.place > d.items.length - 5) return {k:"down", t:"Вы в зоне вылета"};
+  return {k:"mid", t:"Держитесь: до подъёма " + Math.max(0, (d.items[(d.up||5)-1] ? d.items[(d.up||5)-1].points - me.points + 1 : 0)) + " баллов"};
 }
 function topDash(sc, d, me){
   var lig = d && d.leagueName ? d.leagueName + " лига" : "Рейтинг участников";
   if(!sc.on){
-    return '<section class="card hl-head">'+
+    return '<section class="card dash dash-join">'+
       '<div class="eyebrow">Рейтинг участников</div>'+
       '<div class="dash-h1">Кто держится каждый день</div>'+
-      '<div class="hl-sub" style="margin-top:6px">Неделя начинается заново каждый понедельник. Пятеро лучших поднимаются ступенью выше. '+
-        'Баллы - за постоянство: намазы, азкары, зикр, имена Всевышнего, чтение Корана.</div>'+
-      '<button class="btn sm" style="margin-top:12px" data-sc="sheet">Участвовать в рейтинге</button></section>';
+      '<div class="dash-sub">Каждый понедельник неделя начинается заново. Пятеро лучших поднимаются ступенью выше, '+
+        'последние пятеро опускаются. Баллы - за постоянство, а не за скорость.</div>'+
+      '<div class="lig-row">'+["Бронзовая","Серебряная","Золотая","Изумрудная","Алмазная"].map(function(n, i){
+        return '<div class="lig-col">'+ligMedal(i+1, i+1)+'<span>'+esc(n.replace("ая",""))+'</span></div>'; }).join("")+'</div>'+
+      '<button class="btn" style="width:100%;margin-top:14px" data-sc="sheet">Участвовать</button>'+
+      '<p class="disclaimer" style="text-align:left;padding:0;margin-top:8px">Имя - любое, можно участвовать скрытно. Телефон и почту не спрашиваем.</p>'+
+    '</section>' + prizesHtml();
   }
-  var pct = me && me.top ? (me.points || 0) / Math.max(1, me.top) : 0;
+  var zone = zoneOf(me, d);
   var head = '<section class="card dash">'+
-    '<div class="dash-top"><div><div class="eyebrow">'+esc(TOP.period === "league" ? lig : "Рейтинг участников")+'</div>'+
-      '<div class="dash-h1">'+(me ? (me.place === 1 ? "Вы первая" : "Вы на " + me.place + " месте") : "Считаем место")+'</div>'+
+    '<div class="dash-top">'+ligMedal(d && d.league, me && me.place)+
+      '<div class="dash-info"><div class="eyebrow">'+esc(TOP.period === "league" ? lig : "Рейтинг участников")+'</div>'+
+      '<div class="dash-h1">'+(me ? (me.place === 1 ? "Вы первая" : me.place + " место") : "Считаем место")+'</div>'+
       '<div class="dash-sub">'+(me ? plural(me.points || 0, "балл", "балла", "баллов") + " за неделю" +
-        (me.gap ? " · до следующего места " + me.gap : "") : "подождите минуту")+'</div></div>'+
-      topRing(pct, me ? String(me.place || "-") : "-", me && me.of ? "из " + me.of : "место")+
-    '</div>'+
+        (me.gap ? " · до следующего " + me.gap : "") : "подождите минуту")+'</div>'+
+      (TOP.period === "league" ? '<div class="dash-left">До конца недели '+esc(weekLeft())+'</div>' : '')+
+      '</div></div>'+
+    (zone ? '<div class="zone '+zone.k+'">'+esc(zone.t)+'</div>' : '')+
     (me ? topWeekBars(me.days) : '')+
     (me ? '<div class="dash-st">'+
       [["серия", (me.streak||0)+" дн."], ["азкары", me.azkars||0], ["зикры", me.tasbih||0], ["имена", (me.names||0)+"/99"], ["Коран", (me.quran||0)+" стр."]]
@@ -11427,9 +11495,11 @@ function topDash(sc, d, me){
     (me ? '<button class="btn sec sm" style="margin-top:12px" data-sc="share">Поделиться результатом</button>' : '')+
     (sc.shown ? '' : '<p class="disclaimer" style="text-align:left;padding:0;margin:10px 0 0">Вы участвуете скрытно: в списке вас не видно.</p>')+
   '</section>';
-  return head + (d && d.items ? topPodium(d.items) : '');
+  return head + (d && d.items ? topPodium(d.items) : '') + prizesHtml();
 }
 /* Поделиться результатом: текст сдержанный, без хвастовства - про постоянство, а не про поклонение. */
+/* «Золотая» -> «в золотой лиге»: без этого получалось «в золотая лиге» */
+function ligaIn(n){ return String(n||"").toLowerCase().replace(/ая$/, "ой") + " лиге"; }
 function scoreShare(){
   var me = TOP.data && TOP.data.me, d = TOP.data, st = scoreStats();
   var t = "Держусь в RIZQ: " + (st.streak ? plural(st.streak, "день", "дня", "дней") + " подряд" : "начала путь") +
@@ -11437,6 +11507,20 @@ function scoreShare(){
     ". Присоединяйтесь - приложение бесплатное:";
   if(navigator.share){ navigator.share({ title: "RIZQ", text: t, url: APP_URL }).catch(function(){}); }
   else { copyText(t + " " + APP_URL); toast("Текст скопирован - вставьте в сообщение"); }
+}
+/* Что можно выиграть - показываем всем: это главная причина участвовать */
+function prizesHtml(){
+  prizesLoad();
+  if(!PRIZES || !PRIZES.on) return '';
+  var rows = [["1 место недели", PRIZES.week1], ["2 и 3 место недели", PRIZES.week23], ["Лучший за месяц", PRIZES.month1], ["30 дней подряд", PRIZES.streak30]];
+  return '<section class="card prizes"><div class="eyebrow">Что можно выиграть</div>'+
+    '<div class="rows" style="margin-top:9px">'+rows.map(function(r){
+      return '<div class="row" style="align-items:flex-start"><span class="ic">◆</span>'+
+        '<div style="min-width:0"><div style="font-size:14.5px">'+esc(r[1].title)+'</div>'+
+        '<div style="font-size:12.5px;color:var(--ink-3);line-height:1.45;margin-top:2px">'+esc(r[1].note)+'</div>'+
+        '<span class="hl-tag" style="margin-top:6px;display:inline-block">'+esc(r[0])+'</span></div></div>';
+    }).join("")+'</div>'+
+    '<p class="disclaimer" style="text-align:left;padding:0;margin-top:8px">Награды приходят сами: в понедельник за неделю, первого числа за месяц.</p></section>';
 }
 function scoreClick(a){
   var p = String(a).split(":");
@@ -11995,6 +12079,7 @@ function admLoad(){
         : t === "posts" ? admApi("posts").then(function(j){ ADM.posts = j; })
         : t === "users" ? admApi("users?sort="+(ADM.usort||"week")).then(function(j){ ADM.users = j.items; })
         : t === "winners" ? admApi("week-winners").then(function(j){ ADM.win = j; })
+        : t === "auto" ? admApi("auto").then(function(j){ ADM.auto = j; })
         : t === "flags" ? admApi("flags").then(function(j){ ADM.flags = j.items; })
         : t === "log" ? admApi("log").then(function(j){ ADM.log = j.items; })
         : Promise.resolve();
@@ -12009,7 +12094,7 @@ function viewAdmin(){
   var h = ['<div class="stack">'];
   h.push('<div class="card flat" style="display:flex;align-items:center;gap:10px"><div style="flex:1;font-size:13.5px;color:var(--ink-2)">Вы вошли: <b>'+esc(S.admName||"администратор")+'</b>. Правки видны всем сразу.</div>'+
     '<button class="btn sec sm" style="width:auto" data-adm="logout">Выйти</button></div>');
-  h.push('<div class="hl-f">'+[["users","Люди"],["winners","Итоги недели"],["reviews","Отзывы"],["flags","Сообщения"],["places","Места"],["posts","Журнал"],["log","История"]].map(function(t){
+  h.push('<div class="hl-f">'+[["users","Люди"],["winners","Итоги недели"],["auto","Награды сами"],["reviews","Отзывы"],["flags","Сообщения"],["places","Места"],["posts","Журнал"],["log","История"]].map(function(t){
     return '<button class="chip'+(ADM.tab===t[0]?" on":"")+'" data-adm="tab:'+t[0]+'">'+t[1]+'</button>';
   }).join("")+'</div>');
   if(ADM.err) h.push('<p class="disclaimer" style="margin:0">'+esc(ADM.err)+'</p>');
@@ -12026,6 +12111,35 @@ function viewAdmin(){
           (r.status === "ok" ? '<button class="btn sec sm" data-adm="rv:hide:'+r.id+'">Скрыть</button>' : '<button class="btn sec sm" data-adm="rv:show:'+r.id+'">Показать</button>')+
           '<button class="btn sec sm" data-adm="rv:delete:'+r.id+'">Удалить</button></div></article>';
     }).join(""));
+  }
+
+  if(ADM.tab === "auto"){
+    if(!ADM.auto){ admLoad(); h.push('<p class="disclaimer">Загружаем...</p>'); }
+    else {
+      var A = ADM.auto;
+      h.push('<section class="card"><div class="eyebrow">Автоматические награды</div>'+
+        '<p style="font-size:13.5px;color:var(--ink-2);line-height:1.5;margin:8px 0 0">В понедельник сервер сам подводит итоги прошлой недели, '+
+        'первого числа - итоги месяца. Награда приходит человеку в приложение. Неделя считается, только если в лиге было хотя бы трое.</p>'+
+        '<div class="hl-act"><button class="btn'+(A.on?" sec":"")+' sm" data-adm="autoon:'+(A.on?"0":"1")+'">'+(A.on ? "Выключить" : "Включить")+'</button>'+
+        '<button class="btn sec sm" data-adm="autorun">Подвести итоги сейчас</button></div>'+
+        '<p class="disclaimer" style="text-align:left;padding:0;margin-top:9px">Сейчас: '+(A.on ? "вручаются сами" : "выключено")+
+        (A.lastWeek ? ' · последняя неделя: '+esc(A.lastWeek) : '')+(A.lastMonth ? ' · месяц: '+esc(A.lastMonth) : '')+'</p></section>');
+      var KN = {w1:"Первое место недели", w23:"Второе и третье место недели", m1:"Лучший за месяц", s30:"Серия 30 дней", s100:"Серия 100 дней"};
+      h.push('<div class="sec-h"><h3>Что вручается</h3></div>');
+      h.push(Object.keys(KN).map(function(k){
+        var r = (A.rules || {})[k] || {};
+        return '<article class="hl-card"><div class="hl-n"><b>'+esc(KN[k])+'</b><span>'+esc(r.title || "")+'</span></div>'+
+          '<div class="hl-rv-t">'+esc(r.note || "")+'</div>'+
+          '<div class="hl-act"><button class="btn sec sm" data-adm="autoedit:'+k+'">Изменить текст</button></div></article>';
+      }).join(""));
+      if((A.given || []).length){
+        h.push('<div class="sec-h"><h3>Уже вручено</h3></div>');
+        h.push('<div class="rows">'+A.given.map(function(g){
+          return '<div class="row"><div><div style="font-size:14px">'+esc(g.name || "Участник")+' · '+esc(KN[g.kind] || g.kind)+'</div>'+
+            '<div style="font-size:12px;color:var(--ink-3)">'+esc(g.period)+' · '+esc(String(g.at).slice(0,10))+'</div></div></div>';
+        }).join("")+'</div>');
+      }
+    }
   }
 
   if(ADM.tab === "winners"){
@@ -12242,6 +12356,15 @@ function admPostSave(id){
 }
 
 /* награда человеку: название, текст и, если нужно, ссылка на подарок */
+/* правка текста автоматической награды */
+function sheetAdmAuto(kind){
+  var r = ((ADM.auto || {}).rules || {})[kind] || {};
+  sheet('<h3>Текст награды</h3>'+
+    '<input class="search" id="au_t" maxlength="60" placeholder="Название" value="'+esc(r.title || "")+'">'+
+    '<textarea id="au_n" class="search" rows="4" maxlength="300" style="margin-top:8px" placeholder="Что человек получает">'+esc(r.note || "")+'</textarea>'+
+    '<button class="btn" style="width:100%;margin-top:10px" data-adm="autosave:'+esc(kind)+'">Сохранить</button>'+
+    '<button class="btn sec" style="width:100%;margin-top:8px" data-scrim="1">Отмена</button>');
+}
 function sheetAdmAward(device){
   var u = (ADM.users || []).filter(function(x){ return x.device === device; })[0] || {};
   sheet('<h3>Наградить</h3>'+
@@ -12286,7 +12409,12 @@ function admClick(a){
   if(cmd === "loginsheet"){ sheetAdmLogin(); return; }
   if(cmd === "login"){ admLogin(p.slice(1).join(":")); return; }
   if(cmd === "logout"){ admApi("logout", {}).catch(function(){}); S.admTok = ""; S.admName = ""; save(); back(); toast("Вы вышли"); return; }
-  if(cmd === "tab"){ ADM.tab = p[1]; ADM.items = ADM.posts = ADM.log = ADM.flags = ADM.users = ADM.win = null; render(); return; }
+  if(cmd === "tab"){ ADM.tab = p[1]; ADM.items = ADM.posts = ADM.log = ADM.flags = ADM.users = ADM.win = ADM.auto = null; render(); return; }
+  if(cmd === "autoon"){ admApi("auto", { on: p[1] === "1" }).then(function(){ ADM.auto = null; toast(p[1] === "1" ? "Награды вручаются сами" : "Автоматическая выдача выключена"); render(); }).catch(function(e){ toast(e.message); }); return; }
+  if(cmd === "autorun"){ admApi("auto", { run:1 }).then(function(){ ADM.auto = null; toast("Итоги подведены"); render(); }).catch(function(e){ toast(e.message); }); return; }
+  if(cmd === "autoedit"){ sheetAdmAuto(p[1]); return; }
+  if(cmd === "autosave"){ var k = p[1], g = function(id){ return String((document.getElementById(id)||{}).value || "").trim(); };
+    admApi("auto", { kind:k, title:g("au_t"), note:g("au_n") }).then(function(){ closeSheet(); ADM.auto = null; toast("Текст награды изменён"); render(); }).catch(function(e){ toast(e.message); }); return; }
   if(cmd === "usort"){ ADM.usort = p[1]; ADM.users = null; render(); return; }
   if(cmd === "usr"){ admApi("users", { device:p.slice(2).join(":"), action:p[1] }).then(function(){ ADM.users = null; toast("Готово"); render(); }).catch(function(e){ toast(e.message); }); return; }
   if(cmd === "award"){ sheetAdmAward(p.slice(1).join(":")); return; }
@@ -14046,6 +14174,22 @@ function pushItems(){
       var dua = pool[(dayIndex() + k) % pool.length];
       if(morning > now) items.push({ at: new Date(morning).toISOString(), title: "Дуа дня", body: dua.n, tag: "dua" });
     }
+    /* Итоги недели в рейтинге: в воскресенье днём - что неделя закрывается и где вы сейчас,
+       в понедельник утром - что всё началось заново. Место берём из последней сверки. */
+    if(S.notifScore !== false && scoreState().on){
+      var wd = day.getDay(), me = S.scoreMe || {};
+      if(wd === 0){
+        var atS = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 12, 0, 0).getTime();
+        if(atS > now) items.push({ at:new Date(atS).toISOString(), title:"Неделя в рейтинге закрывается",
+          body: me.place ? "Вы на " + me.place + " месте" + (me.leagueName ? " в " + ligaIn(me.leagueName) : "") +
+            (me.gap ? ", до следующего места " + me.gap : "") : "Загляните, как вы прошли эту неделю", tag:"score" });
+      }
+      if(wd === 1){
+        var atM = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 10, 0, 0).getTime();
+        if(atM > now) items.push({ at:new Date(atM).toISOString(), title:"Новая неделя в рейтинге",
+          body:"Итоги прошлой недели и ваша лига - в приложении", tag:"score" });
+      }
+    }
   }
   return items;
 }
@@ -14058,7 +14202,8 @@ function pushSig(){
     (S.debts || []).filter(function(x){ return !x.closed && x.due; })
     .map(function(x){ return x.due + x.id; }).join(",");
   return [c.lat, c.lng, c.tz, S.method, S.madhab, S.notifPrayer ? 1 : 0, S.notifDua ? 1 : 0,
-          S.notifTasks === false ? 0 : 1, pauseNow() ? 1 : 0, todayKey(), tasks].join("|");
+          S.notifTasks === false ? 0 : 1, S.notifScore === false ? 0 : 1, scoreState().on ? 1 : 0,
+          (S.scoreMe && S.scoreMe.place) || 0, pauseNow() ? 1 : 0, todayKey(), tasks].join("|");
 }
 function pushSync(force){
   if(!pushOn() || !pushSupported() || PUSH_BUSY) return;
@@ -14622,6 +14767,7 @@ function viewProf(){
     swRow("notifPrayer","🕌","Напоминания о намазе") +
     swRow("notifAzan","🔊","Звук азана") +
     swRow("notifDua","✦","Дуа дня утром") +
+    swRow("notifScore","◈","Итоги недели в рейтинге") +
     swRow("notifTasks","✓","Напоминания о задачах со временем") +
     '<button class="row" data-pushtoggle="1"><span class="ic">🔔</span>При закрытом приложении'+
       '<span class="sw'+(pushOn()?" on":"")+'"></span></button>'+
@@ -16463,7 +16609,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.pushtoggle!==undefined){ if(pushOn()) pushDisable(); else pushEnable(); return; }
   if(d.sw){
     S[d.sw] = !S[d.sw]; save(); render();
-    if(d.sw === "notifPrayer" || d.sw === "notifDua" || d.sw === "notifTasks") pushSync(true);
+    if(d.sw === "notifPrayer" || d.sw === "notifDua" || d.sw === "notifTasks" || d.sw === "notifScore") pushSync(true);
     if(S[d.sw] && (d.sw === "notifPrayer" || d.sw === "notifDua")){
       notifAsk().then(function(r){
         if(r === "granted"){ toast("Напоминания включены"); }
