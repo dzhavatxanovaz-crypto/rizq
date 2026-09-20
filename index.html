@@ -467,6 +467,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hl-card .hl-act .btn.sm{padding-left:11px;padding-right:11px;font-size:13.5px}
 .hl-act2{margin-top:8px;gap:14px}
 .hl-tags:empty{display:none}
+.top-me{margin-top:12px;padding:11px 13px;border-radius:12px;background:rgba(212,175,55,.14);border:1px solid rgba(212,175,55,.35)}
+.top-me b{display:block;font-family:var(--f-display);font-size:16px}
+.top-me span{display:block;font-size:13px;color:var(--ink-2);margin-top:2px}
+.top-n{font-family:var(--f-display);font-weight:700;font-size:15px;color:var(--ink-2)}
+.top-n.gold{color:var(--accent-ink)}
+.top-row.mine{background:rgba(212,175,55,.10)}
 .hl-link{font-size:13px;color:var(--accent-ink);text-decoration:none;font-weight:600;padding:6px 0}
 .hl-ics{margin-left:auto;display:flex;gap:8px}
 .hl-ics .hl-err{margin-left:0}
@@ -3494,6 +3500,7 @@ function renderHdr(){
         : V.view==="suras" ? "Короткие суры"
         : V.view==="qibla" ? "Кибла"
         : V.view==="halal" ? "Халяль рядом"
+        : V.view==="top" ? "Рейтинг участников"
         : V.view==="admin" ? "Управление"
         : V.view==="calendar" ? "Исламский календарь"
         : V.view==="zakat" ? "Калькулятор закята"
@@ -3846,7 +3853,7 @@ var SHARE_TEXT = "Ассаламу алейкум! Нашла приложени
 /* Экраны, которые можно открыть ссылкой. Белый список, а не любое значение:
    по чужой ссылке приложение не должно оказываться где угодно. */
 var DEEP_VIEWS = ["courses","sadaqa","zakat","names","hadith","sira","book1","qibla",
-                  "calendar","tasbih","suras","halal","qduas","duaall","report","share","consulting","live","installment","kids","hajjtrip","salahpics"];
+                  "calendar","tasbih","suras","halal","top","qduas","duaall","report","share","consulting","live","installment","kids","hajjtrip","salahpics"];
 var DEEP_TABS  = ["home","quran","dua","journal","income","prof"];
 
 function deepOpen(){
@@ -11113,6 +11120,147 @@ function viewQibla(){
 }
 
 /* ============================================================
+   РЕЙТИНГ УЧАСТНИКОВ
+   Добровольный: человек сам включает его и сам пишет имя, под которым виден.
+   На сервер уходят только числа: баллы, серия дней, счётчики азкаров, зикров,
+   имён и страниц Корана. Что он читал и о чём просил - остаётся на телефоне.
+   Можно участвовать скрытно: в списке его нет, своё место видит.
+   ============================================================ */
+var TOP = { period:"week", data:null, loading:false, err:"" };
+var SC_SENT = 0;
+function scoreState(){
+  if(!S.score) S.score = { on:0, name:"", shown:1 };
+  return S.score;
+}
+function scoreStats(){
+  var today = 0;
+  try{ today = (S.pointsDay || {})[todayKey()] || 0; }catch(e){}
+  return {
+    points: S.points || 0, today: today, streak: streak(),
+    azkars: S.azkarLifetime || 0, tasbih: S.tasbihTotal || 0,
+    names: namedCount(), quran: S.qMax || 0
+  };
+}
+/* отправляем не чаще раза в час и только если человек включил участие */
+function scoreSync(force){
+  var sc = scoreState();
+  if(!sc.on || !window.fetch) return;
+  if(!force && Date.now() - SC_SENT < 3600e3) return;
+  SC_SENT = Date.now();
+  var st = scoreStats();
+  fetch("api/score", { method:"POST", headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify(Object.assign({ device:hlDevice(), name:sc.name, city:(S.city !== "gps" ? S.city : ""), shown:!!sc.shown }, st)) })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      if(!j) return;
+      S.scoreMe = { week:j.week, all:j.all, awards:j.awards || [], at:Date.now() };
+      save();
+      var fresh = (j.awards || []).filter(function(a){ return !a.seen; });
+      if(fresh.length){ toast("Вам вручили награду: " + fresh[0].title); scoreSeen(); }
+      if(V.view === "top" || V.tab === "prof") render();
+    })
+    .catch(function(){});
+}
+function scoreSeen(){
+  fetch("api/score/seen", { method:"POST", headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ device:hlDevice() }) }).catch(function(){});
+  if(S.scoreMe && S.scoreMe.awards) S.scoreMe.awards.forEach(function(a){ a.seen = 1; });
+  save();
+}
+function sheetScoreOn(){
+  var sc = scoreState();
+  sheet('<h3>Участвовать в рейтинге</h3>'+
+    '<p style="font-size:13.5px;color:var(--ink-2);line-height:1.55;margin:0 0 12px">Рейтинг - про постоянство, а не про соревнование в поклонении. '+
+      'На сервер уходят только числа: баллы, серия дней и счётчики. Что вы читали и о чём просили в дуа - остаётся в телефоне.</p>'+
+    '<input class="search" id="scName" maxlength="24" placeholder="Имя в рейтинге - любое" value="'+esc(sc.name||"")+'">'+
+    '<label class="hl-cb"><input type="checkbox" id="scShown"'+(sc.shown!==0?" checked":"")+'> Показывать меня в общем списке</label>'+
+    '<p class="disclaimer" style="text-align:left;padding:0;margin:0 0 10px">Если снять галочку, в списке вас не будет, а своё место вы увидите.</p>'+
+    '<button class="btn" style="width:100%" data-sc="on">Участвовать</button>'+
+    (sc.on ? '<button class="btn sec" style="width:100%;margin-top:8px" data-sc="off">Выйти из рейтинга и удалить мои данные</button>' : '')+
+    '<button class="btn sec" style="width:100%;margin-top:8px" data-scrim="1">Отмена</button>');
+}
+function scoreOn(){
+  var sc = scoreState();
+  sc.name = String((document.getElementById("scName")||{}).value || "").trim().slice(0, 24);
+  sc.shown = (document.getElementById("scShown")||{}).checked ? 1 : 0;
+  if(!sc.name){ toast("Напишите имя для рейтинга - любое"); return; }
+  sc.on = 1; save(); closeSheet(); scoreSync(true); open("top");
+  toast("Вы в рейтинге");
+}
+function scoreOff(){
+  var sc = scoreState();
+  sc.on = 0; S.scoreMe = null; save();
+  fetch("api/score", { method:"POST", headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ device:hlDevice(), off:1 }) }).catch(function(){});
+  closeSheet(); render(); toast("Вы вышли из рейтинга, данные удалены");
+}
+function topLoad(force){
+  if(TOP.loading) return;
+  TOP.loading = true; TOP.err = "";
+  fetch("api/score/top?period="+TOP.period+"&device="+hlDevice())
+    .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+    .then(function(j){ TOP.data = j; TOP.loading = false; if(V.view==="top") render(); })
+    .catch(function(){ TOP.loading = false; TOP.err = "Список не загрузился - проверьте интернет"; if(V.view==="top") render(); });
+}
+var TOP_PERIODS = [["week","Неделя"],["month","Месяц"],["all","Всё время"]];
+function viewTop(){
+  var sc = scoreState(), h = ['<div class="stack">'];
+  if(!TOP.data && !TOP.loading) topLoad();
+
+  var me = TOP.data && TOP.data.me;
+  h.push('<section class="card hl-head">'+
+    '<div class="eyebrow">Рейтинг участников</div>'+
+    '<div class="hl-sub" style="margin-top:6px">Баллы даются за постоянство: отмеченные намазы и азкары, зикр, имена Всевышнего, чтение Корана. '+
+      'Считает ваш телефон, а в рейтинг уходят только числа.</div>'+
+    (sc.on
+      ? (me ? '<div class="top-me"><b>'+(me.place ? "Ваше место: "+me.place : "Пока без места")+'</b><span>'+plural(me.points||0,"балл","балла","баллов")+(sc.shown ? '' : ' · вы скрыты в списке')+'</span></div>'
+            : '<div class="top-me"><span>Считаем ваше место...</span></div>')
+      : '<button class="btn sm" style="margin-top:12px" data-sc="sheet">Участвовать в рейтинге</button>')+
+  '</section>');
+
+  var aw = (S.scoreMe && S.scoreMe.awards) || (TOP.data && TOP.data.awards) || [];
+  if(aw.length){
+    h.push('<div class="sec-h"><h3>Ваши награды</h3></div>');
+    h.push(aw.map(function(a){
+      return '<section class="card" style="border-color:rgba(212,175,55,.45);background:linear-gradient(140deg, rgba(212,175,55,.12), rgba(212,175,55,.03))">'+
+        '<div class="eyebrow" style="color:var(--accent-ink)">Награда · '+esc(String(a.at||"").slice(0,10))+'</div>'+
+        '<b style="font-family:var(--f-display);font-size:16px;display:block;margin:6px 0 4px">'+esc(a.title)+'</b>'+
+        (a.note ? '<div style="font-size:14px;color:var(--ink-2);line-height:1.5">'+esc(a.note)+'</div>' : '')+
+        (a.link ? '<a class="btn sm" style="margin-top:10px;text-decoration:none;display:inline-block" href="'+esc(a.link)+'" target="_blank" rel="noopener">Открыть</a>' : '')+
+      '</section>';
+    }).join(""));
+  }
+
+  h.push('<div class="hl-f">'+TOP_PERIODS.map(function(p){
+    return '<button class="chip'+(TOP.period===p[0]?" on":"")+'" data-sc="period:'+p[0]+'">'+p[1]+'</button>';
+  }).join("")+'</div>');
+
+  if(TOP.err) h.push('<p class="disclaimer" style="margin:0">'+esc(TOP.err)+'</p>');
+  else if(!TOP.data) h.push('<p class="disclaimer">Загружаем...</p>');
+  else if(!TOP.data.items.length) h.push('<div class="card flat hl-empty"><b>Пока никого нет</b><span>Рейтинг только начался. Включите участие - и вы первая.</span></div>');
+  else h.push('<div class="rows">'+TOP.data.items.map(function(x){
+    var mine = me && me.name === x.name && me.place === x.place;
+    return '<div class="row top-row'+(mine?" mine":"")+'"><span class="ic top-n'+(x.place<=3?" gold":"")+'">'+x.place+'</span>'+
+      '<div style="min-width:0"><div style="font-size:14.5px">'+esc(x.name)+'</div>'+
+      '<div style="font-size:12.5px;color:var(--ink-3)">'+(x.streak ? "серия "+plural(x.streak,"день","дня","дней") : "")+'</div></div>'+
+      '<span class="val" style="font-variant-numeric:tabular-nums">'+x.points+'</span></div>';
+  }).join("")+'</div>');
+
+  if(sc.on) h.push('<button class="btn sec" data-sc="sheet">Изменить имя или выйти</button>');
+  h.push('<p class="disclaimer">Баллы считает приложение на телефоне, поэтому список - не соревнование и не доказательство. '+
+    'Награды вручает Заира, глядя на постоянство, а не только на цифры.</p>');
+  h.push('</div>');
+  return h.join("");
+}
+function scoreClick(a){
+  var p = String(a).split(":");
+  if(p[0] === "sheet"){ sheetScoreOn(); return; }
+  if(p[0] === "on"){ scoreOn(); return; }
+  if(p[0] === "off"){ scoreOff(); return; }
+  if(p[0] === "period"){ TOP.period = p[1]; TOP.data = null; render(); topLoad(); return; }
+}
+
+/* ============================================================
    ЭКРАН: ХАЛЯЛЬ РЯДОМ
    Еда, магазины и места для намаза вокруг человека.
    Данные - открытая карта OpenStreetMap, собранная заранее по городам
@@ -11658,6 +11806,7 @@ function admLoad(){
   var t = ADM.tab;
   var p = t === "reviews" ? admApi("reviews").then(function(j){ ADM.items = j.items; })
         : t === "posts" ? admApi("posts").then(function(j){ ADM.posts = j; })
+        : t === "users" ? admApi("users?sort="+(ADM.usort||"week")).then(function(j){ ADM.users = j.items; })
         : t === "flags" ? admApi("flags").then(function(j){ ADM.flags = j.items; })
         : t === "log" ? admApi("log").then(function(j){ ADM.log = j.items; })
         : Promise.resolve();
@@ -11672,7 +11821,7 @@ function viewAdmin(){
   var h = ['<div class="stack">'];
   h.push('<div class="card flat" style="display:flex;align-items:center;gap:10px"><div style="flex:1;font-size:13.5px;color:var(--ink-2)">Вы вошли: <b>'+esc(S.admName||"администратор")+'</b>. Правки видны всем сразу.</div>'+
     '<button class="btn sec sm" style="width:auto" data-adm="logout">Выйти</button></div>');
-  h.push('<div class="hl-f">'+[["reviews","Отзывы"],["flags","Сообщения"],["places","Места"],["posts","Журнал"],["log","История"]].map(function(t){
+  h.push('<div class="hl-f">'+[["users","Люди"],["reviews","Отзывы"],["flags","Сообщения"],["places","Места"],["posts","Журнал"],["log","История"]].map(function(t){
     return '<button class="chip'+(ADM.tab===t[0]?" on":"")+'" data-adm="tab:'+t[0]+'">'+t[1]+'</button>';
   }).join("")+'</div>');
   if(ADM.err) h.push('<p class="disclaimer" style="margin:0">'+esc(ADM.err)+'</p>');
@@ -11688,6 +11837,31 @@ function viewAdmin(){
         '<div class="hl-act">'+
           (r.status === "ok" ? '<button class="btn sec sm" data-adm="rv:hide:'+r.id+'">Скрыть</button>' : '<button class="btn sec sm" data-adm="rv:show:'+r.id+'">Показать</button>')+
           '<button class="btn sec sm" data-adm="rv:delete:'+r.id+'">Удалить</button></div></article>';
+    }).join(""));
+  }
+
+  if(ADM.tab === "users"){
+    h.push('<div class="hl-f"><button class="chip'+((ADM.usort||"week")==="week"?" on":"")+'" data-adm="usort:week">За неделю</button>'+
+      '<button class="chip'+(ADM.usort==="all"?" on":"")+'" data-adm="usort:all">За всё время</button>'+
+      '<button class="chip" data-adm="csv">Выгрузить список</button></div>');
+    if(!ADM.users){ admLoad(); h.push('<p class="disclaimer">Загружаем...</p>'); }
+    else if(!ADM.users.length) h.push('<div class="card flat hl-empty"><b>Пока никто не участвует</b><span>Люди включают рейтинг сами, в «Профиле».</span></div>');
+    else h.push(ADM.users.map(function(x, i){
+      return '<article class="hl-card"><div class="hl-top"><div class="hl-n"><b>'+(i+1)+'. '+esc(x.name || "Без имени")+'</b>'+
+          '<span>'+esc([x.city, "серия "+x.streak+" дн.", "был(а) "+String(x.at).slice(0,10)].filter(Boolean).join(" · "))+'</span></div>'+
+          '<div class="hl-d"><b>'+x.week+'</b><span>за неделю</span></div></div>'+
+        '<div class="hl-tags"><span class="hl-tag">всего '+x.points+'</span>'+
+          '<span class="hl-tag">азкары '+x.azkars+'</span><span class="hl-tag">зикры '+x.tasbih+'</span>'+
+          '<span class="hl-tag">имена '+x.names+'/99</span><span class="hl-tag">Коран '+x.quran+' стр.</span>'+
+          (x.awards ? '<span class="hl-tag gold">наград: '+x.awards+'</span>' : '')+
+          (x.shown ? '' : '<span class="hl-tag">скрыт(а) в списке</span>')+
+          (x.flagged ? '<span class="hl-tag warn">цифры выросли слишком быстро</span>' : '')+
+          (x.blocked ? '<span class="hl-tag warn">исключён(а) из рейтинга</span>' : '')+'</div>'+
+        '<div class="hl-act"><button class="btn sm" data-adm="award:'+esc(x.device)+'">Наградить</button>'+
+          (x.blocked ? '<button class="btn sec sm" data-adm="usr:unblock:'+esc(x.device)+'">Вернуть в рейтинг</button>'
+                     : '<button class="btn sec sm" data-adm="usr:block:'+esc(x.device)+'">Убрать из рейтинга</button>')+
+          (x.flagged ? '<button class="btn sec sm" data-adm="usr:unflag:'+esc(x.device)+'">Проверено</button>' : '')+
+        '</div></article>';
     }).join(""));
   }
 
@@ -11859,13 +12033,49 @@ function admPostSave(id){
   }).catch(function(e){ toast(e.message); });
 }
 
+/* награда человеку: название, текст и, если нужно, ссылка на подарок */
+function sheetAdmAward(device){
+  var u = (ADM.users || []).filter(function(x){ return x.device === device; })[0] || {};
+  sheet('<h3>Наградить</h3>'+
+    '<p style="font-size:13.5px;color:var(--ink-2);margin:0 0 10px">'+esc(u.name || "Участник")+' · за неделю '+(u.week||0)+' баллов, серия '+(u.streak||0)+' дней</p>'+
+    '<input class="search" id="aw_t" maxlength="60" placeholder="За что: «Лучшая неделя», «100 дней подряд»">'+
+    '<textarea id="aw_n" class="search" rows="3" maxlength="300" style="margin-top:8px" placeholder="Что человек получает: месяц клуба, книга, разбор"></textarea>'+
+    '<input class="search" id="aw_l" style="margin-top:8px" placeholder="Ссылка, если есть: промокод, оплата, чат">'+
+    '<button class="btn" style="width:100%;margin-top:10px" data-adm="awardsave:'+esc(device)+'">Вручить</button>'+
+    '<button class="btn sec" style="width:100%;margin-top:8px" data-scrim="1">Отмена</button>');
+}
+function admAwardSave(device){
+  var g = function(id){ return String((document.getElementById(id)||{}).value || "").trim(); };
+  if(!g("aw_t")){ toast("Напишите, за что награда"); return; }
+  admApi("users", { device:device, action:"award", title:g("aw_t"), note:g("aw_n"), link:g("aw_l") })
+    .then(function(){ closeSheet(); ADM.users = null; toast("Награда вручена - человек увидит её в приложении"); render(); })
+    .catch(function(e){ toast(e.message); });
+}
+/* выгрузка списка: файл скачивается с ключом входа, поэтому через запрос, а не простой ссылкой */
+function admCsv(){
+  fetch("api/admin/users.csv", { headers:{ "Authorization":"Bearer "+(S.admTok||"") } })
+    .then(function(r){ if(!r.ok) throw 0; return r.blob(); })
+    .then(function(b){
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(b); a.download = "rizq-люди.csv";
+      document.body.appendChild(a); a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+      toast("Файл выгружен");
+    })
+    .catch(function(){ toast("Не получилось выгрузить"); });
+}
 function admClick(a){
   var p = String(a).split(":"), cmd = p[0];
   if(cmd === "entry"){ if(S.admTok) open("admin"); else sheetAdmLogin(); return; }
   if(cmd === "loginsheet"){ sheetAdmLogin(); return; }
   if(cmd === "login"){ admLogin(p.slice(1).join(":")); return; }
   if(cmd === "logout"){ admApi("logout", {}).catch(function(){}); S.admTok = ""; S.admName = ""; save(); back(); toast("Вы вышли"); return; }
-  if(cmd === "tab"){ ADM.tab = p[1]; ADM.items = ADM.posts = ADM.log = ADM.flags = null; render(); return; }
+  if(cmd === "tab"){ ADM.tab = p[1]; ADM.items = ADM.posts = ADM.log = ADM.flags = ADM.users = null; render(); return; }
+  if(cmd === "usort"){ ADM.usort = p[1]; ADM.users = null; render(); return; }
+  if(cmd === "usr"){ admApi("users", { device:p.slice(2).join(":"), action:p[1] }).then(function(){ ADM.users = null; toast("Готово"); render(); }).catch(function(e){ toast(e.message); }); return; }
+  if(cmd === "award"){ sheetAdmAward(p.slice(1).join(":")); return; }
+  if(cmd === "awardsave"){ admAwardSave(p.slice(1).join(":")); return; }
+  if(cmd === "csv"){ admCsv(); return; }
   if(cmd === "plc"){ /* убрать или вернуть место прямо из сообщений */
     admApi("places", { city:p[3], id:p[2], action:p[1] }).then(function(){ ADM.flags = null; toast(p[1]==="hide"?"Место убрано":"Место возвращено"); hlOvLoad(HL.city, true); render(); }).catch(function(e){ toast(e.message); });
     return;
@@ -14164,6 +14374,15 @@ function viewProf(){
     });
   }
 
+  /* 3б. рейтинг участников */
+  var scp = scoreState(), scme = S.scoreMe;
+  h.push('<button class="cat-wide'+(scp.on?"":" gold")+'" data-open="top">'+
+    '<span class="cw-ic">◈</span>'+
+    '<span class="cw-t"><b>Рейтинг участников</b><span>'+
+      (scp.on ? (scme && scme.week ? "ваше место за неделю: "+scme.week : "считаем ваше место")
+              : "добровольно, видно только числа")+'</span></span>'+
+    '<span class="cw-go">›</span></button>');
+
   /* 4. моё: всё личное собрано здесь */
   h.push('<div class="sec-h"><h3>Моё</h3></div>');
   h.push('<div class="cats">'+
@@ -15300,6 +15519,7 @@ function render(){
   else if(V.view==="suras") html = viewSuras();
   else if(V.view==="qibla") html = viewQibla();
   else if(V.view==="halal") html = viewHalal();
+  else if(V.view==="top") html = viewTop();
   else if(V.view==="admin") html = viewAdmin();
   else if(V.view==="calendar") html = viewCalendar();
   else if(V.view==="zakat") html = viewZakat();
@@ -15361,7 +15581,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -15636,6 +15856,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.hlrvrep){ hlRvPost("report", d.hlrvrep, "Жалоба отправлена. Спасибо"); return; }
   if(d.hlrvdel){ hlRvPost("delete", d.hlrvdel, "Отзыв удалён"); return; }
   if(d.adm){ admClick(d.adm); return; }
+  if(d.sc){ scoreClick(d.sc); return; }
   if(d.hlshare){ hlShare(d.hlshare); return; }
   if(d.hlflag){ var fp = d.hlflag.split(":"); hlFlag(fp[0], fp.slice(1).join(":")); return; }
   if(d.hlsug!==undefined){ sheetHalalMsg("Предложить место", "Ассаламу алейкум! Предлагаю место для «Халяль рядом» в RIZQ.\nГород: "+(HL.data ? HL.data.n : currentCity().n)+"\nНазвание: \nАдрес: \nПочему это халяль (сертификат, слова владельца, отметка): "); return; }
@@ -16158,6 +16379,7 @@ $screen.addEventListener("scroll", function(){
 utmCapture();
 quizLoad();
 navRestore();
+scoreSync();
 document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "hidden") navTouch(); });
 window.addEventListener("pagehide", navTouch);
 ordersCheck();
