@@ -3638,7 +3638,7 @@ function renderHdr(){
         : V.view==="names" ? "Имена Всевышнего"
         : V.view==="name" ? "Разбор имени"
         : V.view==="qduas" ? "Дуа из Корана"
-        : V.view==="reader" ? (S.qBook ? surahTitle(surahOf(pageFirst(mushafPage()))) + " · стр. " + mushafPage()
+        : V.view==="reader" ? (qBookOn() ? surahTitle(surahOf(pageFirst(mushafPage()))) + " · стр. " + mushafPage()
             : V.qkind==="page" ? "Страница "+pageOf(V.qFrom) : V.qkind==="juz" ? "Джуз "+juzOf(V.qFrom) : surahTitle(surahOf(V.qFrom)))
         : V.view==="tajwid" ? "Таджвид"
         : (V.view==="guide" && GUIDES[V.p]) ? GUIDES[V.p].n
@@ -6195,6 +6195,8 @@ var AR_DIGITS = ["٠","١","٢","٣","٤","٥","٦","٧","٨","٩"];
 function arNum(n){ return String(n).split("").map(function(c){ return AR_DIGITS[+c] || c; }).join(""); }
 function pageFirst(p){ return QPAGE[p-1]; }
 function pageLast(p){ return (p < QPAGE.length ? QPAGE[p] - 1 : QTOTAL - 1); }
+function qBookOn(){ return S.qBook !== 0; }
+function qTajOn(){ return S.qTajweed !== 0; }
 function mushafPage(){
   var p = V.qPage || pageOf(V.qFrom || S.qLast || 0);
   return Math.max(1, Math.min(QPAGE.length, p));
@@ -6239,7 +6241,7 @@ function tajweed(t){
 }
 function mushafText(i){
   var t = QA[i];
-  return (S.qTajweed ? tajweed(t) : esc(t));
+  return (qTajOn() ? tajweed(t) : esc(t));
 }
 function viewMushaf(){
   var p = mushafPage(), a = pageFirst(p), b = pageLast(p), h = [];
@@ -6247,7 +6249,7 @@ function viewMushaf(){
     '<button class="qbtn" id="qPlayAll" data-qplayall="1" title="Слушать">▶</button>'+
     '<button class="qbtn" data-qsize="-1" title="Меньше">A−</button>'+
     '<button class="qbtn" data-qsize="1" title="Больше">A+</button>'+
-    '<button class="qbtn'+(S.qTajweed?" on":"")+'" data-qtaj="1" title="Подсказки чтения">ت</button>'+
+    '<button class="qbtn'+(qTajOn()?" on":"")+'" data-qtaj="1" title="Подсказки чтения">ت</button>'+
     '<button class="qbtn on" data-qbook="0" title="Список аятов">☰</button>'+
     '<button class="qbtn" data-open="qsettings" title="Настройки">⚙</button>'+
     '<span style="margin-left:auto;font-size:13px;color:var(--ink-3);white-space:nowrap">стр. '+p+' · джуз '+juzOf(a)+'</span>'+
@@ -6275,7 +6277,7 @@ function viewMushaf(){
     '</div></div>'+
   '</div>');
 
-  if(S.qTajweed){
+  if(qTajOn()){
     h.push('<div class="mus-legend">'+TJ_RULES.map(function(r){
       return '<span><i style="background:'+r.c+'"></i>'+esc(r.n)+'</span>';
     }).join("")+'</div>'+
@@ -6297,7 +6299,7 @@ function sheetAyah(i){
     '<button class="btn sec" style="width:100%;margin-top:10px" data-scrim="1">Закрыть</button>');
 }
 function viewReader(){
-  if(S.qBook){
+  if(qBookOn()){
     var mp = mushafPage();
     /* слушать и листать - в границах открытой страницы */
     if(V.qFrom == null || V.qFrom < pageFirst(mp) || V.qFrom > pageLast(mp)) V.qFrom = pageFirst(mp);
@@ -16613,10 +16615,10 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.qtfold!==undefined || d.bfold!==undefined){ return; }
   if(d.qbook!==undefined){
     S.qBook = d.qbook === "1" ? 1 : 0;
-    if(S.qBook) V.qPage = pageOf(V.qFrom || S.qLast || 0);
+    if(qBookOn()) V.qPage = pageOf(V.qFrom || S.qLast || 0);
     save(); render(); $screen.scrollTop = 0; return;
   }
-  if(d.qtaj!==undefined){ S.qTajweed = S.qTajweed ? 0 : 1; save(); render(); toast(S.qTajweed ? "Подсказки чтения включены" : "Подсказки выключены"); return; }
+  if(d.qtaj!==undefined){ S.qTajweed = qTajOn() ? 0 : 1; save(); render(); toast(S.qTajweed ? "Подсказки чтения включены" : "Подсказки выключены"); return; }
   if(d.qpage!==undefined){
     var np = parseInt(d.qpage, 10);
     if(np >= 1 && np <= QPAGE.length){ V.qPage = np; V.qFrom = pageFirst(np); V.qTo = pageLast(np); S.qLast = pageFirst(np); save(); render(); $screen.scrollTop = 0; }
