@@ -11424,15 +11424,26 @@ function topDash(sc, d, me){
         .map(function(p){ return '<div><b>'+esc(String(p[1]))+'</b><span>'+p[0]+'</span></div>'; }).join("")+'</div>' : '')+
     (d && d.names && TOP.period === "league" ? '<div class="top-lig">'+d.names.map(function(n, i){
         return '<span class="'+(i+1 === d.league ? "on" : (i+1 < d.league ? "past" : ""))+'">'+esc(n.slice(0,3))+'</span>'; }).join("")+'</div>' : '')+
+    (me ? '<button class="btn sec sm" style="margin-top:12px" data-sc="share">Поделиться результатом</button>' : '')+
     (sc.shown ? '' : '<p class="disclaimer" style="text-align:left;padding:0;margin:10px 0 0">Вы участвуете скрытно: в списке вас не видно.</p>')+
   '</section>';
   return head + (d && d.items ? topPodium(d.items) : '');
+}
+/* Поделиться результатом: текст сдержанный, без хвастовства - про постоянство, а не про поклонение. */
+function scoreShare(){
+  var me = TOP.data && TOP.data.me, d = TOP.data, st = scoreStats();
+  var t = "Держусь в RIZQ: " + (st.streak ? plural(st.streak, "день", "дня", "дней") + " подряд" : "начала путь") +
+    (me && d && d.leagueName ? ", " + d.leagueName.toLowerCase() + " лига, " + me.place + " место за неделю" : "") +
+    ". Присоединяйтесь - приложение бесплатное:";
+  if(navigator.share){ navigator.share({ title: "RIZQ", text: t, url: APP_URL }).catch(function(){}); }
+  else { copyText(t + " " + APP_URL); toast("Текст скопирован - вставьте в сообщение"); }
 }
 function scoreClick(a){
   var p = String(a).split(":");
   if(p[0] === "sheet"){ sheetScoreOn(); return; }
   if(p[0] === "on"){ scoreOn(); return; }
   if(p[0] === "off"){ scoreOff(); return; }
+  if(p[0] === "share"){ scoreShare(); return; }
   if(p[0] === "period"){ TOP.period = p[1]; TOP.data = null; render(); topLoad(); return; }
 }
 
