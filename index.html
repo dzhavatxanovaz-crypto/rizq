@@ -519,6 +519,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .dash-bar span{display:block;font-size:10.5px;color:var(--ink-3);margin-top:5px}
 .dash-bar em{display:block;font-style:normal;font-size:10.5px;color:var(--ink-2);height:13px}
 .qt{background:linear-gradient(155deg, rgba(212,175,55,.10), rgba(212,175,55,.02));border-color:rgba(212,175,55,.3)}
+.qt>summary{list-style:none;cursor:pointer;font-family:var(--f-display);font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.qt>summary::-webkit-details-marker{display:none}
+.qt>summary::after{content:"›";color:var(--accent-ink);font-size:19px;transform:rotate(90deg);transition:transform .2s}
+.qt[open]>summary::after{transform:rotate(-90deg)}
+.qt-sum{margin-left:auto;font-size:12.5px;color:var(--ink-2);font-weight:400}
 .qt-top{display:flex;gap:12px;align-items:center}
 .qt-top>div:first-child{flex:1;min-width:0}
 .qt-big{font-family:var(--f-display);font-size:26px;font-weight:700;margin-top:4px;line-height:1.1}
@@ -554,6 +559,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .pod.two .pod-b{padding:14px 4px}
 .fold{padding:12px 14px}
 .fold>summary{list-style:none;cursor:pointer;font-family:var(--f-display);font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.fold>summary .qt-sum{margin-left:auto;font-size:12.5px;color:var(--ink-2);font-weight:400}
+.fold>summary::after{margin-left:0}
 .fold>summary::-webkit-details-marker{display:none}
 .fold>summary::after{content:"›";margin-left:auto;color:var(--accent-ink);font-size:19px;transform:rotate(90deg);transition:transform .2s}
 .fold[open]>summary::after{transform:rotate(-90deg)}
@@ -3440,8 +3447,9 @@ var $tabbar = document.getElementById("tabbar");
 function go(tab){
   if(V.view==="reader"){ qStop(); autoScrollOff(); }
   V.tab=tab; V.view=null; V.p=null; V.q=""; render(); $screen.scrollTop=0;
+  hdrShow(); tabbarShow(); /* новый экран открываем с видимыми панелями */
 }
-function open(view,p){ V.view=view; V.p=p; render(); $screen.scrollTop=0; }
+function open(view,p){ V.view=view; V.p=p; render(); $screen.scrollTop=0; hdrShow(); tabbarShow(); }
 /* Найденная дуа лежит внутри длинного списка: без прокрутки человек
    попадает в категорию и снова ищет глазами то, что уже нашёл. */
 function scrollToDua(id){
@@ -3468,6 +3476,7 @@ function applyQSize(){
 }
 
 function back(){
+  hdrShow(); tabbarShow();
   if(V.view==="reader" || V.view==="qsettings" || V.view==="qsearch"){ qStop(); autoScrollOff(); }
   if(V.view==="qsettings" || V.view==="qsearch"){ V.view=null; V.p=null; V.q=""; render(); return; }
   if(V.view==="name"){ V.view="names"; V.p=null; V.q=""; render(); return; }
@@ -3563,7 +3572,6 @@ function greetAr(){
   return {ar:"مَسَاءُ الْخَيْر", ru:"Добрый вечер"};
 }
 function renderHdr(){
-  if(V.view || V.tab !== "home") hdrShow(); /* уезжает только шапка главной */
   var titles = {dua:"Знания", courses:"Обучение", journal:"Журнал", fav:"Избранное", prof:"Профиль", quran:"Коран", income:"Ризкъ"};
   if(V.view){
     var t = V.view==="cat" ? (CATS.filter(function(c){return c.id===V.p})[0]||{}).n
@@ -5894,8 +5902,9 @@ function qtCard(){
   var today = qtSum(1), week = qtSum(7), month = qtSum(30), year = qtSum(365);
   var goal = S.qtGoal || 10; // минут в день
   var pct = Math.min(100, Math.round(today / (goal * 60) * 100));
-  return '<section class="card qt">'+
-    '<div class="qt-top"><div><div class="eyebrow">Время с Кораном</div>'+
+  return '<details class="card qt fold"'+(S.qtOpen ? ' open' : '')+' data-qtfold="1">'+
+    '<summary>Время с Кораном<span class="qt-sum">'+esc(qtText(today))+' сегодня</span></summary>'+
+    '<div class="qt-top" style="margin-top:10px"><div>'+
       '<div class="qt-big">'+esc(qtText(today))+'</div>'+
       '<div class="qt-sub">'+(today >= goal * 60
         ? 'Сегодняшняя цель выполнена, машаа Аллах'
@@ -5914,7 +5923,7 @@ function qtCard(){
       return '<button class="chip'+(goal===g?" on":"")+'" data-qtgoal="'+g+'">'+g+' мин</button>'; }).join("")+'</div>'+
     '<p class="disclaimer" style="text-align:left;padding:0;margin-top:9px">Время считается, пока открыт экран чтения. '+
       'Оно остаётся в вашем телефоне: в рейтинг и на сервер не уходит.</p>'+
-  '</section>';
+  '</details>';
 }
 function viewQuranHome(){
   var h = ['<div class="stack">'];
@@ -11398,6 +11407,8 @@ function ava(name){
 }
 function topLoad(force){
   if(TOP.loading) return;
+  if(TOP.tried === TOP.period && !force) return; /* не дёргаем сервер без конца, если он не ответил */
+  TOP.tried = TOP.period;
   TOP.loading = true; TOP.err = "";
   fetch(TOP.period === "months" ? "api/score/months" : "api/score/top?period="+TOP.period+"&device="+hlDevice())
     .then(function(r){ if(!r.ok) throw 0; return r.json(); })
@@ -11459,7 +11470,7 @@ function badgeList(){
 }
 function viewTop(){
   var sc = scoreState(), h = ['<div class="stack">'];
-  if(!TOP.data && !TOP.loading) topLoad();
+  if(!TOP.data && !TOP.loading && TOP.tried !== TOP.period) topLoad();
 
   var me = TOP.data && TOP.data.me, d = TOP.data;
   h.push(topDash(sc, d, me));
@@ -11498,7 +11509,8 @@ function viewTop(){
     h.push('</div>');
     return h.join("");
   }
-  if(TOP.err) h.push('<p class="disclaimer" style="margin:0">'+esc(TOP.err)+'</p>');
+  if(TOP.err) h.push('<div class="card flat hl-empty"><b>Список не загрузился</b><span>'+esc(TOP.err)+'</span>'+
+    '<button class="btn sec sm" style="margin-top:10px" data-sc="retry">Попробовать ещё раз</button></div>');
   else if(!TOP.data) h.push('<p class="disclaimer">Загружаем...</p>');
   else if(!TOP.data.items.length) h.push('<div class="card flat hl-empty"><b>Пока никого нет</b><span>Рейтинг только начался. Включите участие - и вы первая.</span></div>');
   else h.push('<div class="rows">'+TOP.data.items.map(function(x, i){
@@ -11514,11 +11526,12 @@ function viewTop(){
 
   h.push(scoreWhyHtml());
   var bl = badgeList(), got = bl.filter(function(b){ return b.done; });
-  h.push('<div class="sec-h" style="margin-top:6px"><h3>Значки</h3><span class="more" style="color:var(--ink-3)">'+got.length+' из '+bl.length+'</span></div>');
-  h.push('<div class="badges">'+bl.map(function(b){
+  h.push('<details class="card fold"'+(S.badgesOpen ? ' open' : '')+' data-bfold="1">'+
+    '<summary>Значки<span class="qt-sum">'+got.length+' из '+bl.length+'</span></summary>'+
+    '<div class="badges" style="margin-top:10px">'+bl.map(function(b){
     return '<div class="badge'+(b.done?" on":"")+'"><b>'+esc(b.n)+'</b><span>'+esc(b.d)+'</span>'+
       (b.done ? '<i>получен</i>' : '<div class="bar" style="margin-top:7px"><i style="width:'+b.pct+'%"></i></div>')+'</div>';
-  }).join("")+'</div>');
+  }).join("")+'</div></details>');
   if(sc.on) h.push('<button class="btn sec" data-sc="sheet">Изменить имя или выйти</button>');
   h.push('<p class="disclaimer">Баллы считает приложение на телефоне, поэтому список - не соревнование и не доказательство. '+
     'Награды вручает Заира, глядя на постоянство, а не только на цифры.</p>');
@@ -11692,7 +11705,8 @@ function scoreClick(a){
   if(p[0] === "share"){ scoreShare(); return; }
   if(p[0] === "prize"){ sheetPrizeClaim(p[1]); return; }
   if(p[0] === "prizesend"){ prizeClaimSend(p[1]); return; }
-  if(p[0] === "period"){ TOP.period = p[1]; TOP.data = null; render(); topLoad(); return; }
+  if(p[0] === "period"){ TOP.period = p[1]; TOP.data = null; TOP.tried = null; render(); topLoad(); return; }
+  if(p[0] === "retry"){ TOP.tried = null; TOP.err = ""; topLoad(true); render(); return; }
 }
 
 /* ============================================================
@@ -12037,7 +12051,8 @@ function viewHalal(){
     }
 
     h.push('<input class="search" id="hlQ" placeholder="Найти по названию или улице" value="'+esc(V.hlQ||"")+'" autocomplete="off">');
-    h.push('<div class="hl-f">'+ HL_FILTERS.map(function(f){
+    /* еда, магазины и «где помолиться» уже есть крупными кнопками в шапке - здесь не повторяем */
+    h.push('<div class="hl-f">'+ HL_FILTERS.filter(function(f){ return ["all","pr","top"].indexOf(f.id) >= 0 || (V.hlF||"all") === f.id; }).map(function(f){
       return '<button class="chip'+((V.hlF||"all")===f.id?" on":"")+'" data-hlf="'+f.id+'">'+f.n+(f.id==="top" ? '' : ' · '+cnt[f.id])+'</button>';
     }).join("") +'</div>');
 
@@ -16111,6 +16126,12 @@ document.getElementById("app").addEventListener("input", function(ev){
     if(cl) cl.innerHTML = cityOptions(ev.target.value);
   }
 });
+/* карточка «Время с Кораном»: запоминаем, свёрнута она или нет */
+document.getElementById("app").addEventListener("toggle", function(ev){
+  var t = ev.target;
+  if(t && t.dataset && t.dataset.qtfold !== undefined){ S.qtOpen = t.open ? 1 : 0; save(); }
+  if(t && t.dataset && t.dataset.bfold !== undefined){ S.badgesOpen = t.open ? 1 : 0; save(); }
+}, true);
 document.getElementById("app").addEventListener("change", function(ev){
   var el = ev.target;
   if(!el || !el.id) return;
@@ -16122,7 +16143,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -16397,6 +16418,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.hlrvrep){ hlRvPost("report", d.hlrvrep, "Жалоба отправлена. Спасибо"); return; }
   if(d.hlrvdel){ hlRvPost("delete", d.hlrvdel, "Отзыв удалён"); return; }
   if(d.adm){ admClick(d.adm); return; }
+  if(d.qtfold!==undefined || d.bfold!==undefined){ return; }
   if(d.qtgoal){ S.qtGoal = Number(d.qtgoal) || 10; save(); render(); toast("Цель чтения: "+d.qtgoal+" мин в день"); return; }
   if(d.sc){ scoreClick(d.sc); return; }
   if(d.hlshare){ hlShare(d.hlshare); return; }
@@ -16888,7 +16910,7 @@ function tabbarShow(){ if(TB_HID){ $tabbar.classList.remove("hide"); TB_HID = fa
 var HD_HID = false;
 function hdrShow(){ if(HD_HID){ $hdr.style.marginTop = ""; HD_HID = false; } }
 function hdrHide(){
-  if(HD_HID || V.view || V.tab !== "home") return;
+  if(HD_HID) return;
   var h = $hdr.firstChild; if(!h) return;
   var safe = Math.max(0, (parseFloat(getComputedStyle(h).paddingTop) || 0) - 18);
   $hdr.style.marginTop = -($hdr.offsetHeight - safe) + "px";
