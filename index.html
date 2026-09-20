@@ -11512,7 +11512,7 @@ function scoreShare(){
 function prizesHtml(){
   prizesLoad();
   if(!PRIZES || !PRIZES.on) return '';
-  var rows = [["1 место недели", PRIZES.week1], ["2 и 3 место недели", PRIZES.week23], ["Лучший за месяц", PRIZES.month1], ["30 дней подряд", PRIZES.streak30]];
+  var rows = [["Первое место по итогам месяца", PRIZES.month1]];
   return '<section class="card prizes"><div class="eyebrow">Что можно выиграть</div>'+
     '<div class="rows" style="margin-top:9px">'+rows.map(function(r){
       return '<div class="row" style="align-items:flex-start"><span class="ic">◆</span>'+
@@ -11520,7 +11520,8 @@ function prizesHtml(){
         '<div style="font-size:12.5px;color:var(--ink-3);line-height:1.45;margin-top:2px">'+esc(r[1].note)+'</div>'+
         '<span class="hl-tag" style="margin-top:6px;display:inline-block">'+esc(r[0])+'</span></div></div>';
     }).join("")+'</div>'+
-    '<p class="disclaimer" style="text-align:left;padding:0;margin-top:8px">Награды приходят сами: в понедельник за неделю, первого числа за месяц.</p></section>';
+    '<p class="disclaimer" style="text-align:left;padding:0;margin-top:8px">Приз вручается сам, первого числа, тому, кто набрал больше всех баллов за прошлый месяц. '+
+      'Недельные лиги и значки - для себя: они показывают, держитесь ли вы, но подарка за них нет.</p></section>';
 }
 function scoreClick(a){
   var p = String(a).split(":");
@@ -12119,12 +12120,12 @@ function viewAdmin(){
       var A = ADM.auto;
       h.push('<section class="card"><div class="eyebrow">Автоматические награды</div>'+
         '<p style="font-size:13.5px;color:var(--ink-2);line-height:1.5;margin:8px 0 0">В понедельник сервер сам подводит итоги прошлой недели, '+
-        'первого числа - итоги месяца. Награда приходит человеку в приложение. Неделя считается, только если в лиге было хотя бы трое.</p>'+
+        'первого числа подводит итоги месяца и сам вручает приз тому, кто набрал больше всех баллов. Недельные лиги идут без подарков.</p>'+
         '<div class="hl-act"><button class="btn'+(A.on?" sec":"")+' sm" data-adm="autoon:'+(A.on?"0":"1")+'">'+(A.on ? "Выключить" : "Включить")+'</button>'+
         '<button class="btn sec sm" data-adm="autorun">Подвести итоги сейчас</button></div>'+
         '<p class="disclaimer" style="text-align:left;padding:0;margin-top:9px">Сейчас: '+(A.on ? "вручаются сами" : "выключено")+
         (A.lastWeek ? ' · последняя неделя: '+esc(A.lastWeek) : '')+(A.lastMonth ? ' · месяц: '+esc(A.lastMonth) : '')+'</p></section>');
-      var KN = {w1:"Первое место недели", w23:"Второе и третье место недели", m1:"Лучший за месяц", s30:"Серия 30 дней", s100:"Серия 100 дней"};
+      var KN = {m1:"Лучший за месяц - единственный приз"};
       h.push('<div class="sec-h"><h3>Что вручается</h3></div>');
       h.push(Object.keys(KN).map(function(k){
         var r = (A.rules || {})[k] || {};
@@ -12398,10 +12399,8 @@ function admCsv(){
 /* Готовые награды: нажатие сразу вручает её человеку. Что внутри - решает Заира,
    тексты можно менять здесь. */
 var ADM_PRIZES = [
-  {n:"Месяц клуба", t:"Первое место недели", d:"Месяц клуба JAVATTI в подарок. Напишу вам в директ, как открыть доступ."},
-  {n:"Книга", t:"Призовое место недели", d:"Онлайн-книга «Девушка, которая смогла» в подарок. Напишу вам в директ."},
-  {n:"Разбор 30 минут", t:"Лучший результат месяца", d:"Личный разбор на 30 минут со мной. Напишу вам в директ, чтобы согласовать время."},
-  {n:"Дуа и слова", t:"За постоянство", d:"Ваше постоянство заметно. Прошу Аллаха принять ваши дела и умножить ваш удел."}
+  {n:"Месяц клуба", t:"Месяц клуба JAVATTI", d:"Месяц участия в клубе JAVATTI в подарок. Напишу вам в директ, как открыть доступ."},
+  {n:"Слова и дуа", t:"За постоянство", d:"Ваше постоянство заметно. Прошу Аллаха принять ваши дела и умножить ваш удел."}
 ];
 function admClick(a){
   var p = String(a).split(":"), cmd = p[0];
