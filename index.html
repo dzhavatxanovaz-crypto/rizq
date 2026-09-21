@@ -640,6 +640,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .qf-ic{flex:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(212,175,55,.13);color:var(--accent-ink);font-size:15px;line-height:1}
 .qf-ic svg{width:26px;height:26px}
 .qf-t{white-space:nowrap}
+.bsteps{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column;gap:10px}
+.bsteps li{display:flex;gap:11px;align-items:flex-start}
+.bsteps li>span{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:rgba(212,175,55,.16);color:var(--accent-ink);font-family:var(--f-display);font-size:13px;font-weight:700;margin-top:1px}
+.bsteps li>p{margin:0;font-size:14.5px;line-height:1.6;color:var(--ink-2)}
+.btip{margin-top:12px;padding:11px 13px;border-radius:12px;background:rgba(212,175,55,.10);border-left:3px solid var(--accent-ink);font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+.bwarn{margin-top:12px;padding:11px 13px;border-radius:12px;background:rgba(192,57,43,.08);border-left:3px solid #C0392B;font-size:13.5px;line-height:1.6;color:var(--ink-2)}
 @media (max-width:359px){
   .qgroup>.qf{padding:12px 11px}
   .qgroup>.qf>summary{gap:8px;font-size:13.5px}
@@ -13419,6 +13425,12 @@ function renderBlocks(blocks){
           '<span class="val" style="color:var(--ink);font-weight:600">' + esc(r[1]) + '</span></div>';
       }).join("") + '</div>');
     }
+    if(b.steps){
+      s.push('<ol class="bsteps">' + b.steps.map(function(x, k){
+        return '<li><span>' + (k + 1) + '</span><p>' + esc(x) + '</p></li>'; }).join("") + '</ol>');
+    }
+    if(b.tip) s.push('<div class="btip">' + esc(b.tip) + '</div>');
+    if(b.warn) s.push('<div class="bwarn">' + esc(b.warn) + '</div>');
     if(b.list){
       s.push('<ul style="font-size:14.5px;line-height:1.75;color:var(--ink-2);padding-left:20px;margin:12px 0 0">' +
         b.list.map(function(x){ return '<li style="margin-bottom:7px">' + esc(x) + '</li>'; }).join("") + '</ul>');
@@ -14057,7 +14069,7 @@ function postsAll(){
   var loaded = null;
   try{ loaded = JSON.parse(localStorage.getItem("rizq.posts") || "null"); }catch(e){}
   var list = (loaded && loaded.length) ? loaded : POSTS_SEED;
-  return list.slice().sort(function(a,b){ return (b.d||"") < (a.d||"") ? -1 : 1; });
+  return list.slice().sort(function(a,b){ var x = a.d || "", y = b.d || ""; return y < x ? -1 : y > x ? 1 : 0; });
 }
 function postsLoad(){
   if(!window.fetch) return;
