@@ -288,7 +288,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* ---------- screens ---------- */
 .screen{
   flex:1;overflow-y:auto;overflow-x:hidden;
-  padding:16px 16px 88px;
+  /* снизу место под панель вкладок и под полоску жестов iPhone, иначе конец страницы прячется */
+  padding:16px 16px calc(96px + env(safe-area-inset-bottom, 0px));
   -webkit-overflow-scrolling:touch;
   scrollbar-width:thin;
 }
@@ -875,6 +876,60 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .ar-fin-ic{width:54px;height:54px;border-radius:50%;margin:0 auto 10px;display:grid;place-items:center;font-size:24px;background:#2D6A4F;color:#fff}
 .ar-fin b{font-family:var(--f-display);font-size:17px}
 .ar-fin p{font-size:14px;color:var(--ink-2);line-height:1.55}
+.ar-opts{display:flex;flex-direction:column;gap:8px}
+.ar-opt{width:100%;padding:13px 14px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:15px;text-align:center;box-shadow:var(--shadow)}
+.ar-opt.ok{border-color:#3E9B72;background:rgba(62,155,114,.18)}
+.ar-opt.bad{border-color:#D46A5B;background:rgba(212,106,91,.16)}
+.ar-opt[disabled]{opacity:1}
+.ar-opt-ar{font-family:var(--f-ar);color:var(--accent-ink);font-size:16px}
+.ar-opt-big{font-family:"Amiri Quran",var(--f-ar);font-size:24px;line-height:1.5}
+.ar-ex-ru{font-size:15px;color:var(--ink-2);margin-bottom:10px}
+.ar-ex-ru.big{font-family:var(--f-display);font-size:24px;font-weight:700;color:var(--ink);margin:10px 0}
+.ar-ex-sol{margin-top:12px;font-size:14px;color:var(--ink-2);line-height:1.5}
+.ar-play.xl{width:74px;height:74px;font-size:24px;margin:8px auto 6px}
+.ar-build{min-height:58px;display:flex;flex-wrap:wrap;gap:7px;align-items:center;justify-content:flex-start;padding:10px;border-radius:14px;border:1.5px dashed rgba(212,175,55,.5);margin-bottom:12px}
+.ar-build-ph{font-size:13px;color:var(--ink-3);width:100%;text-align:center}
+.ar-tiles{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+.ar-tile{font-family:"Amiri Quran",var(--f-ar);font-size:21px;line-height:1.5;padding:4px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink)}
+.ar-tile.on{background:rgba(212,175,55,.16);border-color:rgba(212,175,55,.55)}
+.ar-tile.used{opacity:.25}
+.ar-ex-res{margin-top:12px;font-size:14px;font-weight:600}
+.ar-ex-res.ok{color:#3E9B72}
+.ar-ex-res.bad{color:#D46A5B}
+.ar-abc{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ar-letter{display:flex;flex-direction:column;align-items:center;padding:10px 4px 8px;border-radius:14px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow)}
+.ar-letter b{font-family:"Amiri Quran",var(--f-ar);font-size:32px;line-height:1.3;color:var(--ink);font-weight:400}
+.ar-letter span{font-size:12px;color:var(--ink-3)}
+.ar-forms{display:grid;grid-template-columns:repeat(auto-fit,minmax(64px,1fr));gap:8px;direction:rtl}
+.ar-forms div{display:flex;flex-direction:column;align-items:center;padding:8px 4px;border-radius:12px;background:var(--surface-2)}
+.ar-forms b{font-family:"Noto Naskh Arabic",var(--f-ar);font-size:34px;line-height:1.4;font-weight:400;color:var(--ink)}
+.ar-forms span{font-size:11.5px;color:var(--ink-3);direction:ltr}
+.ar-abc-card{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:13px 14px;border-radius:var(--r-md);border:1px solid rgba(212,175,55,.45);background:linear-gradient(150deg, rgba(212,175,55,.13), rgba(212,175,55,.03));box-shadow:var(--shadow)}
+.ar-abc-l{font-family:"Amiri Quran",var(--f-ar);font-size:22px;color:var(--accent-ink);flex:none;min-width:58px;text-align:center}
+.ar-rule p{font-size:14.5px;line-height:1.6;color:var(--ink-2);margin:8px 0 0}
+.ar-exc{display:flex;align-items:center;gap:12px}
+.ar-exc div{flex:1;min-width:0}
+.ar-exc b{display:block;font-family:var(--f-display);font-size:15px}
+.ar-exc span{font-size:12.5px;color:var(--ink-3)}
+.ar-today{display:flex;flex-direction:column;gap:8px}
+.ar-today-h{display:flex;align-items:center;gap:12px;margin-bottom:2px}
+.ar-today-h>div:first-child{flex:1;min-width:0}
+.ar-today-h b{display:block;font-family:var(--f-display);font-size:16px;margin-top:3px}
+.ar-today-h span{font-size:12.5px;color:var(--ink-3)}
+.ar-streak{flex:none;text-align:center;padding:8px 12px;border-radius:14px;background:rgba(212,175,55,.14);border:1px solid rgba(212,175,55,.4)}
+.ar-streak b{font-family:var(--f-display);font-size:22px;color:var(--accent-ink);line-height:1;margin:0}
+.ar-streak span{font-size:11px;color:var(--ink-2)}
+.ar-td{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:10px 12px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line)}
+.ar-td i{width:24px;height:24px;flex:none;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-style:normal;font-size:13px;color:#fff}
+.ar-td.done i{background:#3E9B72;border-color:#3E9B72}
+.ar-td>span{flex:1;min-width:0}
+.ar-td b{display:block;font-size:14.5px;font-weight:600}
+.ar-td>span>span{font-size:12.5px;color:var(--ink-3)}
+.ar-td em{font-style:normal;font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.ar-dict-h{font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:4px 2px -6px}
+.ar-talk-wait{margin-top:16px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.ar-talk-wait b{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-size:26px;color:var(--accent-ink);border:3px solid rgba(212,175,55,.55)}
+.ar-talk-wait span{font-size:13px;color:var(--ink-3)}
 .mus-tools{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:10px 0 4px}
 .mus-tools button{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:6px 10px;border-radius:999px;
   border:1px solid rgba(212,175,55,.45);background:rgba(212,175,55,.08);color:var(--ink-2)}
@@ -3670,7 +3725,7 @@ applyQFont();
 
 function back(){
   hdrShow(); tabbarShow();
-  if(V.view==="arabic"){ arStop(); if(V.p){ var fromU = String(V.p).indexOf("s:")===0 ? "u:" + String(V.p).slice(2) : null; V.p = fromU; render(); $screen.scrollTop = 0; return; } }
+  if(V.view==="arabic"){ arStop(); if(V.p){ V.p = arBackTo(V.p); render(); $screen.scrollTop = 0; return; } }
   if(V.ret==="reader" && (V.view==="tajwid" || V.view==="arabic")){ V.ret = null; V.view = "reader"; render(); $screen.scrollTop = 0; return; }
   if(V.view==="reader" || V.view==="qsettings" || V.view==="qsearch"){ qStop(); autoScrollOff(); }
   if(V.view==="qsettings" || V.view==="qsearch"){ V.view=null; V.p=null; V.q=""; render(); return; }
@@ -3776,7 +3831,7 @@ function renderHdr(){
         : V.view==="reader" ? (qBookOn() ? surahTitle(surahOf(pageFirst(mushafPage()))) + " · стр. " + mushafPage()
             : V.qkind==="page" ? "Страница "+pageOf(V.qFrom) : V.qkind==="juz" ? "Джуз "+juzOf(V.qFrom) : surahTitle(surahOf(V.qFrom)))
         : V.view==="tajwid" ? "Таджвид"
-        : V.view==="arabic" ? (String(V.p||"").indexOf("u:")===0 ? "Урок " + String(V.p).slice(2) : String(V.p||"").charAt(0)==="s" ? "Карточки" : "Изучаем арабский")
+        : V.view==="arabic" ? arTitle()
         : (V.view==="guide" && GUIDES[V.p]) ? GUIDES[V.p].n
         : (V.view==="check" && CHECKS[V.p]) ? CHECKS[V.p].n
         : (V.view==="practice") ? "Практика"
@@ -6265,21 +6320,241 @@ var AR_UNITS = [
   ]}
 ];
 
+/* Уроки 9-16: темы для жизни после первых восьми. */
+AR_UNITS.push(
+ {id:9, n:"Работа", ar:"العَمَلُ",
+  w:[
+   {id:"9a", ar:"عَمَلٌ", tr:"'амаль", ru:"работа, дело", q:"99:7", s:"يعمل"},
+   {id:"9b", ar:"أَعْمَلُ", tr:"а'малю", ru:"я работаю"},
+   {id:"9c", ar:"طَبِيبَةٌ", tr:"табӣба", ru:"врач (женщина)"},
+   {id:"9d", ar:"مُعَلِّمَةٌ", tr:"му'аллима", ru:"учительница"},
+   {id:"9e", ar:"مُهَنْدِسٌ", tr:"мухандис", ru:"инженер"},
+   {id:"9f", ar:"مَكْتَبٌ", tr:"мактаб", ru:"офис, кабинет"},
+   {id:"9g", ar:"رِزْقٌ", tr:"ризк", ru:"удел, пропитание", q:"65:3", s:"يرزقه"},
+   {id:"9h", ar:"صَبَاحًا", tr:"сабахан", ru:"утром"},
+   {id:"9i", ar:"مَسَاءً", tr:"масаан", ru:"вечером"}
+  ],
+  d:[
+   ["А", "مَاذَا تَعْمَلِينَ؟", "Ма̄за та'малӣна?", "Кем ты работаешь?"],
+   ["Б", "أَنَا مُعَلِّمَةٌ. وَأَنْتِ؟", "Ана му'аллима. Ва анти?", "Я учительница. А ты?"],
+   ["А", "أَنَا طَبِيبَةٌ فِي مُسْتَشْفًى.", "Ана табӣба фи мусташфа̄.", "Я врач в больнице."],
+   ["Б", "مَتَى تَذْهَبِينَ إِلَى العَمَلِ؟", "Мата̄ тазхабӣна иля ль-'амаль?", "Когда ты идёшь на работу?"],
+   ["А", "أَذْهَبُ صَبَاحًا وَأَرْجِعُ مَسَاءً.", "Азхабу сабахан ва арджи'у масаан.", "Ухожу утром, возвращаюсь вечером."],
+   ["Б", "وَفَّقَكِ اللَّهُ.", "Ваффакаки Лла̄х.", "Да поможет тебе Аллах."]
+  ]},
+ {id:10, n:"Покупки", ar:"التَّسَوُّقُ",
+  w:[
+   {id:"10a", ar:"سُوقٌ", tr:"сӯк", ru:"рынок", q:"25:7", s:"اسواق"},
+   {id:"10b", ar:"بِكَمْ؟", tr:"би-кам", ru:"сколько стоит?"},
+   {id:"10c", ar:"ثَمَنٌ", tr:"саман", ru:"цена", q:"2:41", s:"ثمنا"},
+   {id:"10d", ar:"غَالٍ", tr:"га̄лин", ru:"дорогой"},
+   {id:"10e", ar:"رَخِيصٌ", tr:"рахӣс", ru:"дешёвый"},
+   {id:"10f", ar:"أُرِيدُ", tr:"урӣду", ru:"я хочу", q:"28:27", s:"اريد"},
+   {id:"10g", ar:"اِشْتَرَى", tr:"иштара̄", ru:"купил", q:"9:111", s:"اشتري"},
+   {id:"10h", ar:"ثَوْبٌ", tr:"сауб", ru:"одежда, платье", q:"74:4", s:"ثيابك"},
+   {id:"10i", ar:"مَالٌ", tr:"ма̄ль", ru:"деньги, имущество", q:"18:46", s:"المال"}
+  ],
+  d:[
+   ["А", "السَّلَامُ عَلَيْكُمْ. أُرِيدُ هَذَا الثَّوْبَ.", "Ас-саляму 'алейкум. Урӣду ха̄за с-сауб.", "Мир вам. Я хочу это платье."],
+   ["Б", "وَعَلَيْكُمُ السَّلَامُ. تَفَضَّلِي.", "Ва 'алейкуму с-салям. Тафаддали.", "И вам мир. Пожалуйста."],
+   ["А", "بِكَمْ هُوَ؟", "Би-кам хува?", "Сколько оно стоит?"],
+   ["Б", "بِأَلْفِ رُوبْلٍ.", "Би-альфи рӯбль.", "Тысячу рублей."],
+   ["А", "هَذَا غَالٍ!", "Ха̄за га̄лин!", "Это дорого!"],
+   ["Б", "طَيِّبٌ، بِثَمَانِمِائَةٍ.", "Тайиб, би-сама̄ни-ми'а.", "Хорошо, за восемьсот."],
+   ["А", "شُكْرًا، بَارَكَ اللَّهُ فِيكَ.", "Шукран, ба̄рака Лла̄ху фӣк.", "Спасибо, да благословит тебя Аллах."]
+  ]},
+ {id:11, n:"Числа и время", ar:"الأَعْدَادُ وَالوَقْتُ",
+  w:[
+   {id:"11a", ar:"وَاحِدٌ", tr:"ва̄хид", ru:"один", q:"2:163", s:"وحد"},
+   {id:"11b", ar:"اِثْنَانِ", tr:"исна̄ни", ru:"два", q:"9:40", s:"اثنين"},
+   {id:"11c", ar:"ثَلَاثَةٌ", tr:"саля̄са", ru:"три", q:"18:22", s:"ثلثه"},
+   {id:"11d", ar:"أَرْبَعَةٌ", tr:"арба'а", ru:"четыре", q:"2:226", s:"اربعه"},
+   {id:"11e", ar:"خَمْسَةٌ", tr:"хамса", ru:"пять", q:"18:22", s:"خمسه"},
+   {id:"11f", ar:"عَشَرَةٌ", tr:"'ашара", ru:"десять", q:"2:196", s:"عشره"},
+   {id:"11g", ar:"سَاعَةٌ", tr:"са̄'а", ru:"час; в Коране - Час (Судный день)", q:"54:1", s:"الساعه"},
+   {id:"11h", ar:"الآنَ", tr:"аль-а̄на", ru:"сейчас", q:"2:71", s:"الن"},
+   {id:"11i", ar:"دَقِيقَةٌ", tr:"дакӣка", ru:"минута"}
+  ],
+  d:[
+   ["А", "كَمِ السَّاعَةُ الآنَ؟", "Ками с-са̄'ату ль-а̄н?", "Который сейчас час?"],
+   ["Б", "السَّاعَةُ الخَامِسَةُ.", "Ас-са̄'ату ль-ха̄миса.", "Пять часов."],
+   ["А", "مَتَى صَلَاةُ المَغْرِبِ؟", "Мата̄ саля̄ту ль-магриб?", "Когда намаз магриб?"],
+   ["Б", "بَعْدَ عَشْرِ دَقَائِقَ.", "Ба'да 'ашри дака̄'ик.", "Через десять минут."],
+   ["А", "الحَمْدُ لِلَّهِ، عِنْدِي وَقْتٌ لِلْوُضُوءِ.", "Аль-хамду лилля̄х, 'индӣ вактун лиль-вудӯ'.", "Хвала Аллаху, успею сделать омовение."]
+  ]},
+ {id:12, n:"Здоровье", ar:"الصِّحَّةُ",
+  w:[
+   {id:"12a", ar:"صِحَّةٌ", tr:"сыхха", ru:"здоровье"},
+   {id:"12b", ar:"مَرِيضَةٌ", tr:"марӣда", ru:"больная", q:"2:184", s:"مريضا"},
+   {id:"12c", ar:"رَأْسٌ", tr:"ра's", ru:"голова", q:"19:4", s:"الراس"},
+   {id:"12d", ar:"بَطْنٌ", tr:"батн", ru:"живот", q:"37:144", s:"بطنه"},
+   {id:"12e", ar:"أَلَمٌ", tr:"алям", ru:"боль", q:"4:104", s:"يالمون"},
+   {id:"12f", ar:"دَوَاءٌ", tr:"дава̄'", ru:"лекарство"},
+   {id:"12g", ar:"شِفَاءٌ", tr:"шифа̄'", ru:"исцеление", q:"17:82", s:"شفاء"},
+   {id:"12h", ar:"يَشْفِي", tr:"яшфӣ", ru:"исцеляет", q:"26:80", s:"يشفين"}
+  ],
+  d:[
+   ["А", "مَا بِكِ؟", "Ма̄ бики?", "Что с тобой?"],
+   ["Б", "أَنَا مَرِيضَةٌ، عِنْدِي أَلَمٌ فِي رَأْسِي.", "Ана марӣда, 'индӣ алямун фи ра'сӣ.", "Я болею, у меня болит голова."],
+   ["А", "هَلْ ذَهَبْتِ إِلَى الطَّبِيبِ؟", "Халь захабти иля т-табӣб?", "Ты ходила к врачу?"],
+   ["Б", "نَعَمْ، وَأَعْطَانِي دَوَاءً.", "На'ам, ва а'та̄нӣ дава̄'ан.", "Да, и он дал мне лекарство."],
+   ["А", "شَفَاكِ اللَّهُ.", "Шафа̄ки Лла̄х.", "Да исцелит тебя Аллах."],
+   ["Б", "آمِينَ، جَزَاكِ اللَّهُ خَيْرًا.", "А̄мӣн, джаза̄ки Лла̄ху хайран.", "Амин, да воздаст тебе Аллах добром."]
+  ]},
+ {id:13, n:"Природа и погода", ar:"الطَّبِيعَةُ",
+  w:[
+   {id:"13a", ar:"سَمَاءٌ", tr:"сама̄'", ru:"небо", q:"2:22", s:"السماء"},
+   {id:"13b", ar:"أَرْضٌ", tr:"ард", ru:"земля", q:"2:22", s:"الارض"},
+   {id:"13c", ar:"مَطَرٌ", tr:"матар", ru:"дождь", q:"26:173", s:"مطرا"},
+   {id:"13d", ar:"جَبَلٌ", tr:"джабаль", ru:"гора", q:"7:143", s:"الجبل"},
+   {id:"13e", ar:"بَحْرٌ", tr:"бахр", ru:"море", q:"2:50", s:"البحر"},
+   {id:"13f", ar:"شَجَرَةٌ", tr:"шаджара", ru:"дерево", q:"2:35", s:"الشجره"},
+   {id:"13g", ar:"بَارِدٌ", tr:"ба̄рид", ru:"холодный", q:"38:42", s:"بارد"},
+   {id:"13h", ar:"حَارٌّ", tr:"ха̄рр", ru:"жаркий, горячий"},
+   {id:"13i", ar:"جَمِيلٌ", tr:"джамӣль", ru:"красивый, прекрасный", q:"12:18", s:"جميل"}
+  ],
+  d:[
+   ["А", "الجَوُّ جَمِيلٌ اليَوْمَ!", "Аль-джавву джамӣлун аль-яум!", "Сегодня прекрасная погода!"],
+   ["Б", "نَعَمْ، وَلَكِنَّهُ بَارِدٌ قَلِيلًا.", "На'ам, ва ля̄киннаху ба̄рид кальӣлян.", "Да, но немного холодно."],
+   ["А", "هَلْ نَذْهَبُ إِلَى البَحْرِ؟", "Халь назхабу иля ль-бахр?", "Пойдём к морю?"],
+   ["Б", "لَا، أَظُنُّ أَنَّ المَطَرَ سَيَنْزِلُ.", "Ля̄, азунну анна ль-матара саянзиль.", "Нет, думаю, пойдёт дождь."],
+   ["А", "إِذَنْ نَذْهَبُ غَدًا، إِنْ شَاءَ اللَّهُ.", "Изан назхабу гадан, ин ша̄'а Лла̄х.", "Тогда пойдём завтра, иншаАллах."]
+  ]},
+ {id:14, n:"Поездка", ar:"السَّفَرُ",
+  w:[
+   {id:"14a", ar:"سَفَرٌ", tr:"сафар", ru:"поездка, путешествие", q:"2:184", s:"سفر"},
+   {id:"14b", ar:"أُسَافِرُ", tr:"уса̄фиру", ru:"я еду, путешествую"},
+   {id:"14c", ar:"مَطَارٌ", tr:"мата̄р", ru:"аэропорт"},
+   {id:"14d", ar:"طَائِرَةٌ", tr:"та̄'ира", ru:"самолёт"},
+   {id:"14e", ar:"تَذْكِرَةٌ", tr:"тазкира", ru:"билет"},
+   {id:"14f", ar:"حَقِيبَةٌ", tr:"хакӣба", ru:"сумка, чемодан"},
+   {id:"14g", ar:"فُنْدُقٌ", tr:"фундук", ru:"гостиница"},
+   {id:"14h", ar:"طَرِيقٌ", tr:"тарӣк", ru:"дорога", q:"20:77", s:"طريقا"},
+   {id:"14i", ar:"مَدِينَةٌ", tr:"мадӣна", ru:"город", q:"12:30", s:"المدينه"}
+  ],
+  d:[
+   ["А", "إِلَى أَيْنَ تُسَافِرِينَ؟", "Иля айна туса̄фирӣна?", "Куда ты едешь?"],
+   ["Б", "أُسَافِرُ إِلَى المَدِينَةِ المُنَوَّرَةِ.", "Уса̄фиру иля ль-Мадӣнати ль-Мунаввара.", "Я еду в Медину."],
+   ["А", "مَا شَاءَ اللَّهُ! مَتَى الطَّائِرَةُ؟", "Ма̄ ша̄'а Лла̄х! Мата̄ т-та̄'ира?", "Машаа Аллах! Когда самолёт?"],
+   ["Б", "غَدًا صَبَاحًا. التَّذْكِرَةُ عِنْدِي، وَالحَقِيبَةُ جَاهِزَةٌ.", "Гадан сабахан. Ат-тазкирату 'индӣ, валь-хакӣбату джа̄хиза.", "Завтра утром. Билет у меня, чемодан готов."],
+   ["А", "سَفَرًا سَعِيدًا، وَادْعِي لَنَا.", "Сафаран са'ӣдан, ва-д'ӣ ляна̄.", "Счастливого пути, и помолись за нас."]
+  ]},
+ {id:15, n:"Хадж и умра", ar:"الحَجُّ وَالعُمْرَةُ",
+  w:[
+   {id:"15a", ar:"حَجٌّ", tr:"хаджж", ru:"хадж", q:"3:97", s:"حج"},
+   {id:"15b", ar:"عُمْرَةٌ", tr:"'умра", ru:"умра", q:"2:196", s:"العمره"},
+   {id:"15c", ar:"الكَعْبَةُ", tr:"аль-Ка'ба", ru:"Кааба", q:"5:97", s:"الكعبه"},
+   {id:"15d", ar:"طَوَافٌ", tr:"тава̄ф", ru:"обход вокруг Каабы", q:"22:29", s:"يطوفوا"},
+   {id:"15e", ar:"إِحْرَامٌ", tr:"ихра̄м", ru:"ихрам"},
+   {id:"15f", ar:"مَكَّةُ", tr:"Макка", ru:"Мекка", q:"48:24", s:"مكه"},
+   {id:"15g", ar:"زَمْزَمُ", tr:"Замзам", ru:"Замзам"},
+   {id:"15h", ar:"لَبَّيْكَ", tr:"ляббайка", ru:"вот я перед Тобой (слова тальбии)"}
+  ],
+  d:[
+   ["А", "هَلْ ذَهَبْتِ إِلَى العُمْرَةِ؟", "Халь захабти иля ль-'умра?", "Ты ездила на умру?"],
+   ["Б", "نَعَمْ، فِي رَمَضَانَ المَاضِي.", "На'ам, фи Рамада̄на ль-ма̄дӣ.", "Да, в прошлый Рамадан."],
+   ["А", "كَيْفَ كَانَتْ؟", "Кайфа ка̄нат?", "Как всё прошло?"],
+   ["Б", "طُفْتُ حَوْلَ الكَعْبَةِ، وَشَرِبْتُ مِنْ زَمْزَمَ.", "Туфту хаўля ль-Ка'ба, ва шарибту мин Замзам.", "Я обошла вокруг Каабы и пила воду Замзам."],
+   ["А", "تَقَبَّلَ اللَّهُ مِنْكِ.", "Такаббаля Лла̄ху минки.", "Да примет Аллах от тебя."],
+   ["Б", "وَرَزَقَكِ اللَّهُ الحَجَّ.", "Ва разакаки Лла̄ху ль-хаджж.", "И да дарует тебе Аллах хадж."]
+  ]},
+ {id:16, n:"Рамадан и праздник", ar:"رَمَضَانُ وَالعِيدُ",
+  w:[
+   {id:"16a", ar:"صِيَامٌ", tr:"сыя̄м", ru:"пост", q:"2:183", s:"الصيام"},
+   {id:"16b", ar:"صَائِمَةٌ", tr:"са̄'има", ru:"постящаяся"},
+   {id:"16c", ar:"إِفْطَارٌ", tr:"ифта̄р", ru:"ифтар, разговение"},
+   {id:"16d", ar:"سُحُورٌ", tr:"сухӯр", ru:"сухур, еда перед рассветом"},
+   {id:"16e", ar:"شَهْرٌ", tr:"шахр", ru:"месяц", q:"2:185", s:"شهر"},
+   {id:"16f", ar:"هِلَالٌ", tr:"хиля̄ль", ru:"молодой месяц", q:"2:189", s:"اهله"},
+   {id:"16g", ar:"لَيْلَةُ القَدْرِ", tr:"ляйлату ль-кадр", ru:"Ночь предопределения", q:"97:1", s:"القدر"},
+   {id:"16h", ar:"عِيدٌ", tr:"'ӣд", ru:"праздник", q:"5:114", s:"عيدا"},
+   {id:"16i", ar:"عِيدٌ مُبَارَكٌ", tr:"'ӣдун муба̄рак", ru:"благословенного праздника"}
+  ],
+  d:[
+   ["А", "رَمَضَانُ كَرِيمٌ!", "Рамада̄ну карӣм!", "Щедрого Рамадана!"],
+   ["Б", "اللَّهُ أَكْرَمُ. هَلْ أَنْتِ صَائِمَةٌ؟", "Алла̄ху акрам. Халь анти са̄'има?", "Аллах щедрее. Ты постишься?"],
+   ["А", "نَعَمْ، الحَمْدُ لِلَّهِ. تَعَالَيْ إِلَى الإِفْطَارِ عِنْدَنَا.", "На'ам, аль-хамду лилля̄х. Та'а̄лай иля ль-ифта̄ри 'индана̄.", "Да, хвала Аллаху. Приходи к нам на ифтар."],
+   ["Б", "جَزَاكِ اللَّهُ خَيْرًا، سَآتِي إِنْ شَاءَ اللَّهُ.", "Джаза̄ки Лла̄ху хайран, са-а̄тӣ ин ша̄'а Лла̄х.", "Да воздаст тебе Аллах добром, приду, иншаАллах."],
+   ["А", "وَبَعْدَ رَمَضَانَ نَحْتَفِلُ بِالعِيدِ مَعًا.", "Ва ба'да Рамада̄на нахтафилю биль-'ӣди ма'ан.", "А после Рамадана вместе встретим праздник."],
+   ["Б", "عِيدٌ مُبَارَكٌ مُقَدَّمًا!", "'Ӣдун муба̄ракун мукаддаман!", "Заранее - благословенного праздника!"]
+  ]}
+);
+
+/* Правило урока: одно короткое наблюдение о языке на материале этого урока. */
+var AR_RULES = {
+ 1:"К женщине и к мужчине обращаются по-разному: кайфа ха̄люки - к женщине, кайфа ха̄люка - к мужчине. Окончание -ки / -ка значит «твой».",
+ 2:"Окончание -ӣ значит «мой»: исм - имя, исмӣ - моё имя. Глагола «быть» в настоящем времени нет: ана мин Дагистан - «я из Дагестана».",
+ 3:"Ха̄за - «это» о мужском роде, ха̄зихи - о женском. Большинство слов женского рода оканчивается на ة (та марбута): усра, гурфа.",
+ 4:"После кам (сколько) слово стоит в единственном числе с окончанием -ан: кам гурфатан - «сколько комнат».",
+ 5:"Глагол настоящего времени от «я» начинается на а-: азхабу - я иду, ана̄му - я сплю, астайкызу - я просыпаюсь.",
+ 6:"Ха̄за + слово без артикля - это целое предложение: ха̄за хубз - «это хлеб». С артиклем выйдет «этот хлеб».",
+ 7:"Перед «солнечными» буквами артикль аль- не читается, а удваивает букву: ас-саля̄т. Перед «лунными» читается: аль-масджид, аль-кибля.",
+ 8:"Ли- перед глаголом значит «чтобы»: ли-афхама - «чтобы понять». Глагол после неё оканчивается на -а.",
+ 9:"Женский род профессии образуется через ة: му'аллим - учитель, му'аллима - учительница; табӣб - табӣба.",
+ 10:"Би-кам - «за сколько»: би- здесь означает цену. Отвечают тоже с би-: би-альф - за тысячу.",
+ 11:"Числа от 3 до 10 «спорят» с родом: с мужским словом число в женской форме (саля̄сату риджа̄ль - три мужчины), с женским - в мужской (саля̄су гураф - три комнаты).",
+ 12:"'Индӣ - «у меня есть»: 'индӣ алям - у меня боль. 'Индаки - у тебя (к женщине), 'индака - у тебя (к мужчине).",
+ 13:"Прилагательное стоит после слова и повторяет его род и артикль: шаджара джамӣля - красивое дерево, аш-шаджара аль-джамӣля - это красивое дерево.",
+ 14:"Иля - «в, к» при движении, фӣ - «в» при месте: уса̄фиру иля ль-Мадӣна - еду в Медину; ана фи ль-Мадӣна - я в Медине.",
+ 15:"Прошедшее время от «я» оканчивается на -ту: туфту - я обошла, шарибту - я пила, захабту - я ходила.",
+ 16:"Са- перед глаголом делает будущее время: а̄тӣ - я прихожу, са-а̄тӣ - я приду."
+};
+
+/* Азбука: имя буквы по-арабски (его и произносит голос), по-русски и подсказка к звуку. */
+var AR_ABC = [
+ ["ا","أَلِف","алиф","долгое «а»; ещё служит подставкой для хамзы"],
+ ["ب","بَاء","ба","«б»"],
+ ["ت","تَاء","та","«т»"],
+ ["ث","ثَاء","са","межзубное «с», как th в английском think"],
+ ["ج","جِيم","джим","«дж»"],
+ ["ح","حَاء","ха","глухой выдох из середины горла, без хрипа"],
+ ["خ","خَاء","ха","«х», как в слове «хлеб»"],
+ ["د","دَال","даль","«д»"],
+ ["ذ","ذَال","заль","межзубное «з», как th в английском this"],
+ ["ر","رَاء","ра","«р»"],
+ ["ز","زَاي","зай","«з»"],
+ ["س","سِين","син","«с»"],
+ ["ش","شِين","шин","«ш»"],
+ ["ص","صَاد","сад","твёрдое, «толстое» «с»"],
+ ["ض","ضَاد","дад","твёрдое, «толстое» «д»"],
+ ["ط","طَاء","та","твёрдое «т»"],
+ ["ظ","ظَاء","за","твёрдое межзубное «з»"],
+ ["ع","عَيْن","'айн","звонкий звук, когда горло сжимается"],
+ ["غ","غَيْن","гайн","картавое «г», как французское r"],
+ ["ف","فَاء","фа","«ф»"],
+ ["ق","قَاف","каф","глубокое «к» из самого горла"],
+ ["ك","كَاف","каф","«к»"],
+ ["ل","لَام","лям","«л»"],
+ ["م","مِيم","мим","«м»"],
+ ["ن","نُون","нун","«н»"],
+ ["ه","هَاء","ха","лёгкий выдох, как английское h"],
+ ["و","وَاو","вав","«в» как английское w; ещё долгое «у»"],
+ ["ي","يَاء","йа","«й»; ещё долгое «и»"]
+];
+/* буквы, которые не соединяются со следующей: у них нет начальной и срединной формы */
+var AR_NOJOIN = "اأإآدذرزو";
+
 /* Интервальное повторение: ступень слова -> через сколько дней повторить.
    Слово считается выученным, когда дошло до второй ступени, то есть его
    узнали в двух разных повторениях с перерывом хотя бы в день. */
 var AR_GAP = [0, 1, 2, 4, 8, 16, 32];
 var AR_NEW = 5; /* новых слов за одно занятие - больше за раз не запоминается */
-var AR = { q:[], i:0, show:false, from:"", ok:0, again:0, fresh:0, play:null, t:0 };
+var AR = { q:[], i:0, show:false, from:"", ok:0, again:0, fresh:0, play:null, t:0, x:null };
+/* Живые записи преподавателя: положите файл в www/audio/ar/<ключ>.mp3 и впишите
+   ключ сюда. Ключ слова - его id (например 1a), фразы диалога - d<урок>-<номер>
+   (d1-0), буквы - abc-<номер> (abc-0). Пока записи нет, звучит голос телефона. */
+var AR_AUDIO = [];
 
 function arS(){
-  if(!S.ar) S.ar = { w:{}, l:{}, d:{}, har:"auto", pause:0 };
-  if(!S.ar.w) S.ar.w = {}; if(!S.ar.l) S.ar.l = {}; if(!S.ar.d) S.ar.d = {};
+  if(!S.ar) S.ar = { w:{}, l:{}, d:{}, x:{}, har:"auto", pause:0 };
+  if(!S.ar.w) S.ar.w = {}; if(!S.ar.l) S.ar.l = {}; if(!S.ar.d) S.ar.d = {}; if(!S.ar.x) S.ar.x = {};
   return S.ar;
 }
 function arAll(){ var out = []; AR_UNITS.forEach(function(u){ u.w.forEach(function(w){ out.push(w); }); }); return out; }
 function arWord(id){ var all = arAll(); for(var i = 0; i < all.length; i++) if(all[i].id === id) return all[i]; return null; }
 function arUnit(id){ return AR_UNITS.filter(function(u){ return String(u.id) === String(id); })[0]; }
+/* урок, к которому относится слово: id слова - номер урока и буква */
+function arUnitOf(id){ return String(id).replace(/[a-z]+$/, ""); }
 function arBox(id){ var r = arS().w[id]; return r ? r.b : 0; }
 function arDayAdd(n){ var d = new Date(); d.setDate(d.getDate() + n); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
 /* понедельник этой недели - неделя рейтинга тоже начинается с понедельника */
@@ -6293,7 +6568,7 @@ function arDue(){
 function arUnitStat(u){
   var learned = u.w.filter(function(w){ return arS().l[w.id]; }).length;
   var started = u.w.filter(function(w){ return arBox(w.id) > 0; }).length;
-  return { learned:learned, started:started, total:u.w.length, dlg:!!arS().d[u.id] };
+  return { learned:learned, started:started, total:u.w.length, dlg:!!arS().d[u.id], ex:arS().x[u.id] || 0 };
 }
 /* текущий урок - первый, где ещё есть невыученные слова или не пройден диалог */
 function arCurrent(){
@@ -6304,6 +6579,7 @@ function arCurrent(){
   return AR_UNITS[AR_UNITS.length - 1];
 }
 function arDlgDone(){ return Object.keys(arS().d).length; }
+function arShuffle(a){ a = a.slice(); for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
 
 /* Огласовки уходят постепенно: у слова, которое узнают уже в третий раз,
    сначала показываем голый текст. Режим можно поменять. */
@@ -6318,8 +6594,7 @@ function arUnitHar(u){
   var m = arS().har;
   if(m === "all") return true;
   if(m === "none") return false;
-  var st = arUnitStat(u);
-  return !(st.total && u.w.every(function(w){ return arBox(w.id) >= 3; }));
+  return !u.w.every(function(w){ return arBox(w.id) >= 3; });
 }
 
 /* ---------- озвучка ---------- */
@@ -6330,10 +6605,24 @@ function arVoice(){
 }
 function arStop(){
   AR.play = null; clearTimeout(AR.t);
+  if(AR.audio){ try{ AR.audio.pause(); }catch(e){} AR.audio = null; }
   if(window.speechSynthesis) try{ speechSynthesis.cancel(); }catch(e){}
   arMark(-1);
 }
-function arSay(text, done){
+function arSay(text, done, key){
+  if(AR.audio){ try{ AR.audio.pause(); }catch(e){} AR.audio = null; }
+  /* есть живая запись - играем её */
+  if(key && AR_AUDIO.indexOf(key) >= 0){
+    var a = new Audio("audio/ar/" + key + ".mp3");
+    AR.audio = a;
+    a.onended = function(){ if(done) done(true); };
+    a.onerror = function(){ AR.audio = null; arTts(text, done); };
+    a.play().catch(function(){ AR.audio = null; arTts(text, done); });
+    return;
+  }
+  arTts(text, done);
+}
+function arTts(text, done){
   if(!window.speechSynthesis || !window.SpeechSynthesisUtterance){
     toast("На этом телефоне нет голоса для озвучки"); if(done) done(false); return;
   }
@@ -6363,10 +6652,10 @@ function arMark(i){
 function arPlayList(items, i){
   if(!AR.play || i >= items.length){ arStop(); return; }
   AR.play.i = i; arMark(i);
-  arSay(items[i], function(ok){
+  arSay(items[i].t, function(ok){
     if(!AR.play || !ok){ arStop(); return; }
     AR.t = setTimeout(function(){ arPlayList(items, i + 1); }, arS().pause ? 3200 : 800);
-  });
+  }, items[i].k);
 }
 
 /* ---------- ответы в карточках ---------- */
@@ -6384,6 +6673,7 @@ function arAnswer(know){
     AR.q.push(id); AR.again++;
   }
   st.w[id] = r; save();
+  arActivity("cards");
   AR.i++; AR.show = false; render(); $screen.scrollTop = 0;
 }
 /* занятие: сначала то, что пора повторить, потом новые слова текущего урока */
@@ -6393,9 +6683,193 @@ function arSession(unitId){
   units.forEach(function(u){
     u.w.forEach(function(w){ if(fresh.length < AR_NEW && !arS().w[w.id]) fresh.push(w.id); });
   });
-  if(unitId){ due = due.filter(function(id){ return id.charAt(0) === String(unitId); }); }
+  if(unitId){ due = due.filter(function(id){ return arUnitOf(id) === String(unitId); }); }
   AR.q = due.concat(fresh); AR.i = 0; AR.show = false; AR.ok = 0; AR.again = 0; AR.fresh = fresh.length;
   AR.from = unitId ? "u:" + unitId : "";
+}
+
+/* ---------- упражнения ----------
+   Четыре вида: перевод по арабскому слову, арабское слово по переводу,
+   слово на слух и фраза из диалога, собранная из кусочков. Для азбуки -
+   узнать букву. Ошибка в слове, которое уже учат, возвращает его в карточки. */
+function arOpts(right, pool, n){
+  var others = arShuffle(pool.filter(function(x){ return x !== right; })).slice(0, n - 1);
+  return arShuffle(others.concat([right]));
+}
+function arExMake(uid){
+  var tasks = [];
+  if(uid === "abc"){
+    arShuffle(AR_ABC.map(function(x, i){ return i; })).slice(0, 10).forEach(function(i){
+      tasks.push({ k:"let", i:i, opts:arOpts(i, AR_ABC.map(function(x, j){ return j; }), 4) });
+    });
+    return tasks;
+  }
+  var u = arUnit(uid); if(!u) return tasks;
+  var kinds = ["ru", "ar", "au"];
+  var mine = u.w.map(function(w){ return w.id; });
+  var all = arAll().map(function(w){ return w.id; });
+  arShuffle(mine).slice(0, 7).forEach(function(id, n){
+    /* варианты из своего урока, а если их мало - из соседних */
+    var pool = mine.length >= 4 ? mine : all;
+    tasks.push({ k:kinds[n % 3], id:id, opts:arOpts(id, pool, 4) });
+  });
+  /* две фразы из диалога собрать по словам: берём короткие, от 3 до 6 слов */
+  var lines = u.d.map(function(l, i){ return { i:i, w:arPlain(l[1]).replace(/[.،؟!,?]/g, "").trim().split(/\s+/) }; })
+    .filter(function(x){ return x.w.length >= 3 && x.w.length <= 6; });
+  arShuffle(lines).slice(0, 2).forEach(function(x){
+    tasks.push({ k:"build", li:x.i, ans:x.w, tiles:arShuffle(x.w.map(function(t, j){ return j; })), got:[] });
+  });
+  return arShuffle(tasks);
+}
+function arExStart(uid){
+  AR.x = { u:String(uid), t:arExMake(uid), i:0, ok:0, pick:null, wrong:0 };
+  open("arabic", "x:" + uid);
+  arExAuto();
+}
+/* задание на слух: слово звучит само, как только задание открылось */
+function arExAuto(){
+  var t = AR.x && AR.x.t[AR.x.i];
+  if(t && t.k === "au"){ var w = arWord(t.id); if(w) setTimeout(function(){ arSay(w.ar, null, w.id); }, 250); }
+}
+function arExRight(t){
+  if(t.k === "build") return t.got.map(function(j){ return t.ans[j]; }).join(" ") === t.ans.join(" ");
+  return t.k === "let" ? t.pick === t.i : t.pick === t.id;
+}
+function arExCheck(){
+  var x = AR.x, t = x && x.t[x.i]; if(!t || t.done) return;
+  t.done = true;
+  var ok = arExRight(t);
+  if(ok) x.ok++;
+  else {
+    x.wrong++;
+    /* слово, которое уже в карточках, вернётся на повторение сегодня */
+    if(t.id && arS().w[t.id]){ arS().w[t.id].due = todayKey(); save(); }
+  }
+  t.ok = ok;
+  render();
+  if(t.k === "build"){ var u = arUnit(x.u); if(u) arSay(u.d[t.li][1], null, "d" + u.id + "-" + t.li); }
+}
+function arExNext(){
+  var x = AR.x; if(!x) return;
+  arStop();
+  x.i++;
+  if(x.i >= x.t.length){
+    var pct = Math.round(x.ok / x.t.length * 100), st = arS();
+    var was = st.x[x.u] || 0;
+    if(pct > was){ st.x[x.u] = pct; }
+    /* баллы - один раз за урок, когда результат впервые дошёл до 80% */
+    if(pct >= 80 && was < 80){ addPoints(2, "arabic"); scoreSync(); }
+    save();
+    arActivity("ex");
+  }
+  render(); $screen.scrollTop = 0;
+  arExAuto();
+}
+function viewArEx(){
+  var x = AR.x, h = ['<div class="stack">'];
+  if(!x || !x.t.length){ h.push('<div class="empty"><b>Упражнение не найдено</b></div></div>'); return h.join(""); }
+  var back = x.u === "abc" ? "abc" : "unit:" + x.u;
+  if(x.i >= x.t.length){
+    var pct = Math.round(x.ok / x.t.length * 100);
+    h.push('<section class="card ar-fin"><div class="ar-fin-ic">'+(pct >= 80 ? "✓" : "↻")+'</div>'+
+      '<b>'+pct+'% верно</b><p>'+x.ok+' из '+x.t.length+'. '+(pct >= 80 ? "Отлично, машаа Аллах." : "Повторите ещё раз - с каждым кругом легче.")+
+      (x.wrong && x.u !== "abc" ? ' Слова с ошибками вернутся в карточки сегодня.' : '')+'</p>'+
+      '<div class="ar-cta"><button class="btn sec" data-ar="ex:'+x.u+'">Ещё раз</button>'+
+      '<button class="btn" data-ar="'+(x.u === "abc" ? "abc" : "unit:" + x.u)+'">Готово</button></div></section></div>');
+    return h.join("");
+  }
+  var t = x.t[x.i];
+  h.push('<div class="ar-prog"><i style="width:'+Math.round(x.i / x.t.length * 100)+'%"></i></div>');
+  var titles = { ru:"Что значит это слово?", ar:"Как это по-арабски?", au:"Какое слово прозвучало?", build:"Соберите фразу", let:"Как называется эта буква?" };
+  h.push('<div class="ar-cnt">'+(x.i + 1)+' из '+x.t.length+' · '+titles[t.k]+'</div>');
+
+  if(t.k === "build"){
+    var u = arUnit(x.u), line = u.d[t.li];
+    h.push('<section class="ar-card">'+
+      '<div class="ar-ex-ru">'+esc(line[3])+'</div>'+
+      '<div class="ar-build" dir="rtl">'+(t.got.length ? t.got.map(function(j, n){
+        return '<button class="ar-tile on" data-ar="untile:'+n+'"'+(t.done ? ' disabled' : '')+'>'+esc(t.ans[j])+'</button>'; }).join("")
+        : '<span class="ar-build-ph">нажимайте слова по порядку</span>')+'</div>'+
+      '<div class="ar-tiles" dir="rtl">'+t.tiles.map(function(j){
+        var used = t.got.indexOf(j) >= 0;
+        return '<button class="ar-tile'+(used ? " used" : "")+'" data-ar="tile:'+j+'"'+(used || t.done ? ' disabled' : '')+'>'+esc(t.ans[j])+'</button>'; }).join("")+'</div>'+
+      (t.done ? '<div class="ar-ex-res '+(t.ok ? "ok" : "bad")+'">'+(t.ok ? "Верно" : "Правильно так:")+
+        '<div class="ar-wa" dir="rtl">'+esc(line[1])+'</div><div class="ar-wr">'+esc(line[2])+'</div></div>' : '')+
+    '</section>');
+    h.push(t.done ? '<button class="btn" data-ar="next">Дальше</button>'
+      : (t.got.length === t.ans.length ? '<button class="btn" data-ar="check">Проверить</button>' : ''));
+    h.push('</div>');
+    return h.join("");
+  }
+
+  var prompt = "", opts = "";
+  if(t.k === "let"){
+    var L = AR_ABC[t.i];
+    prompt = '<div class="ar-big" dir="rtl" style="font-size:72px">'+L[0]+'</div>';
+    opts = t.opts.map(function(j){
+      var cls = t.done ? (j === t.i ? " ok" : (j === t.pick ? " bad" : "")) : "";
+      return '<button class="ar-opt'+cls+'" data-ar="pick:'+j+'"'+(t.done ? ' disabled' : '')+'>'+esc(AR_ABC[j][2])+' <span class="ar-opt-ar">'+AR_ABC[j][1]+'</span></button>'; }).join("");
+  } else {
+    var w = arWord(t.id);
+    if(t.k === "ru") prompt = '<button class="ar-big" dir="rtl" data-ar="say:'+w.id+'">'+esc(w.ar)+'</button>';
+    else if(t.k === "ar") prompt = '<div class="ar-ex-ru big">'+esc(w.ru)+'</div>';
+    else prompt = '<button class="ar-play xl" data-ar="say:'+w.id+'" aria-label="Слушать ещё раз">▶</button><div class="ar-note" style="text-align:center">нажмите, чтобы послушать ещё раз</div>';
+    opts = t.opts.map(function(id){
+      var o = arWord(id), cls = t.done ? (id === t.id ? " ok" : (id === t.pick ? " bad" : "")) : "";
+      var label = t.k === "ru" ? esc(o.ru) : '<span class="ar-opt-big" dir="rtl">'+esc(o.ar)+'</span>';
+      return '<button class="ar-opt'+cls+'" data-ar="pick:'+id+'"'+(t.done ? ' disabled' : '')+'>'+label+'</button>'; }).join("");
+  }
+  h.push('<section class="ar-card">'+prompt+
+    (t.done && t.k !== "let" ? (function(){ var w2 = arWord(t.id); return '<div class="ar-ex-sol">'+esc(w2.ar)+' - '+esc(w2.tr)+' - '+esc(w2.ru)+'</div>'; })() : '')+
+    (t.done && t.k === "let" ? '<div class="ar-ex-sol">'+esc(AR_ABC[t.i][2])+': '+esc(AR_ABC[t.i][3])+'</div>' : '')+
+    '</section>');
+  h.push('<div class="ar-opts">'+opts+'</div>');
+  if(t.done) h.push('<button class="btn" data-ar="next">Дальше</button>');
+  h.push('</div>');
+  return h.join("");
+}
+
+/* ---------- азбука ---------- */
+var ZWJ = String.fromCharCode(0x200D);
+function arForms(ch){
+  if(AR_NOJOIN.indexOf(ch) >= 0) return [["отдельно", ch], ["в конце", ZWJ + ch]];
+  return [["отдельно", ch], ["в начале", ch + ZWJ], ["в середине", ZWJ + ch + ZWJ], ["в конце", ZWJ + ch]];
+}
+var AR_MARKS = [
+  ["فَتْحَة", "Фатха", "بَ", "короткое «а»: ба"],
+  ["كَسْرَة", "Касра", "بِ", "короткое «и»: би"],
+  ["ضَمَّة", "Дамма", "بُ", "короткое «у»: бу"],
+  ["سُكُون", "Сукун", "أَبْ", "гласной нет: аб"],
+  ["شَدَّة", "Шадда", "رَبّ", "буква звучит дважды: рабб"],
+  ["تَنْوِين", "Танвин", "كِتَابٌ", "окончание -ун, -ан, -ин: кита̄бун"],
+  ["مَدّ", "Долгие гласные", "بَا بِي بُو", "ا, ي, و после огласовки тянут звук: ба̄, бӣ, бӯ"]
+];
+function viewArAbc(){
+  var h = ['<div class="stack">'];
+  h.push('<section class="ar-uhead"><div class="ar-uhead-ar" dir="rtl">الحُرُوفُ</div>'+
+    '<div class="ar-uhead-h">Буквы и огласовки</div>'+
+    '<div class="ar-uhead-s">28 букв. Пишут и читают справа налево. Нажмите на букву - увидите, как она пишется в слове, и услышите её.</div></section>');
+  h.push('<div class="ar-cta"><button class="btn" data-ar="ex:abc">Упражнение: узнать букву</button></div>');
+  if(arS().x.abc) h.push('<div class="ar-note" style="text-align:center;margin:0">Лучший результат: '+arS().x.abc+'%</div>');
+  h.push('<div class="ar-abc">'+AR_ABC.map(function(L, i){
+    return '<button class="ar-letter" data-ar="letter:'+i+'"><b dir="rtl">'+L[0]+'</b><span>'+esc(L[2])+'</span></button>'; }).join("")+'</div>');
+  h.push('<div class="sec-h"><h3>Огласовки</h3></div>');
+  h.push('<section class="card ar-list">'+AR_MARKS.map(function(m, i){
+    return '<div class="ar-w"><button class="ar-play" data-ar="mark:'+i+'" aria-label="Слушать">▶</button>'+
+      '<div class="ar-wt"><div class="ar-wr"><b>'+esc(m[1])+'</b> - '+esc(m[3])+'</div></div>'+
+      '<div class="ar-wa" dir="rtl" style="flex:none">'+esc(m[2])+'</div></div>'; }).join("")+'</section>');
+  h.push('<p class="disclaimer" style="text-align:left">Звуки, которых нет в русском (ع, ح, ق, ص, ض, ط, ظ), лучше поставить с преподавателем: по голосу телефона их легко услышать неточно.</p>');
+  h.push('</div>');
+  return h.join("");
+}
+function sheetLetter(i){
+  var L = AR_ABC[i];
+  sheet('<h3>'+esc(L[2])+' <span class="ar-opt-ar">'+L[1]+'</span></h3>'+
+    '<div class="ar-forms">'+arForms(L[0]).map(function(f){
+      return '<div><b dir="rtl">'+f[1]+'</b><span>'+f[0]+'</span></div>'; }).join("")+'</div>'+
+    '<p style="font-size:14.5px;color:var(--ink-2);line-height:1.55;margin:12px 0">Звук: '+esc(L[3])+'.</p>'+
+    '<div class="ar-cta"><button class="btn" data-ar="sayl:'+i+'">▶ Слушать</button></div>'+
+    (AR_NOJOIN.indexOf(L[0]) >= 0 ? '<p class="ar-note">Эта буква не соединяется со следующей: после неё слово пишется с разрывом.</p>' : ''));
 }
 
 /* ---------- экраны ---------- */
@@ -6425,23 +6899,53 @@ function arHero(big){
         : (learned || arS().w[cur.w[0].id] ? 'Продолжить: урок ' + cur.id + ' · ' + esc(cur.n) : 'Начать с урока 1 · Приветствие'))+'<span>›</span></div>'+
   '</div>';
 }
+function arTitle(){
+  var p = String(V.p || "");
+  if(p.indexOf("u:") === 0) return "Урок " + p.slice(2);
+  if(p === "abc") return "Буквы";
+  if(p === "dict") return "Словарь";
+  if(p.indexOf("g:") === 0) return "Говорим";
+  if(p.indexOf("x:") === 0) return "Упражнения";
+  if(p.charAt(0) === "s") return "Карточки";
+  return "Изучаем арабский";
+}
+/* куда ведёт «назад» внутри раздела */
+function arBackTo(p){
+  p = String(p || "");
+  if(p.indexOf("s:") === 0) return "u:" + p.slice(2);
+  if(p === "x:abc") return "abc";
+  if(p === "s:dict") return "dict";
+  if(p.indexOf("g:") === 0) return "u:" + p.slice(2);
+  if(p.indexOf("x:") === 0) return "u:" + p.slice(2);
+  return null;
+}
 function viewArabic(){
   var p = String(V.p || "");
   if(p === "s" || p.indexOf("s:") === 0) return viewArStudy();
+  if(p.indexOf("x:") === 0) return viewArEx();
+  if(p === "abc") return viewArAbc();
+  if(p === "dict") return viewArDict();
+  if(p.indexOf("g:") === 0) return viewArTalk();
   if(p.indexOf("u:") === 0) return viewArUnit(arUnit(p.slice(2)));
   var h = ['<div class="stack">'];
   h.push(arHero(true));
+  h.push(arTodayCard());
   var due = arDue().length, cur = arCurrent();
   h.push('<div class="ar-cta">'+
     '<button class="btn" data-ar="study">'+(due ? 'Повторить слова (' + due + ')' : 'Учить новые слова')+'</button>'+
-    '<button class="btn sec" data-ar="unit:'+cur.id+'">Урок '+cur.id+': диалог</button></div>');
+    '<button class="btn sec" data-ar="unit:'+cur.id+'">Урок '+cur.id+': '+esc(cur.n)+'</button></div>');
+
+  h.push('<button class="ar-abc-card" data-ar="abc"><span class="ar-abc-l" dir="rtl">أ ب ت</span>'+
+    '<span class="ar-st-t"><b>Буквы и огласовки</b><span>'+(arS().x.abc ? 'узнаёте '+arS().x.abc+'% букв' : 'если читать по-арабски пока трудно, начните здесь')+'</span></span><span class="cw-go">›</span></button>');
+  h.push('<button class="ar-abc-card" data-ar="dict"><span class="ar-abc-l" dir="rtl">قَامُوس</span>'+
+    '<span class="ar-st-t"><b>Словарь</b><span>'+arAll().length+' слов, поиск и повторение</span></span><span class="cw-go">›</span></button>');
 
   h.push('<div class="sec-h"><h3>Путь</h3></div><div class="ar-path">');
   AR_UNITS.forEach(function(u){
     var st = arUnitStat(u), done = st.learned === st.total && st.dlg, now = u === cur;
     h.push('<button class="ar-step'+(done ? " done" : "")+(now ? " now" : "")+'" data-ar="unit:'+u.id+'">'+
       '<span class="ar-num">'+(done ? "✓" : u.id)+'</span>'+
-      '<span class="ar-st-t"><b>'+esc(u.n)+'</b><span>'+st.learned+' из '+st.total+' слов'+(st.dlg ? ' · диалог пройден' : '')+'</span></span>'+
+      '<span class="ar-st-t"><b>'+esc(u.n)+'</b><span>'+st.learned+' из '+st.total+' слов'+(st.dlg ? ' · диалог' : '')+(st.ex ? ' · упражнения '+st.ex+'%' : '')+'</span></span>'+
       '<span class="ar-st-ar" dir="rtl">'+esc(u.ar)+'</span></button>');
   });
   h.push('</div>');
@@ -6451,16 +6955,16 @@ function viewArabic(){
     '<div class="ar-chips" style="margin-top:8px">'+
       [["auto","Убирать постепенно"],["all","Всегда"],["none","Без огласовок"]].map(function(x){
         return '<button class="chip'+(m === x[0] ? " on" : "")+'" data-ar="har:'+x[0]+'">'+x[1]+'</button>'; }).join("")+'</div>'+
-    '<p class="ar-note">Когда слово узнаёте уже в третий раз, оно показывается без огласовок: так глаз привыкает читать, как пишут в жизни. Нажмите на слово - огласовки вернутся.</p>'+
+    '<p class="ar-note">Когда слово узнаёте уже в третий раз, оно показывается без огласовок: так глаз привыкает читать, как пишут в жизни.</p>'+
     '<div class="eyebrow" style="margin-top:14px">Диалоги</div>'+
     '<div class="ar-chips" style="margin-top:8px">'+
       '<button class="chip'+(arS().pause ? "" : " on")+'" data-ar="pause:0">Подряд</button>'+
       '<button class="chip'+(arS().pause ? " on" : "")+'" data-ar="pause:1">С паузой, чтобы повторить</button></div>'+
   '</section>');
 
-  h.push('<p class="disclaimer" style="text-align:left">Темы идут в том же порядке, что в первом томе «Аль-Арабийя байна ядайк»; слова и диалоги составлены для RIZQ. '+
-    'Озвучивает голос телефона. У каждого слова, где это возможно, есть аят, в котором оно или однокоренное ему встречается. '+
-    'Выученные за неделю слова попадают в рейтинг участников, если вы в нём участвуете.</p>');
+  h.push('<p class="disclaimer" style="text-align:left">Уроки 1-8 идут в том же порядке тем, что первый том «Аль-Арабийя байна ядайк», уроки 9-16 - темы для жизни: работа, покупки, числа, здоровье, природа, поездка, хадж и умра, Рамадан. '+
+    'Слова и диалоги составлены для RIZQ. '+(AR_AUDIO.length ? 'Часть слов озвучена преподавателем, остальное - голосом телефона. ' : 'Озвучивает голос телефона. ')+
+    'У многих слов есть аят, где стоит это слово или однокоренное. Выученные за неделю слова попадают в рейтинг участников, если вы в нём участвуете.</p>');
   h.push('</div>');
   return h.join("");
 }
@@ -6470,7 +6974,7 @@ function viewArUnit(u){
   var h = ['<div class="stack">'];
   h.push('<section class="ar-uhead"><div class="ar-uhead-ar" dir="rtl">'+esc(u.ar)+'</div>'+
     '<div class="ar-uhead-h">Урок '+u.id+' · '+esc(u.n)+'</div>'+
-    '<div class="ar-uhead-s">'+st.learned+' из '+st.total+' слов выучено'+(st.dlg ? ' · диалог пройден' : '')+'</div></section>');
+    '<div class="ar-uhead-s">'+st.learned+' из '+st.total+' слов выучено'+(st.dlg ? ' · диалог пройден' : '')+(st.ex ? ' · упражнения '+st.ex+'%' : '')+'</div></section>');
 
   h.push('<div class="sec-h"><h3>Слова</h3></div>');
   h.push('<div class="ar-cta"><button class="btn sm" data-ar="study:'+u.id+'">Учить слова урока</button>'+
@@ -6490,6 +6994,13 @@ function viewArUnit(u){
   h.push(st.dlg
     ? '<div class="ar-done">Диалог пройден '+esc(String(arS().d[u.id]).slice(8,10)+"."+String(arS().d[u.id]).slice(5,7))+'</div>'
     : '<button class="btn" data-ar="dlgdone:'+u.id+'">Я прочитала диалог вслух</button>');
+
+  h.push('<section class="card ar-exc"><div><b>Говорим вслух</b><span>скажите фразу сами, потом сверьтесь с ответом</span></div>'+
+    '<button class="btn sm" data-ar="talk:'+u.id+'">Начать</button></section>');
+  if(AR_RULES[u.id]) h.push('<section class="card ar-rule"><div class="eyebrow">Правило урока</div><p>'+esc(AR_RULES[u.id])+'</p></section>');
+
+  h.push('<section class="card ar-exc"><div><b>Упражнения</b><span>'+(st.ex ? 'лучший результат '+st.ex+'%' : 'перевод, на слух, собрать фразу')+'</span></div>'+
+    '<button class="btn sm" data-ar="ex:'+u.id+'">'+(st.ex ? 'Ещё раз' : 'Начать')+'</button></section>');
   var nx = arUnit(u.id + 1);
   if(nx) h.push('<button class="btn ghost sm" data-ar="unit:'+nx.id+'">Следующий урок: '+esc(nx.n)+' ›</button>');
   h.push('</div>');
@@ -6499,11 +7010,13 @@ function viewArStudy(){
   var h = ['<div class="stack">'];
   var id = AR.q[AR.i], w = id ? arWord(id) : null;
   if(!w){
+    var uid = arBackTo(V.p);
     h.push('<section class="card ar-fin"><div class="ar-fin-ic">✓</div><b>Занятие закончено</b>'+
       '<p>'+(AR.q.length ? 'Узнали '+plural(AR.ok, "раз", "раза", "раз")+', на повтор ушло '+AR.again+'. ' : 'Сейчас повторять нечего. ')+
       'Выучено всего: '+plural(arLearned(), "слово", "слова", "слов")+', за эту неделю '+arWeek()+'.</p>'+
       '<p class="ar-note">Слово становится выученным, когда вы узнаёте его в разные дни. Приходите завтра - часть слов вернётся на повторение.</p>'+
-      '<button class="btn" data-ar="back">Вернуться</button></section></div>');
+      '<div class="ar-cta">'+(uid && uid.indexOf("u:") === 0 ? '<button class="btn sec" data-ar="ex:'+uid.slice(2)+'">Упражнения урока</button>' : '')+
+      '<button class="btn" data-ar="back">Вернуться</button></div></section></div>');
     return h.join("");
   }
   var fresh = !arS().w[id] || arBox(id) === 0, har = arShowHar(id) || AR.show;
@@ -6544,29 +7057,52 @@ function arClick(v){
   var p = String(v).split(":"), k = p[0];
   if(k === "home"){ arStop(); V.ret = null; open("arabic", null); return; }
   if(k === "unit"){ arStop(); open("arabic", "u:" + p[1]); return; }
+  if(k === "abc"){ arStop(); open("arabic", "abc"); return; }
   if(k === "study"){ arStop(); arSession(p[1] || ""); open("arabic", p[1] ? "s:" + p[1] : "s"); return; }
+  if(k === "ex"){ arStop(); arExStart(p[1]); return; }
   if(k === "back"){ back(); return; }
-  if(k === "reveal"){ AR.show = true; render(); var w0 = arWord(AR.q[AR.i]); if(w0) arSay(w0.ar); return; }
+  if(k === "dict"){ arStop(); open("arabic", "dict"); return; }
+  if(k === "df"){ AR.df = p[1]; render(); return; }
+  if(k === "dictstudy"){ arStop(); arDictStudy(); return; }
+  if(k === "talk"){ arTalkStart(p[1]); return; }
+  if(k === "reveal2"){ arTalkReveal(); return; }
+  if(k === "listen"){ arListen(); return; }
+  if(k === "trate"){ arStop(); arTalkRate(p[1] === "1"); return; }
+  if(k === "tline"){ var ut = arUnit(p[1]); if(ut){ arStop(); arSay(ut.d[+p[2]][1], null, "d" + ut.id + "-" + p[2]); } return; }
+  if(k === "reveal"){ AR.show = true; render(); var w0 = arWord(AR.q[AR.i]); if(w0) arSay(w0.ar, null, w0.id); return; }
   if(k === "know"){ arStop(); arAnswer(true); return; }
   if(k === "again"){ arStop(); arAnswer(false); return; }
-  if(k === "say"){ var w = arWord(p[1]); if(w){ arStop(); arSay(w.ar); } return; }
+  if(k === "say"){ var w = arWord(p[1]); if(w){ arStop(); arSay(w.ar, null, w.id); } return; }
+  if(k === "sayl"){ var L = AR_ABC[+p[1]]; if(L){ arStop(); arSay(L[1] + "، " + L[0] + "َ، " + L[0] + "ِ، " + L[0] + "ُ", null, "abc-" + p[1]); } return; }
+  if(k === "letter"){ arStop(); sheetLetter(+p[1]); return; }
+  if(k === "mark"){ var mk = AR_MARKS[+p[1]]; if(mk){ arStop(); arTts(mk[2]); } return; }
   if(k === "stop"){ arStop(); return; }
   if(k === "har"){ arS().har = p[1]; save(); render(); return; }
   if(k === "pause"){ arS().pause = p[1] === "1" ? 1 : 0; save(); render(); return; }
+  /* упражнения */
+  if(k === "pick"){
+    var t = AR.x && AR.x.t[AR.x.i]; if(!t || t.done) return;
+    t.pick = t.k === "let" ? +p[1] : p[1];
+    arExCheck(); return;
+  }
+  if(k === "tile"){ var tb = AR.x && AR.x.t[AR.x.i]; if(tb && !tb.done && tb.got.indexOf(+p[1]) < 0){ tb.got.push(+p[1]); render(); } return; }
+  if(k === "untile"){ var tu = AR.x && AR.x.t[AR.x.i]; if(tu && !tu.done){ tu.got.splice(+p[1], 1); render(); } return; }
+  if(k === "check"){ arExCheck(); return; }
+  if(k === "next"){ arExNext(); return; }
   if(k === "words"){
     var u = arUnit(p[1]); if(!u) return;
     arStop(); AR.play = { i:0 };
-    arPlayList(u.w.map(function(x){ return x.ar; }), 0); return;
+    arPlayList(u.w.map(function(x){ return { t:x.ar, k:x.id }; }), 0); return;
   }
   if(k === "dlg"){
     var u2 = arUnit(p[1]); if(!u2) return;
     arStop(); AR.play = { i:0 };
-    arPlayList(u2.d.map(function(x){ return x[1]; }), 0); return;
+    arPlayList(u2.d.map(function(x, i){ return { t:x[1], k:"d" + u2.id + "-" + i }; }), 0); return;
   }
   if(k === "line"){
     var u3 = arUnit(p[1]); if(!u3) return;
     var li = +p[2]; arStop(); arMark(li);
-    arSay(u3.d[li][1], function(){ arMark(-1); }); return;
+    arSay(u3.d[li][1], function(){ arMark(-1); }, "d" + u3.id + "-" + li); return;
   }
   if(k === "dlgdone"){
     if(!arS().d[p[1]]){ arS().d[p[1]] = todayKey(); addPoints(2, "arabic"); save(); scoreSync(); toast("Диалог пройден, машаа Аллах"); }
@@ -6583,7 +7119,7 @@ function arClick(v){
   if(k === "open"){
     arStop();
     var gi = ayahGlobal(+p[1], +p[2]), pg = pageOf(gi);
-    if(typeof closeSheet === "function") closeSheet();
+    closeSheet();
     V.qPage = pg;
     openReader(QPAGE[pg-1], (pg < QPAGE.length ? QPAGE[pg]-1 : QTOTAL-1), "page", gi);
     return;
@@ -6595,6 +7131,227 @@ function mushafTools(){
   return '<div class="mus-tools">'+
     '<button data-mtool="tajwid"><span>◌ّ</span>Правила таджвида</button>'+
     '<button data-mtool="arabic"><span>ع</span>Изучаем арабский вместе</button></div>';
+}
+
+/* ---------- день, серия и план на 90 дней ----------
+   Как у Duolingo: короткая ежедневная норма и серия дней. Норма сделана под
+   цель «заговорить за три месяца»: карточки держат слова, «Говорим» учит
+   собирать фразу вслух, упражнения проверяют понимание. */
+var AR_DAY = { cards:10, talk:5, ex:1 };
+function arToday(){
+  var st = arS(), t = todayKey();
+  if(!st.td || st.td.d !== t) st.td = { d:t, cards:0, talk:0, ex:0 };
+  return st.td;
+}
+function arActivity(kind){
+  var st = arS(), t = todayKey(), td = arToday();
+  td[kind] = (td[kind] || 0) + 1;
+  if(!st.days) st.days = {};
+  if(!st.start) st.start = t;
+  var was = arDayDone(td);
+  st.days[t] = 1;
+  if(!was && arDayDone(td)){ addPoints(3, "arabic"); toast("Норма арабского на сегодня выполнена, машаа Аллах"); }
+  save();
+}
+function arDayDone(td){ return td.cards >= AR_DAY.cards && td.talk >= AR_DAY.talk && td.ex >= AR_DAY.ex; }
+/* серия: сколько дней подряд были занятия, считая сегодня или вчера */
+function arStreak(){
+  var days = arS().days || {}, n = 0, d = new Date();
+  if(!days[todayKey()]) d.setDate(d.getDate() - 1);
+  for(var i = 0; i < 400; i++){
+    var k = d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+    if(!days[k]) break;
+    n++; d.setDate(d.getDate() - 1);
+  }
+  return n;
+}
+/* 16 уроков за 12 недель, 13-я - повторение всего */
+function arPlan(){
+  var st = arS();
+  if(!st.start) return { week:1, target:1 };
+  var d0 = new Date(st.start + "T12:00:00"), days = Math.floor((Date.now() - d0.getTime()) / 864e5);
+  var week = Math.min(13, Math.floor(days / 7) + 1);
+  return { week:week, target:Math.min(AR_UNITS.length, Math.ceil(week * AR_UNITS.length / 12)) };
+}
+function arTodayCard(){
+  var td = arToday(), due = arDue().length, cur = arCurrent(), pl = arPlan(), sk = arStreak();
+  function row(done, n, goal, t, s, act){
+    return '<button class="ar-td'+(done ? " done" : "")+'" data-ar="'+act+'"><i>'+(done ? "✓" : "")+'</i>'+
+      '<span><b>'+t+'</b><span>'+s+'</span></span><em>'+Math.min(n, goal)+'/'+goal+'</em></button>';
+  }
+  var behind = pl.target > cur.id ? ' · по плану уже урок ' + pl.target : '';
+  return '<section class="card ar-today">'+
+    '<div class="ar-today-h"><div><div class="eyebrow">Сегодня</div>'+
+      '<b>Неделя '+pl.week+' из 13</b><span>вы на уроке '+cur.id+behind+'</span></div>'+
+      '<div class="ar-streak"><b>'+sk+'</b><span>'+plural(sk, "день", "дня", "дней").replace(/^\d+\s/, "")+' подряд</span></div></div>'+
+    row(td.cards >= AR_DAY.cards, td.cards, AR_DAY.cards, "Карточки", due ? "пора повторить " + due : "новые слова урока " + cur.id, "study")+
+    row(td.talk >= AR_DAY.talk, td.talk, AR_DAY.talk, "Говорим вслух", "фразы из диалогов", "talk:"+cur.id)+
+    row(td.ex >= AR_DAY.ex, td.ex, AR_DAY.ex, "Упражнение", "урок " + cur.id, "ex:"+cur.id)+
+    '<p class="ar-note">15 минут в день. Чтобы заговорить за три месяца, этого мало без живой речи: '+
+      'добавьте две встречи в неделю с собеседником или преподавателем и говорите на них фразами из уроков.</p>'+
+  '</section>';
+}
+
+/* ---------- словарь ---------- */
+function arDictItems(){
+  var f = AR.df || "all", q = String(AR.dq || "").trim().toLowerCase(), qa = q ? arNorm(arPlain(q)) : "";
+  return arAll().filter(function(w){
+    var b = arBox(w.id), l = !!arS().l[w.id];
+    if(f === "learned" && !l) return false;
+    if(f === "learning" && (l || !b)) return false;
+    if(f === "new" && b) return false;
+    if(!q) return true;
+    return w.ru.toLowerCase().indexOf(q) >= 0 || w.tr.toLowerCase().indexOf(q) >= 0 || arNorm(arPlain(w.ar)).indexOf(qa) >= 0;
+  });
+}
+function arDictList(){
+  var items = arDictItems();
+  if(!items.length) return '<div class="empty"><b>Ничего не нашлось</b><p>Попробуйте другое слово или фильтр.</p></div>';
+  var out = ['<div class="ar-cta"><button class="btn" data-ar="dictstudy">Повторить '+(items.length > 20 ? 'первые 20 слов' : 'эти слова ('+items.length+')')+'</button></div>'], last = "";
+  items.forEach(function(w){
+    var u = arUnitOf(w.id);
+    if(u !== last){
+      if(last) out.push('</section>');
+      var un = arUnit(u);
+      out.push('<div class="ar-dict-h">Урок '+u+' · '+esc(un ? un.n : "")+'</div><section class="card ar-list">');
+      last = u;
+    }
+    out.push(arWordRow(w));
+  });
+  out.push('</section>');
+  return out.join("");
+}
+function viewArDict(){
+  var all = arAll(), f = AR.df || "all", n = arDictItems().length;
+  var h = ['<div class="stack">'];
+  h.push('<section class="ar-uhead"><div class="ar-uhead-ar" dir="rtl">القَامُوسُ</div>'+
+    '<div class="ar-uhead-h">Словарь</div>'+
+    '<div class="ar-uhead-s">'+all.length+' слов из всех уроков · выучено '+arLearned()+'</div></section>');
+  h.push('<input class="search" id="arDictQ" placeholder="По-русски, транскрипцией или по-арабски" value="'+esc(AR.dq || "")+'">');
+  h.push('<div class="ar-chips">'+[["all","Все"],["learned","Выученные"],["learning","В изучении"],["new","Новые"]].map(function(x){
+    return '<button class="chip'+(f === x[0] ? " on" : "")+'" data-ar="df:'+x[0]+'">'+x[1]+'</button>'; }).join("")+'</div>');
+  h.push('<div id="arDictList" class="stack">'+arDictList()+'</div>');
+  h.push('</div>');
+  return h.join("");
+}
+/* повторение из словаря: сначала те, что пора повторить, потом остальные - не больше 20 */
+function arDictStudy(){
+  var ids = arDictItems().map(function(w){ return w.id; }), due = arDue();
+  ids.sort(function(a, b){ return (due.indexOf(b) >= 0) - (due.indexOf(a) >= 0); });
+  AR.q = ids.slice(0, 20); AR.i = 0; AR.show = false; AR.ok = 0; AR.again = 0; AR.fresh = 0; AR.from = "dict";
+  open("arabic", "s:dict");
+}
+
+/* ---------- «Говорим» ----------
+   Метод Pimsleur: приложение просит сказать фразу по-русски, даёт паузу, чтобы
+   собрать её вслух самой, и только потом звучит правильный ответ. Если телефон
+   умеет распознавать арабскую речь, можно проверить себя микрофоном. */
+var AR_REC = (typeof window !== "undefined") && (window.SpeechRecognition || window.webkitSpeechRecognition) || null;
+function arTalkMake(uid){
+  var u = arUnit(uid); if(!u) return [];
+  /* сначала фразы этого урока, затем по одной из пройденных раньше - чтобы старое не забывалось */
+  var mine = u.d.map(function(l, i){ return { u:u.id, i:i }; });
+  var old = [];
+  AR_UNITS.forEach(function(x){ if(x.id < u.id && arS().d[x.id]){ var i = Math.floor(Math.random() * x.d.length); old.push({ u:x.id, i:i }); } });
+  return arShuffle(mine).slice(0, 5).concat(arShuffle(old).slice(0, 2));
+}
+function arTalkStart(uid){
+  arStop();
+  AR.g = { u:String(uid), t:arTalkMake(uid), i:0, stage:"ask", ok:0, heard:"", score:-1, cnt:0 };
+  open("arabic", "g:" + uid);
+  arTalkCount();
+}
+/* пауза на ответ: 6 секунд, потом звучит правильная фраза */
+function arTalkCount(){
+  var g = AR.g; if(!g) return;
+  clearTimeout(AR.t);
+  g.cnt = 6;
+  (function tick(){
+    if(!AR.g || AR.g !== g || g.stage !== "ask") return;
+    var n = document.getElementById("arTalkCnt");
+    if(n) n.textContent = g.cnt;
+    if(g.cnt <= 0){ arTalkReveal(); return; }
+    g.cnt--;
+    AR.t = setTimeout(tick, 1000);
+  })();
+}
+function arTalkLine(){ var g = AR.g, it = g && g.t[g.i]; if(!it) return null; var u = arUnit(it.u); return { u:u, i:it.i, l:u.d[it.i] }; }
+function arTalkReveal(){
+  var g = AR.g, x = arTalkLine(); if(!g || !x) return;
+  clearTimeout(AR.t);
+  g.stage = "show"; render();
+  arSay(x.l[1], null, "d" + x.u.id + "-" + x.i);
+}
+function arTalkRate(ok){
+  var g = AR.g; if(!g) return;
+  if(ok) g.ok++;
+  arActivity("talk");
+  g.i++; g.stage = "ask"; g.heard = ""; g.score = -1;
+  render(); $screen.scrollTop = 0;
+  if(g.i < g.t.length) arTalkCount();
+}
+/* похожесть двух арабских строк без огласовок: 100 - совпало полностью */
+function arSimilar(a, b){
+  a = arNorm(arPlain(a)).replace(/[^ء-ي ]/g, "").replace(/\s+/g, " ").trim();
+  b = arNorm(arPlain(b)).replace(/[^ء-ي ]/g, "").replace(/\s+/g, " ").trim();
+  if(!a || !b) return 0;
+  var m = [], i, j;
+  for(i = 0; i <= a.length; i++){ m[i] = [i]; }
+  for(j = 1; j <= b.length; j++) m[0][j] = j;
+  for(i = 1; i <= a.length; i++) for(j = 1; j <= b.length; j++)
+    m[i][j] = Math.min(m[i-1][j] + 1, m[i][j-1] + 1, m[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+  return Math.max(0, Math.round((1 - m[a.length][b.length] / Math.max(a.length, b.length)) * 100));
+}
+function arListen(){
+  var g = AR.g, x = arTalkLine(); if(!g || !x || !AR_REC) return;
+  arStop(); clearTimeout(AR.t);
+  var r;
+  try{ r = new AR_REC(); }catch(e){ toast("Микрофон недоступен"); return; }
+  r.lang = "ar-SA"; r.interimResults = false; r.maxAlternatives = 3;
+  g.listening = true; render();
+  r.onresult = function(ev){
+    var best = 0, heard = "";
+    for(var k = 0; k < ev.results[0].length; k++){
+      var t = ev.results[0][k].transcript, sc = arSimilar(t, x.l[1]);
+      if(sc >= best){ best = sc; heard = t; }
+    }
+    g.heard = heard; g.score = best;
+  };
+  r.onerror = function(e){ g.listening = false; toast(e && e.error === "not-allowed" ? "Разрешите доступ к микрофону в настройках" : "Не расслышала, попробуйте ещё раз"); render(); };
+  r.onend = function(){ g.listening = false; if(g.stage === "ask") g.stage = "show"; render(); if(g.score >= 0) arSay(x.l[1], null, "d" + x.u.id + "-" + x.i); };
+  try{ r.start(); }catch(e){ g.listening = false; render(); }
+}
+function viewArTalk(){
+  var g = AR.g, h = ['<div class="stack">'];
+  if(!g || !g.t.length){ h.push('<div class="empty"><b>Нет фраз для тренировки</b></div></div>'); return h.join(""); }
+  if(g.i >= g.t.length){
+    h.push('<section class="card ar-fin"><div class="ar-fin-ic">✓</div><b>Сказано вслух: '+g.ok+' из '+g.t.length+'</b>'+
+      '<p>Каждая фраза, сказанная своим голосом, запоминается крепче, чем прочитанная. Завтра повторим, и часть фраз вы скажете уже без подсказки.</p>'+
+      '<div class="ar-cta"><button class="btn sec" data-ar="talk:'+g.u+'">Ещё раз</button><button class="btn" data-ar="unit:'+g.u+'">Готово</button></div></section></div>');
+    return h.join("");
+  }
+  var x = arTalkLine();
+  h.push('<div class="ar-prog"><i style="width:'+Math.round(g.i / g.t.length * 100)+'%"></i></div>');
+  h.push('<div class="ar-cnt">'+(g.i + 1)+' из '+g.t.length+(x.u.id !== +g.u ? ' · повторяем урок '+x.u.id : '')+'</div>');
+  h.push('<section class="ar-card">'+
+    '<div class="ar-ex-ru">Как сказать по-арабски:</div>'+
+    '<div class="ar-ex-ru big">'+esc(x.l[3])+'</div>');
+  if(g.stage === "ask"){
+    h.push('<div class="ar-talk-wait"><b id="arTalkCnt">'+(g.cnt || 6)+'</b><span>скажите вслух, потом прозвучит ответ</span></div>');
+    h.push('</section>');
+    h.push('<div class="ar-cta">'+(AR_REC ? '<button class="btn sec" data-ar="listen">'+(g.listening ? "Слушаю..." : "🎤 Проверить голосом")+'</button>' : '')+
+      '<button class="btn" data-ar="reveal2">Показать ответ</button></div>');
+  } else {
+    h.push('<button class="ar-big" dir="rtl" data-ar="tline:'+x.u.id+':'+x.i+'" style="font-size:30px">'+esc(x.l[1])+'</button>'+
+      '<div class="ar-ans-tr">'+esc(x.l[2])+'</div>'+
+      (g.score >= 0 ? '<div class="ar-ex-res '+(g.score >= 70 ? "ok" : "bad")+'">Совпадение '+g.score+'%'+(g.heard ? '<div class="ar-wr" dir="rtl">услышано: '+esc(g.heard)+'</div>' : '')+'</div>' : '')+
+      '</section>');
+    h.push('<div class="ar-cta"><button class="btn sec" data-ar="trate:0">Ещё потренирую</button><button class="btn" data-ar="trate:1">Сказала верно</button></div>');
+    if(AR_REC) h.push('<button class="btn ghost sm" data-ar="listen">🎤 Сказать ещё раз</button>');
+  }
+  if(!AR_REC) h.push('<p class="ar-note">Скажите фразу вслух и сравните с ответом. Проверка голосом работает там, где телефон распознаёт арабскую речь.</p>');
+  h.push('</div>');
+  return h.join("");
 }
 
 function qtCard(){
@@ -17716,6 +18473,7 @@ document.getElementById("app").addEventListener("click", function(ev){
 $screen.addEventListener("input", function(ev){
   var t = ev.target;
   if(t.id==="nameSearch" || t.id==="hadSearch" || t.id==="qSearchInput" || t.id==="knowSearch"){ V.q = t.value; render(); return; }
+  if(t.id==="arDictQ"){ AR.dq = t.value; var dl = document.getElementById("arDictList"); if(dl) dl.innerHTML = arDictList(); return; }
   if(t.id==="hlQ"){ V.hlQ = t.value; V.hlLim = 30; render(); return; }
   if(t.id==="admQ"){ ADM.q = t.value; render(); return; }
   /* ползунки: обновляем подпись без перерисовки, иначе слетает перетаскивание */
@@ -17790,13 +18548,26 @@ function hdrHide(){
   $hdr.style.marginTop = -($hdr.offsetHeight - safe) + "px";
   HD_HID = true;
 }
+/* Панели дрожали: когда шапка уезжает, высота экрана меняется и браузер сам
+   сдвигает прокрутку - это выглядело как движение вверх, панели возвращались,
+   и так по кругу. Теперь пока панели едут (0,3 с), прокрутку не слушаем, а
+   «пружину» айфона у верхнего и нижнего края не принимаем за движение пальцем. */
+var TB_LOCK = 0;
+function tbLock(){ TB_LOCK = Date.now() + 320; }
 $screen.addEventListener("scroll", function(){
-  var y = $screen.scrollTop;
-  if(y < 80){ tabbarShow(); return; }
+  var max = Math.max(0, $screen.scrollHeight - $screen.clientHeight);
+  var y = Math.min(Math.max(0, $screen.scrollTop), max);
+  if(Date.now() < TB_LOCK){ TB_Y = y; return; }
+  if(y < 80){ if(TB_HID || HD_HID){ tabbarShow(); tbLock(); } return; }
   var d = y - TB_Y;
-  if(d > 10 && !TB_HID){ $tabbar.classList.add("hide"); TB_HID = true; TB_Y = y; hdrHide(); }
-  else if(d < -10){ tabbarShow(); }
-  else if(d > 10){ TB_Y = y; hdrHide(); }
+  /* у самого низа - только уезжаем: отскок от края не должен возвращать панели */
+  var atEnd = max - y < 40;
+  if(d > 12){
+    TB_Y = y;
+    if(!TB_HID || !HD_HID){ $tabbar.classList.add("hide"); TB_HID = true; hdrHide(); tbLock(); }
+  } else if(d < -24 && !atEnd){
+    if(TB_HID || HD_HID){ tabbarShow(); tbLock(); } else TB_Y = y;
+  } else if(d < -24){ TB_Y = y; }
 }, {passive:true});
 
 $screen.addEventListener("scroll", function(){
