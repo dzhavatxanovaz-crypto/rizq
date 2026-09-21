@@ -4778,6 +4778,9 @@ function viewKnow(){
   if(id === "azkar"){
     h.push('<div class="card flat" style="padding:13px 15px;font-size:14px;color:var(--ink-2);line-height:1.55">'+
       DUAS.length+' текстов в '+CATS.length+' категориях. Под каждым указан источник и, где нужно, число повторений.</div>');
+    h.push('<button class="cat-wide gold" data-guide="duatimes"><span class="cw-ic">☾</span>'+
+      '<span class="cw-t"><b>Когда принимается дуа</b><span>17 времён и состояний из хадисов: треть ночи, пятница, суджуд, Арафа</span></span>'+
+      '<span class="cw-go">›</span></button>');
     h.push('<div class="cats">'+ CATS.map(function(c){
       var n = DUAS.filter(function(d){return d.c===c.id;}).length;
       return '<button class="cat" data-cat="'+c.id+'"><div class="ic">'+c.ic+'</div>'+
@@ -13722,7 +13725,12 @@ var SCORE_WHY = [
   ["Прочитанный азкар", POINTS.azkar],
   ["Круг зикра на тасбихе", POINTS.tasbih],
   ["Названное имя Всевышнего", POINTS.name],
-  ["Верный ответ в тесте", POINTS.quiz]
+  ["Верный ответ в тесте", POINTS.quiz],
+  ["Арабский: новое выученное слово", 1],
+  ["Арабский: пройденный диалог", 2],
+  ["Арабский: урок чтения или упражнение урока на 80% и выше", 2],
+  ["Арабский: выполнена норма дня", 3],
+  ["Арабский: достигнута цель", 10]
 ];
 function scoreWhyHtml(){
   return '<details class="card fold"><summary>Из чего складываются баллы</summary>'+
@@ -13731,7 +13739,8 @@ function scoreWhyHtml(){
         '<span class="val" style="color:var(--accent-ink);font-weight:600">+'+r[1]+'</span></div>';
     }).join("")+'</div>'+
     '<p class="disclaimer" style="text-align:left;padding:0;margin:9px 0 0">Баллы начисляются один раз в день за каждое дело. '+
-      'Пропущенный день не отнимает баллы, но прерывает серию.</p></details>';
+      'Пропущенный день не отнимает баллы, но прерывает серию. За арабский баллы идут один раз: за каждое слово, когда оно выучено (узнано в разные дни), '+
+      'за каждый диалог, урок и цель. Слова, выученные за неделю, отдельно видны в рейтинге.</p></details>';
 }
 /* показатели участника одной строкой */
 function topStats(x){
@@ -18592,6 +18601,7 @@ document.getElementById("app").addEventListener("click", function(ev){
     closeSheet();
     if(j[0]==="go") go(j[1]);
     else if(j[0]==="open") open(j[1], null);
+    else if(j[0]==="guide"){ V.tab="dua"; open("guide", j[1]); }
     else if(j[0]==="name"){ V.q=""; V.tab="dua"; open("name", parseInt(j[1],10)); }
     else if(j[0]==="hadith"){ V.q=""; V.tab="dua"; open("hadithOne", parseInt(j[1],10)); }
     else if(j[0]==="post"){ V.q=""; V.tab="journal"; open("post", j[1]); }
