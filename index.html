@@ -1197,6 +1197,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   transition:background .3s ease;border-radius:12px;
 }
 .ayah.now{background:rgba(212,175,55,.12)}
+.ay-acts{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:8px;margin-top:10px}
+.ay-a{display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px 6px;border-radius:14px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font-size:13px;font-weight:600}
+.ay-a i{font-style:normal;font-size:18px;line-height:1;color:var(--accent-ink)}
+.ay-a.main{background:linear-gradient(135deg,#E9C85E,#C9A12F);border-color:transparent;color:#1E2A5A}
+.ay-a.main i{color:#1E2A5A}
+.ay-a.on{border-color:rgba(212,175,55,.6);background:rgba(212,175,55,.14)}
 .qw{border-radius:7px;transition:background .12s,box-shadow .12s,color .12s}
 .qw-now{background:rgba(212,175,55,.34);box-shadow:0 0 0 3px rgba(212,175,55,.34);color:var(--ink)}
 .mdn-w.qw-now{color:inherit;background:rgba(212,175,55,.42);border-radius:6px;box-shadow:inset 0 0 0 2px #C9A12F,0 2px 8px -2px rgba(150,110,20,.55)}
@@ -3892,11 +3898,11 @@ function zakatICS(){
 var RECITERS = [
   /* qc - номер чтеца на quran.com (есть время каждого слова), vb - откуда брать аяты,
      если не с cdn.islamic.network. У Афаси файлы там и там одинаковые. */
-  {id:"ar.alafasy",            n:"Мишари Аль-Афаси", qc:7},
+  {id:"ar.alafasy",            n:"Мишари Аль-Афаси", qc:7, best:1},
   {id:"ar.husary",             n:"Махмуд Аль-Хусари", qc:6, vb:"https://mirrors.quranicaudio.com/everyayah/Husary_64kbps/"},
   {id:"ar.abdulbasitmurattal", n:"Абдуль-Басит (мураттель)", qc:2, vb:"https://verses.quran.com/AbdulBaset/Murattal/mp3/"},
   {id:"ar.abdurrahmaansudais", n:"Абдуррахман Ас-Судайс", qc:3, vb:"https://verses.quran.com/Sudais/mp3/"},
-  {id:"ar.mahermuaiqly",       n:"Махер Аль-Муайкли"},
+  {id:"ar.mahermuaiqly",       n:"Махер Аль-Муайкли", hide:1},   /* пока скрыт: у quran.com нет разметки слов */
   {id:"ar.minshawi",           n:"Мухаммад Аль-Миншави", qc:9, vb:"https://verses.quran.com/Minshawi/Murattal/mp3/"}
 ];
 var QTOTAL = (typeof QA !== "undefined") ? QA.length : 0;
@@ -4314,6 +4320,45 @@ function qWordPaint(i, w){
 
 /* ---------- плеер ---------- */
 var QP = { audio:null, playing:false, cur:-1, stopAt:-1, repeatLeft:0 };
+/* скрытый чтец: один раз переводим на рекомендуемого */
+function qRecFix(){ var r = RECITERS.filter(function(x){ return x.id === S.qReciter; })[0]; if(!r || (r.hide && !S.qRecFixed)){ S.qReciter = "ar.alafasy"; S.qRecFixed = 1; save(); } }
+/* читалка должна показывать аят, который сейчас звучит */
+function qFollowView(i){
+  if(V.view !== "reader") return;
+  if(qBookOn()){
+    var pg = pageOf(i);
+    if(pg !== mushafPage()) mushafGo(pg);
+    return;
+  }
+  if(i < V.qFrom || i > V.qTo){
+    var s = surahOf(i);
+    V.qFrom = QSUR[s][6]; V.qTo = QSUR[s][6] + QSUR[s][4] - 1; V.qkind = "surah";
+    render();
+  }
+}
+/* следующий аят - заранее, чтобы между аятами не было паузы на загрузку */
+var QP_NEXT = null;
+function qPreload(i){
+  if(i >= QTOTAL || !S.qContinue) return;
+  try{ QP_NEXT = new Audio(); QP_NEXT.preload = "auto"; QP_NEXT.src = audioUrl(i); QP_NEXT.load(); }catch(e){}
+}
+/* экран блокировки и наушники */
+function qMedia(i){
+  if(!("mediaSession" in navigator)) return;
+  try{
+    var s = surahOf(i);
+    navigator.mediaSession.metadata = new MediaMetadata({ title: QSUR[s][2] + ", аят " + (i - QSUR[s][6] + 1), artist: qRec().n, album: "Коран · RIZQ",
+      artwork: [{ src: "icons/icon-192.png", sizes: "192x192", type: "image/png" }, { src: "icons/icon-512.png", sizes: "512x512", type: "image/png" }] });
+    if(!QP.ms){
+      QP.ms = 1;
+      navigator.mediaSession.setActionHandler("play", function(){ if(QP.cur > -1 && !QP.playing) qToggle(QP.cur); });
+      navigator.mediaSession.setActionHandler("pause", function(){ if(QP.playing) qToggle(QP.cur); });
+      navigator.mediaSession.setActionHandler("nexttrack", function(){ if(QP.cur > -1 && QP.cur + 1 < QTOTAL) qPlay(QP.cur + 1); });
+      navigator.mediaSession.setActionHandler("previoustrack", function(){ if(QP.cur > 0) qPlay(QP.cur - 1); });
+      try{ navigator.mediaSession.setActionHandler("stop", function(){ qStop(); }); }catch(e){}
+    }
+  }catch(e){}
+}
 function qStop(){
   if(QP.audio){ QP.audio.pause(); QP.audio.src = ""; }
   QP.playing = false; QP.cur = -1; QP.repeatLeft = 0;
@@ -4329,19 +4374,22 @@ function qPlay(i){
       else qStop();
     });
     QP.audio.addEventListener("error", function(){
+      if(QP.cur < 0) return;   /* это мы сами остановили и очистили адрес */
       QP.playing = false; paintPlayer();
       toast(inFrame() ? "Во встроенном окне аудио заблокировано - откройте отдельной вкладкой" : "Не удалось загрузить аудио");
     });
   }
+  qRecFix();
   QP.cur = i;
   QP.repeatLeft = S.qRepeat || 1;
+  qFollowView(i);
   QP.audio.src = audioUrl(i);
   QP.audio.playbackRate = S.qSpeed || 1;
   var pr = QP.audio.play();
   if(pr && pr.catch) pr.catch(function(){ QP.playing = false; paintPlayer(); });
   QP.playing = true;
   S.qLast = i; if(i > (S.qMax||0)) S.qMax = i; qPlanTouch(); save();
-  qSeg(i); qWordRun();
+  qSeg(i); qWordRun(); qMedia(i); qPreload(i + 1);
   paintPlayer();
   scrollToAyah(i);
 }
@@ -4364,7 +4412,9 @@ function paintPlayer(){
   var btns = document.querySelectorAll("[data-qplay]");
   for(var j = 0; j < btns.length; j++){
     var bi = parseInt(btns[j].getAttribute("data-qplay"), 10);
-    btns[j].textContent = (QP.playing && bi === QP.cur) ? "❚❚" : "▶";
+    var pl = QP.playing && bi === QP.cur;
+    if(btns[j].classList.contains("ay-a")) btns[j].innerHTML = '<i>'+(pl ? "❚❚" : "▶")+'</i>'+(pl ? "Пауза" : "Слушать аят");
+    else btns[j].textContent = pl ? "❚❚" : "▶";
   }
   var pb = document.getElementById("qPlayAll");
   if(pb) pb.textContent = QP.playing ? "❚❚" : "▶";
@@ -4384,8 +4434,15 @@ function paintPlayer(){
   }
 }
 function scrollToAyah(i){
-  var el = document.querySelector('.ayah[data-i="' + i + '"]');
-  if(el) el.scrollIntoView({behavior:"smooth", block:"center"});
+  var el = document.querySelector('.ayah[data-i="' + i + '"]') || document.querySelector('.mus-ayah[data-mayah="' + i + '"]') ||
+    document.querySelector('.mdn-w[data-mayah="' + i + '"]');
+  if(!el) return;
+  /* в страницах и мусхафе не дёргаем экран, если аят и так виден */
+  if(!el.classList.contains("ayah")){
+    var rc = el.getBoundingClientRect(), vh = window.innerHeight || 700;
+    if(rc.top > 80 && rc.bottom < vh - 110) return;
+  }
+  el.scrollIntoView({behavior:"smooth", block:"center"});
 }
 
 /* ---------- автопрокрутка ---------- */
@@ -9644,15 +9701,15 @@ function viewMushaf(){
 /* перевод и действия по нажатию на аят */
 function sheetAyah(i){
   sheet('<h3>'+esc(qRef(i))+'</h3>'+
-    '<div class="ayah-ar" style="margin-top:6px">'+(TJD ? tjdRender(i) : esc(QA[i]))+'</div>'+
+    '<div class="ay-acts">'+
+      '<button class="ay-a main" data-qplay="'+i+'"><i>▶</i>Слушать аят</button>'+
+      '<button class="ay-a'+(isMark(i) ? ' on' : '')+'" data-qmark="'+i+'"><i>★</i>'+(isMark(i) ? "В закладках" : "Закладка")+'</button>'+
+      '<button class="ay-a" data-qcopy="'+i+'"><i>⧉</i>Копировать</button>'+
+    '</div>'+
+    '<div class="ayah-ar" style="margin-top:14px">'+(TJD ? tjdRender(i) : esc(QA[i]))+'</div>'+
     (HAS_TR ? '<div class="ayah-ru" style="margin-top:10px">'+esc(QR[i])+'</div>' : '')+
     '<details class="tjx-box" data-tjx="'+i+'"'+(S.tjxOpen ? ' open' : '')+'><summary>Правила чтения в этом аяте</summary><div id="tjx-body">'+tjdExplain(i)+'</div></details>'+
-    '<div class="hl-act" style="margin-top:12px">'+
-      '<button class="btn sm" data-qplay="'+i+'">Слушать аят</button>'+
-      '<button class="btn sec sm" data-qmark="'+i+'">'+(isMark(i)?"Убрать закладку":"Закладка")+'</button>'+
-      '<button class="btn sec sm" data-qcopy="'+i+'">Копировать</button>'+
-    '</div>'+
-    '<button class="btn sec" style="width:100%;margin-top:10px" data-scrim="1">Закрыть</button>');
+    '<button class="btn sec" style="width:100%;margin-top:12px" data-scrim="1">Закрыть</button>');
 }
 function viewReader(){
   if(qBookOn()){
@@ -9725,8 +9782,9 @@ function viewReader(){
 function viewQSettings(){
   return '<div class="stack">'+
     '<section class="card"><div class="eyebrow">Чтец</div>'+
-      '<div class="rows" style="margin-top:10px">'+ RECITERS.map(function(r){
-        return '<button class="row" data-qreciter="'+r.id+'"><span class="ic">'+(S.qReciter===r.id?"◉":"○")+'</span>'+esc(r.n)+'</button>';
+      '<div class="rows" style="margin-top:10px">'+ RECITERS.filter(function(r){ return !r.hide || S.qReciter === r.id; }).map(function(r){
+        return '<button class="row" data-qreciter="'+r.id+'"><span class="ic">'+(S.qReciter===r.id?"◉":"○")+'</span>'+
+          '<span style="flex:1;min-width:0">'+esc(r.n)+(r.best ? '<span style="display:block;font-size:12px;color:var(--accent-ink);margin-top:2px">рекомендуем · лучше всего работает без интернета</span>' : '')+'</span></button>';
       }).join("") +'</div></section>'+
 
     '<section class="card"><div class="eyebrow">Скорость чтения</div>'+
@@ -21080,7 +21138,10 @@ document.getElementById("app").addEventListener("click", function(ev){
     var mi = parseInt(d.qmark,10), mp = S.qMarks.indexOf(mi);
     if(mp > -1){ S.qMarks.splice(mp,1); toast("Закладка снята"); }
     else { S.qMarks.push(mi); toast("Закладка: "+qRef(mi)); }
-    save(); render(); scrollToAyah(mi); return;
+    save(); render(); scrollToAyah(mi);
+    var am = document.querySelectorAll('.ay-a[data-qmark="'+mi+'"]'), on = S.qMarks.indexOf(mi) > -1;
+    for(var ak = 0; ak < am.length; ak++){ am[ak].classList.toggle("on", on); am[ak].innerHTML = '<i>★</i>'+(on ? "В закладках" : "Закладка"); }
+    return;
   }
   if(d.qcopy!==undefined){
     var ci = parseInt(d.qcopy,10);
