@@ -523,8 +523,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .dash-bar.today i{background:#D4AF37}
 .dash-bar span{display:block;font-size:10.5px;color:var(--ink-3);margin-top:5px}
 .dash-bar em{display:block;font-style:normal;font-size:10.5px;color:var(--ink-2);height:13px}
-.qt{background:linear-gradient(155deg, rgba(212,175,55,.10), rgba(212,175,55,.02));border-color:rgba(212,175,55,.3)}
-.qt>summary{list-style:none;cursor:pointer;font-family:var(--f-display);font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.qt{background:linear-gradient(155deg, rgba(212,175,55,.20), rgba(212,175,55,.05));border:1.5px solid rgba(212,175,55,.6);box-shadow:0 8px 24px rgba(212,175,55,.16)}
+.qt-ic{width:32px;height:32px;flex:none;border-radius:10px;display:grid;place-items:center;background:#D4AF37;color:#1E2A5A;font-size:16px}
+.qt-mini{height:4px;border-radius:4px;background:rgba(212,175,55,.22);margin-top:9px;overflow:hidden}
+.qt-mini i{display:block;height:100%;background:#D4AF37;border-radius:4px}
+.qt[open] .qt-mini{display:none}
+.qt>summary{list-style:none;cursor:pointer;font-family:var(--f-display);font-size:15.5px;font-weight:600;display:flex;align-items:center;gap:8px}
 .qt>summary::-webkit-details-marker{display:none}
 .qt>summary::after{content:"›";color:var(--accent-ink);font-size:19px;transform:rotate(90deg);transition:transform .2s}
 .qt[open]>summary::after{transform:rotate(-90deg)}
@@ -789,6 +793,90 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .mus-sura-ru{text-align:center;font-size:12.5px;color:var(--ink-3);margin-bottom:6px}
 .mus-bism{font-family:var(--f-quran);direction:rtl;text-align:center;color:var(--accent-ink);
   font-size:calc(var(--q-size,28px) * .78);line-height:2;margin-bottom:6px}
+/* ---------- Изучаем арабский вместе ---------- */
+.ar-hero{position:relative;overflow:hidden;display:block;width:100%;text-align:left;margin-top:10px;
+  padding:18px 18px 16px;border-radius:var(--r-lg);color:#F4EBD0;
+  background:radial-gradient(120% 90% at 100% 0%, rgba(212,175,55,.28), transparent 55%),
+             linear-gradient(160deg,#154A38 0%,#0F3528 60%,#0B281F 100%);
+  box-shadow:0 14px 34px rgba(15,53,40,.35);border:1px solid rgba(212,175,55,.35)}
+.ar-hero::after{content:"ع";position:absolute;left:-10px;bottom:-46px;font-family:"Amiri Quran",var(--f-ar);
+  font-size:170px;line-height:1;color:rgba(212,175,55,.09);pointer-events:none}
+.ar-hero-ar{font-family:"Amiri Quran",var(--f-ar);font-size:25px;line-height:1.5;color:#E6C868;text-align:right}
+.ar-hero-h{font-family:var(--f-display);font-size:17px;font-weight:700;letter-spacing:.2px;margin-top:2px;color:#FFF8E6}
+.ar-hero-st{display:flex;gap:18px;margin-top:12px;position:relative;z-index:1}
+.ar-hero-st b{display:block;font-family:var(--f-display);font-size:21px;font-weight:700;color:#FFF8E6;font-variant-numeric:tabular-nums;line-height:1.1}
+.ar-hero-st span{font-size:11.5px;color:rgba(244,235,208,.72)}
+.ar-hero-bar{height:6px;border-radius:6px;background:rgba(255,255,255,.12);margin-top:13px;overflow:hidden}
+.ar-hero-bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#D4AF37,#F1D77E)}
+.ar-hero-go{display:flex;align-items:center;margin-top:12px;font-size:13.5px;font-weight:600;color:#F1D77E;position:relative;z-index:1}
+.ar-hero-go span{margin-left:auto;font-size:20px}
+.ar-hero.big{margin-top:0}
+.ar-hero.big .ar-hero-go{display:none}
+.ar-cta{display:flex;gap:10px;flex-wrap:wrap}
+.ar-cta .btn{flex:1 1 140px}
+.ar-chips{display:flex;flex-wrap:wrap;gap:7px}
+.ar-note{font-size:12.5px;color:var(--ink-3);line-height:1.5;margin:10px 0 0}
+.ar-path{display:flex;flex-direction:column;gap:0;position:relative}
+.ar-step{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:11px 12px;border-radius:var(--r-md);position:relative}
+.ar-step:not(:last-child)::before{content:"";position:absolute;left:29px;top:46px;bottom:-12px;width:2px;background:var(--line)}
+.ar-step.done:not(:last-child)::before{background:rgba(45,106,79,.55)}
+.ar-num{width:36px;height:36px;flex:none;border-radius:50%;display:grid;place-items:center;position:relative;z-index:1;
+  font-family:var(--f-display);font-weight:700;font-size:14px;background:var(--surface);border:2px solid var(--line);color:var(--ink-2)}
+.ar-step.done .ar-num{background:#2D6A4F;border-color:#3E9B72;color:#fff}
+.ar-step.now{background:var(--surface);box-shadow:var(--shadow);border:1px solid rgba(212,175,55,.45)}
+.ar-step.now .ar-num{border-color:#D4AF37;color:var(--accent-ink)}
+.ar-st-t{flex:1;min-width:0}
+.ar-st-t b{display:block;font-family:var(--f-display);font-size:14.5px;font-weight:600}
+.ar-st-t span{font-size:12.5px;color:var(--ink-3)}
+.ar-st-ar{font-family:"Amiri Quran",var(--f-ar);font-size:18px;color:var(--accent-ink);flex:none}
+.ar-uhead{text-align:center;padding:16px 12px 6px}
+.ar-uhead-ar{font-family:"Amiri Quran",var(--f-ar);font-size:34px;line-height:1.5;color:var(--accent-ink)}
+.ar-uhead-h{font-family:var(--f-display);font-size:16px;font-weight:700;margin-top:2px}
+.ar-uhead-s{font-size:13px;color:var(--ink-3);margin-top:3px}
+.ar-list{padding:4px 12px}
+.ar-w{display:flex;align-items:center;gap:10px;padding:10px 0}
+.ar-w + .ar-w{border-top:1px solid var(--line-soft)}
+.ar-wt{flex:1;min-width:0}
+.ar-wa{font-family:"Amiri Quran",var(--f-ar);font-size:23px;line-height:1.6;color:var(--ink)}
+.ar-wr{font-size:13px;color:var(--ink-2);line-height:1.35}
+.ar-play{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:12px;
+  background:rgba(45,106,79,.14);color:#3E9B72;border:1px solid rgba(45,106,79,.3)}
+.ar-play.lg{width:48px;height:48px;font-size:16px;margin:4px auto 10px}
+.ar-qchip{flex:none;font-size:11.5px;padding:5px 8px;border-radius:9px;border:1px solid rgba(212,175,55,.45);color:var(--accent-ink);background:rgba(212,175,55,.08)}
+.ar-dot{width:9px;height:9px;flex:none;border-radius:50%;background:var(--line)}
+.ar-dot.mid{background:#D4AF37}
+.ar-dot.ok{background:#3E9B72}
+.ar-dlg{padding:8px;display:flex;flex-direction:column;gap:6px}
+.ar-line{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;padding:10px;border-radius:14px;border:1px solid transparent;transition:background .2s,border-color .2s}
+.ar-line.b{flex-direction:row-reverse;text-align:right}
+.ar-line.on{background:rgba(212,175,55,.14);border-color:rgba(212,175,55,.5)}
+.ar-who{width:26px;height:26px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;
+  background:rgba(45,106,79,.16);color:#3E9B72}
+.ar-line.b .ar-who{background:rgba(212,175,55,.2);color:var(--accent-ink)}
+.ar-lt{flex:1;min-width:0;display:flex;flex-direction:column}
+.ar-la{font-family:"Amiri Quran",var(--f-ar);font-size:22px;line-height:1.7;color:var(--ink);text-align:right}
+.ar-lr{font-size:13px;color:var(--ink-2)}
+.ar-lru{font-size:13px;color:var(--ink-3)}
+.ar-done{text-align:center;font-size:13.5px;color:#3E9B72;font-weight:600;padding:6px}
+.ar-prog{height:6px;border-radius:6px;background:var(--line);overflow:hidden}
+.ar-prog i{display:block;height:100%;background:#D4AF37;border-radius:6px}
+.ar-cnt{font-size:12.5px;color:var(--ink-3);text-align:center}
+.ar-card{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow);border:1px solid var(--line);padding:22px 16px 18px;text-align:center}
+.ar-big{display:block;width:100%;font-family:"Amiri Quran",var(--f-ar);font-size:44px;line-height:1.7;color:var(--ink)}
+.ar-ans-tr{font-size:15px;color:var(--ink-2)}
+.ar-ans-ru{font-family:var(--f-display);font-size:19px;font-weight:700;margin-top:2px}
+.ar-ayah{margin-top:14px;padding:12px;border-radius:14px;background:var(--surface-2);text-align:right}
+.ar-ayah-h{font-size:12px;color:var(--ink-3);text-align:left}
+.ar-ayah-t{font-family:var(--f-quran);font-size:22px;line-height:2;color:var(--ink);margin:4px 0 8px}
+.ar-ayah-t mark{background:rgba(212,175,55,.35);color:inherit;border-radius:5px;padding:0 2px}
+.ar-fin{text-align:center;padding:24px 18px}
+.ar-fin-ic{width:54px;height:54px;border-radius:50%;margin:0 auto 10px;display:grid;place-items:center;font-size:24px;background:#2D6A4F;color:#fff}
+.ar-fin b{font-family:var(--f-display);font-size:17px}
+.ar-fin p{font-size:14px;color:var(--ink-2);line-height:1.55}
+.mus-tools{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:10px 0 4px}
+.mus-tools button{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:6px 10px;border-radius:999px;
+  border:1px solid rgba(212,175,55,.45);background:rgba(212,175,55,.08);color:var(--ink-2)}
+.mus-tools span{font-family:var(--f-ar);font-size:15px;color:var(--accent-ink);line-height:1}
 .mus-foot{display:flex;align-items:center;gap:10px;margin-top:14px;padding-top:10px;border-top:1px solid rgba(212,175,55,.25)}
 .mus-foot span{margin:0 auto;font-family:var(--f-display);font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums}
 .mus-nav{background:none;border:1px solid var(--line);border-radius:10px;padding:7px 12px;font-size:13px;color:var(--ink-2)}
@@ -3515,6 +3603,7 @@ var $hdr = document.getElementById("hdr");
 var $tabbar = document.getElementById("tabbar");
 
 function go(tab){
+  V.ret = null; if(V.view==="arabic") arStop();
   if(V.view==="reader"){ qStop(); autoScrollOff(); }
   V.tab=tab; V.view=null; V.p=null; V.q=""; render(); $screen.scrollTop=0;
   hdrShow(); tabbarShow(); /* новый экран открываем с видимыми панелями */
@@ -3562,6 +3651,8 @@ applyQFont();
 
 function back(){
   hdrShow(); tabbarShow();
+  if(V.view==="arabic"){ arStop(); if(V.p){ var fromU = String(V.p).indexOf("s:")===0 ? "u:" + String(V.p).slice(2) : null; V.p = fromU; render(); $screen.scrollTop = 0; return; } }
+  if(V.ret==="reader" && (V.view==="tajwid" || V.view==="arabic")){ V.ret = null; V.view = "reader"; render(); $screen.scrollTop = 0; return; }
   if(V.view==="reader" || V.view==="qsettings" || V.view==="qsearch"){ qStop(); autoScrollOff(); }
   if(V.view==="qsettings" || V.view==="qsearch"){ V.view=null; V.p=null; V.q=""; render(); return; }
   if(V.view==="name"){ V.view="names"; V.p=null; V.q=""; render(); return; }
@@ -3666,6 +3757,7 @@ function renderHdr(){
         : V.view==="reader" ? (qBookOn() ? surahTitle(surahOf(pageFirst(mushafPage()))) + " · стр. " + mushafPage()
             : V.qkind==="page" ? "Страница "+pageOf(V.qFrom) : V.qkind==="juz" ? "Джуз "+juzOf(V.qFrom) : surahTitle(surahOf(V.qFrom)))
         : V.view==="tajwid" ? "Таджвид"
+        : V.view==="arabic" ? (String(V.p||"").indexOf("u:")===0 ? "Урок " + String(V.p).slice(2) : String(V.p||"").charAt(0)==="s" ? "Карточки" : "Изучаем арабский")
         : (V.view==="guide" && GUIDES[V.p]) ? GUIDES[V.p].n
         : (V.view==="check" && CHECKS[V.p]) ? CHECKS[V.p].n
         : (V.view==="practice") ? "Практика"
@@ -3971,6 +4063,8 @@ function viewHomeMain(){
     '<button class="cat" data-open="qibla"><div class="ic">✧</div><b>Кибла</b><span>'+Math.round(qiblaBearing())+'° от севера</span></button>'+
     '<button class="cat" data-open="live"><div class="ic" style="font-size:24px">🕋</div><b>Мекка онлайн</b><span>прямой эфир из Харама</span></button>'+
     '</div>');
+  /* изучаем арабский вместе */
+  h.push(arHero(false).replace('<div class="ar-hero">', '<button class="ar-hero" data-ar="home">').replace(/<\/div>$/, '</button>'));
   var scH = scoreState(), scMe = S.scoreMe;
   h.push('<button class="cat-wide" data-open="top" style="margin-top:10px">'+
     '<span class="cw-ic">◈</span>'+
@@ -5984,12 +6078,513 @@ function qtBars(){
       '<span>'+x.n+'</span><em>'+(x.v ? Math.round(x.v/60) : "")+'</em></div>';
   }).join("")+'</div>';
 }
+/* ---------- Изучаем арабский вместе ----------
+   Путь по темам в том же порядке, что в первых уроках «Аль-Арабийя байна ядайк»:
+   приветствие, знакомство, семья, жильё, день, еда, намаз, учёба. Слова, фразы
+   и диалоги свои, книгу мы не копируем. У слова q - аят, где оно (или его
+   однокоренное) встречается, и s - буквы, которые мы там подсвечиваем.
+   Каждый аят проверен программой: такие буквы в нём действительно есть. */
+var AR_UNITS = [
+ {id:1, n:"Приветствие", ar:"التَّحِيَّةُ",
+  w:[
+   {id:"1a", ar:"السَّلَامُ عَلَيْكُمْ", tr:"ас-саляму 'алейкум", ru:"мир вам", q:"36:58", s:"سلم"},
+   {id:"1b", ar:"مَرْحَبًا", tr:"мархабан", ru:"здравствуйте"},
+   {id:"1c", ar:"صَبَاحُ الخَيْرِ", tr:"сабаху ль-хайр", ru:"доброе утро", q:"81:18", s:"صبح"},
+   {id:"1d", ar:"مَسَاءُ الخَيْرِ", tr:"масау ль-хайр", ru:"добрый вечер", q:"30:17", s:"تمسون"},
+   {id:"1e", ar:"كَيْفَ حَالُكِ؟", tr:"кайфа ха̄люки", ru:"как ты? (к женщине)", q:"88:17", s:"كيف"},
+   {id:"1f", ar:"بِخَيْرٍ", tr:"би-хайр", ru:"хорошо, в порядке", q:"97:3", s:"خير"},
+   {id:"1g", ar:"الحَمْدُ لِلَّهِ", tr:"аль-хамду лилля̄х", ru:"хвала Аллаху", q:"1:2", s:"حمد"},
+   {id:"1h", ar:"شُكْرًا", tr:"шукран", ru:"спасибо", q:"34:13", s:"شكر"},
+   {id:"1i", ar:"مَعَ السَّلَامَةِ", tr:"ма'а с-саля̄ма", ru:"до свидания"}
+  ],
+  d:[
+   ["А", "السَّلَامُ عَلَيْكُمْ.", "Ас-саляму 'алейкум.", "Мир вам."],
+   ["Б", "وَعَلَيْكُمُ السَّلَامُ.", "Ва 'алейкуму с-салям.", "И вам мир."],
+   ["А", "كَيْفَ حَالُكِ؟", "Кайфа ха̄люки?", "Как ты?"],
+   ["Б", "بِخَيْرٍ، وَالحَمْدُ لِلَّهِ. وَأَنْتِ؟", "Би-хайр, валь-хамду лилля̄х. Ва анти?", "Хорошо, хвала Аллаху. А ты?"],
+   ["А", "الحَمْدُ لِلَّهِ، بِخَيْرٍ. شُكْرًا.", "Аль-хамду лилля̄х, би-хайр. Шукран.", "Хвала Аллаху, хорошо. Спасибо."],
+   ["Б", "مَعَ السَّلَامَةِ.", "Ма'а с-саля̄ма.", "До свидания."]
+  ]},
+ {id:2, n:"Знакомство", ar:"التَّعَارُفُ",
+  w:[
+   {id:"2a", ar:"اِسْمٌ", tr:"исм", ru:"имя", q:"1:1", s:"بسم"},
+   {id:"2b", ar:"مَا اسْمُكِ؟", tr:"ма-смуки", ru:"как тебя зовут? (к женщине)"},
+   {id:"2c", ar:"اِسْمِي", tr:"исми", ru:"меня зовут", q:"61:6", s:"اسمه"},
+   {id:"2d", ar:"أَنَا", tr:"ана", ru:"я", q:"20:14", s:"انا"},
+   {id:"2e", ar:"أَنْتَ", tr:"анта", ru:"ты (к мужчине)", q:"2:32", s:"انت"},
+   {id:"2f", ar:"أَنْتِ", tr:"анти", ru:"ты (к женщине)"},
+   {id:"2g", ar:"هُوَ", tr:"хува", ru:"он", q:"112:1", s:"هو"},
+   {id:"2h", ar:"هِيَ", tr:"хия", ru:"она", q:"20:18", s:"هي"},
+   {id:"2i", ar:"مِنْ أَيْنَ؟", tr:"мин айна", ru:"откуда?", q:"81:26", s:"اين"},
+   {id:"2j", ar:"تَشَرَّفْنَا", tr:"ташаррафна", ru:"приятно познакомиться"}
+  ],
+  d:[
+   ["А", "مَا اسْمُكِ؟", "Ма-смуки?", "Как тебя зовут?"],
+   ["Б", "اِسْمِي آمِنَةُ. وَمَا اسْمُكِ؟", "Исми А̄мина. Ва ма-смуки?", "Меня зовут Амина. А тебя?"],
+   ["А", "اِسْمِي مَرْيَمُ.", "Исми Марьям.", "Меня зовут Марьям."],
+   ["Б", "مِنْ أَيْنَ أَنْتِ؟", "Мин айна анти?", "Откуда ты?"],
+   ["А", "أَنَا مِنْ دَاغِسْتَانَ. وَأَنْتِ؟", "Ана мин Дагистан. Ва анти?", "Я из Дагестана. А ты?"],
+   ["Б", "أَنَا مِنْ مِصْرَ.", "Ана мин Миср.", "Я из Египта."],
+   ["А", "تَشَرَّفْنَا.", "Ташаррафна.", "Приятно познакомиться."]
+  ]},
+ {id:3, n:"Семья", ar:"الأُسْرَةُ",
+  w:[
+   {id:"3a", ar:"أُسْرَةٌ", tr:"усра", ru:"семья"},
+   {id:"3b", ar:"أَبٌ", tr:"аб", ru:"отец", q:"12:4", s:"لابيه"},
+   {id:"3c", ar:"أُمٌّ", tr:"умм", ru:"мать", q:"28:7", s:"ام موسي"},
+   {id:"3d", ar:"أَخٌ", tr:"ах", ru:"брат", q:"20:30", s:"اخي"},
+   {id:"3e", ar:"أُخْتٌ", tr:"ухт", ru:"сестра", q:"19:28", s:"اخت"},
+   {id:"3f", ar:"اِبْنٌ", tr:"ибн", ru:"сын", q:"11:42", s:"ابنه"},
+   {id:"3g", ar:"بِنْتٌ", tr:"бинт", ru:"дочь"},
+   {id:"3h", ar:"زَوْجٌ", tr:"задж", ru:"супруг, супруга", q:"2:35", s:"زوجك"},
+   {id:"3i", ar:"وَلَدٌ", tr:"валяд", ru:"ребёнок", q:"19:88", s:"ولدا"},
+   {id:"3j", ar:"هَذَا / هَذِهِ", tr:"ха̄за / ха̄зихи", ru:"это (о мужском / о женском)"}
+  ],
+  d:[
+   ["А", "هَلْ هَذِهِ أُسْرَتُكِ؟", "Халь ха̄зихи усратуки?", "Это твоя семья?"],
+   ["Б", "نَعَمْ. هَذَا أَبِي، وَهَذِهِ أُمِّي.", "На'ам. Ха̄за аби, ва ха̄зихи умми.", "Да. Это мой отец, а это моя мать."],
+   ["А", "وَمَنْ هَذَا؟", "Ва ман ха̄за?", "А это кто?"],
+   ["Б", "هَذَا أَخِي، وَهَذِهِ أُخْتِي.", "Ха̄за ахи, ва ха̄зихи ухти.", "Это мой брат, а это моя сестра."],
+   ["А", "مَا شَاءَ اللَّهُ!", "Ма ша̄'а Лла̄х!", "Машаа Аллах!"]
+  ]},
+ {id:4, n:"Жильё", ar:"السَّكَنُ",
+  w:[
+   {id:"4a", ar:"بَيْتٌ", tr:"байт", ru:"дом", q:"106:3", s:"البيت"},
+   {id:"4b", ar:"غُرْفَةٌ", tr:"гурфа", ru:"комната", q:"25:75", s:"الغرفه"},
+   {id:"4c", ar:"بَابٌ", tr:"ба̄б", ru:"дверь", q:"12:25", s:"الباب"},
+   {id:"4d", ar:"نَافِذَةٌ", tr:"на̄физа", ru:"окно"},
+   {id:"4e", ar:"مَطْبَخٌ", tr:"матбах", ru:"кухня"},
+   {id:"4f", ar:"سَرِيرٌ", tr:"сарӣр", ru:"кровать", q:"88:13", s:"سرر"},
+   {id:"4g", ar:"كُرْسِيٌّ", tr:"курсийй", ru:"стул", q:"2:255", s:"كرسيه"},
+   {id:"4h", ar:"قَرِيبٌ", tr:"карӣб", ru:"близко, рядом", q:"2:186", s:"قريب"}
+  ],
+  d:[
+   ["А", "أَيْنَ بَيْتُكِ؟", "Айна байтуки?", "Где твой дом?"],
+   ["Б", "بَيْتِي قَرِيبٌ مِنَ المَسْجِدِ.", "Байти карӣбун мина ль-масджид.", "Мой дом рядом с мечетью."],
+   ["А", "كَمْ غُرْفَةً فِي بَيْتِكِ؟", "Кам гурфатан фи байтики?", "Сколько комнат в твоём доме?"],
+   ["Б", "فِي بَيْتِي ثَلَاثُ غُرَفٍ وَمَطْبَخٌ.", "Фи байти саляс гураф ва матбах.", "В моём доме три комнаты и кухня."],
+   ["А", "بَارَكَ اللَّهُ فِيهِ.", "Ба̄рака Лла̄ху фих.", "Да благословит его Аллах."]
+  ]},
+ {id:5, n:"Мой день", ar:"الحَيَاةُ اليَوْمِيَّةُ",
+  w:[
+   {id:"5a", ar:"يَوْمٌ", tr:"яум", ru:"день, сутки", q:"1:4", s:"يوم"},
+   {id:"5b", ar:"لَيْلٌ", tr:"ляйль", ru:"ночь", q:"92:1", s:"ليل"},
+   {id:"5c", ar:"نَهَارٌ", tr:"наха̄р", ru:"день (светлое время)", q:"91:3", s:"نهار"},
+   {id:"5d", ar:"أَسْتَيْقِظُ", tr:"астайкызу", ru:"я просыпаюсь"},
+   {id:"5e", ar:"أَنَامُ", tr:"ана̄му", ru:"я сплю", q:"78:9", s:"نومكم"},
+   {id:"5f", ar:"أَذْهَبُ", tr:"азхабу", ru:"я иду, ухожу", q:"81:26", s:"تذهبون"},
+   {id:"5g", ar:"شَمْسٌ", tr:"шамс", ru:"солнце", q:"91:1", s:"شمس"},
+   {id:"5h", ar:"قَمَرٌ", tr:"камар", ru:"луна", q:"54:1", s:"قمر"},
+   {id:"5i", ar:"بَعْدَ", tr:"ба'да", ru:"после"},
+   {id:"5j", ar:"قَبْلَ", tr:"кабля", ru:"до, перед"}
+  ],
+  d:[
+   ["А", "مَتَى تَسْتَيْقِظِينَ؟", "Мата̄ тастайкызӣна?", "Когда ты просыпаешься?"],
+   ["Б", "أَسْتَيْقِظُ قَبْلَ الفَجْرِ.", "Астайкызу кабля ль-фаджр.", "Я просыпаюсь до фаджра."],
+   ["А", "وَمَاذَا تَفْعَلِينَ بَعْدَ الصَّلَاةِ؟", "Ва ма̄за таф'алӣна ба'да с-саля̄т?", "А что ты делаешь после намаза?"],
+   ["Б", "أَقْرَأُ القُرْآنَ، ثُمَّ أَذْهَبُ إِلَى العَمَلِ.", "Акра'у ль-Кур'а̄н, сумма азхабу иля ль-'амаль.", "Читаю Коран, потом иду на работу."],
+   ["А", "وَمَتَى تَنَامِينَ؟", "Ва мата̄ тана̄мӣна?", "А когда ты ложишься спать?"],
+   ["Б", "أَنَامُ بَعْدَ العِشَاءِ.", "Ана̄му ба'да ль-'иша̄'.", "Я сплю после иша."]
+  ]},
+ {id:6, n:"Еда и питьё", ar:"الطَّعَامُ وَالشَّرَابُ",
+  w:[
+   {id:"6a", ar:"طَعَامٌ", tr:"та'а̄м", ru:"еда", q:"76:8", s:"الطعام"},
+   {id:"6b", ar:"مَاءٌ", tr:"ма̄'", ru:"вода", q:"21:30", s:"الماء"},
+   {id:"6c", ar:"خُبْزٌ", tr:"хубз", ru:"хлеб", q:"12:36", s:"خبزا"},
+   {id:"6d", ar:"لَحْمٌ", tr:"лахм", ru:"мясо", q:"52:22", s:"لحم"},
+   {id:"6e", ar:"لَبَنٌ", tr:"лябан", ru:"молоко", q:"47:15", s:"لبن"},
+   {id:"6f", ar:"عَسَلٌ", tr:"'асаль", ru:"мёд", q:"47:15", s:"عسل"},
+   {id:"6g", ar:"جَائِعَةٌ", tr:"джа̄'иа", ru:"голодная"},
+   {id:"6h", ar:"كُلُوا وَاشْرَبُوا", tr:"кулю ва-шрабу", ru:"ешьте и пейте", q:"2:60", s:"كلوا"},
+   {id:"6i", ar:"تَفَضَّلِي", tr:"тафаддали", ru:"пожалуйста, угощайся (к женщине)"}
+  ],
+  d:[
+   ["А", "هَلْ أَنْتِ جَائِعَةٌ؟", "Халь анти джа̄'иа?", "Ты голодна?"],
+   ["Б", "نَعَمْ، أَنَا جَائِعَةٌ.", "На'ам, ана джа̄'иа.", "Да, я голодна."],
+   ["А", "تَفَضَّلِي، هَذَا خُبْزٌ وَلَحْمٌ.", "Тафаддали, ха̄за хубзун ва лахм.", "Угощайся: вот хлеб и мясо."],
+   ["Б", "شُكْرًا. هَلْ عِنْدَكِ مَاءٌ؟", "Шукран. Халь 'индаки ма̄'?", "Спасибо. У тебя есть вода?"],
+   ["А", "نَعَمْ، وَعِنْدِي لَبَنٌ أَيْضًا.", "На'ам, ва 'инди лябанун айдан.", "Да, и молоко тоже есть."],
+   ["Б", "بِسْمِ اللَّهِ.", "Бисми Лла̄х.", "С именем Аллаха."]
+  ]},
+ {id:7, n:"Намаз", ar:"الصَّلَاةُ",
+  w:[
+   {id:"7a", ar:"صَلَاةٌ", tr:"саля̄т", ru:"намаз", q:"2:43", s:"الصلوه"},
+   {id:"7b", ar:"مَسْجِدٌ", tr:"масджид", ru:"мечеть", q:"17:1", s:"المسجد"},
+   {id:"7c", ar:"قِبْلَةٌ", tr:"кибля", ru:"кибла", q:"2:144", s:"قبله"},
+   {id:"7d", ar:"سُجُودٌ", tr:"суджӯд", ru:"земной поклон", q:"48:29", s:"السجود"},
+   {id:"7e", ar:"اِرْكَعُوا", tr:"ирка'у", ru:"совершайте поясной поклон", q:"2:43", s:"اركعوا"},
+   {id:"7f", ar:"دُعَاءٌ", tr:"ду'а̄'", ru:"мольба", q:"14:40", s:"دعاء"},
+   {id:"7g", ar:"وُضُوءٌ", tr:"вудӯ'", ru:"омовение"},
+   {id:"7h", ar:"هُنَا / هُنَاكَ", tr:"хуна̄ / хуна̄ка", ru:"здесь / там"}
+  ],
+  d:[
+   ["А", "أَيْنَ المَسْجِدُ؟", "Айна ль-масджид?", "Где мечеть?"],
+   ["Б", "المَسْجِدُ هُنَاكَ، قَرِيبٌ.", "Аль-масджиду хуна̄ка, карӣб.", "Мечеть вон там, близко."],
+   ["А", "هَلْ تُصَلِّينَ فِي المَسْجِدِ؟", "Халь тусаллӣна фи ль-масджид?", "Ты молишься в мечети?"],
+   ["Б", "نَعَمْ، أُصَلِّي التَّرَاوِيحَ فِي رَمَضَانَ.", "На'ам, усалли т-тара̄вӣха фи Рамада̄н.", "Да, таравих в Рамадан."],
+   ["А", "أَيْنَ القِبْلَةُ؟", "Айна ль-кибля?", "Где кибла?"],
+   ["Б", "القِبْلَةُ هُنَا.", "Аль-киблату хуна̄.", "Кибла здесь."]
+  ]},
+ {id:8, n:"Учёба", ar:"الدِّرَاسَةُ",
+  w:[
+   {id:"8a", ar:"كِتَابٌ", tr:"кита̄б", ru:"книга", q:"2:2", s:"الكتب"},
+   {id:"8b", ar:"قَلَمٌ", tr:"калям", ru:"ручка, перо", q:"68:1", s:"القلم"},
+   {id:"8c", ar:"عِلْمٌ", tr:"'ильм", ru:"знание", q:"20:114", s:"علما"},
+   {id:"8d", ar:"اِقْرَأْ", tr:"икра'", ru:"читай", q:"96:1", s:"اقرا"},
+   {id:"8e", ar:"اُكْتُبْ", tr:"уктуб", ru:"пиши", q:"2:282", s:"فاكتبوه"},
+   {id:"8f", ar:"لُغَةٌ", tr:"луга", ru:"язык"},
+   {id:"8g", ar:"العَرَبِيَّةُ", tr:"аль-'арабийя", ru:"арабский (язык)", q:"12:2", s:"عربيا"},
+   {id:"8h", ar:"أَفْهَمُ", tr:"афхаму", ru:"я понимаю", q:"21:79", s:"ففهمنها"}
+  ],
+  d:[
+   ["А", "مَاذَا تَدْرُسِينَ؟", "Ма̄за тадрусӣна?", "Что ты изучаешь?"],
+   ["Б", "أَدْرُسُ اللُّغَةَ العَرَبِيَّةَ.", "Адрусу ль-лугата ль-'арабийя.", "Я изучаю арабский язык."],
+   ["А", "لِمَاذَا؟", "Лима̄за?", "Зачем?"],
+   ["Б", "لِأَفْهَمَ القُرْآنَ.", "Ли-афхама ль-Кур'а̄н.", "Чтобы понимать Коран."],
+   ["А", "مَا شَاءَ اللَّهُ! أَيْنَ كِتَابُكِ؟", "Ма̄ ша̄'а Лла̄х! Айна кита̄буки?", "Машаа Аллах! Где твоя книга?"],
+   ["Б", "هَذَا كِتَابِي، وَهَذَا قَلَمِي.", "Ха̄за кита̄би, ва ха̄за калями.", "Вот моя книга, а вот моя ручка."]
+  ]}
+];
+
+/* Интервальное повторение: ступень слова -> через сколько дней повторить.
+   Слово считается выученным, когда дошло до второй ступени, то есть его
+   узнали в двух разных повторениях с перерывом хотя бы в день. */
+var AR_GAP = [0, 1, 2, 4, 8, 16, 32];
+var AR_NEW = 5; /* новых слов за одно занятие - больше за раз не запоминается */
+var AR = { q:[], i:0, show:false, from:"", ok:0, again:0, fresh:0, play:null, t:0 };
+
+function arS(){
+  if(!S.ar) S.ar = { w:{}, l:{}, d:{}, har:"auto", pause:0 };
+  if(!S.ar.w) S.ar.w = {}; if(!S.ar.l) S.ar.l = {}; if(!S.ar.d) S.ar.d = {};
+  return S.ar;
+}
+function arAll(){ var out = []; AR_UNITS.forEach(function(u){ u.w.forEach(function(w){ out.push(w); }); }); return out; }
+function arWord(id){ var all = arAll(); for(var i = 0; i < all.length; i++) if(all[i].id === id) return all[i]; return null; }
+function arUnit(id){ return AR_UNITS.filter(function(u){ return String(u.id) === String(id); })[0]; }
+function arBox(id){ var r = arS().w[id]; return r ? r.b : 0; }
+function arDayAdd(n){ var d = new Date(); d.setDate(d.getDate() + n); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+/* понедельник этой недели - неделя рейтинга тоже начинается с понедельника */
+function arMonday(){ var d = new Date(); var k = (d.getDay() + 6) % 7; return arDayAdd(-k); }
+function arLearned(){ return Object.keys(arS().l).length; }
+function arWeek(){ var m = arMonday(), l = arS().l, n = 0; for(var k in l) if(l[k] >= m) n++; return n; }
+function arDue(){
+  var t = todayKey(), w = arS().w;
+  return Object.keys(w).filter(function(id){ return w[id].b > 0 && w[id].due <= t && arWord(id); });
+}
+function arUnitStat(u){
+  var learned = u.w.filter(function(w){ return arS().l[w.id]; }).length;
+  var started = u.w.filter(function(w){ return arBox(w.id) > 0; }).length;
+  return { learned:learned, started:started, total:u.w.length, dlg:!!arS().d[u.id] };
+}
+/* текущий урок - первый, где ещё есть невыученные слова или не пройден диалог */
+function arCurrent(){
+  for(var i = 0; i < AR_UNITS.length; i++){
+    var st = arUnitStat(AR_UNITS[i]);
+    if(st.learned < st.total || !st.dlg) return AR_UNITS[i];
+  }
+  return AR_UNITS[AR_UNITS.length - 1];
+}
+function arDlgDone(){ return Object.keys(arS().d).length; }
+
+/* Огласовки уходят постепенно: у слова, которое узнают уже в третий раз,
+   сначала показываем голый текст. Режим можно поменять. */
+function arPlain(t){ return String(t).replace(/[ً-ْٰ]/g, ""); }
+function arShowHar(id){
+  var m = arS().har;
+  if(m === "all") return true;
+  if(m === "none") return false;
+  return arBox(id) < 3;
+}
+function arUnitHar(u){
+  var m = arS().har;
+  if(m === "all") return true;
+  if(m === "none") return false;
+  var st = arUnitStat(u);
+  return !(st.total && u.w.every(function(w){ return arBox(w.id) >= 3; }));
+}
+
+/* ---------- озвучка ---------- */
+function arVoice(){
+  var v = [];
+  try{ v = window.speechSynthesis ? speechSynthesis.getVoices() : []; }catch(e){}
+  return v.filter(function(x){ return /^ar/i.test(x.lang); })[0] || null;
+}
+function arStop(){
+  AR.play = null; clearTimeout(AR.t);
+  if(window.speechSynthesis) try{ speechSynthesis.cancel(); }catch(e){}
+  arMark(-1);
+}
+function arSay(text, done){
+  if(!window.speechSynthesis || !window.SpeechSynthesisUtterance){
+    toast("На этом телефоне нет голоса для озвучки"); if(done) done(false); return;
+  }
+  var v = arVoice(), all = [];
+  try{ all = speechSynthesis.getVoices(); }catch(e){}
+  if(all.length && !v){
+    toast("Добавьте арабский голос в настройках телефона: Универсальный доступ - Устная речь - Голоса");
+    if(done) done(false); return;
+  }
+  try{ speechSynthesis.cancel(); }catch(e){}
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = "ar-SA"; if(v) u.voice = v;
+  u.rate = 0.75;
+  u.onend = function(){ if(done) done(true); };
+  u.onerror = function(){ if(done) done(false); };
+  speechSynthesis.speak(u);
+}
+/* подсветка фразы, которая звучит, без перерисовки всего экрана */
+function arMark(i){
+  var n = document.querySelectorAll("[data-arline]");
+  for(var k = 0; k < n.length; k++) n[k].classList.toggle("on", Number(n[k].getAttribute("data-arline")) === i);
+  var cur = document.querySelector('[data-arline="'+i+'"]');
+  if(cur && cur.scrollIntoView) try{ cur.scrollIntoView({ block:"nearest", behavior:"smooth" }); }catch(e){}
+}
+/* по предложениям: фраза, пауза, следующая. В режиме «повторять» пауза длиннее -
+   чтобы успеть сказать фразу вслух за диктором */
+function arPlayList(items, i){
+  if(!AR.play || i >= items.length){ arStop(); return; }
+  AR.play.i = i; arMark(i);
+  arSay(items[i], function(ok){
+    if(!AR.play || !ok){ arStop(); return; }
+    AR.t = setTimeout(function(){ arPlayList(items, i + 1); }, arS().pause ? 3200 : 800);
+  });
+}
+
+/* ---------- ответы в карточках ---------- */
+function arAnswer(know){
+  var id = AR.q[AR.i]; if(!id) return;
+  var st = arS(), r = st.w[id] || { b:0, due:todayKey() }, t = todayKey();
+  if(know){
+    /* в один день ступень растёт один раз: выучить слово за вечер нельзя, только за несколько дней */
+    if(r.last !== t || r.b === 0){ r.b = Math.min(AR_GAP.length - 1, r.b + 1); }
+    r.due = arDayAdd(AR_GAP[r.b]); r.last = t;
+    if(r.b >= 2 && !st.l[id]){ st.l[id] = t; addPoints(1, "arabic"); toast("Слово выучено: " + (arWord(id) || {}).ru); scoreSync(); }
+    AR.ok++;
+  } else {
+    r.b = Math.min(r.b, 1) || 1; r.due = t; r.last = t;
+    AR.q.push(id); AR.again++;
+  }
+  st.w[id] = r; save();
+  AR.i++; AR.show = false; render(); $screen.scrollTop = 0;
+}
+/* занятие: сначала то, что пора повторить, потом новые слова текущего урока */
+function arSession(unitId){
+  var due = arDue(), fresh = [];
+  var units = unitId ? [arUnit(unitId)] : AR_UNITS;
+  units.forEach(function(u){
+    u.w.forEach(function(w){ if(fresh.length < AR_NEW && !arS().w[w.id]) fresh.push(w.id); });
+  });
+  if(unitId){ due = due.filter(function(id){ return id.charAt(0) === String(unitId); }); }
+  AR.q = due.concat(fresh); AR.i = 0; AR.show = false; AR.ok = 0; AR.again = 0; AR.fresh = fresh.length;
+  AR.from = unitId ? "u:" + unitId : "";
+}
+
+/* ---------- экраны ---------- */
+function arWordRow(w){
+  var b = arBox(w.id), learned = !!arS().l[w.id];
+  var dot = learned ? '<i class="ar-dot ok" title="выучено"></i>' : (b ? '<i class="ar-dot mid" title="в изучении"></i>' : '<i class="ar-dot" title="новое"></i>');
+  return '<div class="ar-w">'+
+    '<button class="ar-play" data-ar="say:'+w.id+'" aria-label="Слушать">▶</button>'+
+    '<div class="ar-wt"><div class="ar-wa" dir="rtl">'+esc(arShowHar(w.id) ? w.ar : arPlain(w.ar))+'</div>'+
+      '<div class="ar-wr">'+esc(w.tr)+' · '+esc(w.ru)+'</div></div>'+
+    (w.q ? '<button class="ar-qchip" data-ar="q:'+w.id+'">Коран '+w.q+'</button>' : '')+
+    dot+'</div>';
+}
+function arHero(big){
+  var total = arAll().length, learned = arLearned(), due = arDue().length, cur = arCurrent();
+  var pct = Math.round(learned / total * 100);
+  return '<div class="ar-hero'+(big ? " big" : "")+'">'+
+    '<div class="ar-hero-ar" dir="rtl">نَتَعَلَّمُ العَرَبِيَّةَ مَعًا</div>'+
+    '<div class="ar-hero-h">Изучаем арабский вместе</div>'+
+    '<div class="ar-hero-st">'+
+      '<div><b>'+learned+'</b><span>из '+total+' слов</span></div>'+
+      '<div><b>'+arDlgDone()+'</b><span>из '+AR_UNITS.length+' диалогов</span></div>'+
+      '<div><b>'+arWeek()+'</b><span>слов за неделю</span></div>'+
+    '</div>'+
+    '<div class="ar-hero-bar"><i style="width:'+Math.max(pct, learned ? 3 : 0)+'%"></i></div>'+
+    '<div class="ar-hero-go">'+(due ? 'Пора повторить: ' + plural(due, "слово", "слова", "слов")
+        : (learned || arS().w[cur.w[0].id] ? 'Продолжить: урок ' + cur.id + ' · ' + esc(cur.n) : 'Начать с урока 1 · Приветствие'))+'<span>›</span></div>'+
+  '</div>';
+}
+function viewArabic(){
+  var p = String(V.p || "");
+  if(p === "s" || p.indexOf("s:") === 0) return viewArStudy();
+  if(p.indexOf("u:") === 0) return viewArUnit(arUnit(p.slice(2)));
+  var h = ['<div class="stack">'];
+  h.push(arHero(true));
+  var due = arDue().length, cur = arCurrent();
+  h.push('<div class="ar-cta">'+
+    '<button class="btn" data-ar="study">'+(due ? 'Повторить слова (' + due + ')' : 'Учить новые слова')+'</button>'+
+    '<button class="btn sec" data-ar="unit:'+cur.id+'">Урок '+cur.id+': диалог</button></div>');
+
+  h.push('<div class="sec-h"><h3>Путь</h3></div><div class="ar-path">');
+  AR_UNITS.forEach(function(u){
+    var st = arUnitStat(u), done = st.learned === st.total && st.dlg, now = u === cur;
+    h.push('<button class="ar-step'+(done ? " done" : "")+(now ? " now" : "")+'" data-ar="unit:'+u.id+'">'+
+      '<span class="ar-num">'+(done ? "✓" : u.id)+'</span>'+
+      '<span class="ar-st-t"><b>'+esc(u.n)+'</b><span>'+st.learned+' из '+st.total+' слов'+(st.dlg ? ' · диалог пройден' : '')+'</span></span>'+
+      '<span class="ar-st-ar" dir="rtl">'+esc(u.ar)+'</span></button>');
+  });
+  h.push('</div>');
+
+  var m = arS().har;
+  h.push('<section class="card"><div class="eyebrow">Огласовки</div>'+
+    '<div class="ar-chips" style="margin-top:8px">'+
+      [["auto","Убирать постепенно"],["all","Всегда"],["none","Без огласовок"]].map(function(x){
+        return '<button class="chip'+(m === x[0] ? " on" : "")+'" data-ar="har:'+x[0]+'">'+x[1]+'</button>'; }).join("")+'</div>'+
+    '<p class="ar-note">Когда слово узнаёте уже в третий раз, оно показывается без огласовок: так глаз привыкает читать, как пишут в жизни. Нажмите на слово - огласовки вернутся.</p>'+
+    '<div class="eyebrow" style="margin-top:14px">Диалоги</div>'+
+    '<div class="ar-chips" style="margin-top:8px">'+
+      '<button class="chip'+(arS().pause ? "" : " on")+'" data-ar="pause:0">Подряд</button>'+
+      '<button class="chip'+(arS().pause ? " on" : "")+'" data-ar="pause:1">С паузой, чтобы повторить</button></div>'+
+  '</section>');
+
+  h.push('<p class="disclaimer" style="text-align:left">Темы идут в том же порядке, что в первом томе «Аль-Арабийя байна ядайк»; слова и диалоги составлены для RIZQ. '+
+    'Озвучивает голос телефона. У каждого слова, где это возможно, есть аят, в котором оно или однокоренное ему встречается. '+
+    'Выученные за неделю слова попадают в рейтинг участников, если вы в нём участвуете.</p>');
+  h.push('</div>');
+  return h.join("");
+}
+function viewArUnit(u){
+  if(!u) return '<div class="stack"><div class="empty"><b>Урок не найден</b></div></div>';
+  var st = arUnitStat(u), har = arUnitHar(u);
+  var h = ['<div class="stack">'];
+  h.push('<section class="ar-uhead"><div class="ar-uhead-ar" dir="rtl">'+esc(u.ar)+'</div>'+
+    '<div class="ar-uhead-h">Урок '+u.id+' · '+esc(u.n)+'</div>'+
+    '<div class="ar-uhead-s">'+st.learned+' из '+st.total+' слов выучено'+(st.dlg ? ' · диалог пройден' : '')+'</div></section>');
+
+  h.push('<div class="sec-h"><h3>Слова</h3></div>');
+  h.push('<div class="ar-cta"><button class="btn sm" data-ar="study:'+u.id+'">Учить слова урока</button>'+
+    '<button class="btn sm sec" data-ar="words:'+u.id+'">Слушать все слова</button></div>');
+  h.push('<section class="card ar-list">'+u.w.map(arWordRow).join("")+'</section>');
+
+  h.push('<div class="sec-h"><h3>Диалог</h3></div>');
+  h.push('<div class="ar-cta"><button class="btn sm" data-ar="dlg:'+u.id+'">▶ Слушать по фразам</button>'+
+    '<button class="btn sm sec" data-ar="stop">■ Стоп</button></div>');
+  h.push('<section class="card ar-dlg">'+u.d.map(function(l, i){
+    return '<button class="ar-line '+(l[0] === "А" ? "a" : "b")+'" data-arline="'+i+'" data-ar="line:'+u.id+':'+i+'">'+
+      '<span class="ar-who">'+l[0]+'</span>'+
+      '<span class="ar-lt"><span class="ar-la" dir="rtl">'+esc(har ? l[1] : arPlain(l[1]))+'</span>'+
+      '<span class="ar-lr">'+esc(l[2])+'</span><span class="ar-lru">'+esc(l[3])+'</span></span></button>';
+  }).join("")+'</section>');
+  if(!har) h.push('<p class="ar-note" style="padding:0 4px">Диалог без огласовок: слова этого урока вы уже узнаёте уверенно.</p>');
+  h.push(st.dlg
+    ? '<div class="ar-done">Диалог пройден '+esc(String(arS().d[u.id]).slice(8,10)+"."+String(arS().d[u.id]).slice(5,7))+'</div>'
+    : '<button class="btn" data-ar="dlgdone:'+u.id+'">Я прочитала диалог вслух</button>');
+  var nx = arUnit(u.id + 1);
+  if(nx) h.push('<button class="btn ghost sm" data-ar="unit:'+nx.id+'">Следующий урок: '+esc(nx.n)+' ›</button>');
+  h.push('</div>');
+  return h.join("");
+}
+function viewArStudy(){
+  var h = ['<div class="stack">'];
+  var id = AR.q[AR.i], w = id ? arWord(id) : null;
+  if(!w){
+    h.push('<section class="card ar-fin"><div class="ar-fin-ic">✓</div><b>Занятие закончено</b>'+
+      '<p>'+(AR.q.length ? 'Узнали '+plural(AR.ok, "раз", "раза", "раз")+', на повтор ушло '+AR.again+'. ' : 'Сейчас повторять нечего. ')+
+      'Выучено всего: '+plural(arLearned(), "слово", "слова", "слов")+', за эту неделю '+arWeek()+'.</p>'+
+      '<p class="ar-note">Слово становится выученным, когда вы узнаёте его в разные дни. Приходите завтра - часть слов вернётся на повторение.</p>'+
+      '<button class="btn" data-ar="back">Вернуться</button></section></div>');
+    return h.join("");
+  }
+  var fresh = !arS().w[id] || arBox(id) === 0, har = arShowHar(id) || AR.show;
+  h.push('<div class="ar-prog"><i style="width:'+Math.round(AR.i / AR.q.length * 100)+'%"></i></div>');
+  h.push('<div class="ar-cnt">'+(AR.i + 1)+' из '+AR.q.length+(fresh ? ' · новое слово' : ' · повторение')+'</div>');
+  h.push('<section class="ar-card">'+
+    '<button class="ar-big" dir="rtl" data-ar="say:'+id+'">'+esc(har ? w.ar : arPlain(w.ar))+'</button>'+
+    '<button class="ar-play lg" data-ar="say:'+id+'" aria-label="Слушать">▶</button>'+
+    (AR.show || fresh
+      ? '<div class="ar-ans"><div class="ar-ans-tr">'+esc(w.tr)+'</div><div class="ar-ans-ru">'+esc(w.ru)+'</div>'+
+          (w.q ? arAyahHtml(w) : '')+'</div>'
+      : '<button class="btn sec" data-ar="reveal">Показать перевод</button>')+
+  '</section>');
+  if(AR.show || fresh){
+    h.push('<div class="ar-cta">'+
+      '<button class="btn sec" data-ar="again">'+(fresh ? 'Повторить ещё раз' : 'Не вспомнила')+'</button>'+
+      '<button class="btn" data-ar="know">'+(fresh ? 'Запомнила' : 'Знаю')+'</button></div>');
+  }
+  h.push('</div>');
+  return h.join("");
+}
+/* аят со словом: подсвечиваем слова, в которых есть нужные буквы */
+function arAyahHtml(w){
+  var sp = w.q.split(":"), s = +sp[0], a = +sp[1], i = ayahGlobal(s, a);
+  var keys = arNorm(w.s).split(" ");
+  var txt = String(QA[i] || "").split(" ").map(function(x){
+    var n = arNorm(x);
+    var hit = keys.some(function(k){ return k.length > 1 && n.indexOf(k) >= 0; });
+    return hit ? '<mark>'+esc(x)+'</mark>' : esc(x);
+  }).join(" ");
+  return '<div class="ar-ayah"><div class="ar-ayah-h">В Коране · '+esc(surahTitle(s-1))+', '+a+'</div>'+
+    '<div class="ar-ayah-t" dir="rtl">'+txt+'</div>'+
+    '<button class="btn ghost sm" data-ar="open:'+s+':'+a+'">Открыть аят</button></div>';
+}
+
+/* ---------- нажатия ---------- */
+function arClick(v){
+  var p = String(v).split(":"), k = p[0];
+  if(k === "home"){ arStop(); V.ret = null; open("arabic", null); return; }
+  if(k === "unit"){ arStop(); open("arabic", "u:" + p[1]); return; }
+  if(k === "study"){ arStop(); arSession(p[1] || ""); open("arabic", p[1] ? "s:" + p[1] : "s"); return; }
+  if(k === "back"){ back(); return; }
+  if(k === "reveal"){ AR.show = true; render(); var w0 = arWord(AR.q[AR.i]); if(w0) arSay(w0.ar); return; }
+  if(k === "know"){ arStop(); arAnswer(true); return; }
+  if(k === "again"){ arStop(); arAnswer(false); return; }
+  if(k === "say"){ var w = arWord(p[1]); if(w){ arStop(); arSay(w.ar); } return; }
+  if(k === "stop"){ arStop(); return; }
+  if(k === "har"){ arS().har = p[1]; save(); render(); return; }
+  if(k === "pause"){ arS().pause = p[1] === "1" ? 1 : 0; save(); render(); return; }
+  if(k === "words"){
+    var u = arUnit(p[1]); if(!u) return;
+    arStop(); AR.play = { i:0 };
+    arPlayList(u.w.map(function(x){ return x.ar; }), 0); return;
+  }
+  if(k === "dlg"){
+    var u2 = arUnit(p[1]); if(!u2) return;
+    arStop(); AR.play = { i:0 };
+    arPlayList(u2.d.map(function(x){ return x[1]; }), 0); return;
+  }
+  if(k === "line"){
+    var u3 = arUnit(p[1]); if(!u3) return;
+    var li = +p[2]; arStop(); arMark(li);
+    arSay(u3.d[li][1], function(){ arMark(-1); }); return;
+  }
+  if(k === "dlgdone"){
+    if(!arS().d[p[1]]){ arS().d[p[1]] = todayKey(); addPoints(2, "arabic"); save(); scoreSync(); toast("Диалог пройден, машаа Аллах"); }
+    render(); return;
+  }
+  if(k === "q"){
+    var wq = arWord(p[1]); if(!wq) return;
+    arStop();
+    sheet('<h3>'+esc(wq.ru)+'</h3><div class="ar-wa" dir="rtl" style="font-size:26px;text-align:center;margin:4px 0 10px">'+esc(wq.ar)+'</div>'+
+      arAyahHtml(wq)+
+      '<p class="ar-note">Подсвечено слово с теми же буквами. В аяте может стоять другая форма того же корня.</p>');
+    return;
+  }
+  if(k === "open"){
+    arStop();
+    var gi = ayahGlobal(+p[1], +p[2]), pg = pageOf(gi);
+    if(typeof closeSheet === "function") closeSheet();
+    V.qPage = pg;
+    openReader(QPAGE[pg-1], (pg < QPAGE.length ? QPAGE[pg]-1 : QTOTAL-1), "page", gi);
+    return;
+  }
+}
+
+/* две маленькие кнопки под страницей Корана */
+function mushafTools(){
+  return '<div class="mus-tools">'+
+    '<button data-mtool="tajwid"><span>◌ّ</span>Правила таджвида</button>'+
+    '<button data-mtool="arabic"><span>ع</span>Изучаем арабский вместе</button></div>';
+}
+
 function qtCard(){
   var today = qtSum(1), week = qtSum(7), month = qtSum(30), year = qtSum(365);
   var goal = S.qtGoal || 10; // минут в день
   var pct = Math.min(100, Math.round(today / (goal * 60) * 100));
   return '<details class="card qt fold"'+(S.qtOpen ? ' open' : '')+' data-qtfold="1">'+
-    '<summary>Время с Кораном<span class="qt-sum">'+esc(qtText(today))+' сегодня</span></summary>'+
+    '<summary><span class="qt-ic">◷</span>Время с Кораном<span class="qt-sum">'+esc(qtText(today))+' сегодня</span></summary>'+
+    '<div class="qt-mini"><i style="width:'+pct+'%"></i></div>'+
     '<div class="qt-top" style="margin-top:10px"><div>'+
       '<div class="qt-big">'+esc(qtText(today))+'</div>'+
       '<div class="qt-sub">'+(today >= goal * 60
@@ -6321,6 +6916,7 @@ function viewMushaf(){
     '</div></div>'+
   '</div>');
 
+  h.push(mushafTools());
   if(qTajOn()){
     h.push('<div class="mus-legend">'+TJ_RULES.map(function(r){
       return '<span><i style="background:'+r.c+'"></i>'+esc(r.n)+'</span>';
@@ -6402,6 +6998,7 @@ function viewReader(){
     (prevStart!==null? '<button class="btn sec sm" style="flex:1" data-qread="'+prevStart+'" data-qkind="'+(V.qkind||"surah")+'">‹ Назад</button>':'')+
     (nextStart!==null? '<button class="btn sm" style="flex:1" data-qread="'+nextStart+'" data-qkind="'+(V.qkind||"surah")+'">Дальше ›</button>':'')+
     '</div>');
+  h.push(mushafTools());
   h.push('</div>');
   return h.join("");
 }
@@ -9959,7 +10556,7 @@ function periodDays(period){
 }
 var CAT_LABELS = {
   namaz:"Намаз", quran:"Коран", sadaqa:"Садака", shukr:"Шукр",
-  azkar:"Азкары", zikr:"Зикр", names:"Имена", self:"Самоанализ"
+  azkar:"Азкары", zikr:"Зикр", names:"Имена", self:"Самоанализ", arabic:"Арабский"
 };
 function catTotals(period){
   var days = periodDays(period), out = {};
@@ -11564,7 +12161,7 @@ function scoreStats(){
   return {
     points: S.points || 0, today: today, streak: streak(),
     azkars: S.azkarLifetime || 0, tasbih: S.tasbihTotal || 0,
-    names: namedCount(), quran: S.qMax || 0
+    names: namedCount(), quran: S.qMax || 0, words: arWeek()
   };
 }
 /* отправляем не чаще раза в час и только если человек включил участие */
@@ -11680,6 +12277,7 @@ function topStats(x){
   if(x.tasbih) p.push("зикров "+x.tasbih);
   if(x.names) p.push("имён "+x.names+"/99");
   if(x.quran) p.push("Коран "+x.quran+" стр.");
+  if(x.words) p.push("слов "+x.words+" за неделю");
   return p.join(" · ");
 }
 /* Значки. Считаются на самом телефоне по вашим же числам, поэтому видны и без интернета
@@ -11870,7 +12468,7 @@ function topDash(sc, d, me){
     (me && S.scoreBest ? '<div class="rec">Ваш рекорд недели: '+S.scoreBest+
       (me.points >= S.scoreBest && me.points > 0 ? ' · сейчас вы его повторяете' : me.points ? ' · сейчас ' + me.points : '')+'</div>' : '')+
     (me ? '<div class="dash-st">'+
-      [["серия", (me.streak||0)+" дн."], ["азкары", me.azkars||0], ["зикры", me.tasbih||0], ["имена", (me.names||0)+"/99"], ["Коран", (me.quran||0)+" стр."]]
+      [["серия", (me.streak||0)+" дн."], ["азкары", me.azkars||0], ["зикры", me.tasbih||0], ["имена", (me.names||0)+"/99"], ["Коран", (me.quran||0)+" стр."], ["арабский", (me.words||0)+" сл."]]
         .map(function(p){ return '<div><b>'+esc(String(p[1]))+'</b><span>'+p[0]+'</span></div>'; }).join("")+'</div>' : '')+
     (d && d.names && TOP.period === "league" ? '<div class="top-lig">'+d.names.map(function(n, i){
         return '<span class="'+(i+1 === d.league ? "on" : (i+1 < d.league ? "past" : ""))+'">'+esc(n.slice(0,3))+'</span>'; }).join("")+'</div>' : '')+
@@ -12602,7 +13200,7 @@ function viewAdmin(){
           '<div class="hl-d"><b>'+x.week+'</b><span>за неделю</span></div></div>'+
         '<div class="hl-tags"><span class="hl-tag">всего '+x.points+'</span>'+
           '<span class="hl-tag">азкары '+x.azkars+'</span><span class="hl-tag">зикры '+x.tasbih+'</span>'+
-          '<span class="hl-tag">имена '+x.names+'/99</span><span class="hl-tag">Коран '+x.quran+' стр.</span>'+
+          '<span class="hl-tag">имена '+x.names+'/99</span><span class="hl-tag">Коран '+x.quran+' стр.</span><span class="hl-tag">арабский '+(x.words||0)+' сл./нед.</span>'+
           (x.awards ? '<span class="hl-tag gold">наград: '+x.awards+'</span>' : '')+
           (x.shown ? '' : '<span class="hl-tag">скрыт(а) в списке</span>')+
           (x.flagged ? '<span class="hl-tag warn">цифры выросли слишком быстро</span>' : '')+
@@ -15291,7 +15889,7 @@ function viewSettings(){
    ============================================================ */
 var BK_KEYS = ["fav","tasbih","tasbihTotal","read","dcnt","practice","orders","readDay","done","salah","myduas","goals",
   "namesRead","daily","shukrNotes","shukr","checks","sunnah","health","pauses","qada","points","pointsDay",
-  "fin","finLimits","debts","finRepeat","fontSize","todos","quiz","azkarLifetime","qLast","qMax","qMarks","qplan","hifz","zakat","trip","kids","finReqs",
+  "fin","finLimits","debts","finRepeat","fontSize","todos","quiz","azkarLifetime","qLast","qMax","qMarks","qplan","hifz","ar","zakat","trip","kids","finReqs",
   "name","city","method","madhab","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll"];
 
 /* Что человек потеряет, если копии не будет. Считаем по тем же данным,
@@ -16287,6 +16885,7 @@ function render(){
   else if(V.view==="reader") html = viewReader();
   else if(V.view==="hifz") html = viewHifz();
   else if(V.view==="tajwid") html = viewTajwid();
+  else if(V.view==="arabic") html = viewArabic();
   else if(V.view==="guide") html = viewGuide();
   else if(V.view==="check") html = viewCheck();
   else if(V.view==="practice") html = viewPractice();
@@ -16381,7 +16980,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -16663,6 +17262,8 @@ document.getElementById("app").addEventListener("click", function(ev){
     save(); render(); $screen.scrollTop = 0; return;
   }
   if(d.qtaj!==undefined){ S.qTajweed = qTajOn() ? 0 : 1; save(); render(); toast(S.qTajweed ? "Подсказки чтения включены" : "Подсказки выключены"); return; }
+  if(d.ar){ arClick(d.ar); return; }
+  if(d.mtool){ qStop(); V.ret = "reader"; open(d.mtool, null); return; }
   if(d.mpage!==undefined){
     mushafGo(parseInt(d.mpage, 10)); return;
   }
