@@ -570,6 +570,13 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .nt-fold.on em{color:var(--surface)}
 .nt-fold.add{border-style:dashed;color:var(--accent-ink)}
 .nt-fsel{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink-2)}
+.nt-when{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-2)}
+.nt-when span{flex:none}
+.nt-when .search{margin:0;flex:1;min-width:0}
+.nt-when #nTm{flex:0 0 96px}
+.nt-whenhint{font-size:12.5px;color:var(--ink-3);margin:-4px 2px 0}
+.nt-when-c{font-size:12px;font-weight:600;color:var(--accent-ink);margin-top:6px}
+.rzc-note{width:100%;text-align:left}
 .nt-fsel .search{margin:0;flex:1}
 .nt-new .btn:first-child{flex:2}.nt-new .btn:last-child{flex:1}
 .nt-tpl{margin-top:-4px}
@@ -673,6 +680,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .rzc-tt{flex:1;min-width:0;font-size:14.5px;line-height:1.4}
 .rzc-tt em{font-style:normal;font-size:12.5px;color:var(--accent-ink);margin-left:8px;font-weight:600}
 .rzc-rep{flex:none;width:26px;text-align:center;color:var(--ink-3)}
+.tj-in{font-family:var(--f-ar);font-size:1.12em}
 .tj-plays{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
 .tj-play{font-size:12.5px;font-weight:600;padding:5px 10px;border-radius:999px;border:1px solid rgba(212,175,55,.45);color:var(--accent-ink);background:rgba(212,175,55,.08)}
 .rzc-late{display:block;font-size:12px;color:#C8553D;margin-top:1px}
@@ -2389,7 +2397,7 @@ function buildICS(days, alarmMin){
 }
 /* ---------- календарь по подписке ---------- */
 var CAL = { last:"", timer:null, busy:false };
-function calS(){ if(!S.cal || typeof S.cal !== "object") S.cal = {}; var c = S.cal; if(!c.opt) c.opt = { pr:1, hj:1, fast:0, td:1 }; return c; }
+function calS(){ if(!S.cal || typeof S.cal !== "object") S.cal = {}; var c = S.cal; if(!c.opt) c.opt = { pr:1, hj:1, fast:0, td:1 }; if(c.opt.nt === undefined) c.opt.nt = 1; return c; }
 function calUrl(){ return crmApi() + "/api/public/calfeed/" + calS().token + ".ics"; }
 function calWebcal(){ return calUrl().replace(/^https?:/, "webcal:"); }
 function calGoogle(){ return "https://calendar.google.com/calendar/r?cid=" + encodeURIComponent(calWebcal()); }
@@ -2446,6 +2454,20 @@ function calBuild(){
       ev("t-" + td.id, L);
     });
   }
+  if(o.nt){
+    notesAll().forEach(function(nn){
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(nn.dt || "")) return;
+      var nd0 = nn.dt.replace(/-/g, ""), NL = [], q0 = nn.dt.split("-");
+      if(/^\d{2}:\d{2}$/.test(nn.tm || "")){
+        var ne = new Date(+q0[0], +q0[1] - 1, +q0[2], +nn.tm.slice(0, 2), +nn.tm.slice(3) + 30);
+        NL.push("DTSTART:" + nd0 + "T" + nn.tm.replace(":", "") + "00", "DTEND:" + icsDate(ne) + "T" + pad(ne.getHours()) + pad(ne.getMinutes()) + "00");
+      } else {
+        NL.push("DTSTART;VALUE=DATE:" + nd0, "DTEND;VALUE=DATE:" + icsDate(new Date(+q0[0], +q0[1] - 1, +q0[2] + 1)));
+      }
+      NL.push("SUMMARY:" + icsEscape(nn.t || String(nn.b || "").slice(0, 60) || "Заметка"), "DESCRIPTION:" + icsEscape(String(nn.b || "").slice(0, 1500)));
+      ev("n-" + nn.id, NL);
+    });
+  }
   out.push("END:VCALENDAR");
   return out.join("\r\n") + "\r\n";
 }
@@ -2483,7 +2505,7 @@ function calCard(){
   function opt(k, n){ return '<button class="row" data-calopt="'+k+'"><span class="ic">'+(o[k] ? "☑" : "☐")+'</span>'+esc(n)+'</button>'; }
   return '<section class="card cal-c on"><div class="cal-h"><span class="cal-ic">▦</span><div><b>Календарь подключён</b><em>'+
       (c.err ? esc(c.err) : c.at ? 'обновлено в '+pad(new Date(c.at).getHours())+':'+pad(new Date(c.at).getMinutes()) : 'отправляем...')+'</em></div></div>'+
-    '<div class="rows" style="margin:10px 0">'+opt("pr", "Время намазов на 30 дней")+opt("hj", "Исламские даты")+opt("fast", "Дни желательного поста")+opt("td", "Задачи с датой")+'</div>'+
+    '<div class="rows" style="margin:10px 0">'+opt("pr", "Время намазов на 30 дней")+opt("hj", "Исламские даты")+opt("fast", "Дни желательного поста")+opt("td", "Задачи с датой")+opt("nt", "Заметки с датой")+'</div>'+
     '<a class="btn" style="display:block;text-align:center;text-decoration:none" href="'+esc(calGoogle())+'" target="_blank" rel="noopener">Добавить в Google Календарь</a>'+
     '<a class="btn sec" style="display:block;text-align:center;text-decoration:none;margin-top:8px" href="'+esc(calWebcal())+'">iPhone и другие календари</a>'+
     '<button class="btn ghost sm" style="width:100%;margin-top:8px" data-calcopy="1">Скопировать ссылку</button>'+
@@ -7177,6 +7199,7 @@ function noteCard(n){
     (li.length ? '<div class="nt-li">'+li.slice(0, 4).map(function(x){ return '<span class="'+(x.d ? "d" : "")+'">'+(x.d ? "☑" : "☐")+' '+esc(String(x.t).slice(0, 40))+'</span>'; }).join("")+
       (li.length > 4 ? '<em>ещё '+(li.length - 4)+'</em>' : '')+'</div><div class="nt-prog">'+done+' из '+li.length+'</div>' : '')+
     (noteTags(n).length ? '<div class="nt-tags">'+noteTags(n).slice(0, 3).map(function(t){ return '<span>'+esc(t)+'</span>'; }).join("")+'</div>' : '')+
+    (n.dt ? '<div class="nt-when-c">📅 '+esc(plDueLabel(n.dt))+(n.tm ? ', '+esc(n.tm) : '')+'</div>' : '')+
     '<div class="nt-d">'+(n.f && !NT.folder ? '🗀 '+esc(n.f)+' · ' : '')+noteDate(n.up)+'</div></button>';
 }
 function notesListHtml(){
@@ -7238,6 +7261,10 @@ function viewNote(n){
         '<input class="nt-itin" data-nit="'+i+'" value="'+esc(x.t)+'" placeholder="Пункт списка"><button class="nt-x" data-nitdel="'+i+'" aria-label="Удалить пункт">×</button></div>'; }).join("")+
     '</div><button class="nt-add" data-nitadd="1">+ пункт списка</button>'+
   '</section>');
+  h.push('<div class="nt-when"><span>📅 Дата</span><input id="nD" class="search" type="date" value="'+esc(n.dt || "")+'" aria-label="Дата заметки">'+
+    '<input id="nTm" class="search" type="time" value="'+esc(n.tm || "")+'" aria-label="Время"'+(n.dt ? '' : ' disabled')+'>'+
+    (n.dt ? '<button class="nt-x" data-ndtclr="1" aria-label="Убрать дату">×</button>' : '')+'</div>'+
+    (n.dt ? '<p class="nt-whenhint">Заметка видна в календаре «Ризкъ»'+(S.cal && S.cal.on ? ' и уходит в ваш календарь телефона' : '')+'.</p>' : ''));
   h.push('<label class="nt-fsel"><span>Папка</span><select id="nF" class="search">'+
     '<option value=""'+(n.f ? "" : " selected")+'>Без папки</option>'+
     noteFolders().map(function(f){ return '<option value="'+esc(f)+'"'+(n.f === f ? " selected" : "")+'>'+esc(f)+'</option>'; }).join("")+
@@ -7250,6 +7277,7 @@ function notesClick(d){
   var n = V.view === "notes" && V.p ? noteById(V.p) : null;
   if(d.nnew !== undefined){ noteNew(+d.nnew); return true; }
   if(d.nopen){ open("notes", d.nopen); return true; }
+  if(d.ndtclr !== undefined && n){ n.dt = ""; n.tm = ""; noteTouch(n); save(); render(); return true; }
   if(d.ntag !== undefined){ NT.tag = d.ntag; render(); return true; }
   if(d.nfold !== undefined){ NT.folder = d.nfold; render(); return true; }
   if(d.nfnew !== undefined){ var nf = noteFolderAdd(); if(nf){ closeSheet(); NT.folder = nf; render(); toast("Папка «" + nf + "» создана"); } return true; }
@@ -16124,6 +16152,9 @@ function tjPlayBtns(key){
   var list = typeof r[0] === "number" ? [r] : r;
   return '<span class="tj-plays">'+list.map(function(x){ return '<button class="tj-play" data-tjplay="'+x[0]+':'+x[1]+'" aria-label="Послушать аят '+x[0]+':'+x[1]+'">▶ '+x[0]+':'+x[1]+'</button>'; }).join("")+'</span>';
 }
+/* арабское внутри русского текста - изолированно, чтобы не путался порядок */
+var TJ_AR_RE = /[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]+(?:[ ]+[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]+)*/g;
+function tjMix(s){ return esc(s).replace(TJ_AR_RE, function(m){ return '<bdi dir="rtl" class="tj-in">'+m+'</bdi>'; }); }
 function viewTajwid(){
   var h = ['<div class="stack">'];
   h.push('<div class="card flat" style="padding:13px 15px;font-size:14px;color:var(--ink-2);line-height:1.55">'+
@@ -16136,10 +16167,10 @@ function viewTajwid(){
       '<div style="display:flex;align-items:baseline;gap:10px">'+
         '<b style="font-family:var(--f-display);font-size:16px;font-weight:600">'+(i + 1)+'. '+esc(t.n)+'</b>'+
         '<span class="tj-let" style="margin-left:auto;font-size:21px">'+esc(t.ar)+'</span></div>'+
-      '<p style="font-size:14.5px;line-height:1.65;color:var(--ink-2);margin:9px 0 0">'+esc(t.t)+'</p>'+
+      '<p style="font-size:14.5px;line-height:1.65;color:var(--ink-2);margin:9px 0 0">'+tjMix(t.t)+'</p>'+
       (t.items.length? '<div class="rows" style="margin-top:11px">'+ t.items.map(function(it){
         return '<div class="row" style="align-items:flex-start"><span class="tj-let" style="min-width:74px;font-size:19px;text-align:right">'+esc(it[0])+'</span>'+
-          '<span style="font-size:14px;line-height:1.5;color:var(--ink-2)">'+esc(it[1])+tjPlayBtns(it[0])+'</span></div>';
+          '<span style="font-size:14px;line-height:1.5;color:var(--ink-2)">'+tjMix(it[1])+tjPlayBtns(it[0])+'</span></div>';
       }).join("") +'</div>' : '')+
     '</section>');
   });
@@ -18562,9 +18593,10 @@ function rzCalCard(){
   for(var b = 0; b < lead; b++) cells.push('<div class="rzc-e"></div>');
   for(var d = 1; d <= days; d++){
     var key = y + "-" + pad(m + 1) + "-" + pad(d);
-    var n = act.filter(function(x){ return plOnDay(x, key) || (key === td && x.due < td); }).length;
+    var n = act.filter(function(x){ return plOnDay(x, key) || (key === td && x.due < td); }).length +
+      notesAll().filter(function(x){ return x.dt === key; }).length;
     var late = key < td && act.some(function(x){ return x.due === key; });
-    var al = d + ' ' + ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"][m] + (key === td ? ', сегодня' : '') + ', ' + (n ? plural(n, "задача", "задачи", "задач") : 'задач нет');
+    var al = d + ' ' + ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"][m] + (key === td ? ', сегодня' : '') + ', ' + (n ? plural(n, "запись", "записи", "записей") : 'записей нет');
     cells.push('<button class="rzc-d'+(key === td ? ' today' : '')+(key === sel ? ' sel' : '')+(key < td ? ' past' : '')+'" data-rzcd="'+key+'" aria-label="'+al+'"'+(key === sel ? ' aria-pressed="true"' : '')+'>'+
       '<b>'+d+'</b>'+(n ? '<i class="'+(late ? 'late' : '')+'">'+(n > 9 ? '9+' : n)+'</i>' : '<i></i>')+'</button>');
   }
@@ -18585,7 +18617,12 @@ function rzCalCard(){
         return '<div class="rzc-t">'+(cur ? '<button class="tick" data-pltoggle="'+x.id+'">✓</button>' : '<span class="rzc-rep">↻</span>')+
           '<span class="rzc-tt">'+esc(x.t)+(x.tm ? '<em>'+esc(x.tm)+'</em>' : '')+
           (sel === td && x.due < td ? '<small class="rzc-late">просрочено с '+esc(plDueLabel(x.due))+'</small>' : '')+'</span></div>';
-      }).join("") : '<p class="rzc-none">Задач на этот день нет</p>')+
+      }).join("") : '')+
+      notesAll().filter(function(x){ return x.dt === sel; }).map(function(x){
+        return '<button class="rzc-t rzc-note" data-nopen="'+x.id+'"><span class="rzc-rep">📝</span>'+
+          '<span class="rzc-tt">'+esc(x.t || String(x.b || "").slice(0, 40) || "Заметка")+(x.tm ? '<em>'+esc(x.tm)+'</em>' : '')+'</span></button>';
+      }).join("")+
+      (list.length || notesAll().some(function(x){ return x.dt === sel; }) ? '' : '<p class="rzc-none">Задач на этот день нет</p>')+
       '<button class="btn ghost sm" style="width:100%;margin-top:8px" data-rzcadd="'+sel+'">+ Задача на этот день</button></div>';
   }
   return h + '</section>';
@@ -20102,7 +20139,7 @@ function viewSettings(){
       esc(p.n)+'<span class="val" style="font-family:var(--f-display);font-weight:600;font-size:15.5px;color:var(--ink);font-variant-numeric:tabular-nums">'+hhmm(t[k])+'</span></div>';
   }).join("") +'</div>');
 
-  h.push('<p class="disclaimer">Расчёт астрономический. Сверьте с местной мечетью: в некоторых городах приняты поправки в 1-3 минуты.</p>');
+  h.push('<p class="disclaimer">'+(S.method === "auto" ? 'Время считается как в расписании муфтията вашего региона (Дагестан - муфтият Дагестана, остальная Россия - ДУМ РФ), с их поправками в минутах. ' : 'Расчёт астрономический. ')+'Если в вашей мечети принято иначе, ориентируйтесь на мечеть.</p>');
   h.push('<div class="rows" style="margin-top:6px"><button class="row" data-adm="entry"><span class="ic">⚿</span>'+
     '<div><div style="font-size:14.5px">Управление приложением</div><div style="font-size:12.5px;color:var(--ink-3)">'+(S.admTok ? "Вы вошли как администратор" : "Для администратора")+'</div></div>'+
     '<span class="val">›</span></button></div>');
@@ -21228,7 +21265,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -22024,6 +22061,13 @@ $screen.addEventListener("input", function(ev){
   if(t.id==="nameSearch" || t.id==="hadSearch" || t.id==="qSearchInput" || t.id==="knowSearch" || t.id==="homeSearch"){ V.q = t.value; render(); return; }
   if(t.id==="arDictQ"){ AR.dq = t.value; var dl = document.getElementById("arDictList"); if(dl) dl.innerHTML = arDictList(); return; }
   if(t.id==="notesQ"){ NT.q = t.value; var nl = document.getElementById("notesList"); if(nl) nl.innerHTML = notesListHtml(); return; }
+  if((t.id==="nD" || t.id==="nTm") && V.view==="notes" && V.p){
+    var nd = noteById(V.p); if(!nd) return;
+    if(t.id==="nD"){ nd.dt = t.value || ""; if(!nd.dt) nd.tm = ""; } else nd.tm = t.value || "";
+    noteTouch(nd); save();
+    if(t.id==="nD") render();
+    return;
+  }
   if(t.id==="nF" && V.view==="notes" && V.p){
     var nf2 = noteById(V.p); if(!nf2) return;
     var v = t.value;
