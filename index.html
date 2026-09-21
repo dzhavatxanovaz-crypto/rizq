@@ -619,6 +619,41 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .top-chat .cw-t b{display:block;font-size:15px}
 .top-chat .cw-t span{font-size:12.5px;color:var(--ink-2)}
 .top-chat .cw-go{color:#25D366}
+.qf-in{margin-top:10px}
+.qf-in>.card,.qf-in>details.card{box-shadow:none;border:0;padding:0;background:none;margin:0}
+.qf-in>.card>div:first-child>b:only-child{display:none}
+.qf-in .qblog{margin-top:12px !important;border-top:1px solid var(--line-soft) !important;padding-top:10px !important}
+.qf-in .qrmd .eyebrow{display:none}
+.qacts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.qacts button{display:flex;flex-direction:column;align-items:center;gap:5px;padding:11px 4px 9px;border-radius:16px;background:var(--surface);border:1px solid var(--line);font-size:12.5px;font-weight:600;color:var(--ink-2);position:relative}
+.qacts span{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(212,175,55,.12);color:var(--accent-ink);font-size:17px;font-family:var(--f-ar)}
+.qacts em{position:absolute;top:6px;right:8px;font-style:normal;font-size:10.5px;background:var(--accent-ink);color:var(--surface);border-radius:99px;padding:1px 6px}
+.qf>summary::after{margin-left:10px !important}
+.qf>summary .qt-sum{margin-left:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* «Мой путь»: блоки одной карточкой-списком */
+.qgroup{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden}
+.qgroup>.qf{border:0;border-radius:0;box-shadow:none;background:none;margin:0;padding:13px 14px}
+.qgroup>.qf+.qf{border-top:1px solid var(--line-soft)}
+.qgroup>.qf>summary{gap:11px;font-size:14.5px}
+.qgroup>.qf>summary .qt-sum{font-size:12.5px;color:var(--ink-3)}
+.qgroup>.qf[open]{background:var(--surface-2)}
+.qf-ic{flex:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(212,175,55,.13);color:var(--accent-ink);font-size:15px;line-height:1}
+.qf-ic svg{width:26px;height:26px}
+.qf-t{white-space:nowrap}
+@media (max-width:359px){
+  .qgroup>.qf{padding:12px 11px}
+  .qgroup>.qf>summary{gap:8px;font-size:13.5px}
+  .qgroup>.qf>summary .qt-sum{font-size:11.5px}
+  .qf-ic{width:28px;height:28px;font-size:13px}
+  .qf-ic svg{width:22px;height:22px}
+  details.qt.fold>summary{font-size:14px;padding:13px 11px;gap:8px}
+  details.qt.fold>summary .qt-ic{width:30px;height:30px;font-size:15px}
+}
+.qlist{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow)}
+.qlist .qrow{border:0;border-radius:0;box-shadow:none;background:none;padding:11px 14px}
+.qlist .qrow + .qrow{border-top:1px solid var(--line-soft)}
+.qrow-t{min-width:0;flex:1}
+.qrow-t span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .qd-read{margin-left:auto;font-size:13px;font-weight:600;padding:7px 12px;border-radius:11px;border:1px solid rgba(212,175,55,.5);color:var(--accent-ink);background:rgba(212,175,55,.08)}
 .qd-read.on{background:rgba(62,155,114,.16);border-color:rgba(62,155,114,.5);color:#3E9B72}
 .qrmd{border:1px solid rgba(62,155,114,.5);background:linear-gradient(150deg, rgba(62,155,114,.16), rgba(62,155,114,.03))}
@@ -633,9 +668,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .qrmd-note{font-size:12.5px !important}
 /* заголовок «Время с Кораном» - сплошная золотая полоса, самое заметное на экране Корана (просьба Заиры 22.09) */
 .qt.fold{padding:0 !important;overflow:hidden;border:2px solid #D4AF37;box-shadow:0 10px 28px rgba(212,175,55,.28)}
-.qt.fold>summary{white-space:nowrap;background:linear-gradient(120deg,#E9C85E 0%,#D4AF37 55%,#BF9A2C 100%);color:#1E2A5A;padding:15px 16px;font-size:16.5px;font-weight:700}
+.qt.fold>summary{white-space:nowrap;background:linear-gradient(120deg,#E9C85E 0%,#D4AF37 55%,#BF9A2C 100%);color:#1E2A5A;padding:14px 14px;font-size:15.5px;font-weight:700;gap:10px}
 .qt.fold>summary .qt-ic{background:#1E2A5A;color:#E9C85E;width:36px;height:36px;font-size:18px}
-.qt.fold>summary .qt-sum{white-space:nowrap;color:#1E2A5A !important;font-weight:600;background:rgba(255,255,255,.45);padding:4px 10px;border-radius:999px;font-size:13px}
+.qt.fold>summary .qt-sum{white-space:nowrap;color:#1E2A5A !important;font-weight:600;background:rgba(255,255,255,.45);padding:3px 9px;border-radius:999px;font-size:12px;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .qt.fold>summary::after{color:#1E2A5A}
 .qt.fold>*:not(summary){margin-left:16px;margin-right:16px}
 .qt.fold>*:last-child{margin-bottom:14px}
@@ -3517,16 +3552,29 @@ function qPlanTouch(){
   if(!log[key] || page > log[key]) log[key] = page;
 }
 
-function qPlanStart(days){
+function qPlanStart(days, per){
+  var base = qReadCount();
   S.qplan = {
     on: true,
     days: days,
+    per: per || 0,
+    base: base,
     startPage: pageOf(S.qMax || 0),
     startAt: todayKey(),
     log: {},
   };
   qPlanTouch();
   save();
+}
+/* Прочитанные страницы по дням: сколько до даты начала плана и сколько сегодня. */
+function qPlanReadStats(startAt, today){
+  var r = qReadAll(), before = 0, since = 0, now = 0;
+  for(var p in r){
+    var d = r[p] || "";
+    if(d < startAt) before++; else since++;
+    if(d === today) now++;
+  }
+  return { before: before, since: since, today: now };
 }
 
 function qPlanStop(){
@@ -3557,32 +3605,32 @@ function qPlanState(){
   qPlanTouch();
 
   var key = todayKey();
-  var log = qPlanLog();
-  var startPage = S.qplan.startPage || 1;
-  var nowPage = Math.max(pageOf(S.qMax || 0), log[key] || 0);
-  var total = 604 - startPage + 1;
-  var perDay = Math.max(1, Math.ceil(total / Math.max(1, S.qplan.days)));
+  var rs = qPlanReadStats(S.qplan.startAt || key, key);
+  /* планы, начатые до этой правки, не знали, сколько было прочитано до старта */
+  if(typeof S.qplan.base !== "number") S.qplan.base = rs.before;
+  var days = Math.max(1, S.qplan.days);
+  var total = Math.max(1, 604 - S.qplan.base);
+  var perDay = Math.max(1, S.qplan.per || Math.ceil(total / days));
+  var readAll = qReadCount();
 
   var dayNo = qPlanDayNo();
-  var todayStart = qPlanPageBefore(key);
-  var todayRead = Math.max(0, nowPage - todayStart);
-
-  // Где полагается быть к концу сегодняшнего дня.
-  var due = Math.min(604, startPage - 1 + perDay * dayNo);
-  var behind = due - nowPage;
+  // Сколько полагается прочитать к концу сегодняшнего дня - ровно по календарю.
+  var due = Math.min(total, Math.ceil(total * Math.min(dayNo, days) / days));
+  var behind = due - rs.since;
 
   return {
     perDay: perDay,
-    todayRead: todayRead,
-    todayLeft: Math.max(0, perDay - todayRead),
+    todayRead: rs.today,
+    todayLeft: Math.max(0, perDay - rs.today),
     dayNo: dayNo,
-    daysLeft: Math.max(0, S.qplan.days - dayNo + 1),
-    page: nowPage,
-    left: Math.max(0, 604 - nowPage),
+    daysLeft: Math.max(0, days - dayNo + 1),
+    page: Math.max(1, pageOf(S.qLast || 0)),
+    read: readAll,
+    left: Math.max(0, 604 - readAll),
     behind: behind > 0 ? behind : 0,
     ahead: behind < 0 ? -behind : 0,
-    done: nowPage >= 604,
-    pct: Math.min(100, Math.round(((nowPage - startPage + 1) / total) * 100)),
+    done: readAll >= 604 || rs.since >= total,
+    pct: Math.min(100, Math.round(rs.since / total * 100)),
   };
 }
 
@@ -4167,7 +4215,7 @@ function viewHomeMain(){
       '<span style="font-size:20px;flex:none">﴾﴿</span>'+
       '<span style="flex:1;min-width:0"><b style="font-family:var(--f-display);font-size:14.5px;display:block">'+
         (qp.todayLeft ? 'Коран: ' + plural(qp.todayLeft, 'страница', 'страницы', 'страниц') + ' на сегодня' : 'Коран: норма на сегодня прочитана')+'</b>'+
-      '<span style="font-size:12.5px;color:var(--ink-3)">страница '+qp.page+' из 604 · '+daysWord(qp.daysLeft)+' до конца плана</span></span>'+
+      '<span style="font-size:12.5px;color:var(--ink-3)">прочитано '+qp.read+' из 604 · '+daysWord(qp.daysLeft)+' до конца плана</span></span>'+
       '<span style="color:var(--ink-3)">›</span></button>');
   })();
 
@@ -6147,7 +6195,7 @@ function qPlanCard(){
     return '<section class="card">'+
       '<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px">'+
         '<b style="font-family:var(--f-display);font-size:15px">План чтения</b></div>'+
-      '<p class="note" style="margin:0 0 12px">Выберите срок - приложение посчитает, сколько страниц в день, и будет считать вместе с вами. Начинаем с той страницы, где вы сейчас.</p>'+
+      '<p class="note" style="margin:0 0 12px">Выберите срок - приложение посчитает, сколько страниц в день, и будет считать вместе с вами. Считаются страницы, которые вы действительно прочитали: открытые не меньше 30 секунд или отмеченные по бумажному мусхафу.</p>'+
       '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
         '<button class="btn sec sm" style="flex:1;min-width:96px" data-qplan="30">за 30 дней</button>'+
         '<button class="btn sec sm" style="flex:1;min-width:96px" data-qplan="60">за 60 дней</button>'+
@@ -6187,7 +6235,7 @@ function qPlanCard(){
     '<div style="font-family:var(--f-display);font-size:17px;font-weight:600;margin-bottom:8px">'+esc(line)+'</div>'+
     '<div class="bar"><i style="width:'+dayPct+'%"></i></div>'+
     '<div style="font-size:12.5px;color:var(--ink-3);margin-top:8px">'+
-      'Сегодня '+st.todayRead+' из '+st.perDay+' · всего страница '+st.page+' из 604 · '+esc(note)+'</div>'+
+      'Сегодня '+st.todayRead+' из '+st.perDay+' · прочитано '+st.read+' из 604 · '+esc(note)+'</div>'+
     '<button class="btn sec sm" style="margin-top:12px;width:100%" data-qplanoff="1">Отменить план</button>'+
   '</section>';
 }
@@ -6563,7 +6611,7 @@ function qRamadanCard(){
       'Если в месяце есть дни, когда вы не читаете (у женщин - критические дни), укажите их: норма пересчитается только на дни чтения. ')+
       'Чтобы завершить хатм '+(r.inR ? 'до конца Рамадана' : 'к началу Рамадана')+', читайте '+plural(per, "страницу", "страницы", "страниц")+' в день чтения'+
       (per <= 3 ? ' - это меньше 15 минут.' : per <= 10 ? ' - примерно полчаса.' : '.')+'</p>'+
-    '<button class="btn sm" data-qplan="'+readDays+'">План чтения до '+(r.inR ? 'конца Рамадана' : 'Рамадана')+'</button></section>';
+    '<button class="btn sm" data-qplan="'+Math.max(1, r.days)+'" data-qplanper="'+per+'">План чтения до '+(r.inR ? 'конца Рамадана' : 'Рамадана')+'</button></section>';
 }
 /* Кто читает по бумажному мусхафу, отмечает прочитанное сам: «с какой по какую
    страницу». Страницы засчитываются так же, как прочитанные в приложении, - в прогресс,
@@ -6592,6 +6640,21 @@ function qBookLog(){
   if(added) addPoints(POINTS.daily, "quran");
   save(); render(); scoreSync();
   toast(added ? "Засчитано: " + plural(added, "страница", "страницы", "страниц") + (added < b - a + 1 ? " (остальные уже были отмечены)" : "") : "Эти страницы уже отмечены раньше");
+}
+/* Блоки экрана Корана сворачиваются: в заголовке видно главное число, подробности - по нажатию.
+   Что открыто, помним в S.qfold. */
+function qFold(key, title, sum, inner, ic){
+  var open = S.qfold && S.qfold[key];
+  return '<details class="card fold qf" data-qfold="'+key+'"'+(open ? ' open' : '')+'><summary>'+
+    (ic ? '<span class="qf-ic">'+ic+'</span>' : '')+'<span class="qf-t">'+esc(title)+'</span>'+
+    (sum ? '<span class="qt-sum">'+esc(sum)+'</span>' : '')+'</summary><div class="qf-in">'+inner+'</div></details>';
+}
+/* маленькое кольцо прогресса для строки «Прочитано» */
+function qRingIc(pct){
+  var c = 62.8, off = (c * (1 - Math.min(100, pct) / 100)).toFixed(1);
+  return '<svg viewBox="0 0 26 26"><circle cx="13" cy="13" r="10" fill="none" stroke="var(--line)" stroke-width="3"/>'+
+    '<circle cx="13" cy="13" r="10" fill="none" stroke="var(--accent-ink)" stroke-width="3" stroke-linecap="round" '+
+    'stroke-dasharray="'+c+'" stroke-dashoffset="'+off+'" transform="rotate(-90 13 13)"/></svg>';
 }
 function qtSum(days){
   var t = qtAll(), n = 0, d = new Date();
@@ -8426,7 +8489,7 @@ function qtCard(){
   var goal = S.qtGoal || 10; // минут в день
   var pct = Math.min(100, Math.round(today / (goal * 60) * 100));
   return '<details class="card qt fold"'+(S.qtOpen ? ' open' : '')+' data-qtfold="1">'+
-    '<summary><span class="qt-ic">◷</span>Время с Кораном<span class="qt-sum">'+esc(qtText(today))+' сегодня</span></summary>'+
+    '<summary><span class="qt-ic">◷</span>Время с Кораном<span class="qt-sum">'+esc(qtText(today))+'</span></summary>'+
     '<div class="qt-mini"><i style="width:'+pct+'%"></i></div>'+
     '<div class="qt-top" style="margin-top:10px"><div>'+
       '<div class="qt-big">'+esc(qtText(today))+'</div>'+
@@ -8452,17 +8515,6 @@ function qtCard(){
 function viewQuranHome(){
   var h = ['<div class="stack">'];
 
-  h.push('<button class="cat-wide gold" data-guide="aboutquran">'+
-    '<span class="cw-ic">﴾﴿</span>'+
-    '<span class="cw-t"><b>О Коране</b>'+
-    '<span>откровение, сохранение, кираат, тафсир и перевод</span></span>'+
-    '<span class="cw-go">›</span></button>');
-  h.push('<button class="cat-wide" data-guide="quranadab" style="margin-top:10px">'+
-    '<span class="cw-ic">✦</span>'+
-    '<span class="cw-t"><b>Адабы к Корану</b>'+
-    '<span>чистота, как читать, как обращаться с мусхафом</span></span>'+
-    '<span class="cw-go">›</span></button>');
-
   /* продолжить чтение */
   var last = S.qLast || 0;
   h.push('<button class="mihrab" style="border-radius:90px 90px var(--r-lg) var(--r-lg);padding:22px 20px 18px;width:100%" data-qread="'+last+'">'+
@@ -8470,29 +8522,34 @@ function viewQuranHome(){
     '<div class="ar" style="font-size:26px;line-height:1.9">'+esc(QSUR[surahOf(last)][1])+'</div>'+
     '<div style="font-family:var(--f-display);font-size:18px;font-weight:600;margin-top:4px">'+esc(qRef(last))+'</div>'+
     '<div class="ru" style="font-size:13.5px;color:rgba(255,255,255,.7)">Страница '+pageOf(last)+' · джуз '+juzOf(last)+'</div></button>');
+  /* «О Коране» - тонкой строкой сразу под карточкой суры (просьба Заиры 22.09) */
+  var qoffN = qOffState().juz.length + qOffState().sura.length;
+  h.push('<div class="qacts">'+
+    '<button data-guide="aboutquran"><span>۞</span>О Коране</button>'+
+    '<button data-open="qsearch"><span>⌕</span>Поиск</button>'+
+    '<button data-open="qmarks"><span>🔖</span>Закладки'+(S.qMarks.length ? '<em>'+S.qMarks.length+'</em>' : '')+'</button>'+
+    '<button data-open="qoffline"><span>⤓</span>Офлайн'+(qoffN ? '<em>'+qoffN+'</em>' : '')+'</button></div>');
+  h.push('<div class="sec-h"><h3>Мой путь</h3></div>');
+  h.push(qtCard());
+  h.push('<div class="qgroup">');
 
   /* прогресс хатма */
   var qrd = qReadCount(), pct = Math.min(100, Math.round(qrd / 604 * 100));
-  h.push('<section class="card">'+
-    '<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:9px">'+
-      '<b style="font-family:var(--f-display);font-size:15px">Прочитано Корана</b>'+
-      '<span style="margin-left:auto;font-family:var(--f-display);font-weight:700;color:var(--accent-ink)">'+pct+'%</span></div>'+
+  h.push(qFold("read", "Прочитано", qrd + " из 604 · " + (qrd && !pct ? "<1" : pct) + "%",
     '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
-    '<div style="font-size:13px;color:var(--ink-3);margin-top:8px">'+plural(qrd, 'страница', 'страницы', 'страниц')+' из 604 прочитано'+(qrd && qrd < 604 && pct === 0 ? ' (меньше 1%)' : '')+'</div>'+
-    '<div style="font-size:12px;color:var(--ink-3);margin-top:5px;line-height:1.45">Страница засчитывается, когда была открыта не меньше 30 секунд. Каждая страница - один раз, сколько бы вы её ни открывали.</div></section>');
+    '<div style="font-size:13px;color:var(--ink-3);margin-top:8px">'+plural(qrd, 'страница', 'страницы', 'страниц')+' из 604 прочитано</div>'+
+    '<div style="font-size:12px;color:var(--ink-3);margin-top:5px;line-height:1.45">Страница засчитывается, когда была открыта не меньше 30 секунд. Каждая страница - один раз, сколько бы вы её ни открывали. Читаете по бумажному мусхафу - отметьте страницы ниже.</div>'+
+    qBookLogCard(), qRingIc(pct)));
 
-  h.push(qBookLogCard());
-  h.push(qRamadanCard());
-  h.push(qtCard());
-  h.push(qPlanCard());
-  h.push(hifzCard());
+  var qri = qRamadanInfo(), qrLeft = Math.max(0, 604 - qReadCount()), qrOff = Math.max(0, Math.min(15, S.qrmdOff || 0));
+  var qrDays = qri ? Math.max(1, qri.days - Math.round(qri.days * qrOff / 30)) : 1;
+  if(qri) h.push(qFold("rmd", qri.inR ? "До конца Рамадана" : "До Рамадана", qri.days + " дн. · " + (qrLeft ? Math.ceil(qrLeft / qrDays) + " стр." : "всё прочитано"), qRamadanCard(), "☾"));
+  var qps = qPlanState();
+  h.push(qFold("plan", "План чтения", qps ? (qps.done ? "завершён" : "сегодня " + Math.min(qps.todayRead, qps.perDay) + " из " + qps.perDay) : "не выбран", qPlanCard(), "☰"));
+  var hzn = hifzCount(), hzd = hifzDueList().length;
+  h.push(qFold("hifz", "Заучивание", hzn ? plural(hzn, "аят", "аята", "аятов") + (hzd ? " · повторить " + hzd : "") : "пока ничего", hifzCard(), "✦"));
+  h.push('</div>');
 
-  h.push('<div style="display:flex;gap:8px">'+
-    '<button class="btn sec sm" style="flex:1" data-open="qmarks">Закладки'+(S.qMarks.length? " · "+S.qMarks.length : "")+'</button>'+
-    '<button class="btn sec sm" style="flex:1" data-open="qsearch">Поиск по Корану</button></div>');
-
-  h.push('<button class="btn sec sm" style="width:100%;margin-top:8px" data-open="qoffline">Аудио без интернета'+
-    (qOffState().juz.length + qOffState().sura.length ? " · скачано " + (qOffState().juz.length + qOffState().sura.length) : "")+'</button>');
 
 
   /* переключатель режимов */
@@ -8504,20 +8561,24 @@ function viewQuranHome(){
     '</div>');
 
   if(V.qmode === "surah"){
+    h.push('<div class="qlist">');
     QSUR.forEach(function(s, i){
       h.push('<button class="qrow" data-qsurah="'+i+'">'+
         '<span class="qnum">'+s[0]+'</span>'+
-        '<div style="min-width:0"><b>'+esc(s[2])+'</b>'+
-        '<span>'+esc(s[3])+' · '+s[4]+' аят'+(s[4]%10===1&&s[4]%100!==11?"":"ов")+' · '+(s[5]==="meccan"?"мекканская":"мединская")+'</span></div>'+
+        '<div class="qrow-t"><b>'+esc(s[2])+'</b>'+
+        '<span>'+esc(s[3])+' · '+s[4]+' аят'+(s[4]%10===1&&s[4]%100!==11?"":"ов")+' · '+(s[5]==="meccan"?"Мекка":"Медина")+'</span></div>'+
         '<span class="qar">'+esc(s[1])+'</span></button>');
     });
+    h.push('</div>');
   } else if(V.qmode === "juz"){
+    h.push('<div class="qlist">');
     QJUZ.forEach(function(start, j){
       h.push('<button class="qrow" data-qjuz="'+j+'">'+
         '<span class="qnum">'+(j+1)+'</span>'+
-        '<div style="min-width:0"><b>Джуз '+(j+1)+'</b><span>начало: '+esc(qRef(start))+' · стр. '+pageOf(start)+'</span></div>'+
+        '<div class="qrow-t"><b>Джуз '+(j+1)+'</b><span>начало: '+esc(qRef(start))+' · стр. '+pageOf(start)+'</span></div>'+
         '<span class="qar">'+esc(QSUR[surahOf(start)][1])+'</span></button>');
     });
+    h.push('</div>');
   } else {
     h.push('<div class="qgrid">');
     for(var p = 0; p < QPAGE.length; p++){
@@ -13315,6 +13376,9 @@ function viewGuide(){
     '<p style="font-size:13px;line-height:1.6;color:var(--ink-3);margin:12px 0 0">' + esc(g.madhab) + '</p>' +
     '<button class="btn ghost sm" style="width:100%;margin-top:13px" data-fav="' + key + '">' +
       (isFav(key) ? "★ Сохранено" : "☆ Сохранить") + '</button></section>');
+
+  if(V.p === "aboutquran") h.push('<button class="cat-wide gold" data-guide="quranadab"><span class="cw-ic">✦</span>'+
+    '<span class="cw-t"><b>Адабы к Корану</b><span>чистота, как читать, как обращаться с мусхафом</span></span><span class="cw-go">›</span></button>');
 
   /* оглавление: длинные руководства нужно уметь пролистать по названиям */
   var navBlocks = g.blocks.filter(function(b){ return !b.div; });
@@ -19135,6 +19199,7 @@ document.getElementById("app").addEventListener("toggle", function(ev){
   var t = ev.target;
   if(t && t.dataset && t.dataset.qtfold !== undefined){ S.qtOpen = t.open ? 1 : 0; save(); }
   if(t && t.dataset && t.dataset.tjx !== undefined){ S.tjxOpen = t.open ? 1 : 0; save(); }
+  if(t && t.dataset && t.dataset.qfold !== undefined){ if(!S.qfold) S.qfold = {}; S.qfold[t.dataset.qfold] = t.open ? 1 : 0; save(); }
   if(t && t.dataset && t.dataset.qblogfold !== undefined){ S.qblogOpen = t.open ? 1 : 0; save(); }
   if(t && t.dataset && t.dataset.bfold !== undefined){ S.badgesOpen = t.open ? 1 : 0; save(); }
 }, true);
@@ -19295,8 +19360,13 @@ document.getElementById("app").addEventListener("click", function(ev){
   }
   if(d.qoffstop!==undefined){ QOFF.stop = true; return; }
   if(d.qoffclear!==undefined){ qOffClear(); return; }
-  if(d.qplan){ qPlanStart(parseInt(d.qplan,10)); render();
-    toast("План на " + d.qplan + " дней. Считаем с текущей страницы"); return; }
+  if(d.qplan){
+    var qpd = parseInt(d.qplan, 10), qpp = parseInt(d.qplanper, 10) || 0;
+    qPlanStart(qpd, qpp); render();
+    var qps2 = qPlanState();
+    toast("План: " + plural(qps2 ? qps2.perDay : 1, "страница", "страницы", "страниц") + " в день" + (qpp ? " чтения" : "") + ", " + daysWord(qpd));
+    return;
+  }
   if(notesClick(d)) return;
   if(d.qblog){ qBookLog(); return; }
   if(d.qrmd){ S.qrmdOff = Math.max(0, Math.min(15, (S.qrmdOff || 0) + parseInt(d.qrmd, 10))); save(); render(); return; }
@@ -19434,7 +19504,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.hlrvrep){ hlRvPost("report", d.hlrvrep, "Жалоба отправлена. Спасибо"); return; }
   if(d.hlrvdel){ hlRvPost("delete", d.hlrvdel, "Отзыв удалён"); return; }
   if(d.adm){ admClick(d.adm); return; }
-  if(d.qtfold!==undefined || d.bfold!==undefined || d.tjx!==undefined){ return; }
+  if(d.qtfold!==undefined || d.bfold!==undefined || d.tjx!==undefined || d.qfold!==undefined){ return; }
   if(d.qbook!==undefined){
     S.qBook = d.qbook === "1" ? 1 : 0;
     if(qBookOn()) V.qPage = pageOf(V.qFrom || S.qLast || 0);
