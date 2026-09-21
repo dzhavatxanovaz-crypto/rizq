@@ -273,6 +273,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .salam{position:relative;margin:14px 0 0}
 .salam .ar{font-family:var(--f-ar);font-size:22px;color:var(--gold-soft);direction:rtl;line-height:1.9}
 .salam .ru{font-size:14px;color:rgba(255,255,255,.72);margin-top:2px}
+.rmd-pill{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:5px 12px;border-radius:999px;font-size:13px;font-weight:600;color:#F1D77E;background:rgba(212,175,55,.16);border:1px solid rgba(212,175,55,.45)}
+.rmd-pill span{font-size:14px}
 .hdr-title{position:relative;font-family:var(--f-display);font-size:22px;font-weight:600;margin:0;
   line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .hdr-sub{position:relative;font-size:13.5px;color:rgba(255,255,255,.66);margin-top:3px}
@@ -3085,6 +3087,23 @@ function findNext(m,d){
   }
   return null;
 }
+/* Сколько дней до Рамадана - на главной под датой. Считаем по календарю Умм аль-Кура
+   раз в день: перебор дат не нужен при каждой перерисовке шапки. Начало месяца
+   в вашей местности объявляют по луне, поэтому дата может сдвинуться на день. */
+var RMD = { day:"", t:"" };
+function ramadanText(){
+  var k = todayKey();
+  if(RMD.day === k) return RMD.t;
+  var t = "", h = hijriOf(new Date());
+  if(h && h.m === 9) t = "Рамадан, " + h.d + "-й день";
+  else { var n = findNext(9, 1); if(n) t = n.days === 1 ? "Рамадан завтра" : "До Рамадана " + daysWord(n.days); }
+  RMD.day = k; RMD.t = t;
+  return t;
+}
+function ramadanPill(){
+  var t = ramadanText();
+  return t ? '<button class="rmd-pill" data-open="calendar"><span>☾</span>'+esc(t)+'</button>' : '';
+}
 function daysWord(n){ return plural(n,"день","дня","дней"); }
 function isFastDay(date){
   var h = hijriOf(date), wd = date.getDay();
@@ -3822,7 +3841,7 @@ function renderHdr(){
       '<button class="hdr-btn" data-find="1" aria-label="Поиск" style="margin-left:0">⌕</button>'+
       '<button class="hdr-btn" data-open="settings" aria-label="Настройки" style="margin-left:0">⚙</button></div></div>'+
       '<div class="salam"><div class="ar">السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللهِ</div>'+
-      '<div class="ru">'+esc(ruDate())+(hijri()? ' · '+esc(hijri()) : '')+'</div></div></header>';
+      '<div class="ru">'+esc(ruDate())+(hijri()? ' · '+esc(hijri()) : '')+'</div>'+ramadanPill()+'</div></header>';
     return;
   }
   $hdr.innerHTML = '<header class="hdr"><div class="hdr-row"><div>'+
