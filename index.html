@@ -695,6 +695,13 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hs .search{padding-left:40px;padding-right:40px}
 .hs-ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:19px;color:var(--ink-3);pointer-events:none}
 .hs-x{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;font-size:20px;color:var(--ink-3)}
+.payr{text-align:center;padding:8px 4px 14px}
+.payr-ic{width:58px;height:58px;margin:4px auto 10px;border-radius:50%;display:grid;place-items:center;font-size:28px;font-weight:700;color:#fff;background:linear-gradient(135deg,#3E9B72,#2C7A57)}
+.payr h3{margin:0 0 8px}
+.payr p{font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 14px}
+.payr-sp{display:flex;align-items:center;justify-content:center;gap:10px;font-size:13.5px;color:var(--ink-3)}
+.payr-sp i{width:16px;height:16px;border-radius:50%;border:2px solid rgba(212,175,55,.3);border-top-color:#D4AF37;animation:payrspin .9s linear infinite}
+@keyframes payrspin{to{transform:rotate(360deg)}}
 .tn{margin-top:12px;border-radius:14px;border:1px solid rgba(212,175,55,.4);background:linear-gradient(160deg,#1E2A5A,#111A3F);color:#F4EBD0;padding:12px 14px}
 .tn-r{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;font-size:14px;color:rgba(244,235,208,.75)}
 .tn-r b{font-family:var(--f-display);font-size:16px;color:#F4EBD0}
@@ -745,6 +752,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .b2-ch-h h2{font-family:'PT Serif',Georgia,serif;font-weight:700;font-size:calc(var(--b2fs) * 1.55);line-height:1.2;margin:10px 18px 0;color:var(--b2ink)}
 .b2-orn{color:var(--b2acc);font-size:18px;margin-top:12px;opacity:.8}
 .b2-meta{font-size:12px;color:var(--b2soft);margin-top:6px}
+.b2-big .b2-body{text-align:left}
+.b2-fab{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom) + 86px);z-index:30;display:flex;flex-direction:column;gap:8px}
+.b2-fab button{width:46px;height:46px;border-radius:14px;border:1px solid rgba(212,175,55,.55);background:rgba(20,27,58,.88);color:#F1D77E;
+  font-family:'PT Serif',Georgia,serif;font-weight:700;font-size:18px;line-height:1;box-shadow:0 8px 20px -8px rgba(0,0,0,.6);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.b2-fab button small{font-size:14px;margin-left:1px}
+.b2-fab button[disabled]{opacity:.35}
 .b2-aa{position:absolute;right:-6px;top:-10px;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);color:var(--b2acc);font-family:'PT Serif',Georgia,serif;font-weight:700;font-size:15px;background:transparent}
 .b2-body{font-family:'PT Serif',Georgia,serif;font-size:var(--b2fs);line-height:1.72;text-align:justify;hyphens:auto;-webkit-hyphens:auto;color:var(--b2ink)}
 .b2-sans .b2-body{font-family:var(--f-body)}
@@ -5231,9 +5244,46 @@ var DEEP_VIEWS = ["courses","sadaqa","zakat","names","hadith","sira","book1","qi
                   "calendar","tasbih","suras","halal","top","qduas","duaall","report","share","consulting","live","book2","umrah","installment","kids","hajjtrip","salahpics","arabic"];
 var DEEP_TABS  = ["home","quran","dua","journal","income","prof"];
 
+var PAYR = { timer:null, until:0, id:"" };
+function payReturnTitle(id){ return id === BOOK2.id ? BOOK2.n : id === BOOK1.id ? BOOK1.n : (COURSES.filter(function(c){ return c.id === id; })[0] || {}).n || ""; }
+function payReturn(id, token){
+  S.orders = S.orders || [];
+  var o = S.orders.filter(function(x){ return x.token === token; })[0];
+  if(!o && /^[a-f0-9]{32}$/.test(token || "")){
+    o = { token:token, id:id, title:payReturnTitle(id), at:Date.now(), status:"pending" };
+    S.orders.push(o); save();
+  }
+  var isBook = id === BOOK2.id || id === BOOK1.id, t = payReturnTitle(id);
+  sheet('<div class="payr"><div class="payr-ic">✓</div><h3>Оплата прошла</h3>'+
+    '<p>'+(isBook ? 'Спасибо! Сейчас откроется книга «'+esc(t)+'».' : 'Спасибо! Сейчас откроем доступ к «'+esc(t)+'».')+'</p>'+
+    '<div class="payr-sp" id="payrSp"><i></i>Получаем подтверждение от банка...</div></div>');
+  PAYR.id = id; PAYR.until = Date.now() + 3 * 60000;
+  payReturnTick();
+}
+function payReturnTick(){
+  clearTimeout(PAYR.timer);
+  var o = (S.orders || []).filter(function(x){ return x.id === PAYR.id; }).sort(function(a, b){ return b.at - a.at; })[0];
+  if(!o) return;
+  /* уже оплачено раньше - просто открываем */
+  if(o.status === "paid"){
+    if(PAYR.id === BOOK2.id){ if(b2Data()){ closeSheet(); V.tab = "income"; open("book2ch", b2AfterPay()); setTimeout(b2Restore, 60); toast("Книга открыта. Приятного чтения!"); } else b2Load(function(){ closeSheet(); V.tab = "income"; open("book2ch", b2AfterPay()); setTimeout(b2Restore, 60); toast("Книга открыта. Приятного чтения!"); }); }
+    else if(PAYR.id === BOOK1.id){ closeSheet(); V.tab = "income"; open("book1"); }
+    return;
+  }
+  ordersCheck();
+  if(Date.now() < PAYR.until) PAYR.timer = setTimeout(payReturnTick, 3000);
+  else { var sp = document.getElementById("payrSp"); if(sp) sp.innerHTML = 'Банк ещё не прислал подтверждение. Книга откроется сама, как только оно придёт, - можно закрыть это окно.'; }
+}
 function deepOpen(){
   try{
     var q = String(location.search || "");
+    var mp = q.match(/[?&]paid=([a-zA-Z0-9_]+)/), mt = q.match(/[?&]t=([a-f0-9]{32})/);
+    if(mp){
+      try{ history.replaceState(null, "", location.pathname); }catch(e){}
+      setTimeout(function(){ payReturn(mp[1], mt ? mt[1] : ""); }, 300);
+      if(mp[1] === BOOK2.id || mp[1] === BOOK1.id){ V.tab = "income"; open(mp[1] === BOOK2.id ? "book2" : "book1", null); }
+      return true;
+    }
     /* Ссылка на конкретный курс: ?course=ai. Нужна, чтобы из других наших
        приложений вести прямо на программу, а не на общий список. */
     var mc = q.match(/[?&]course=([a-zA-Z0-9_]+)/);
@@ -12784,7 +12834,7 @@ var BOOK2 = {
   about:"Бизнес-роман. Героиня из провинциального городка уезжает с ребёнком от мужа-тирана в столицу, встречает наставника и с нуля строит бизнес по производству одежды. История собрана из реальных событий в жизни клиенток автора. В конце глав - задания, которые помогут найти слабые места в вашем деле."
 };
 var B2 = { busy:false, err:"", saveT:0 };
-var B2_FS = [15, 16.5, 18, 19.5, 21.5];
+var B2_FS = [15, 16.5, 18, 19.5, 21.5, 24, 27];
 function b2S(){
   if(!S.b2 || typeof S.b2 !== "object") S.b2 = {};
   var b = S.b2;
@@ -12919,7 +12969,7 @@ function viewBook2(){
 /* ---------- глава ---------- */
 function b2ReaderClass(){
   var b = b2S();
-  return "b2r b2-" + b.theme + (b.font === "sans" ? " b2-sans" : "") + (b.lh === "a" ? " b2-airy" : "");
+  return "b2r b2-" + b.theme + (b.font === "sans" ? " b2-sans" : "") + (b.lh === "a" ? " b2-airy" : "") + (b.fs >= 3 ? " b2-big" : "");
 }
 function viewBook2Ch(){
   var n = b2Count(), i = Math.max(0, Math.min(n - 1, V.p | 0)), b = b2S();
@@ -12942,6 +12992,9 @@ function viewBook2Ch(){
       '<button class="b2-aa" data-b2set="1" aria-label="Настройки чтения">Аа</button></header>'+
     '<div class="b2-body">'+b2Body(i, c.x)+'</div>'+
   '</article>');
+  h.push('<div class="b2-fab" role="group" aria-label="Размер текста">'+
+    '<button data-b2fs="-1" aria-label="Мельче"'+(b.fs <= 0 ? ' disabled' : '')+'>A<small>−</small></button>'+
+    '<button data-b2fs="1" aria-label="Крупнее"'+(b.fs >= B2_FS.length - 1 ? ' disabled' : '')+'>A<small>+</small></button></div>');
 
   var nx = i + 1 < n ? i + 1 : -1;
   if(nx >= 0 && b2Open(nx)){
@@ -20631,10 +20684,10 @@ function ordersCheck(){
         if(!bought(o.id)) S.bought.push(o.id);
         save();
         if(o.id === BOOK2.id){
-          b2Load(function(){ V.tab = "income"; open("book2ch", b2AfterPay()); setTimeout(b2Restore, 60); toast("Оплата получена - книга открыта. Приятного чтения!"); });
+          b2Load(function(){ closeSheet(); clearTimeout(PAYR.timer); V.tab = "income"; open("book2ch", b2AfterPay()); setTimeout(b2Restore, 60); toast("Оплата получена - книга открыта. Приятного чтения!"); });
           render(); return;
         }
-        if(o.id === BOOK1.id){ V.tab = "income"; open("book1"); toast("Оплата получена - книга открыта. Приятного чтения!"); return; }
+        if(o.id === BOOK1.id){ closeSheet(); clearTimeout(PAYR.timer); V.tab = "income"; open("book1"); toast("Оплата получена - книга открыта. Приятного чтения!"); return; }
         render(); sheetAccessOpened(o);
       }).catch(function(){});
   });
@@ -21265,7 +21318,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -22031,6 +22084,14 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.b2ch !== undefined){ V.tab = "income"; open("book2ch", parseInt(d.b2ch, 10) || 0); setTimeout(b2Restore, 60); return; }
   if(d.b2load !== undefined){ B2.err = ""; b2Load(function(){ V.tab = "income"; open("book2ch", b2S().last | 0); setTimeout(b2Restore, 60); }); render(); return; }
   if(d.b2set !== undefined){ sheetB2Set(); return; }
+  if(d.b2fs){
+    var fsb = b2S(), keepF = V.view === "book2ch" ? (fsb.pos[V.p | 0] || 0) : 0, nf = Math.max(0, Math.min(B2_FS.length - 1, fsb.fs + parseInt(d.b2fs, 10)));
+    if(nf === fsb.fs) return;
+    fsb.fs = nf; save(); render();
+    if(V.view === "book2ch") setTimeout(function(){ $screen.scrollTop = keepF * ($screen.scrollHeight - $screen.clientHeight); }, 30);
+    toast("Размер текста " + (nf + 1) + " из " + B2_FS.length);
+    return;
+  }
   if(d.b2opt){
     var bo = d.b2opt.split(":"), bs = b2S(), keep = V.view === "book2ch" ? (bs.pos[V.p | 0] || 0) : 0;
     if(bo[0] === "fs") bs.fs = Math.max(0, Math.min(B2_FS.length - 1, bs.fs + parseInt(bo[1], 10)));
