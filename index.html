@@ -1113,6 +1113,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   font-size:calc((min(100vw, 520px) - 64px) / 17.2);line-height:1.95;height:1.95em}
 .mdn-line.mdn-c{justify-content:center;gap:.18em}
 .mdn-first .mdn-line{font-size:calc((min(100vw, 520px) - 64px) / 13);}
+.mdn-big .mdn-line{font-size:calc((min(100vw, 520px) - 64px) / 17.2 * var(--mdn-k))}
+.mdn-big .mdn-bism{font-size:calc((min(100vw, 520px) - 64px) / 19 * var(--mdn-k))}
+.mdn-flow{direction:rtl;text-align:justify;text-align-last:right;font-size:calc((min(100vw, 520px) - 64px) / 17.2 * var(--mdn-k));line-height:2.05;word-spacing:.08em;margin:.1em 0}
+.mdn-flow .mdn-w{display:inline}
 .mdn-w{cursor:pointer;border-radius:4px}
 .mdn-w.mark{background:rgba(212,175,55,.22)}
 .mdn-w.now{background:rgba(62,155,114,.22)}
@@ -9243,7 +9247,10 @@ function mdnLoad(p){
 }
 var MDN_BISM = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
 /* строки страницы: заголовок суры, басмала или слова */
+var MDN_K = [1, 1.25, 1.5, 1.8];
+function mdnSize(){ var s = S.mdnSize | 0; return s < 0 ? 0 : s > 3 ? 3 : s; }
 function mdnPageHtml(p){
+  if(mdnSize() > 0) return mdnFlowHtml(p);
   var j = MDN.pages[p], by = {}, hs = {}, bs = {}, max = j.c ? 8 : 15, out = "", fam = mdnFam(p);
   (j.l || []).forEach(function(x){ by[x[0]] = x[1]; });
   (j.h || []).forEach(function(x){ hs[x[0]] = x[1]; });
@@ -9262,28 +9269,48 @@ function mdnPageHtml(p){
   }
   return out;
 }
+/* крупный вид: слова страницы сплошным текстом с переносами */
+function mdnFlowHtml(p){
+  var j = MDN.pages[p], by = {}, hs = {}, bs = {}, max = j.c ? 8 : 15, out = "", buf = [], fam = mdnFam(p);
+  (j.l || []).forEach(function(x){ by[x[0]] = x[1]; });
+  (j.h || []).forEach(function(x){ hs[x[0]] = x[1]; });
+  (j.b || []).forEach(function(x){ bs[x] = 1; });
+  function flush(){ if(buf.length){ out += '<div class="mdn-flow" style="font-family:\''+fam+'\'">'+buf.join(" ")+'</div>'; buf = []; } }
+  for(var ln = 1; ln <= max; ln++){
+    if(hs[ln]){ flush(); var s = QSUR[hs[ln] - 1];
+      out += '<div class="mdn-line mdn-sura"><span>'+esc(s[1])+'</span><em>'+esc(s[2])+' · '+s[4]+'</em></div>'; }
+    else if(bs[ln]){ flush(); out += '<div class="mdn-line mdn-bism">'+esc(MDN_BISM)+'</div>'; }
+    else if(by[ln]){ by[ln].forEach(function(w){
+      buf.push('<span class="mdn-w'+(w[2] ? ' mdn-end' : '')+(isMark(w[1]) ? ' mark' : '')+'" data-mayah="'+w[1]+'">'+esc(w[0])+'</span>'); }); }
+  }
+  flush();
+  return out;
+}
 function viewMadina(){
   var p = mushafPage(), a = pageFirst(p), h = [];
   mdnLoad(p); mdnLoad(p + 1); if(p > 1) mdnLoad(p - 1);
   h.push('<div class="qbar">'+
     '<button class="qbtn" id="qPlayAll" data-qplayall="1" title="Слушать">▶</button>'+
+    '<button class="qbtn" data-mdnsz="-1" title="Меньше"'+(mdnSize() ? '' : ' disabled')+'>A−</button>'+
+    '<button class="qbtn" data-mdnsz="1" title="Крупнее"'+(mdnSize() < 3 ? '' : ' disabled')+'>A+</button>'+
     '<button class="qbtn" data-qview="1" title="Вид и шрифт">Аа</button>'+
     '<button class="qbtn on" data-qbook="0" title="Список аятов">☰</button>'+
     '<button class="qbtn" data-open="qsettings" title="Настройки">⚙</button>'+
-    '<span style="margin-left:auto;font-size:13px;color:var(--ink-3);white-space:nowrap">'+esc(QSUR[surahOf(a)][2])+' · джуз '+juzOf(a)+'</span>'+
+    '<span style="margin-left:auto;font-size:13px;color:var(--ink-3);white-space:nowrap">джуз '+juzOf(a)+'</span>'+
   '</div>');
   var inner;
   if(mdnReady(p)) inner = mdnPageHtml(p);
   else if(MDN.err[p]) inner = '<div class="mdn-wait">Не получилось загрузить страницу. Нужен интернет, чтобы открыть её в первый раз: потом она будет открываться и без него.'+
     '<button class="btn sec sm" style="margin-top:12px" data-mdnretry="'+p+'">Попробовать ещё раз</button></div>';
   else inner = '<div class="mdn-wait"><span class="mdn-spin"></span>Открываем страницу '+p+'</div>';
-  h.push('<div class="mdn-wrap"><div class="mdn-page'+(MDN.pages[p] && MDN.pages[p].c ? ' mdn-first' : '')+'">'+inner+
+  h.push('<div class="mdn-wrap"><div class="mdn-page'+(MDN.pages[p] && MDN.pages[p].c ? ' mdn-first' : '')+(mdnSize() ? ' mdn-big' : '')+'" style="--mdn-k:'+MDN_K[mdnSize()]+'">'+inner+
     '<div class="mus-foot"><button class="mus-nav" data-mpage="'+(p+1)+'"'+(p>=QPAGE.length?' disabled':'')+'>‹ дальше</button>'+
       '<span>'+p+'</span>'+
       '<button class="mus-nav" data-mpage="'+(p-1)+'"'+(p<=1?' disabled':'')+'>назад ›</button></div>'+
   '</div></div>');
   h.push(mushafTools());
   h.push('<p class="disclaimer">Мединский мусхаф, издание 1405 г. х.: шрифт и вёрстка Комплекса короля Фахда по печатанию Корана. '+
+    (mdnSize() ? 'Крупный вид: текст страницы тот же, но строки переносятся не так, как в печатном. Кнопка A− до конца вернёт вид «как в печатном». ' : 'Нужен текст крупнее - кнопка A+. ')+
     'Нажмите на слово - откроется аят с переводом, звуком и закладкой. Листайте кнопками или проведите пальцем. '+
     'Цветная подсветка таджвида - в шрифте «Как в мусхафе».</p>');
   return h.join("");
@@ -20304,7 +20331,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -20614,6 +20641,14 @@ document.getElementById("app").addEventListener("click", function(ev){
     return;
   }
   if(d.mayah!==undefined){ sheetAyah(parseInt(d.mayah, 10)); return; }
+  if(d.mdnsz){
+    var was = mdnSize();
+    S.mdnSize = Math.max(0, Math.min(3, was + parseInt(d.mdnsz, 10)));
+    save(); render();
+    if(!was && S.mdnSize) toast("Крупный вид: строки переносятся");
+    else if(was && !S.mdnSize) toast("Как в печатном мусхафе");
+    return;
+  }
   if(d.qview!==undefined){ sheetQView(); return; }
   if(d.mdnretry){ var rp = parseInt(d.mdnretry, 10); MDN.err[rp] = 0; mdnLoad(rp); render(); return; }
   if(d.qfont){
