@@ -642,6 +642,84 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .qf-t{white-space:nowrap}
 /* ---------- книга «Девушка, которая смогла» ---------- */
 .b2-card{align-items:center}
+.b2-hero-t{flex:1;min-width:0}
+.b2-hero-p{height:4px;border-radius:2px;background:rgba(255,255,255,.15);margin-top:14px;overflow:hidden}
+.b2-hero-p i{display:block;height:100%;background:#D4AF37}
+.b2-hero-t em{display:block;font-style:normal;font-size:12px;color:rgba(244,235,208,.7);margin-top:6px}
+.b2-cont{position:relative;display:flex;flex-direction:column;gap:3px;width:100%;text-align:left;padding:16px 44px 16px 18px;border-radius:var(--r-lg);
+  background:linear-gradient(150deg,rgba(212,175,55,.22),rgba(212,175,55,.06));border:1px solid rgba(212,175,55,.55)}
+.b2-cont-k{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink)}
+.b2-cont b{font-family:'PT Serif',Georgia,serif;font-size:18px;line-height:1.3}
+.b2-cont-m{font-size:12.5px;color:var(--ink-3)}
+.b2-cont>i{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-style:normal;font-size:24px;color:var(--accent-ink)}
+.b2-buy{padding:16px;border-radius:var(--r-lg);border:1px solid rgba(212,175,55,.45);background:var(--surface);text-align:center}
+.b2-buy p{font-size:14.5px;line-height:1.6;color:var(--ink-2);margin:8px 0 12px}
+.b2-buy-p{display:flex;align-items:baseline;justify-content:center;gap:9px;margin-bottom:12px}
+.b2-buy-p .price{font-size:26px}
+.b2-wall{background:linear-gradient(170deg,rgba(212,175,55,.14),var(--surface) 55%)}
+.b2-toc-h{display:flex;align-items:center;gap:10px;margin:6px 2px 0}
+.b2-toc-h b{font-family:var(--f-display);font-size:17px}
+.b2-toc-h button{margin-left:auto;font-size:12.5px;font-weight:600;color:var(--accent-ink)}
+.b2-toc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow)}
+.b2-row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:11px 14px}
+.b2-row+.b2-row{border-top:1px solid var(--line-soft)}
+.b2-row.cur{background:rgba(212,175,55,.08)}
+.b2-row.lock{opacity:.62}
+.b2-n{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(212,175,55,.55);color:var(--accent-ink);font-family:'PT Serif',Georgia,serif;font-size:13px;font-weight:700}
+.b2-t{flex:1;min-width:0}
+.b2-t b{display:block;font-family:'PT Serif',Georgia,serif;font-weight:400;font-size:15.5px;line-height:1.3}
+.b2-t em{display:block;font-style:normal;font-size:12px;color:var(--ink-3);margin-top:2px}
+.b2-st{flex:none;font-size:12px;color:var(--ink-3);font-weight:600}
+.b2-st.ok{color:#3E9B72;font-size:16px}
+.b2-st.free{color:var(--accent-ink);background:rgba(212,175,55,.14);padding:2px 8px;border-radius:999px}
+.b2-prog{position:sticky;top:0;z-index:5;height:3px;margin:-8px -16px 0;background:transparent}
+.b2-prog i{display:block;height:100%;background:linear-gradient(90deg,#D4AF37,#E9C85E);transition:width .15s linear}
+/* страница книги */
+.b2r{--b2bg:var(--surface);--b2ink:var(--ink);--b2soft:var(--ink-2);--b2acc:var(--accent-ink);
+  background:var(--b2bg);color:var(--b2ink);border-radius:18px;padding:26px 22px 30px;border:1px solid var(--line);box-shadow:var(--shadow)}
+.b2-paper{--b2bg:#F6EFDF;--b2ink:#2C241A;--b2soft:#5B4E3C;--b2acc:#8A6D12;border-color:#E3D6B8;box-shadow:0 10px 30px -18px rgba(60,40,10,.45)}
+.b2-night{--b2bg:#0C1019;--b2ink:#CFC8B6;--b2soft:#9C9684;--b2acc:#C9A95A;border-color:#1C2233}
+.b2-ch-h{position:relative;text-align:center;margin-bottom:22px}
+.b2-k{font-size:11.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--b2acc)}
+.b2-ch-h h2{font-family:'PT Serif',Georgia,serif;font-weight:700;font-size:calc(var(--b2fs) * 1.55);line-height:1.2;margin:10px 18px 0;color:var(--b2ink)}
+.b2-orn{color:var(--b2acc);font-size:18px;margin-top:12px;opacity:.8}
+.b2-meta{font-size:12px;color:var(--b2soft);margin-top:6px}
+.b2-aa{position:absolute;right:-6px;top:-10px;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);color:var(--b2acc);font-family:'PT Serif',Georgia,serif;font-weight:700;font-size:15px;background:transparent}
+.b2-body{font-family:'PT Serif',Georgia,serif;font-size:var(--b2fs);line-height:1.72;text-align:justify;hyphens:auto;-webkit-hyphens:auto;color:var(--b2ink)}
+.b2-sans .b2-body{font-family:var(--f-body)}
+.b2-airy .b2-body{line-height:1.95}
+.b2-body p{margin:0 0 .5em;text-indent:1.4em}
+.b2-body p.b2-dl{text-indent:1.4em}
+.b2-body p.b2-first{text-indent:0}
+.b2-body p.b2-first::first-letter{float:left;font-family:'PT Serif',Georgia,serif;font-weight:700;font-size:3.35em;line-height:.9;margin:.06em .1em 0 0;color:var(--b2acc)}
+.b2-sep{text-align:center;color:var(--b2acc);margin:1em 0}
+.b2-tasks{margin-top:1.6em;padding:16px 14px;border-radius:14px;border:1px solid rgba(212,175,55,.5);background:rgba(212,175,55,.08);text-align:left;font-family:var(--f-body)}
+.b2-tasks-h{display:flex;gap:11px;align-items:flex-start;margin-bottom:6px}
+.b2-tasks-h>span{flex:none;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:rgba(212,175,55,.2);color:var(--b2acc)}
+.b2-tasks-h b{display:block;font-size:15px;color:var(--b2ink)}
+.b2-tasks-h em{display:block;font-style:normal;font-size:12.5px;line-height:1.45;color:var(--b2soft);margin-top:2px}
+.b2-task{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;padding:10px 0;border-top:1px solid rgba(212,175,55,.25)}
+.b2-task span{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;border:1.5px solid var(--b2acc);color:var(--b2acc);font-size:12px;font-weight:700;margin-top:1px}
+.b2-task p{margin:0;font-size:14.5px;line-height:1.55;color:var(--b2ink);text-indent:0}
+.b2-task.on span{background:#3E9B72;border-color:#3E9B72;color:#fff}
+.b2-task.on p{color:var(--b2soft)}
+.b2-next{position:relative;display:flex;flex-direction:column;gap:3px;width:100%;text-align:left;padding:16px 44px 16px 18px;border-radius:var(--r-lg);background:var(--surface);border:1px solid rgba(212,175,55,.45)}
+.b2-next span{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink)}
+.b2-next b{font-family:'PT Serif',Georgia,serif;font-size:18px;line-height:1.3}
+.b2-next em{font-style:normal;font-size:12.5px;color:var(--ink-3)}
+.b2-next i{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-style:normal;font-size:24px;color:var(--accent-ink)}
+.b2-set-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--line-soft)}
+.b2-set-row>span{flex:none;width:112px;font-size:13.5px;color:var(--ink-2)}
+.b2-set-row .pill-row{margin:0;justify-content:flex-start}
+.b2-set-fs{display:flex;align-items:center;gap:10px}
+.b2-set-fs b{font-size:13px;color:var(--ink-3);min-width:52px;text-align:center}
+.b2-themes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;flex:1;min-width:220px}
+.b2-th{display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 4px;border-radius:12px;border:1.5px solid var(--line);font-size:11.5px}
+.b2-th i{font-style:normal;font-family:'PT Serif',Georgia,serif;font-size:18px;font-weight:700;width:38px;height:30px;border-radius:8px;display:grid;place-items:center}
+.b2-th-paper i{background:#F6EFDF;color:#2C241A}
+.b2-th-app i{background:var(--surface-2);color:var(--ink)}
+.b2-th-night i{background:#0C1019;color:#CFC8B6}
+.b2-th.on{border-color:var(--accent-ink);color:var(--accent-ink);font-weight:600}
 .b2-cov{flex:none;width:58px;height:84px;object-fit:cover;border-radius:6px;box-shadow:0 6px 14px -6px rgba(0,0,0,.5)}
 .b2-hero{display:flex;gap:16px;align-items:center;padding:18px;border-radius:var(--r-lg);background:linear-gradient(150deg,#1E2A5A,#111A3F);border:1.5px solid rgba(212,175,55,.5);color:#F4EBD0}
 .b2-hero img{flex:none;width:104px;height:150px;object-fit:cover;border-radius:8px;box-shadow:0 14px 30px -12px rgba(0,0,0,.7)}
@@ -1919,7 +1997,7 @@ var DEF = {
   hifz:{on:false, items:{}},
   push:{on:false, at:0, sig:""},
   salahKid:false,
-  trip:{}, umrah:{},
+  trip:{}, umrah:{}, b2:{},
   kids:{},
   finReqs:[], finLimits:{}, debts:[], finRepeat:[], fontSize:"",
   qplan:{on:false, days:0, startPage:1, startAt:"", log:{}},
@@ -12255,16 +12333,57 @@ function chapterForName(i){
   return -1;
 }
 
-/* ---------- книга «Девушка, которая смогла» ---------- */
+/*__BOOK2__*/
+var BOOK2_FREE_N = 3;
+var BOOK2_TOC = [["Обращение к читателю",1530],["Пролог",1691],["Глава 1. Кавказская пленница",12364],["Глава 2. Одна в большом городе",10660],["Глава 3. Невероятная женщина",10693],["Глава 4. Сила намерения",19933],["Глава 5. Долгожданный первый клиент",12877],["Глава 6. Окружение",17246],["Глава 7. Первый провал",10033],["Глава 8. Черная полоса",19026],["Глава 9. Думать масштабно",13945],["Глава 10. Шанс на победу",16228],["Глава 11. Набор скоростей",8890],["Глава 12. Свидетельница",13734],["Глава 13. Великие идеи будущего",13598],["Глава 14. Очередная победа",6924],["Глава 15. Масштаб",13853],["Глава 16. Она смогла",4914],["Эпилог",1541]];
+var BOOK2_FREE = [{"t":"Обращение к читателю","x":"Моим главным источником вдохновения, без которого я не смогла бы написать эту книгу, стали женщины-предприниматели из самых разных регионов нашей страны. Общаясь со многими из них в качестве наставника, я не могла не восхищаться их смелостью и силой духа. История Амины \u2014 главной героини этой книги \u2014 не выдумка, она собрана из реальных событий, происходивших в жизни многих моих клиенток. В то же время, слушая истории начинающих и уже успешных женщин в мире бизнеса, я чувствовала, что могу сделать их путь к успеху более коротким и лёгким. Мне захотелось показать всем девушкам-предпринимателям, что, несмотря ни на какие сложности, имея огромное желание, можно добиться любого успеха в бизнесе. Так я поняла, что моя миссия \u2014 сделать бизнес-образование доступным. В этой книге, как и в своей школе бизнеса, я постаралась самым простым языком, через жизненные ситуации и проблемы героев, показать путь выстраивания своего дела.\n\nДаже если у вас уже есть свое дело, прочитав эту книгу, вы найдете слабые места в бизнесе, которые сможете подтянуть благодаря заданиям в конце глав. Вы также узнаете, какие основные показатели бизнеса должен контролировать любой предприниматель. Это и умение выстраивать декомпозицию, и понимание конверсии, и как управлять средним чеком, и как выстраивать товарную матрицу и многое другое. Желаю успехов, дорогой читатель! Пусть эта книга поможет кратно увеличить вашу прибыль. Я очень надеюсь, что она станет вашей настольной книгой, которая вовремя даст совет и поддержит на пути к вашей мечте."},{"t":"Пролог","x":"\u2014 Амина, молодец! Давай! \u2014 послышалось с передних рядов.\n\nСердце уходило в пятки, а микрофон наверняка выскользнул бы из рук, если бы не вечерние перчатки. Настолько вспотели ладошки. Свет софитов до боли ослепил меня, когда я только вышла на подиум метров пять в длину. На пару секунд пришлось даже зажмуриться. Я смотрела на красивых людей, сидящих в огромном зале. Все они не отрывали от меня глаз. Они улыбались и терпеливо ждали, когда я начну свою речь.\n\nРоскошная женщина в платье цвета фуксии согнула руку в локте перед собой и сжала свой кулачок в знак того, что поддерживает меня. Возможно, именно этого жеста я ждала, чтобы заговорить.\n\n\u2014 Я счастлива видеть вас здесь. Счастлива, что вы пришли на такое важное для меня событие. Я рада, что эта неделя мод начинается именно с показа одежды моего бренда. Но также хочу сказать, что, если бы не все вы, меня бы здесь не было. Спасибо вам!\n\nЗал взорвался. Мужчины и женщины в красивых нарядах встали со своих мест и аплодировали мне. Я смущенно поклонилась, спустилась с подиума и села в кресло в первом ряду, предназначенное для меня. В этот момент свет полностью погас. Заиграла восточная музыка вперемешку с техно, звучало здорово. На большом экране в конце подиума появилось мое имя большими красными буквами. Модели в потрясающих платьях и костюмах стали одна за другой выходить из-за кулис. Но я не смотрела на девушек, я внимательно вглядывалась, правильно ли их одели, ничего ли не упустили.\n\nВдруг раздался оглушительный резкий звук, будто включилась пожарная сигнализация. Я закрыла уши руками и зажмурилась. А когда открыла глаза, поняла, что это был всего лишь сон. Но музыка и шум аплодисментов так и оставались в голове."},{"t":"Глава 1. Кавказская пленница","x":"Мысли в голове начали кипеть, а мозг ещё даже до конца не проснулся. За стенкой в зале муж громко разговаривал по телефону, наверное, с партнерами по бизнесу. Его голос эхом отдавался по всему дому. Марьям в кроватке начала вертеться. Я, щурясь, посмотрела на экран телефона \u2014 7:38. Нужно скорее встать и увести Юсуфа на кухню, пока он окончательно не разбудил малышку. В этот момент дверь со скрипом открылась и просунулась голова мужа.\n\n\u2014 Мы есть сегодня будем, или мне голодным идти на работу?! \u2014 Видимо, снова сделка сорвалась. Я пулей подскочила и стала руками показывать на просыпающегося ребенка. Дочка испуганно вздрогнула, повернулась на другой бок и снова заснула. Глубокий вдох и выдох. Будто это поможет успокоиться… Страх стал уже обычной реакцией на плохое настроение Юсуфа.\n\nЯ буквально влетела в домашнее платье и побежала на кухню. Взгляд на секунду задержался на новых тканях, купленных накануне на заработанные деньги.\n\nПару лет назад мое увлечение началось с того, что я шила одежду для себя. Сидя дома и не имея собственных денег, мне все же хотелось радовать мужа. Ну, а вскоре я и не заметила, как необходимость переросла в отдушину, приносящую хоть какое-то спокойствие. Однажды одно из моих платьев оценила Сафия, жена друга и по совместительству партнера Юсуфа. Она и стала моей первой, и долгое время единственной, клиенткой. На вырученные деньги я купила новые ткани и сшила костюмы, которые снова удалось продать. Как-то раз краем уха услышала, как Юсуф говорил о том, что копит деньги. Вот и я подумала, почему бы мне не начать делать так же? Я грезила купить новую швейную машинку, которая экономила бы мне в два раза больше времени. Сомнения в правильности этой траты перетекали в страх от осознания, что будет, когда муж узнает об этом. Много раз картина, как он находит деньги, как кричит на меня, требуя разъяснений откуда они, и потом забирает себе, всплывала перед глазами. Нервы я успокаивала, садясь за раскрой ткани, пока Марьям спала, а муж был на работе. Вскоре мне все же удалось накопить нужную сумму, и работа в действительности пошла быстрее. Ведь теперь не приходилось налаживать машинку по два раза в день.\n\nЮсуф, к счастью, даже не заметил подмены. Я долго не решалась завести страничку в соцсетях. Точнее, аккаунт зарегистрировала, но он месяца два оставался абсолютно пустым. Каждый раз, при мысли, что меня разоблачат, руки начинали дрожать. А что будет, когда начну активно выставлять свои работы?!\n\nОднако желание получать больше заказов все же привело меня к социальной жизни. В один из дней я жаловалась Сафие, что продажи не идут, и она заверила, что в моем деле, блог один из важных инструментов. После этого, отодвинув страх на задний план, я все же решилась. Конечно, я опасалась, что Юсуф обо всем узнает, поэтому всю личную информацию пришлось скрыть. Но спустя некоторое время, когда стало появляться все больше новых тканей и одежды, пришлось раскрыть тайну. До сих вспоминаю свои вспотевшие ладошки и дёргающийся глаз. Буря прошла тише, чем я ожидала. Муж лишь усмехнулся и дал добро, но при условии, что это не будет мешать ведению быта.\n\nПоначалу я почти летала от радости. Но потом, когда заказов становилось больше, перестала высыпаться, так как приходилось шить по ночам. Усталость, разочарование, страх перед неудачей и несправедливость со стороны мужа обрушились настоящей истерикой, которую я, конечно же, не смела показывать. Так уж принято на Кавказе, что девушка не может проявлять слабость. В голове слышался голос Юсуфа: «Вряд ли долго продержишься. Ты понятия не имеешь, что такое настоящий бизнес. Тоже мне, бизнесвумен». «Продержусь, \u2014 твердила я сама себе, \u2014 продержусь».\n\nМое детство проходило обеспеченно благодаря стараниям отца. Мы были из тех семей, кто мог позволить себе черную икру и красную рыбу в холодильнике на фоне событий лихих 90-х. Папа, который выстроил бизнес упорным трудом, не жалея себя, являлся для меня примером мастера своего дела. Однако ему и не хватало знаний. Это в конце концов привело к краху бизнеса и оставило нас совсем без сбережений в начале двухтысячных. Зная его историю, я научилась экономить и была готова к трудностям и лишениям на пути к своей цели. Но если бы мне кто-то сказал тогда, насколько сильно я заблуждалась, возможно, все прошло бы куда легче. Перед тем, как я вышла замуж, мама часто рассказывала, как здорово быть женой, и что главная обязанность женщины \u2014 делать мужа счастливым. Когда я в очередной раз заикнулась о том, что хочу учиться и получить высшее образование, впервые ощутила резкий шлепок по щеке.\n\nВ первые два месяца брака я питала наивные надежды на семейную идиллию, в которой мне предстоит найти безопасность на всю жизнь. И Юсуф поначалу был таким сдержанным и обходительным. Но это продлилось недолго. Марьям родилась практически в первый год супружеской жизни, и чем старше становилась дочь, тем больше я понимала, что созданная в пределах моего дома среда вызывает у меня отчаяние и непрерывное чувство тревоги. Мне приходилось следить не только за каждым своим действием и подбирать слова, но и думать, как надеть платье подлиннее или какого цвета платок повязать на голову. От скромности моего наряда зависело одобрение мужа, а значит, и его настроение.\n\n\u2014 Амина, встречай! \u2014 послышался голос Юсуфа из коридора.\n\nСегодняшним вечером мы ждали гостей.\n\nКогда дни напролет сидишь дома и выбираешься лишь за покупками или на детскую площадку, радуют любые посиделки. Но если это партнеры мужа, простыми разговорами за чаем не обойтись. Должен быть полный стол еды, идеальная чистота вокруг и смирный ребенок. «Ты обязана соблюдать традиции гостеприимства, как любая нормальная женщина!», \u2014 так всегда говорил Юсуф.\n\nОставив нарезанный салат, я поправила платок и выбежала в коридор. С Амиром и Сафией я близко познакомилась на нашей свадьбе. Сафию я знала еще со школы, но мы никогда не общались и даже не здоровались. Ребята часто приходили к нам как вместе, так и по отдельности. Встреча с ними всегда была для меня по-особенному теплой. Но не успела я обрадоваться приятному вечеру, как меня позвал Юсуф. Нотки в его голосе намекали на испорченное настроение.\n\nПроводив гостей до зала, я на ватных ногах подошла к мужу. В его руках была блузка, с которой все еще свисала нитка с иглой. В спешке я забыла убрать работу с кресла.\n\n\u2014 Кажется, я просил тебя не раскидывать по дому свои тряпки. У тебя стол пустой, пыль везде, зеркало все заляпано. Делаю вывод, что пора тебе заканчивать с этой ерундой, бизнесменша! Позоришь только меня! \u2014 прошипел Юсуф, всунув мне в руки блузку так, что я пошатнулась. \u2014 И переоденься!\n\nЯ закинула блузку в шкаф и побежала на кухню, пока не дошло до того, что муж закатит скандал на глазах у друзей. Мне не хотелось вновь мириться с их сочувствующими взглядами. Встав у плиты, я бралась то за сковородку, чтобы помешать в ней овощи, то начинала резать хлеб. Руки дрожали, не удавалось сделать ни то, ни другое. В этот момент подошла Сафия.\n\n\u2014 Оставь это и переоденься, а я пока закончу здесь, \u2014 забота в ее голосе немного успокоила. Мысли потихоньку собирались в кучу.\n\n\u2014 Спасибо большое. Тут все готово, осталось только нарезать хлеб и унести все в зал. А, и еще поставить чайник, но я сама это сделаю. Сейчас только платье поменяю.\n\nОставшийся вечер прошел тихо, спокойно и местами даже весело. Марьям лезла на руки по очереди то к мужу, то ко мне, а мы с Сафией следили за столом и всегда налитым чаем у мужчин. Воспользовавшись моментом, пока сытые мужья вели свои разговоры, я решила показать подруге новые, еще недоделанные заказы.\n\n\u2014 Сколько?! Ты серьезно? \u2014 спросила Сафия.\n\n«Неужели дорого?!», \u2014 сразу промелькнуло в мыслях.\n\n\u2014 Просто я не знаю цен особо, а заказчица сама такую стоимость предложила. Ну, я и согласилась на радостях. Раз уж может себе позволить, то почему бы и нет.\n\nНо Сафия возмутилась только силь нее.\n\n\u2014 Конечно, может! Дорогая, твои платья потрясающие. У нас таких не найдешь, а в Москве они стоят раз в двадцать больше!\n\nТеперь пришла моя очередь удивляться. Сафия села в кресло, за которым я проводила последние бессонные ночи с ножницами и тканями. Разблокировала телефон и стала водить пальчиками по экрану.\n\n\u2014 Смотри, \u2014 подруга повернула телефон ко мне. Открытая страница аккаунта дизайнера пестрила одеждой. Научившись определять качество пошива и ткани, я оценила несколько вариантов.\n\n«Я тоже так могу. Мои наряды даже поинтересней будут», \u2014 подумала я. А затем взгляд скользнул к стоимости. Я ахнула, а в животе сжалось от увиденных цифр. Они в десятки раз превышали мои.\n\n\u2014 Разве так бывает? Я думала такие цены только у брендов типа «Гуччи» или «Луи Витон»…\n\n\u2014 Ты просто их цены не смотрела, \u2014 хихикнула подруга.\n\nМы еще немного поболтали, обсудив мои работы, предположив, какое качество может быть у того дизайнера, разные бренды и последние коллекции. Затем мужья попросили еще чаю, и мы уже отвлеклись на темы более приземленные, домашние.\n\nПопрощавшись с гостями и собирая посуду со стола, я все еще думала о показанных Сафией платьях. Основателем магазина была взрослая женщина, скорее, далеко за пятьдесят. Конечно, она явно молодилась и наверняка на её счету не одна пластическая операция, но это только придавало ей лоска и шарма. Число комментариев под каждой новинкой превышало тысячи. Наши платья были одного качества, но она уступала мне в выборе фасонов, а я ей \u2014 в местоположении и возможностях. Находясь в Москве, заказов на такую одежду можно набрать больше, чем сидя здесь, в Махачкале. Но даже этот нюанс не останавливал мою разыгравшуюся фантазию. «Я тоже так могу!», \u2014 повторяла я себе мысленно. На эмоциях поставила грязную посуду в раковину и уверенными шагами направилась к мужу. И что на меня нашло?! Будто не предвидела, чем это все закончится. Просто так хотелось поделиться новыми возможностями, внезапно открывшимися для меня этим вечером.\n\n\u2014 Юсуф! Представляешь? Мне Сафия показала платья дизайнера из Москвы. Они почти такие же, как у меня, но я могу лучше. И стоят они в десять раз дороже! \u2014 Муж стоял у стола, сунув руки в карманы брюк, с каждым моим произнесенным словом, хмуря брови все сильнее. Он смотрел в одну точку на стене и сжимал челюсти. Так было всегда перед скандалом. Мне стоило это заметить, но остановиться я уже не могла. \u2014 Я ведь тоже могу шить такие платья и продавать не только здесь, но и в Москве! Знаешь, как это будет здо…\n\nТолько и успела заметить большую ладонь над лицом, когда в ушах зазвенело. В сознании будто что-то взорвалось, отключив слух и зрение. В плече и ребрах стрельнула боль от удара о стул. Сквозь звон слышались отдаленные крики мужа и плач дочери. Я на автомате потянулась в ее сторону, но не успела даже повернуться, как последовал второй удар. И вот он уже отозвался болью по всему телу.\n\nК сожалению, мне уже было знакомо это состояние. Поэтому я старалась как можно быстрее прийти в себя, чтобы успокоить ревущего ребенка, снова ставшего свидетелем этой сцены. Но также я знала, что еще чуть-чуть стоит полежать, ведь встающая жена может стать поводом для нового удара.\n\n\u2014 Я тебе сказал, чтобы ты приготовилась к приходу гостей. А ты опозорила меня! Стол пустой! Мясо жесткое! Салат пересолен! Чай, как моча осла!\n\nЯ молча лежала на полу, ждала, пока немного утихнет боль и ей на смену придут обычные обида и отчаяние. Марьям плакала, хватаясь за рукав Юсуфа.\n\n\u2014 Хватит с тебя этих тряпок. Сиди дома и будь нормальной женой.\n\nБоль уже начала отступать, но почему-то знакомые чувства не приходили. Глаза оставались сухими, ни единой слезинки. Я слушала происходящее, сосредотачиваясь то на криках дочери, то на высказываниях мужа. «Сама виновата, забыла о том, что по-настоящему важно», \u2014 проскочило в мыслях. Но тут же внезапно погасло, просто щелкнуло как выключатель.\n\n\u2014 Слышишь меня? Бизнесменша. Выбрасывай все и берись за свои дела, \u2014 Юсуф взял на руки плачущую малышку и, начав успокаивать, ушел в другую комнату.\n\nПоднявшись, я взглянула на свою ладонь, где остались глубокие следы от собственных ногтей. Я перенесла все ткани и машинку в гостевую комнату. Прокручивая в голове, что продам ее и выручу за нее хорошие деньги.\n\nСпустя полчаса моя покорность подняла мужу настроение, он извинился за всплеск эмоций, как он сказал, и лег спать. У меня же сна не было ни в одном глазу. Я строила в голове холодные расчеты, обдумывая, сколько платьев и блузок нужно будет тайно сшить, чтобы заработать нужную сумму и уехать из этого злосчастного места…"}];
+/*__/BOOK2__*/
+/* ---------- книга «Девушка, которая смогла»: читалка ----------
+   Начало (обращение, пролог, глава 1) вшито в приложение и открыто всем; вся книга
+   приходит после оплаты по номеру заказа и лежит в телефоне (rizq.book2).
+   Читалка сделана как книга, а не как лента: шрифт с засечками PT Serif, абзацы
+   с красной строки, буквица, тема «Бумага» и «Ночь», размер и интервал текста,
+   полоска прогресса главы, место в каждой главе запоминается, задания в конце
+   глав - карточкой с галочками. Настройки и прогресс - в S.b2. */
 var BOOK2 = {
   id:"book2", n:"Девушка, которая смогла", a:"Заира Джаватханова", price:550, cover:"icons/book-devushka.jpg",
   about:"Бизнес-роман. Героиня из провинциального городка уезжает с ребёнком от мужа-тирана в столицу, встречает наставника и с нуля строит бизнес по производству одежды. История собрана из реальных событий в жизни клиенток автора. В конце глав - задания, которые помогут найти слабые места в вашем деле."
 };
-var B2 = { busy:false, err:"" };
+var B2 = { busy:false, err:"", saveT:0 };
+var B2_FS = [15, 16.5, 18, 19.5, 21.5];
+function b2S(){
+  if(!S.b2 || typeof S.b2 !== "object") S.b2 = {};
+  var b = S.b2;
+  if(!b.pos) b.pos = {}; if(!b.read) b.read = {}; if(!b.tk) b.tk = {};
+  if(typeof b.fs !== "number") b.fs = 1;
+  if(!b.font) b.font = "serif"; if(!b.lh) b.lh = "n"; if(!b.theme) b.theme = "paper";
+  if(typeof b.last !== "number") b.last = typeof S.b2last === "number" ? S.b2last : 0;
+  return b;
+}
 function b2Data(){ try{ var j = JSON.parse(localStorage.getItem("rizq.book2") || "null"); return j && j.chapters && j.chapters.length ? j : null; }catch(e){ return null; } }
 function b2Order(){ return (S.orders || []).filter(function(o){ return o.id === BOOK2.id && o.status === "paid"; })[0] || null; }
 function b2Owned(){ return bought(BOOK2.id) || !!b2Order() || !!b2Data(); }
-/* забрать книгу по номеру оплаченного заказа и положить в телефон */
+function b2Count(){ return BOOK2_TOC.length; }
+function b2Open(i){ return i < BOOK2_FREE_N || !!b2Data(); }
+function b2Ch(i){
+  var d = b2Data();
+  if(d && d.chapters[i]) return d.chapters[i];
+  if(i < BOOK2_FREE_N) return BOOK2_FREE[i];
+  return { t: BOOK2_TOC[i][0], x: null };
+}
+function b2Len(i){ var d = b2Data(); return d && d.chapters[i] ? d.chapters[i].x.length : BOOK2_TOC[i][1]; }
+function b2Min(chars){ return Math.max(1, Math.round(chars / 1300)); }
+/* «Глава 3. Невероятная женщина» -> ["Глава 3", "Невероятная женщина"] */
+function b2Split(t){ var m = String(t).match(/^(Глава \d+)\.\s*(.+)$/); return m ? [m[1], m[2]] : ["", t]; }
+/* какую долю книги прочитали - по знакам */
+function b2Done(){
+  var b = b2S(), all = 0, got = 0;
+  for(var i = 0; i < b2Count(); i++){
+    var L = b2Len(i); all += L;
+    got += b.read[i] ? L : Math.round(L * Math.min(1, b.pos[i] || 0));
+  }
+  return all ? Math.round(got * 100 / all) : 0;
+}
 function b2Load(then){
   var o = b2Order();
   if(!o || B2.busy || !window.fetch) return;
@@ -12281,67 +12400,166 @@ function b2Load(then){
     })
     .catch(function(){ B2.busy = false; B2.err = "Нет связи - книга загрузится, когда появится интернет"; render(); });
 }
-function b2Paras(t){
-  return String(t || "").split(/\n\s*\n|\n/).map(function(s){ return s.trim(); }).filter(Boolean);
+/* после оплаты: если бесплатное начало уже прочитано - сразу дальше */
+function b2AfterPay(){ var b = b2S(); return b.read[BOOK2_FREE_N - 1] || b.last >= BOOK2_FREE_N - 1 ? BOOK2_FREE_N : (b.last || 0); }
+
+/* ---------- текст главы: абзацы, реплики, задания ---------- */
+function b2Body(i, text){
+  var ps = String(text || "").split(/\n\s*\n|\n/).map(function(s){ return s.trim(); }).filter(Boolean);
+  var out = [], tasks = null, first = true;
+  ps.forEach(function(p){
+    if(/^Задани[яе]\s*:?$/i.test(p)){ tasks = []; return; }
+    if(tasks){
+      var m = p.match(/^(\d+)\.\s*(.+)$/);
+      if(m){ tasks.push(m[2]); return; }
+      if(tasks.length){ tasks[tasks.length - 1] += " " + p; return; }
+    }
+    if(/^(\*\s*){3}$|^\*\*\*$/.test(p)){ out.push('<div class="b2-sep">❦</div>'); first = true; return; }
+    var dl = /^[\u2014\u2013-]\s/.test(p);
+    out.push('<p class="'+(first && !dl ? "b2-first" : "")+(dl ? " b2-dl" : "")+'">'+esc(p)+'</p>');
+    first = false;
+  });
+  var h = out.join("");
+  if(tasks && tasks.length){
+    var tk = b2S().tk;
+    h += '<section class="b2-tasks"><div class="b2-tasks-h"><span>✎</span><div><b>Задания для вашего дела</b><em>Отметьте, что уже сделали. Ответы удобно записать в «Заметках».</em></div></div>'+
+      tasks.map(function(t, n){
+        var k = i + "." + n, on = !!tk[k];
+        return '<button class="b2-task'+(on ? " on" : "")+'" data-b2tk="'+k+'"><span>'+(on ? "✓" : n + 1)+'</span><p>'+esc(t)+'</p></button>';
+      }).join("")+
+      '<button class="btn sec sm" style="width:100%;margin-top:10px" data-open="notes">Открыть «Заметки»</button></section>';
+  }
+  return h;
 }
+
+/* ---------- карточка книги в «Обучении» ---------- */
 function book2Card(){
-  var own = b2Owned();
+  var own = b2Owned(), pct = b2Done();
   return '<button class="course b2-card" data-open="book2">'+
     '<img class="b2-cov" src="'+BOOK2.cover+'" alt="Обложка книги «'+esc(BOOK2.n)+'»" loading="lazy">'+
     '<div style="flex:1;min-width:0"><h4>'+esc(BOOK2.n)+'</h4><p>Бизнес-роман · '+esc(BOOK2.a)+'</p>'+
-    '<div class="meta">'+(own ? '<span class="chip own">Куплена</span>' : '<span class="price">'+money(BOOK2.price)+'</span>')+
-      '<span class="chip">пролог, 16 глав, эпилог</span></div></div></button>';
+    '<div class="meta">'+(own ? '<span class="chip own">Куплена</span>' : '<span class="price">'+money(BOOK2.price)+'</span><span class="chip">начало бесплатно</span>')+
+      (pct ? '<span class="chip">прочитано '+pct+'%</span>' : '')+'</div></div></button>';
 }
+
+/* ---------- обложка и оглавление ---------- */
 function viewBook2(){
-  var d = b2Data(), own = b2Owned(), h = ['<div class="stack">'];
+  var d = b2Data(), own = b2Owned(), b = b2S(), pct = b2Done(), h = ['<div class="stack">'];
   h.push('<section class="b2-hero"><img src="'+BOOK2.cover+'" alt="Обложка книги «'+esc(BOOK2.n)+'»">'+
-    '<div><div class="eyebrow">Книга</div><b>'+esc(BOOK2.n)+'</b><span>'+esc(BOOK2.a)+'</span></div></section>');
-  h.push('<div class="card flat" style="padding:14px 15px;font-size:14.5px;color:var(--ink-2);line-height:1.65">'+esc(BOOK2.about)+'</div>');
-  if(d){
-    var last = S.b2last | 0;
-    h.push('<button class="btn" data-b2ch="'+last+'">'+(last ? 'Продолжить: '+esc(d.chapters[last] ? d.chapters[last].t : "") : 'Начать читать')+'</button>');
-    h.push('<div class="qlist">'+d.chapters.map(function(c, i){
-      return '<button class="qrow" data-b2ch="'+i+'"><span class="qnum">'+(i + 1)+'</span>'+
-        '<div class="qrow-t"><b>'+esc(c.t)+'</b><span>'+plural(Math.max(1, Math.round(c.x.length / 1500)), "минута", "минуты", "минут")+' чтения</span></div>'+
-        (i === last ? '<span class="chip">здесь</span>' : '')+'</button>';
-    }).join("")+'</div>');
-  } else if(own){
-    if(!B2.busy && !B2.err) b2Load();
-    h.push('<section class="card" style="text-align:center;border-color:rgba(212,175,55,.45)">'+
-      '<div class="eyebrow" style="color:var(--accent-ink)">Книга ваша</div>'+
-      '<p style="font-size:14.5px;line-height:1.6;color:var(--ink-2);margin:9px 0 12px">'+
-        (B2.err ? esc(B2.err) : 'Загружаем книгу в телефон - после этого она будет читаться и без интернета.')+'</p>'+
-      (B2.err && b2Order() ? '<button class="btn" data-b2load="1">Загрузить книгу</button>' : '')+
-      (!b2Order() ? '<p class="note">Книга куплена на другом устройстве или в приложении JAVATTI - там её и читайте, или напишите нам: откроем здесь.</p>' : '')+
-    '</section>');
-  } else {
-    h.push('<section class="card" style="text-align:center;border-color:rgba(212,175,55,.45)">'+
-      '<div class="eyebrow" style="color:var(--accent-ink)">Онлайн-книга</div>'+
-      '<p style="font-size:14.5px;line-height:1.6;color:var(--ink-2);margin:9px 0 12px">Обращение к читателю, пролог, 16 глав и эпилог. '+
-        'Сразу после оплаты книга откроется здесь целиком - без писем и паролей - и будет читаться даже без интернета.</p>'+
-      '<div style="display:flex;align-items:baseline;justify-content:center;gap:9px;margin-bottom:12px">'+
-        '<span class="price" style="font-size:26px">'+money(BOOK2.price)+'</span><span class="chip">доступ навсегда</span></div>'+
-      '<button class="btn" data-buy="'+BOOK2.id+'">Купить книгу - '+money(BOOK2.price)+'</button>'+
-    '</section>');
+    '<div class="b2-hero-t"><div class="eyebrow">Бизнес-роман</div><b>'+esc(BOOK2.n)+'</b><span>'+esc(BOOK2.a)+'</span>'+
+      '<div class="b2-hero-p"><i style="width:'+pct+'%"></i></div><em>'+(pct ? 'прочитано '+pct+'%' : b2Count()+' частей · около '+b2Min(BOOK2_TOC.reduce(function(n, c){ return n + c[1]; }, 0))+' минут чтения')+'</em></div></section>');
+
+  var li = Math.min(b.last || 0, b2Count() - 1), lc = b2Split(b2Ch(li).t), lpos = b.pos[li] || 0;
+  if(b2Open(li)){
+    h.push('<button class="b2-cont" data-b2ch="'+li+'"><span class="b2-cont-k">'+(pct ? "Продолжить чтение" : "Начать читать")+'</span>'+
+      '<b>'+esc(lc[0] ? lc[0] + ". " + lc[1] : lc[1])+'</b>'+
+      '<span class="b2-cont-m">'+(lpos > .02 && lpos < .92 ? 'осталось около '+b2Min(b2Len(li) * (1 - lpos))+' мин' : 'около '+b2Min(b2Len(li))+' мин')+'</span><i>›</i></button>');
   }
+  if(!own){
+    h.push('<section class="b2-buy"><div class="eyebrow">Начало - бесплатно</div>'+
+      '<p>Обращение к читателю, пролог и первая глава открыты. Вся книга - пролог, 16 глав и эпилог - откроется здесь сразу после оплаты, без писем и паролей, и будет читаться без интернета.</p>'+
+      '<div class="b2-buy-p"><span class="price">'+money(BOOK2.price)+'</span><span class="chip">навсегда</span></div>'+
+      '<button class="btn" data-buy="'+BOOK2.id+'">Купить книгу - '+money(BOOK2.price)+'</button></section>');
+  } else if(!d){
+    if(!B2.busy && !B2.err) b2Load();
+    h.push('<section class="b2-buy"><div class="eyebrow">Книга ваша</div><p>'+
+      (B2.err ? esc(B2.err) : 'Загружаем книгу в телефон - после этого она будет читаться и без интернета.')+'</p>'+
+      (B2.err && b2Order() ? '<button class="btn" data-b2load="1">Загрузить книгу</button>' : '')+
+      (!b2Order() ? '<p class="note">Книга куплена на другом устройстве или в приложении JAVATTI - напишите нам, откроем её здесь.</p>' : '')+'</section>');
+  }
+
+  h.push('<div class="b2-toc-h"><b>Оглавление</b><button data-b2set="1">Аа · настройки чтения</button></div>');
+  h.push('<div class="b2-toc">'+BOOK2_TOC.map(function(c, i){
+    var sp = b2Split(c[0]), open = b2Open(i), r = b.read[i], ps = b.pos[i] || 0;
+    var st = r ? '<span class="b2-st ok">✓</span>' : !open ? '<span class="b2-st">🔒</span>' :
+      ps > .03 ? '<span class="b2-st">'+Math.round(ps * 100)+'%</span>' : (!own && i < BOOK2_FREE_N ? '<span class="b2-st free">бесплатно</span>' : '');
+    return '<button class="b2-row'+(i === li ? " cur" : "")+(open ? "" : " lock")+'" data-b2ch="'+i+'">'+
+      '<span class="b2-n">'+(sp[0] ? sp[0].replace("Глава ", "") : (i === 0 ? "✦" : i === 1 ? "П" : "Э"))+'</span>'+
+      '<span class="b2-t"><b>'+esc(sp[1])+'</b><em>'+(sp[0] ? sp[0] + " · " : "")+b2Min(b2Len(i))+' мин</em></span>'+st+'</button>';
+  }).join("")+'</div>');
   h.push(waCard('Вопрос по книге?', 'Напишите - ответим', 'Ассаламу алейкум! Вопрос по книге «Девушка, которая смогла».', 'Написать в WhatsApp'));
   h.push('</div>');
   return h.join("");
 }
+
+/* ---------- глава ---------- */
+function b2ReaderClass(){
+  var b = b2S();
+  return "b2r b2-" + b.theme + (b.font === "sans" ? " b2-sans" : "") + (b.lh === "a" ? " b2-airy" : "");
+}
 function viewBook2Ch(){
-  var d = b2Data();
-  if(!d) return viewBook2();
-  var i = Math.max(0, Math.min(d.chapters.length - 1, V.p | 0)), c = d.chapters[i];
-  if((S.b2last | 0) !== i){ S.b2last = i; save(); }
-  var h = ['<div class="stack">'];
-  h.push('<section class="b2-ch-h"><div class="eyebrow">'+esc(BOOK2.n)+' · '+(i + 1)+' из '+d.chapters.length+'</div><h3>'+esc(c.t)+'</h3></section>');
-  h.push('<section class="card b2-text">'+b2Paras(c.x).map(function(t){ return '<p>'+esc(t)+'</p>'; }).join("")+'</section>');
-  h.push('<div class="um-foot">'+
-    (i > 0 ? '<button class="btn sec sm" data-b2ch="'+(i - 1)+'">‹ Назад</button>' : '<button class="btn sec sm" data-open="book2">Все главы</button>')+
-    (i < d.chapters.length - 1 ? '<button class="btn sm" data-b2ch="'+(i + 1)+'">'+esc(d.chapters[i + 1].t)+' ›</button>' : '<button class="btn sm" data-open="book2">Все главы</button>')+'</div>');
+  var n = b2Count(), i = Math.max(0, Math.min(n - 1, V.p | 0)), b = b2S();
+  if(b.last !== i){ b.last = i; save(); }
+  var c = b2Ch(i), sp = b2Split(c.t), h = ['<div class="stack">'];
+  h.push('<div class="b2-prog" id="b2prog"><i style="width:'+Math.round((b.pos[i] || 0) * 100)+'%"></i></div>');
+  if(!b2Open(i)){
+    h.push('<section class="b2-buy" style="margin-top:6px"><div class="eyebrow">'+esc(sp[0] || "Книга")+'</div>'+
+      '<h3 style="font-family:\'PT Serif\',serif;font-size:24px;margin:6px 0 10px">'+esc(sp[1])+'</h3>'+
+      '<p>Эта часть открывается после покупки. Начало книги - обращение, пролог и первая глава - бесплатно.</p>'+
+      '<div class="b2-buy-p"><span class="price">'+money(BOOK2.price)+'</span><span class="chip">навсегда</span></div>'+
+      '<button class="btn" data-buy="'+BOOK2.id+'">Купить книгу</button>'+
+      '<button class="btn sec" style="margin-top:8px" data-open="book2">Оглавление</button></section>');
+    h.push('</div>');
+    return h.join("");
+  }
+  h.push('<article class="'+b2ReaderClass()+'" style="--b2fs:'+B2_FS[b.fs]+'px" lang="ru">'+
+    '<header class="b2-ch-h"><div class="b2-k">'+esc(sp[0] || BOOK2.n)+'</div><h2>'+esc(sp[1])+'</h2>'+
+      '<div class="b2-orn">❦</div><div class="b2-meta">'+(i + 1)+' из '+n+' · около '+b2Min(b2Len(i))+' мин</div>'+
+      '<button class="b2-aa" data-b2set="1" aria-label="Настройки чтения">Аа</button></header>'+
+    '<div class="b2-body">'+b2Body(i, c.x)+'</div>'+
+  '</article>');
+
+  var nx = i + 1 < n ? i + 1 : -1;
+  if(nx >= 0 && b2Open(nx)){
+    var ns = b2Split(b2Ch(nx).t);
+    h.push('<button class="b2-next" data-b2ch="'+nx+'"><span>Дальше</span><b>'+esc(ns[0] ? ns[0] + ". " + ns[1] : ns[1])+'</b><em>около '+b2Min(b2Len(nx))+' мин</em><i>›</i></button>');
+  } else if(nx >= 0){
+    h.push('<section class="b2-buy b2-wall"><div class="eyebrow">Понравилось начало?</div>'+
+      '<p>Дальше - как Амина уезжает в Москву с дочкой на руках, находит наставницу и с нуля строит бренд одежды. Ещё 15 глав, эпилог и задания для вашего дела.</p>'+
+      '<div class="b2-buy-p"><span class="price">'+money(BOOK2.price)+'</span><span class="chip">навсегда</span></div>'+
+      '<button class="btn" data-buy="'+BOOK2.id+'">Читать дальше - '+money(BOOK2.price)+'</button>'+
+      '<p class="note" style="margin-top:10px">Книга откроется здесь сразу после оплаты, с того места, где вы остановились.</p></section>');
+  } else {
+    h.push('<section class="b2-buy"><div class="eyebrow">Конец книги</div><p>Спасибо, что прочитали. Если книга помогла - расскажите о ней подруге.</p>'+
+      '<button class="btn sec" data-open="book2">К оглавлению</button></section>');
+  }
+  h.push('<div class="um-foot">'+(i > 0 ? '<button class="btn sec sm" data-b2ch="'+(i - 1)+'">‹ Назад</button>' : '<span></span>')+
+    '<button class="btn sec sm" data-open="book2">Оглавление</button></div>');
   h.push('</div>');
   return h.join("");
 }
+/* место в главе: сохраняем при прокрутке, прочитанной считаем с 92% */
+function b2Scroll(){
+  if(V.view !== "book2ch") return;
+  var i = V.p | 0, max = $screen.scrollHeight - $screen.clientHeight;
+  if(max < 50) return;
+  var r = Math.max(0, Math.min(1, $screen.scrollTop / max)), b = b2S();
+  var bar = document.querySelector("#b2prog i"); if(bar) bar.style.width = Math.round(r * 100) + "%";
+  b.pos[i] = Math.round(r * 1000) / 1000;
+  if(r > .92 && !b.read[i]) b.read[i] = 1;
+  if(!B2.saveT){ B2.saveT = setTimeout(function(){ B2.saveT = 0; save(); }, 1500); }
+}
+function b2Restore(){
+  if(V.view !== "book2ch") return;
+  var r = b2S().pos[V.p | 0] || 0;
+  if(r > .02 && r < .98) $screen.scrollTop = r * ($screen.scrollHeight - $screen.clientHeight);
+}
+/* ---------- настройки чтения ---------- */
+function sheetB2Set(){
+  var b = b2S();
+  function opt(k, v, label, extra){ return '<button class="pill'+(b[k] === v ? " on" : "")+'" data-b2opt="'+k+':'+v+'"'+(extra || "")+'>'+label+'</button>'; }
+  sheet('<h3>Настройки чтения</h3>'+
+    '<div class="b2-set-row"><span>Размер текста</span><div class="b2-set-fs">'+
+      '<button class="qbtn" data-b2opt="fs:-1"'+(b.fs > 0 ? '' : ' disabled')+'>A−</button><b>'+(b.fs + 1)+' из '+B2_FS.length+'</b>'+
+      '<button class="qbtn" data-b2opt="fs:1"'+(b.fs < B2_FS.length - 1 ? '' : ' disabled')+'>A+</button></div></div>'+
+    '<div class="b2-set-row"><span>Шрифт</span><div class="pill-row">'+opt("font", "serif", "Книжный", ' style="font-family:\'PT Serif\',serif"')+opt("font", "sans", "Без засечек")+'</div></div>'+
+    '<div class="b2-set-row"><span>Интервал</span><div class="pill-row">'+opt("lh", "n", "Обычный")+opt("lh", "a", "Просторный")+'</div></div>'+
+    '<div class="b2-set-row"><span>Страница</span><div class="b2-themes">'+
+      [["paper", "Бумага"], ["app", "Как в приложении"], ["night", "Ночь"]].map(function(t){
+        return '<button class="b2-th b2-th-'+t[0]+(b.theme === t[0] ? " on" : "")+'" data-b2opt="theme:'+t[0]+'"><i>Аа</i>'+t[1]+'</button>'; }).join("")+'</div></div>'+
+    '<button class="btn ghost" style="margin-top:12px" data-scrim="1">Готово</button>');
+}
+
 function viewBook1(){
   var ch = bookChapters(), pr = bookProlog();
   var h = ['<div class="stack">'];
@@ -19352,7 +19570,7 @@ function viewSettings(){
    ============================================================ */
 var BK_KEYS = ["fav","tasbih","tasbihTotal","read","dcnt","practice","orders","readDay","done","salah","myduas","goals",
   "namesRead","daily","shukrNotes","shukr","checks","sunnah","health","pauses","qada","points","pointsDay",
-  "fin","finLimits","debts","finRepeat","fontSize","todos","quiz","azkarLifetime","qLast","qMax","qRead","notes","noteFolders","qMarks","qplan","hifz","ar","zakat","trip","umrah","kids","finReqs",
+  "fin","finLimits","debts","finRepeat","fontSize","todos","quiz","azkarLifetime","qLast","qMax","qRead","notes","noteFolders","qMarks","qplan","hifz","ar","zakat","trip","umrah","b2","kids","finReqs",
   "name","city","method","madhab","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll"];
 
 /* Что человек потеряет, если копии не будет. Считаем по тем же данным,
@@ -19823,7 +20041,7 @@ function ordersCheck(){
         if(!bought(o.id)) S.bought.push(o.id);
         save();
         if(o.id === BOOK2.id){
-          b2Load(function(){ V.tab = "income"; open("book2ch", 0); toast("Оплата получена - книга открыта. Приятного чтения!"); });
+          b2Load(function(){ V.tab = "income"; open("book2ch", b2AfterPay()); setTimeout(b2Restore, 60); toast("Оплата получена - книга открыта. Приятного чтения!"); });
           render(); return;
         }
         render(); sheetAccessOpened(o);
@@ -20456,7 +20674,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -21195,8 +21413,18 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.hjtab){ V.tab = "dua"; if(d.hjtab === "umrah") open("umrah", null); else open("guide", "hajj"); return; }
   if(d.rzsec){ var rze = document.getElementById("rz-" + d.rzsec); if(rze) rze.scrollIntoView({behavior:"smooth", block:"start"}); return; }
   if(d.rzgo){ scrollToDua(d.rzgo); return; }
-  if(d.b2ch !== undefined){ V.tab = "income"; open("book2ch", parseInt(d.b2ch, 10) || 0); return; }
-  if(d.b2load !== undefined){ B2.err = ""; b2Load(function(){ V.tab = "income"; open("book2ch", S.b2last | 0); }); render(); return; }
+  if(d.b2ch !== undefined){ V.tab = "income"; open("book2ch", parseInt(d.b2ch, 10) || 0); setTimeout(b2Restore, 60); return; }
+  if(d.b2load !== undefined){ B2.err = ""; b2Load(function(){ V.tab = "income"; open("book2ch", b2S().last | 0); setTimeout(b2Restore, 60); }); render(); return; }
+  if(d.b2set !== undefined){ sheetB2Set(); return; }
+  if(d.b2opt){
+    var bo = d.b2opt.split(":"), bs = b2S(), keep = V.view === "book2ch" ? (bs.pos[V.p | 0] || 0) : 0;
+    if(bo[0] === "fs") bs.fs = Math.max(0, Math.min(B2_FS.length - 1, bs.fs + parseInt(bo[1], 10)));
+    else bs[bo[0]] = bo[1];
+    save(); render(); sheetB2Set();
+    if(V.view === "book2ch") setTimeout(function(){ $screen.scrollTop = keep * ($screen.scrollHeight - $screen.clientHeight); }, 30);
+    return;
+  }
+  if(d.b2tk){ var tkk = b2S().tk; if(tkk[d.b2tk]) delete tkk[d.b2tk]; else tkk[d.b2tk] = todayKey(); save(); render(); return; }
   if(d.umshare){ umShare(); return; }
   if(d.umsec){ V.umSec = d.umsec === "home" ? "" : d.umsec; render(); $screen.scrollTop = 0; return; }
   if(d.umchk){ var UD = umData(); if(UD.c[d.umchk]) delete UD.c[d.umchk]; else UD.c[d.umchk] = todayKey(); save(); render(); return; }
@@ -21289,6 +21517,7 @@ setInterval(function(){
 }, 60000);
 
 /* запоминаем, до какого аята дочитали при прокрутке */
+$screen.addEventListener("scroll", function(){ if(V.view === "book2ch") b2Scroll(); }, {passive:true});
 /* Панель прячется при листании вниз и возвращается при движении вверх.
    Порог в 10 px - чтобы дрожание пальца её не дёргало. */
 var TB_Y = 0, TB_HID = false;
