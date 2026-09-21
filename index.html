@@ -2243,6 +2243,7 @@ var CITIES = [
 var METHODS = {
   auto:{n:"Как у муфтията вашего региона", auto:1},
   dag:{n:"Муфтият Дагестана", fajr:17.25, isha:15.25, off:{fajr:-0.5, sunrise:-2.5, dhuhr:4.5, asr:1.5, maghrib:3.5, isha:-2.5}},
+  rt:{n:"ДУМ Республики Татарстан", fajr:18, isha:15, rt:1},
   dum:{n:"ДУМ РФ", fajr:17.75, isha:14.75, off:{fajr:-1, sunrise:-4, dhuhr:4.5, asr:-1.5, maghrib:2.5, isha:-1}},
   mwl:{n:"Всемирная исламская лига", fajr:18,   isha:17},
   spb:{n:"СМР (Россия)",             fajr:16,   isha:15},
@@ -2284,18 +2285,46 @@ function sunPos(jd){
 /* «Как у муфтията региона»: Дагестан - по муфтияту Дагестана, остальная Россия - по ДУМ РФ,
    Мекка и Медина - Умм аль-Кура, другие страны - Всемирная исламская лига */
 var DAG_IDS = ["mah","der","has","kas","izb","kzl","bui","kzy"];
+var RT_IDS = ["kaz","nch"];
 var RU_IDS = ["msk","spb","kdr","rnd","gro","nal","maz","vlk","chr","myk","stv","soc","vlg","ast","klg","nng","kaz","nch","izh","sam","tlt","srt","uln",
   "ufa","orb","prm","ekb","chl","tmn","srg","nrl","usm","nvt","omk","nsk","krs","irk","vld"];
 function methodAuto(lat, lng){
   var c = currentCity(), id = (S.city !== "gps" && c.lat === lat && c.lng === lng) ? c.id : "";
   if(DAG_IDS.indexOf(id) >= 0 || (!id && lat > 41.1 && lat < 44.9 && lng > 45.1 && lng < 48.9)) return "dag";
   if(id === "mek" || id === "med" || (!id && lat > 20 && lat < 25.5 && lng > 38 && lng < 41)) return "mkk";
+  if(RT_IDS.indexOf(id) >= 0 || (!id && lat > 53.9 && lat < 56.7 && lng > 47.2 && lng < 54.3)) return "rt";
   if(RU_IDS.indexOf(id) >= 0 || (!id && (lat >= 50 || (lat > 41 && lng > 36 && lng < 49)))) return "dum";
   return "mwl";
 }
 function methodNow(){ return S.method === "auto" ? methodAuto(currentCity().lat, currentCity().lng) : S.method; }
+/* ДУМ РТ: положение солнца на момент события; летом - фиксированные 2 часа и 1,5 часа */
+function prayerTimesRT(date, lat, lng, tz, madhab){
+  var y = date.getFullYear(), mo = date.getMonth() + 1, d = date.getDate();
+  function sun(dd){
+    var sp = sunPos(julian(y, mo, dd) - lng/(15*24)), noon = 12 + tz - lng/15 - sp.eqt;
+    function T(a){ var x = (-dsin(a) - dsin(sp.decl)*dsin(lat)) / (dcos(sp.decl)*dcos(lat)); return (x > 1 || x < -1) ? NaN : darccos(x)/15; }
+    function A(f){ var a = darccot(f + dtan(Math.abs(lat - sp.decl))); var x = (dsin(a) - dsin(sp.decl)*dsin(lat)) / (dcos(sp.decl)*dcos(lat)); return (x > 1 || x < -1) ? NaN : darccos(x)/15; }
+    return { noon:noon, T:T, A:A };
+  }
+  /* проверка 18° - от астрономической полуночи, когда солнце ниже всего; дальше - на момент самого фаджра */
+  function fajrAt(dd){ var f = -0.02, t = NaN; for(var k = 0; k < 4; k++){ var S = sun(dd + f), x = S.noon - S.T(18); if(isNaN(x)) return NaN; t = x; f = (t > 12 ? t - 24 : t)/24; } return t; }
+  var M = sun(d + 0.25), E = sun(d + 0.75), Z = sun(d);
+  var rise = M.noon - M.T(0.833), set = E.noon + E.T(0.833), f18 = fajrAt(d), f18n = fajrAt(d + 1);
+  var r = {
+    fajr:    (isNaN(f18) ? rise - 2 : f18) - 0.5/60,
+    sunrise: rise + 0.5/60,
+    dhuhr:   Z.noon + 0.5/60,
+    asr:     E.noon + E.A(madhab) + 1/60,
+    maghrib: set + 0.5/60,
+    isha:    (isNaN(f18n) ? set + 1.5 : E.noon + E.T(15)) + 0.5/60
+  };
+  for(var k2 in r) r[k2] = fixHour(r[k2]);
+  return r;
+}
+function madhabFor(methodKey){ return (methodKey === "rt" && !S.madhabPicked) ? 2 : S.madhab; }
 function prayerTimes(date, lat, lng, tz, methodKey, madhab){
   if(methodKey === "auto") methodKey = methodAuto(lat, lng);
+  if(methodKey === "rt"){ if(madhab === S.madhab) madhab = madhabFor("rt"); return prayerTimesRT(date, lat, lng, tz, madhab); }
   var m = METHODS[methodKey] || METHODS.mwl;
   /* за полярным кругом солнце то не заходит, то не всходит - считаем по широте 65° */
   if(Math.abs(lat) > 65) lat = lat > 0 ? 65 : -65;
@@ -4990,7 +5019,8 @@ function viewHomeMain(){
       var cls = k===np.key ? "now" : (tn.t[k] < nowH ? "past" : "");
       return '<div class="pcell '+cls+'"><div class="n">'+PRAYERS[i].n+'</div><div class="t">'+hhmm(tn.t[k])+'</div></div>';
     }).join("") +'</div>'+
-    '<div class="city-row"><span>📍 '+esc(tn.city.n)+' · '+esc(METHODS[methodNow()].n)+(Math.abs(tn.city.lat) > 65 ? ' · по широте 65°, где солнце всходит и заходит круглый год' : '')+'</span>'+
+    '<div class="city-row"><span>📍 '+esc(tn.city.n)+' · '+esc(METHODS[methodNow()].n)+(Math.abs(tn.city.lat) > 65 ? ' · по широте 65°, где солнце всходит и заходит круглый год' : '')+
+    (methodNow() === "rt" ? ' · в мечетях зухр в 12:00, фаджр в '+hhmm(tn.t.sunrise - 91/60) : '')+'</span>'+
     '<button data-open="settings" style="margin-left:auto">Изменить</button></div></section>');
 
   /* план чтения Корана: одна строка, если план идёт - сразу под временем намаза (просьба Заиры 21.09).
@@ -20178,11 +20208,12 @@ function viewSettings(){
 
   h.push('<div class="sec-h"><h3>Время Асра (мазхаб)</h3></div>');
   h.push('<div class="rows">'+
-    '<button class="row" data-madhab="1"><span class="ic">'+(S.madhab===1?"◉":"○")+'</span>'+
+    '<button class="row" data-madhab="1"><span class="ic">'+(madhabFor(methodNow())===1?"◉":"○")+'</span>'+
       '<div><div style="font-size:14.5px">Шафиитский</div><div style="font-size:12.5px;color:var(--ink-3)">Тень равна высоте предмета</div></div></button>'+
-    '<button class="row" data-madhab="2"><span class="ic">'+(S.madhab===2?"◉":"○")+'</span>'+
+    '<button class="row" data-madhab="2"><span class="ic">'+(madhabFor(methodNow())===2?"◉":"○")+'</span>'+
       '<div><div style="font-size:14.5px">Ханафитский</div><div style="font-size:12.5px;color:var(--ink-3)">Тень вдвое больше предмета</div></div></button>'+
     '</div>');
+  if(methodNow() === "rt" && !S.madhabPicked) h.push('<p class="disclaimer" style="text-align:left">В Татарстане аср по ханафитскому мазхабу, как в расписании ДУМ РТ. Выберите мазхаб выше, если читаете иначе.</p>');
 
   h.push('<div class="sec-h"><h3>Расписание на сегодня</h3></div>');
   var t = timesNow().t;
@@ -22051,7 +22082,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.welcskip!==undefined){ welcomeDone(); closeSheet(); return; }
   if(d.gps!==undefined){ askGPS(); return; }
   if(d.method){ S.method=d.method; save(); render(); return; }
-  if(d.madhab){ S.madhab=parseInt(d.madhab,10); save(); render(); return; }
+  if(d.madhab){ S.madhab=parseInt(d.madhab,10); S.madhabPicked=1; save(); render(); return; }
   if(d.pushtoggle!==undefined){ if(pushOn()) pushDisable(); else pushEnable(); return; }
   if(d.sw){
     S[d.sw] = !S[d.sw]; save(); render();
