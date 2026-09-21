@@ -821,7 +821,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .mus-sura-ru{text-align:center;font-size:12.5px;color:var(--ink-3);margin-bottom:6px}
 .mus-bism{font-family:var(--f-quran);direction:rtl;text-align:center;color:var(--accent-ink);
   font-size:calc(var(--q-size,28px) * .78);line-height:2;margin-bottom:6px}
-/* ---------- Изучаем арабский вместе ---------- */
+/* ---------- Изучаем арабский с JAVATTI ---------- */
 .ar-hero{position:relative;overflow:hidden;display:block;width:100%;text-align:left;margin-top:10px;
   padding:18px 18px 16px;border-radius:var(--r-lg);color:#F4EBD0;
   background:radial-gradient(120% 90% at 100% 0%, rgba(212,175,55,.28), transparent 55%),
@@ -4211,7 +4211,7 @@ function viewHomeMain(){
     '<button class="cat" data-open="qibla"><div class="ic">✧</div><b>Кибла</b><span>'+Math.round(qiblaBearing())+'° от севера</span></button>'+
     '<button class="cat" data-open="live"><div class="ic" style="font-size:24px">🕋</div><b>Мекка онлайн</b><span>прямой эфир из Харама</span></button>'+
     '</div>');
-  /* изучаем арабский вместе */
+  /* изучаем арабский с JAVATTI */
   h.push(arHero(false).replace('<div class="ar-hero">', '<button class="ar-hero" data-ar="home">').replace(/<\/div>$/, '</button>'));
   var scH = scoreState(), scMe = S.scoreMe;
   h.push('<button class="cat-wide" data-open="top" style="margin-top:10px">'+
@@ -6226,7 +6226,7 @@ function qtBars(){
       '<span>'+x.n+'</span><em>'+(x.v ? Math.round(x.v/60) : "")+'</em></div>';
   }).join("")+'</div>';
 }
-/* ---------- Изучаем арабский вместе ----------
+/* ---------- Изучаем арабский с JAVATTI ----------
    Путь по темам в том же порядке, что в первых уроках «Аль-Арабийя байна ядайк»:
    приветствие, знакомство, семья, жильё, день, еда, намаз, учёба. Слова, фразы
    и диалоги свои, книгу мы не копируем. У слова q - аят, где оно (или его
@@ -6986,8 +6986,8 @@ function arHero(big){
   var total = arAll().length, learned = arLearned(), due = arDue().length, cur = arCurrent();
   var pct = Math.round(learned / total * 100);
   return '<div class="ar-hero'+(big ? " big" : "")+'">'+
-    '<div class="ar-hero-ar" dir="rtl">نَتَعَلَّمُ العَرَبِيَّةَ مَعًا</div>'+
-    '<div class="ar-hero-h">Изучаем арабский вместе</div>'+
+    '<div class="ar-hero-ar" dir="rtl">نَتَعَلَّمُ العَرَبِيَّةَ</div>'+
+    '<div class="ar-hero-h">Изучаем арабский с JAVATTI</div>'+
     '<div class="ar-hero-st">'+
       '<div><b>'+learned+'</b><span>из '+total+' слов</span></div>'+
       '<div><b>'+arDlgDone()+'</b><span>из '+AR_UNITS.length+' диалогов</span></div>'+
@@ -7275,7 +7275,7 @@ function arClick(v){
 function mushafTools(){
   return '<div class="mus-tools">'+
     '<button data-mtool="tajwid"><span>◌ّ</span>Правила таджвида</button>'+
-    '<button data-mtool="arabic"><span>ع</span>Изучаем арабский вместе</button></div>';
+    '<button data-mtool="arabic"><span>ع</span>Изучаем арабский с JAVATTI</button></div>';
 }
 
 /* ---------- день, серия и план на 90 дней ----------
@@ -14298,7 +14298,8 @@ function admLoad(){
 var ADM_ST = { ok:"виден всем", hidden:"скрыт", check:"на проверке (брань)" };
 /* названия разделов для сводки: ключ - то, что присылает телефон */
 var ST_NAMES = { "tab:home":"Главная", "tab:quran":"Коран: оглавление", "reader":"Чтение Корана", "tab:dua":"Знания", "tab:journal":"Журнал",
-  "tab:income":"Ризкъ и обучение", "tab:prof":"Профиль", "arabic":"Изучаем арабский", "halal":"Халяль рядом", "top":"Рейтинг участников",
+  "tab:income":"Ризкъ и обучение", "tab:prof":"Профиль", "arabic":"Арабский: главная курса", "arabic:u":"Арабский: урок", "arabic:s":"Арабский: карточки", "arabic:x":"Арабский: упражнения",
+  "arabic:g":"Арабский: «Говорим»", "arabic:abc":"Арабский: буквы", "arabic:pron":"Арабский: тренажёр произношения", "arabic:dict":"Арабский: словарь", "halal":"Халяль рядом", "top":"Рейтинг участников",
   "cat":"Азкары и дуа", "names":"99 имён", "name":"Разбор имени", "tasbih":"Тасбих", "qduas":"Дуа из Корана", "hadith":"40 хадисов",
   "hadithone":"Хадис", "sira":"Сира", "calendar":"Календарь", "qibla":"Кибла", "zakat":"Закят", "kids":"Детям", "kidstory":"Детская история",
   "courses":"Программы обучения", "course":"Программа", "planner":"Планер", "finance":"Финансы", "settings":"Настройки", "admin":"Управление",
@@ -19097,15 +19098,27 @@ utmCapture();
 var ST_KEY = "rizq.stat";
 function stSection(){
   var v = V.view ? String(V.view) : "tab:" + V.tab;
+  if(V.view === "arabic" && V.p){ var ap = String(V.p); v = "arabic:" + (ap.indexOf(":") > 0 ? ap.split(":")[0] : ap); }
   return v.toLowerCase().replace(/[^a-z0-9:_-]/g, "").slice(0, 40) || "other";
 }
 function stLoad(){ try{ return JSON.parse(localStorage.getItem(ST_KEY) || "null") || { day:todayKey(), sec:{} }; }catch(e){ return { day:todayKey(), sec:{} }; } }
 function stSave(q){ try{ localStorage.setItem(ST_KEY, JSON.stringify(q)); }catch(e){} }
+/* с какого дня человек пользуется приложением: берём самый ранний день из его же
+   истории. Иначе все, кто был с нами до начала статистики, посчитались бы новыми */
+function stFirstDay(){
+  if(S.stFirst) return S.stFirst;
+  var d = todayKey();
+  [S.pointsDay, S.qTime, S.ar && S.ar.days].forEach(function(o){
+    if(o) Object.keys(o).forEach(function(k){ if(/^\d{4}-\d{2}-\d{2}$/.test(k) && k < d) d = k; });
+  });
+  S.stFirst = d; save();
+  return d;
+}
 function stSend(){
   if(S.statOn === false) { stSave({ day:todayKey(), sec:{} }); return; }
   var q = stLoad();
   if(!Object.keys(q.sec).length) return;
-  var body = JSON.stringify({ device:hlDevice(), day:q.day, src:(S.utm && S.utm.utm_source) || "direct", sec:q.sec });
+  var body = JSON.stringify({ device:hlDevice(), day:q.day, since:stFirstDay(), src:(S.utm && S.utm.utm_source) || "direct", sec:q.sec });
   stSave({ day:todayKey(), sec:{} });
   try{
     if(navigator.sendBeacon && navigator.sendBeacon("api/stat", new Blob([body], { type:"application/json" }))) return;
