@@ -7140,6 +7140,7 @@ function arBackTo(p){
   p = String(p || "");
   if(p.indexOf("s:") === 0) return "u:" + p.slice(2);
   if(p === "x:abc") return "abc";
+  if(p === "abc") return "rd";
   if(p === "x:pron") return "pron";
   if(p.indexOf("x:rd") === 0) return "rd:" + p.slice(4);
   if(p.indexOf("rd:") === 0) return "rd";
@@ -7170,8 +7171,6 @@ function viewArabic(){
     '<button class="btn" data-ar="study">'+(due ? 'Повторить слова (' + due + ')' : 'Учить новые слова')+'</button>'+
     '<button class="btn sec" data-ar="unit:'+cur.id+'">Урок '+cur.id+': '+esc(cur.n)+'</button></div>');
 
-  h.push('<button class="ar-abc-card" data-ar="abc"><span class="ar-abc-l" dir="rtl">أ ب ت</span>'+
-    '<span class="ar-st-t"><b>Азбука</b><span>'+(arS().x.abc ? 'узнаёте '+arS().x.abc+'% букв' : 'все буквы и огласовки на одной странице')+'</span></span><span class="cw-go">›</span></button>');
   h.push('<button class="ar-abc-card" data-ar="pron"><span class="ar-abc-l" dir="rtl">ق ع ح</span>'+
     '<span class="ar-st-t"><b>Тренажёр произношения</b><span>11 трудных пар звуков: слышать разницу и говорить</span></span><span class="cw-go">›</span></button>');
   h.push('<button class="ar-abc-card" data-ar="dict"><span class="ar-abc-l" dir="rtl">قَامُوس</span>'+
@@ -7910,6 +7909,8 @@ function viewArRead(){
     '<div class="ar-uhead-s">Читаем с нуля: 14 коротких уроков. Буквы идут группами по форме, огласовки - по одной, в каждом уроке только знакомые буквы. В конце вы прочитаете суру аль-Фатиха.</div></section>');
   h.push('<div class="ar-goal-bar" style="margin:0 4px"><i style="width:'+Math.round(done / AR_READ.length * 100)+'%"></i></div>');
   h.push('<button class="btn" data-ar="rdl:'+cur.id+'">'+(done ? 'Продолжить: урок '+cur.id : 'Начать с урока 1')+'</button>');
+  h.push('<button class="ar-abc-card" data-ar="abc"><span class="ar-abc-l" dir="rtl">أ ب ت</span>'+
+    '<span class="ar-st-t"><b>Азбука</b><span>'+(arS().x.abc ? 'узнаёте '+arS().x.abc+'% букв' : 'все 28 букв, формы в слове и огласовки - справочник к урокам')+'</span></span><span class="cw-go">›</span></button>');
   h.push('<div class="ar-path">');
   AR_READ.forEach(function(u){
     var d = rdDone(u.id), now = u === cur && !d, best = arS().x["rd" + u.id];
