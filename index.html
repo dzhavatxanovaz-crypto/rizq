@@ -12306,6 +12306,7 @@ var BOOK1 = {
      тот же экран оплаты. free - сколько глав открыто без покупки:
      пролог и первая глава, чтобы человек решал по тексту, а не по описанию */
   id:"book1",
+  cover:"icons/book-verit.jpg",
   price:550,
   free:1
 };
@@ -12314,8 +12315,9 @@ function bookOpen(i){ return bookBought() || i < 0 || i < BOOK1.free; }
 /* карточка книги в разделе «Обучение» */
 function bookCard(){
   var got = bookBought(), ch = bookChapters().length;
-  return '<button class="course" data-open="book1">'+
-    '<div class="course-ic">✦</div><div style="flex:1;min-width:0">'+
+  return '<button class="course b2-card" data-open="book1">'+
+    '<img class="b2-cov" src="'+BOOK1.cover+'" alt="Обложка книги «'+esc(BOOK1.n)+'»" loading="lazy">'+
+    '<div style="flex:1;min-width:0">'+
     '<h4>'+esc(BOOK1.n)+'</h4><p>'+esc(BOOK1.a)+' · 99 имён Всевышнего и 99 моментов, когда Он был рядом</p>'+
     '<div class="meta">'+
       (got ? '<span class="chip own">Куплена</span>'
@@ -12563,10 +12565,9 @@ function sheetB2Set(){
 function viewBook1(){
   var ch = bookChapters(), pr = bookProlog();
   var h = ['<div class="stack">'];
-  h.push('<section class="mihrab" style="border-radius:96px 96px var(--r-lg) var(--r-lg);padding:26px 20px 20px">'+
-    '<div class="eyebrow">Книга</div>'+
-    '<div style="font-family:var(--f-display);font-size:24px;font-weight:700;margin-top:8px;line-height:1.25">'+esc(BOOK1.n)+'</div>'+
-    '<div class="ru" style="font-size:14px;color:rgba(255,255,255,.72);margin-top:6px">'+esc(BOOK1.a)+'</div></section>');
+  h.push('<section class="b2-hero"><img src="'+BOOK1.cover+'" alt="Обложка книги «'+esc(BOOK1.n)+'»">'+
+    '<div class="b2-hero-t"><div class="eyebrow">Книга</div><b>'+esc(BOOK1.n)+'</b><span>'+esc(BOOK1.a)+'</span>'+
+    '<em>'+(bookBought() ? 'Книга ваша - читается здесь, без интернета' : '99 имён Всевышнего и 99 моментов, когда Он был рядом')+'</em></div></section>');
   h.push('<div class="card flat" style="padding:14px 15px;font-size:14.5px;color:var(--ink-2);line-height:1.65">'+esc(BOOK1.about)+'</div>');
 
   if(pr.length){
@@ -19967,7 +19968,7 @@ function sheetBuy(id, tariff){
     '<div class="card flat" style="padding:14px"><div style="display:flex;gap:10px;align-items:center">'+
       '<div class="course-ic" style="width:42px;height:42px;font-size:21px">'+ic+'</div>'+
       '<div style="flex:1;min-width:0"><div style="font-size:15px;font-family:var(--f-display);font-weight:600;line-height:1.3">'+esc(title)+'</div>'+
-      '<div style="font-size:13px;color:var(--ink-3);margin-top:3px">'+(isB2 ? "Откроется здесь целиком сразу после оплаты" : isBook ? "Читается в приложении" : (c.start || "Обучение на платформе школы JAVATTI"))+(t ? " · тариф «"+esc(t.n)+"»" : "")+'</div></div></div>'+
+      '<div style="font-size:13px;color:var(--ink-3);margin-top:3px">'+(isBook ? "Откроется здесь целиком сразу после оплаты" : (c.start || "Обучение на платформе школы JAVATTI"))+(t ? " · тариф «"+esc(t.n)+"»" : "")+'</div></div></div>'+
       (tars ? '<div class="pill-row" style="justify-content:flex-start;margin-top:11px">'+tars.map(function(x){
         return '<button class="pill'+(x.n===t.n?" on":"")+'" data-buytar="'+esc(x.n)+'" style="'+(x.n===t.n?"border-color:var(--accent);color:var(--accent-ink)":"")+'">'+esc(x.n)+' · '+money(x.p)+'</button>';
       }).join("")+'</div>' : '')+
@@ -19977,7 +19978,7 @@ function sheetBuy(id, tariff){
       '<span class="price" style="margin-left:auto;font-size:22px">'+money(payNow)+'</span></div>'+finPlanNote(price, plan)+'</div>'+
     '<label class="eyebrow" style="display:block;margin-top:14px">Имя</label>'+
     '<input class="search" id="coName" style="margin:6px 0 10px" placeholder="Как к вам обращаться" value="'+esc(S.name||"")+'">'+
-    '<label class="eyebrow">Почта - на неё придут данные для входа</label>'+
+    '<label class="eyebrow">'+(isBook ? 'Почта - для чека об оплате' : 'Почта - на неё придут данные для входа')+'</label>'+
     '<input class="search" id="coMail" type="email" style="margin:6px 0 10px" placeholder="mail@example.com" value="'+esc(S.email||"")+'">'+
     '<label class="eyebrow">Телефон с WhatsApp</label>'+
     '<input class="search" id="coTel" type="tel" style="margin:6px 0 4px" placeholder="+7 900 000-00-00" value="'+esc(S.phone||"")+'">'+
@@ -19990,7 +19991,9 @@ function sheetBuy(id, tariff){
     '<button class="btn" id="coGo" style="margin-top:14px" data-checkout="'+id+'" data-tariff="'+(t ? esc(t.n) : "")+'" data-plan="'+(plan||"")+'">'+(plan ? 'Оплатить первый взнос ' : 'Перейти к оплате ')+money(payNow)+'</button>'+
     (plan ? '<p class="note" style="margin-top:10px">Рассрочка от школы JAVATTI без процентов и штрафов. После первого взноса разделы программы открываются по одному раз в неделю, после полной оплаты - вся программа сразу. Если взнос просрочен, уроки закрываются до оплаты. О следующих взносах напомним за 3 дня, оплатить можно по ссылке в сообщении или в профиле.</p>' : '')+
     '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>'+
-    '<p class="note" style="margin-top:12px">Оплата картой или по СБП на защищённой странице Prodamus. После оплаты доступ откроется сам: данные для входа придут на почту, а в приложении появится отметка.</p>');
+    '<p class="note" style="margin-top:12px">Оплата картой или по СБП на защищённой странице Prodamus. '+(isBook
+      ? 'Вернитесь в приложение после оплаты - книга откроется здесь сама, без паролей, и будет читаться без интернета.'
+      : 'После оплаты доступ откроется сам: данные для входа придут на почту, а в приложении появится отметка.')+'</p>');
 }
 
 /* Сохраняем то, что человек уже ввёл, - при смене тарифа окно перерисовывается. */
@@ -20044,6 +20047,7 @@ function ordersCheck(){
           b2Load(function(){ V.tab = "income"; open("book2ch", b2AfterPay()); setTimeout(b2Restore, 60); toast("Оплата получена - книга открыта. Приятного чтения!"); });
           render(); return;
         }
+        if(o.id === BOOK1.id){ V.tab = "income"; open("book1"); toast("Оплата получена - книга открыта. Приятного чтения!"); return; }
         render(); sheetAccessOpened(o);
       }).catch(function(){});
   });
