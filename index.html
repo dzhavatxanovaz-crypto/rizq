@@ -643,6 +643,14 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* ---------- книга «Девушка, которая смогла» ---------- */
 .b2-card{align-items:center}
 .rzc{padding:13px 12px 12px}
+.nm-mark{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:13px 14px;border-radius:var(--r-lg);border:1px solid rgba(212,175,55,.55);background:linear-gradient(140deg,rgba(212,175,55,.16),rgba(212,175,55,.04))}
+.nm-rib{font-size:20px}
+.nm-t{flex:1;min-width:0}
+.nm-t em{display:block;font-style:normal;font-size:12px;color:var(--ink-3)}
+.nm-t b{display:block;font-family:var(--f-display);font-size:16px;margin-top:2px}
+.nm-go{flex:none;font-size:13px;font-weight:600;color:var(--accent-ink)}
+.name.marked{border-color:rgba(212,175,55,.7);box-shadow:inset 3px 0 0 #D4AF37}
+.rzc-fold{width:34px;height:34px;border-radius:10px;color:var(--ink-3);font-size:18px;line-height:1}
 .rzc-top{display:flex;align-items:center;gap:6px;margin-bottom:8px}
 .rzc-top b{flex:1;font-family:var(--f-display);font-size:16px;padding-left:4px}
 .rzc-nav{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);color:var(--accent-ink);font-size:20px;line-height:1}
@@ -665,6 +673,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .rzc-tt{flex:1;min-width:0;font-size:14.5px;line-height:1.4}
 .rzc-tt em{font-style:normal;font-size:12.5px;color:var(--accent-ink);margin-left:8px;font-weight:600}
 .rzc-rep{flex:none;width:26px;text-align:center;color:var(--ink-3)}
+.tj-plays{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.tj-play{font-size:12.5px;font-weight:600;padding:5px 10px;border-radius:999px;border:1px solid rgba(212,175,55,.45);color:var(--accent-ink);background:rgba(212,175,55,.08)}
+.rzc-late{display:block;font-size:12px;color:#C8553D;margin-top:1px}
 .rzc-none{font-size:14px;color:var(--ink-3);margin:4px 2px}
 .cal-c p{font-size:14.5px;line-height:1.6;color:var(--ink-2);margin:10px 0 12px}
 .cal-h{display:flex;align-items:center;gap:12px}
@@ -2036,7 +2047,7 @@ var HADITH_SRC = [{"num":1,"n":"Дела оцениваются по намер�
 /* ---------- хранилище ---------- */
 var DEF = {
   fav:[], tasbih:{}, tasbihTotal:0, read:{}, dcnt:{}, practice:{}, readDay:"", bought:[], done:[], orders:[],
-  theme:"", city:"mah", method:"mwl", madhab:1,
+  theme:"", city:"mah", method:"auto", madhab:1,
   name:"", email:"", notifPrayer:true, notifDua:true, notifTasks:true, notifScore:true, notifAzkar:true, statOn:true, notifCourse:false, notifAzan:true,
   salah:{}, myduas:[], goals:[], namesRead:{}, daily:{}, shukrNotes:{}, shukr:[], shukrMigrated:false, shukrOpen:false, salahOpen:false,
   checks:{}, sunnah:{}, sunnahOpen:false, health:{}, healthOpen:false, pauses:[],
@@ -2059,7 +2070,9 @@ var DEF = {
 var S = (function(){
   try{
     var raw = localStorage.getItem("rizq.v1");
-    if(raw){ var p = JSON.parse(raw); for(var k in DEF){ if(!(k in p)) p[k]=DEF[k]; } return p; }
+    if(raw){ var p = JSON.parse(raw); for(var k in DEF){ if(!(k in p)) p[k]=DEF[k]; }
+      if(!p.methodV2){ if(p.method === "mwl") p.method = "auto"; p.methodV2 = 1; }
+      return p; }
   }catch(e){}
   return JSON.parse(JSON.stringify(DEF));
 })();
@@ -2183,6 +2196,8 @@ var CITIES = [
   {id:"chl", n:"Челябинск",         lat:55.1644, lng:61.4368, tz:5},
   {id:"tmn", n:"Тюмень",            lat:57.1530, lng:65.5343, tz:5},
   {id:"srg", n:"Сургут",            lat:61.2540, lng:73.3962, tz:5},
+  {id:"nrl", n:"Норильск",          lat:69.3535, lng:88.2027, tz:7},
+  {id:"usm", n:"Усть-Манчаж (Свердловская обл.)", lat:56.54, lng:58.17, tz:5},
   {id:"nvt", n:"Нижневартовск",     lat:60.9344, lng:76.5531, tz:5},
   {id:"omk", n:"Омск",              lat:54.9885, lng:73.3242, tz:6},
   {id:"nsk", n:"Новосибирск",       lat:55.0084, lng:82.9357, tz:7},
@@ -2205,6 +2220,9 @@ var CITIES = [
   {id:"med", n:"Медина",            lat:24.4686, lng:39.6142, tz:3}
 ];
 var METHODS = {
+  auto:{n:"Как у муфтията вашего региона", auto:1},
+  dag:{n:"Муфтият Дагестана", fajr:17.25, isha:15.25, off:{fajr:-0.5, sunrise:-2.5, dhuhr:4.5, asr:1.5, maghrib:3.5, isha:-2.5}},
+  dum:{n:"ДУМ РФ", fajr:17.75, isha:14.75, off:{fajr:-1, sunrise:-4, dhuhr:4.5, asr:-1.5, maghrib:2.5, isha:-1}},
   mwl:{n:"Всемирная исламская лига", fajr:18,   isha:17},
   spb:{n:"СМР (Россия)",             fajr:16,   isha:15},
   egy:{n:"Египетская организация",   fajr:19.5, isha:17.5},
@@ -2242,8 +2260,24 @@ function sunPos(jd){
   var RA=darctan2(dcos(e)*dsin(L),dcos(L))/15;
   return { decl: darcsin(dsin(e)*dsin(L)), eqt: q/15 - fixHour(RA) };
 }
+/* «Как у муфтията региона»: Дагестан - по муфтияту Дагестана, остальная Россия - по ДУМ РФ,
+   Мекка и Медина - Умм аль-Кура, другие страны - Всемирная исламская лига */
+var DAG_IDS = ["mah","der","has","kas","izb","kzl","bui","kzy"];
+var RU_IDS = ["msk","spb","kdr","rnd","gro","nal","maz","vlk","chr","myk","stv","soc","vlg","ast","klg","nng","kaz","nch","izh","sam","tlt","srt","uln",
+  "ufa","orb","prm","ekb","chl","tmn","srg","nrl","usm","nvt","omk","nsk","krs","irk","vld"];
+function methodAuto(lat, lng){
+  var c = currentCity(), id = (S.city !== "gps" && c.lat === lat && c.lng === lng) ? c.id : "";
+  if(DAG_IDS.indexOf(id) >= 0 || (!id && lat > 41.1 && lat < 44.9 && lng > 45.1 && lng < 48.9)) return "dag";
+  if(id === "mek" || id === "med" || (!id && lat > 20 && lat < 25.5 && lng > 38 && lng < 41)) return "mkk";
+  if(RU_IDS.indexOf(id) >= 0 || (!id && (lat >= 50 || (lat > 41 && lng > 36 && lng < 49)))) return "dum";
+  return "mwl";
+}
+function methodNow(){ return S.method === "auto" ? methodAuto(currentCity().lat, currentCity().lng) : S.method; }
 function prayerTimes(date, lat, lng, tz, methodKey, madhab){
+  if(methodKey === "auto") methodKey = methodAuto(lat, lng);
   var m = METHODS[methodKey] || METHODS.mwl;
+  /* за полярным кругом солнце то не заходит, то не всходит - считаем по широте 65° */
+  if(Math.abs(lat) > 65) lat = lat > 0 ? 65 : -65;
   var jd = julian(date.getFullYear(), date.getMonth()+1, date.getDate()) - lng/(15*24);
   var sp = sunPos(jd);
   var dhuhr = fixHour(12 + tz - lng/15 - sp.eqt);
@@ -2258,15 +2292,20 @@ function prayerTimes(date, lat, lng, tz, methodKey, madhab){
     if(x>1||x<-1) return NaN;
     return darccos(x)/15;
   }
-  var maghrib = dhuhr + T(0.833);
+  var maghrib = dhuhr + T(0.833), sunrise = dhuhr - T(0.833);
   var res = {
     fajr:    dhuhr - T(m.fajr),
-    sunrise: dhuhr - T(0.833),
-    dhuhr:   dhuhr + 65/3600,
+    sunrise: sunrise,
+    dhuhr:   m.off ? dhuhr : dhuhr + 65/3600,
     asr:     dhuhr + asrT(madhab),
     maghrib: maghrib,
     isha:    m.ishaMin ? maghrib + m.ishaMin/60 : dhuhr + T(m.isha)
   };
+  /* высокие широты: нужный угол не достигается - доля ночи по углу (ночь = от заката до восхода) */
+  var night = 24 - (maghrib - sunrise);
+  if(isNaN(res.fajr) || (lat > 48 && sunrise - res.fajr > night * m.fajr / 60)) res.fajr = sunrise - night * m.fajr / 60;
+  if(!m.ishaMin && (isNaN(res.isha) || (lat > 48 && res.isha - maghrib > night * m.isha / 60))) res.isha = maghrib + night * m.isha / 60;
+  if(m.off) for(var k in m.off) if(typeof res[k] === "number") res[k] += m.off[k] / 60;
   return res;
 }
 function hhmm(h){
@@ -2329,7 +2368,7 @@ function buildICS(days, alarmMin){
       out.push("DTSTART:"+icsStamp(start));
       out.push("DTEND:"+icsStamp(end));
       out.push("SUMMARY:"+icsEscape(f.n));
-      out.push("DESCRIPTION:"+icsEscape("Время намаза "+f.n+" · "+c.n+" · "+METHODS[S.method].n));
+      out.push("DESCRIPTION:"+icsEscape("Время намаза "+f.n+" · "+c.n+" · "+METHODS[methodNow()].n));
       if(alarmMin > 0){
         out.push("BEGIN:VALARM");
         out.push("TRIGGER:-PT"+alarmMin+"M");
@@ -4505,7 +4544,7 @@ function qPlay(i){
     QP.audio.addEventListener("ended", function(){
       if(S.qRepeat > 1 && QP.repeatLeft > 1){ QP.repeatLeft--; QP.audio.currentTime = 0; QP.audio.play(); return; }
       var next = QP.cur + 1;
-      if(next < QTOTAL && S.qContinue){ qPlay(next); }
+      if(next < QTOTAL && S.qContinue && !QP.one){ qPlay(next); }
       else qStop();
     });
     QP.audio.addEventListener("error", function(){
@@ -4515,6 +4554,7 @@ function qPlay(i){
     });
   }
   qRecFix();
+  QP.one = false;
   QP.cur = i;
   QP.repeatLeft = S.qRepeat || 1;
   qFollowView(i);
@@ -4875,10 +4915,6 @@ function viewHome(){
 }
 function viewHomeMain(){
   var h = ['<div class="stack">'];
-  h.push('<div class="hs"><span class="hs-ic">⌕</span><input class="search" id="homeSearch" type="search" enterkeyhint="search" '+
-    'placeholder="Поиск: дуа, сура, намаз, заметка..." value="'+esc(V.q||"")+'">'+
-    (V.q ? '<button class="hs-x" data-hsclear="1" aria-label="Очистить">×</button>' : '')+'</div>');
-  if(V.q && V.q.trim().length > 1) return h.join("") + homeSearchResults(V.q) + '</div>';
   var d = duaOfDay(), a = ayatOfDay();
   var tn = timesNow(), np = nextPrayer();
   var own = (S.myduas||[]).length + (S.todos||[]).length + (S.goals||[]).length + Object.keys(S.shukrNotes||{}).length;
@@ -4901,6 +4937,11 @@ function viewHomeMain(){
     '<button class="btn sm ghost" data-dshare="'+d.id+'" style="flex:none" aria-label="Поделиться">⤴</button>'+
     '<button class="btn sm '+(isFav("dua:"+d.id)?"":"ghost")+'" data-fav="dua:'+d.id+'" style="flex:none">'+
     (isFav("dua:"+d.id)?"★ В избранном":"☆ В избранное")+'</button></div>');
+  /* поиск по приложению - сразу под дуа дня */
+  h.push('<div class="hs"><span class="hs-ic">⌕</span><input class="search" id="homeSearch" type="search" enterkeyhint="search" '+
+    'placeholder="Поиск: дуа, сура, намаз, заметка..." value="'+esc(V.q||"")+'">'+
+    (V.q ? '<button class="hs-x" data-hsclear="1" aria-label="Очистить">×</button>' : '')+'</div>');
+  if(V.q && V.q.trim().length > 1) return h.join("") + homeSearchResults(V.q) + '</div>';
   /* намаз */
   var order = ["fajr","sunrise","dhuhr","asr","maghrib","isha"];
   var nowH = nowHours();
@@ -4914,7 +4955,7 @@ function viewHomeMain(){
       var cls = k===np.key ? "now" : (tn.t[k] < nowH ? "past" : "");
       return '<div class="pcell '+cls+'"><div class="n">'+PRAYERS[i].n+'</div><div class="t">'+hhmm(tn.t[k])+'</div></div>';
     }).join("") +'</div>'+
-    '<div class="city-row"><span>📍 '+esc(tn.city.n)+' · '+esc(METHODS[S.method].n)+'</span>'+
+    '<div class="city-row"><span>📍 '+esc(tn.city.n)+' · '+esc(METHODS[methodNow()].n)+(Math.abs(tn.city.lat) > 65 ? ' · по широте 65°, где солнце всходит и заходит круглый год' : '')+'</span>'+
     '<button data-open="settings" style="margin-left:auto">Изменить</button></div></section>');
 
   /* план чтения Корана: одна строка, если план идёт - сразу под временем намаза (просьба Заиры 21.09).
@@ -5484,6 +5525,9 @@ function buildIndex(){
   }
 
   /* имена Всевышнего */
+  TAJWID.forEach(function(t, i){
+    add(t.n, "Правила таджвида", "tjw:" + i, t.t + " " + t.items.map(function(it){ return it[1]; }).join(" ") + " таджвид чтение корана", "Таджвид");
+  });
   NAMES99.forEach(function(nm, i){
     add(nm.n, (nm.mean||"имя Всевышнего").split(";")[0], "name:"+i, (nm.mean||"")+" имя", "Имена Всевышнего");
   });
@@ -6896,6 +6940,12 @@ function viewNames(){
       '<span style="font-size:13px;color:var(--ink-3);line-height:1.45">Откройте имя и нажмите «Произнести» - счётчик запомнит.</span>'+
       (done? '<button class="btn ghost sm" style="margin-left:auto;flex:none" data-namesreset="1">Сбросить</button>':'')+
     '</div></section>');
+  if(typeof S.nameMark === "number" && NAMES99[S.nameMark] && !q){
+    var nm = NAMES99[S.nameMark];
+    h.push('<button class="nm-mark" data-name="'+S.nameMark+'"><span class="nm-rib">🔖</span>'+
+      '<span class="nm-t"><em>Вы остановились на имени № '+(S.nameMark + 1)+'</em><b>'+esc(nm.n)+'</b></span>'+
+      '<span class="nm-go">Продолжить ›</span></button>');
+  }
   h.push('<input class="search" id="nameSearch" placeholder="Поиск: Рахман, удел, прощение, 17..." value="'+esc(V.q)+'">');
   var shown = 0;
   NAMES99.forEach(function(n,i){
@@ -6910,7 +6960,7 @@ function viewNames(){
     }
     shown++;
     var times = nameTimes(i);
-    h.push('<button class="name" data-name="'+i+'">'+
+    h.push('<button class="name'+(S.nameMark === i ? ' marked' : '')+'" data-name="'+i+'"'+(S.nameMark === i ? ' aria-label="'+esc(n.n)+', здесь вы остановились"' : '')+'>'+
       '<div class="num"'+(times? ' style="background:var(--emerald);border-color:var(--emerald);color:#fff"':'')+'>'+(i+1)+'</div>'+
       '<div style="min-width:0"><b>'+esc(n.n)+'</b><span>'+
         (times? '✓ произнесено '+times+' раз'+(times===1?"":"а") : esc(shortMean(n.mean)))+'</span></div>'+
@@ -6930,6 +6980,7 @@ function shortMean(m){
 
 function viewName(){
   var i = parseInt(V.p, 10);
+  if(S.nameMark !== i){ S.nameMark = i; save(); }   /* закладка: здесь остановились */
   var n = NAMES99[i];
   var k = "name:"+i;
   var h = ['<div class="stack">'];
@@ -16057,6 +16108,22 @@ function viewPost(){
   return h.join("");
 }
 
+/* откуда пример: сура и аят - чтобы послушать, как его читает чтец */
+var TJ_REF = {
+  "ٱلْقَمَرُ":[91,2], "ٱلشَّمْسُ":[91,1], "ٱلْحَمْدُ":[1,2], "ٱدْخُلُوا":[2,58], "ٱهْدِنَا":[1,6], "أَنْعَمْتَ":[1,7],
+  "ٱضْرِب بِّعَصَاكَ":[2,60], "قَد تَّبَيَّنَ":[2,256], "قُل رَّبِّ":[17,24],
+  "مَدّ البَدَل":[2,9], "مَدّ اللِّين":[106,4], "مَدّ العِوَض":[4,11], "مَدّ الصِّلَة":[104,3], "الٓمٓ":[2,1],
+  "المَدّ الطَّبِيعِي":[2,30], "المَدّ المُتَّصِل":[110,1], "المَدّ المُنْفَصِل":[2,21], "المَدّ اللَّازِم":[1,7], "المَدّ العَارِض":[1,2],
+  "فِرْعَوْنَ":[2,49], "مَرْيَمَ":[19,16], "قِرْطَاسٍ":[6,7],
+  "الإِظْهَار":[2,62], "الإِدْغَام":[99,7], "الإِقْلَاب":[2,27], "الإِخْفَاء":[2,4],
+  "نَسْتَعِينُ ← نَسْتَعِينْ":[1,5], "عَلِيمًا ← عَلِيمَا":[4,11], "ٱلْعَالَمِينَ":[1,2],
+  "س":[[18,1],[36,52],[75,27],[83,14]]
+};
+function tjPlayBtns(key){
+  var r = TJ_REF[key]; if(!r) return "";
+  var list = typeof r[0] === "number" ? [r] : r;
+  return '<span class="tj-plays">'+list.map(function(x){ return '<button class="tj-play" data-tjplay="'+x[0]+':'+x[1]+'" aria-label="Послушать аят '+x[0]+':'+x[1]+'">▶ '+x[0]+':'+x[1]+'</button>'; }).join("")+'</span>';
+}
 function viewTajwid(){
   var h = ['<div class="stack">'];
   h.push('<div class="card flat" style="padding:13px 15px;font-size:14px;color:var(--ink-2);line-height:1.55">'+
@@ -16072,7 +16139,7 @@ function viewTajwid(){
       '<p style="font-size:14.5px;line-height:1.65;color:var(--ink-2);margin:9px 0 0">'+esc(t.t)+'</p>'+
       (t.items.length? '<div class="rows" style="margin-top:11px">'+ t.items.map(function(it){
         return '<div class="row" style="align-items:flex-start"><span class="tj-let" style="min-width:74px;font-size:19px;text-align:right">'+esc(it[0])+'</span>'+
-          '<span style="font-size:14px;line-height:1.5;color:var(--ink-2)">'+esc(it[1])+'</span></div>';
+          '<span style="font-size:14px;line-height:1.5;color:var(--ink-2)">'+esc(it[1])+tjPlayBtns(it[0])+'</span></div>';
       }).join("") +'</div>' : '')+
     '</section>');
   });
@@ -18482,6 +18549,11 @@ function plOnDay(x, key){
 var RZ_MONTHS = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
 function rzCalCard(){
   var now = new Date(), off = V.rzcm || 0, td = todayKey();
+  if(!S.rzcOpen){
+    var nt = (S.todos || []).filter(function(x){ return !x.done && x.due && (plOnDay(x, td) || x.due < td); }).length;
+    return '<button class="nt-thin" data-rzctog="1" aria-expanded="false"><span>▦</span>Календарь задач'+
+      (nt ? '<em>сегодня '+nt+'</em>' : '')+'<i>⌄</i></button>';
+  }
   var m0 = new Date(now.getFullYear(), now.getMonth() + off, 1), y = m0.getFullYear(), m = m0.getMonth();
   var days = new Date(y, m + 1, 0).getDate(), lead = (m0.getDay() + 6) % 7;   /* неделя с понедельника */
   var act = (S.todos || []).filter(function(x){ return !x.done && x.due; });
@@ -18490,12 +18562,14 @@ function rzCalCard(){
   for(var b = 0; b < lead; b++) cells.push('<div class="rzc-e"></div>');
   for(var d = 1; d <= days; d++){
     var key = y + "-" + pad(m + 1) + "-" + pad(d);
-    var n = act.filter(function(x){ return plOnDay(x, key); }).length;
+    var n = act.filter(function(x){ return plOnDay(x, key) || (key === td && x.due < td); }).length;
     var late = key < td && act.some(function(x){ return x.due === key; });
-    cells.push('<button class="rzc-d'+(key === td ? ' today' : '')+(key === sel ? ' sel' : '')+(key < td ? ' past' : '')+'" data-rzcd="'+key+'">'+
+    var al = d + ' ' + ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"][m] + (key === td ? ', сегодня' : '') + ', ' + (n ? plural(n, "задача", "задачи", "задач") : 'задач нет');
+    cells.push('<button class="rzc-d'+(key === td ? ' today' : '')+(key === sel ? ' sel' : '')+(key < td ? ' past' : '')+'" data-rzcd="'+key+'" aria-label="'+al+'"'+(key === sel ? ' aria-pressed="true"' : '')+'>'+
       '<b>'+d+'</b>'+(n ? '<i class="'+(late ? 'late' : '')+'">'+(n > 9 ? '9+' : n)+'</i>' : '<i></i>')+'</button>');
   }
   var h = '<section class="card rzc"><div class="rzc-top">'+
+    '<button class="rzc-fold" data-rzctog="1" aria-expanded="true" aria-label="Свернуть календарь">⌃</button>'+
     '<button class="rzc-nav" data-rzcm="-1" aria-label="Предыдущий месяц">‹</button>'+
     '<b>'+RZ_MONTHS[m]+' '+y+'</b>'+
     (off ? '<button class="rzc-now" data-rzcm="0">Сегодня</button>' : '')+
@@ -18503,13 +18577,14 @@ function rzCalCard(){
     '<div class="rzc-w">'+["пн","вт","ср","чт","пт","сб","вс"].map(function(w){ return '<span>'+w+'</span>'; }).join("")+'</div>'+
     '<div class="rzc-g">'+cells.join("")+'</div>';
   if(sel){
-    var list = act.filter(function(x){ return plOnDay(x, sel); }).sort(function(a, b2){ return (a.tm || "99") < (b2.tm || "99") ? -1 : 1; });
+    var list = act.filter(function(x){ return plOnDay(x, sel) || (sel === td && x.due < td); }).sort(function(a, b2){ return (a.tm || "99") < (b2.tm || "99") ? -1 : 1; });
     var dl = new Date(sel + "T12:00:00").toLocaleDateString("ru-RU", { weekday:"long", day:"numeric", month:"long" });
     h += '<div class="rzc-day"><div class="rzc-dh">'+esc(dl)+'</div>'+
       (list.length ? list.map(function(x){
-        var cur = x.due === sel;   /* отметить можно только ближайший раз */
+        var cur = x.due === sel || (sel === td && x.due < td);   /* отметить можно только ближайший раз */
         return '<div class="rzc-t">'+(cur ? '<button class="tick" data-pltoggle="'+x.id+'">✓</button>' : '<span class="rzc-rep">↻</span>')+
-          '<span class="rzc-tt">'+esc(x.t)+(x.tm ? '<em>'+esc(x.tm)+'</em>' : '')+'</span></div>';
+          '<span class="rzc-tt">'+esc(x.t)+(x.tm ? '<em>'+esc(x.tm)+'</em>' : '')+
+          (sel === td && x.due < td ? '<small class="rzc-late">просрочено с '+esc(plDueLabel(x.due))+'</small>' : '')+'</span></div>';
       }).join("") : '<p class="rzc-none">Задач на этот день нет</p>')+
       '<button class="btn ghost sm" style="width:100%;margin-top:8px" data-rzcadd="'+sel+'">+ Задача на этот день</button></div>';
   }
@@ -20003,9 +20078,11 @@ function viewSettings(){
   h.push('<div class="sec-h"><h3>Метод расчёта</h3></div>');
   h.push('<div class="rows">'+ Object.keys(METHODS).map(function(k){
     var m = METHODS[k];
+    var sub = m.auto ? 'рекомендуем · сейчас: '+METHODS[methodAuto(currentCity().lat, currentCity().lng)].n
+      : 'Фаджр '+m.fajr+'° · Иша '+(m.ishaMin? m.ishaMin+" мин после магриба" : m.isha+"°")+(m.off ? ' · с запасом минут (ихтият), как в таблицах' : '');
     return '<button class="row" data-method="'+k+'"><span class="ic">'+(S.method===k?"◉":"○")+'</span>'+
       '<div><div style="font-size:14.5px">'+esc(m.n)+'</div>'+
-      '<div style="font-size:12.5px;color:var(--ink-3)">Фаджр '+m.fajr+'° · Иша '+(m.ishaMin? m.ishaMin+" мин после магриба" : m.isha+"°")+'</div></div>'+
+      '<div style="font-size:12.5px;color:var(--ink-3)">'+esc(sub)+'</div></div>'+
       (S.method===k?'<span class="val" style="color:var(--emerald)">✓</span>':'')+'</button>';
   }).join("") +'</div>');
 
@@ -20671,7 +20748,7 @@ function sheetICS(){
       '<div class="row"><span class="ic">⌖</span>Город<span class="val">'+esc(c.n)+'</span></div>'+
       '<div class="row"><span class="ic">◷</span>Период<span class="val">60 дней</span></div>'+
       '<div class="row"><span class="ic">🕌</span>Напоминание<span class="val">за 10 минут и в срок</span></div>'+
-      '<div class="row"><span class="ic">⚙</span>Расчёт<span class="val">'+esc(METHODS[S.method].n)+'</span></div>'+
+      '<div class="row"><span class="ic">⚙</span>Расчёт<span class="val">'+esc(METHODS[methodNow()].n)+'</span></div>'+
     '</div>'+
     '<button class="btn" style="margin-top:14px" data-icsgo="1">Создать файл</button>'+
     '<div style="margin-top:14px;padding:14px 16px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line)">'+
@@ -21151,7 +21228,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -21189,6 +21266,10 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.post){ V.tab="journal"; open("post", d.post); return; }
   if(d.sq){ V.q = d.sq; render();
     var fq=document.getElementById("knowSearch") || document.getElementById("homeSearch"); if(fq){ fq.value=d.sq; fq.focus(); } return; }
+  if(d.tjplay){ var tp = d.tjplay.split(":"), tg = ayahGlobal(+tp[0], +tp[1]);
+    if(QP.playing && QP.cur === tg){ qToggle(tg); return; }
+    qPlay(tg); QP.one = true; return; }
+  if(d.rzctog){ S.rzcOpen = !S.rzcOpen; save(); render(); return; }
   if(d.rzcm !== undefined){ var cm = parseInt(d.rzcm, 10); V.rzcm = cm === 0 ? 0 : (V.rzcm || 0) + cm; V.rzcd = null; render(); return; }
   if(d.rzcd){ V.rzcd = d.rzcd; render(); return; }
   if(d.rzcadd){ V.plDay = d.rzcadd; V.plDue = d.rzcadd; V.plView = "today"; open("planner");
@@ -21222,6 +21303,7 @@ document.getElementById("app").addEventListener("click", function(ev){
     else if(j[0]==="post"){ V.q=""; V.tab="journal"; open("post", j[1]); }
     else if(j[0]==="sira"){ V.q=""; V.tab="dua"; open("siraOne", parseInt(j[1],10)); }
     else if(j[0]==="bookch"){ V.q=""; V.tab="dua"; open("book1ch", parseInt(j[1],10)); }
+    else if(j[0]==="tjw"){ V.q=""; open("tajwid"); var tj = j[1]; setTimeout(function(){ var te = document.getElementById("gb-" + tj); if(te) te.scrollIntoView({block:"start"}); }, 60); }
     else if(j[0]==="qsura"){ V.q=""; var qs = parseInt(j[1],10); openReader(QSUR[qs][6], QSUR[qs][6]+QSUR[qs][4]-1, "surah", QSUR[qs][6]); }
     else if(j[0]==="note"){ V.q=""; open("notes", j[1]); }
     else if(j[0]==="dua"){
