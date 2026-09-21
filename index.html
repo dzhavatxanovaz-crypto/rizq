@@ -985,6 +985,29 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .ar-club .btn{flex:1 1 100%}
 .ar-club-time{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
 .ar-club-time input{margin:0}
+.rd-card{display:flex;align-items:center;gap:13px;width:100%;text-align:left;padding:15px 16px;border-radius:var(--r-lg);
+  border:1.5px solid rgba(212,175,55,.6);background:linear-gradient(150deg, rgba(212,175,55,.22), rgba(212,175,55,.05));box-shadow:0 10px 26px rgba(212,175,55,.16)}
+.rd-card-l{flex:none;width:62px;height:62px;border-radius:18px;display:grid;place-items:center;background:#D4AF37;color:#1E2A5A;font-family:"Amiri Quran",var(--f-ar);font-size:22px}
+.rd-card .ar-st-t b{font-size:16px}
+.rd-card-bar{display:block;height:5px;border-radius:5px;background:rgba(212,175,55,.2);margin-top:8px;overflow:hidden}
+.rd-card-bar i{display:block;height:100%;background:#D4AF37;border-radius:5px}
+.rd-big{font-family:"Amiri Quran",var(--f-ar);font-size:44px;line-height:1.5;color:var(--accent-ink);word-spacing:10px}
+.rd-expl p{font-size:14.5px;line-height:1.65;color:var(--ink-2);margin:0}
+.rd-expl p + p{margin-top:9px}
+.rd-syl{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px}
+.rd-syl button{display:flex;flex-direction:column;align-items:center;padding:8px 4px 6px;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow)}
+.rd-syl b{font-family:"Amiri Quran",var(--f-ar);font-size:30px;line-height:1.5;font-weight:400;color:var(--ink)}
+.rd-syl span{font-size:12px;color:var(--ink-3)}
+.rd-drill{padding:6px 12px;display:flex;flex-direction:column}
+.rd-drill button{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;width:100%}
+.rd-drill button + button{border-top:1px solid var(--line-soft)}
+.rd-drill b{font-family:"Amiri Quran",var(--f-ar);font-size:28px;line-height:1.6;font-weight:400;color:var(--ink);flex:1;text-align:right}
+.rd-drill span{font-size:12px;color:#3E9B72;flex:none}
+.rd-fat{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;justify-content:flex-start}
+.rd-fat button{font-family:var(--f-quran);font-size:26px;line-height:1.8;padding:0 6px;border-radius:10px;color:var(--ink)}
+.rd-fat button:active,.rd-fat button:focus-visible{background:rgba(212,175,55,.2)}
+.rd-an{font-family:var(--f-quran);font-size:18px;color:var(--accent-ink);border:1px solid rgba(212,175,55,.5);border-radius:50%;width:28px;height:28px;display:inline-grid;place-items:center}
+.rd-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .ar-today{display:flex;flex-direction:column;gap:8px}
 .ar-today-h{display:flex;align-items:center;gap:12px;margin-bottom:2px}
 .ar-today-h>div:first-child{flex:1;min-width:0}
@@ -6605,6 +6628,98 @@ var AR_ABC = [
  ["و","وَاو","вав","«в» как английское w; ещё долгое «у»"],
  ["ي","يَاء","йа","«й»; ещё долгое «и»"]
 ];
+/* Арабский для новичков: читаем с нуля. 14 уроков по методике азбук для чтения
+   Корана («Нураниййа», «Каида Багдадия»): буквы группами по форме, огласовки по одной,
+   слог - цепочка - слово, в каждом уроке только уже знакомые буквы. У слов из Корана
+   q и s, как в основном курсе: аят и буквы, проверенные программой. */
+var AR_READ = [
+ {id:1, n:"Справа налево: ب ت ث", L:"ابتث", v:"َ",
+  t:["Арабский пишут и читают справа налево. Буквы в слове соединяются, поэтому у многих есть четыре формы: отдельно, в начале, в середине и в конце слова.",
+     "Короткие гласные не пишутся буквами - их показывают значками над и под буквой. Это огласовки. Первая - фатха: чёрточка над буквой, звук «а». بَ - «ба».",
+     "ب ت ث пишутся одинаково и отличаются только точками: одна снизу - «б», две сверху - «т», три сверху - межзубное «с». ا (алиф) - подставка для долгого «а» и для хамзы, своей огласовки он не несёт."],
+  d:["بَ تَ ثَ", "تَ ثَ بَ", "ثَ بَ تَ", "بَتَ", "تَبَ", "ثَبَتَ"],
+  w:[["ثَبَتَ","сабата","стал твёрдым, устоял"]]},
+ {id:2, n:"Горловые ج ح خ и касра", L:"جحخ", v:"َِ",
+  t:["Касра - чёрточка под буквой, звук «и»: بِ - «би».",
+     "ج ح خ пишутся одинаково, разница в точке: снизу - «дж»; без точки - «х» из середины горла, глухой выдох без хрипа; сверху - «х» с хрипотцой. Как их различать - в тренажёре произношения."],
+  d:["جَ حَ خَ", "جِ حِ خِ", "بِ تِ ثِ", "حَبَ", "خَبِ", "جِبَ"],
+  w:[["بَحَثَ","бахаса","искал", "5:31", "يبحث"], ["حَجَبَ","хаджаба","закрыл, скрыл"]]},
+ {id:3, n:"Несоединяемые د ذ ر ز и дамма", L:"دذرز", v:"َِ" + "ُ",
+  t:["Дамма - маленькая вав над буквой, звук «у»: بُ - «бу».",
+     "د ذ ر ز не соединяются со следующей буквой (так же ведут себя ا и و): после них в слове разрыв, но это ещё не конец слова.",
+     "ذ - межзубное «з», кончик языка между зубами. ر - всегда чёткое «р»."],
+  d:["دَ دِ دُ", "رَ رِ رُ", "ذَ زَ ذِ زِ", "دُرَ", "زُرِ", "بَرَدَ"],
+  w:[["خَرَجَ","хараджа","вышел", "28:21", "فخرج"], ["جَرَحَ","джараха","ранил"], ["حَذِرَ","хазира","остерёгся"]]},
+ {id:4, n:"Зубчики: س ش ص ض", L:"سشصض", v:"َِ" + "ُ",
+  t:["س - три зубчика, «с». ش - те же зубчики и три точки, «ш».",
+     "ص и ض - «толстые» звуки: задняя часть языка поднимается к нёбу, и гласная рядом звучит глубже, ближе к «о». ص - толстое «с», ض - самый трудный звук языка."],
+  d:["سَ شَ صَ ضَ", "صُ سُ صِ سِ", "ضَ دَ ضُ دُ", "شَرِبَ", "صَبَرَ"],
+  w:[["سَجَدَ","саджада","совершил земной поклон", "15:30", "فسجد"], ["صَبَرَ","сабара","проявил терпение", "42:43", "صبر"],
+     ["ضَرَبَ","дараба","ударил; привёл (притчу)", "14:24", "ضرب"], ["شَرِبَ","шариба","выпил"]]},
+ {id:5, n:"ط ظ ع غ", L:"طظعغ", v:"َِ" + "ُ",
+  t:["ط и ظ - «толстые» т и з (ظ - межзубная). Пишутся одинаково, у ظ точка сверху.",
+     "ع - звонкий звук из середины горла: горло сжимается. غ - картавое «г», как при полоскании горла. И тут разница - одна точка."],
+  d:["طَ ظَ عَ غَ", "عَ عِ عُ", "غُ خُ غَ خَ", "طَبَعَ", "عَرَضَ"],
+  w:[["بَعَثَ","ба'аса","воскресил; отправил", "2:56", "بعثنكم"], ["طَبَعَ","таба'а","запечатал", "16:108", "طبع"],
+     ["عَرَضَ","'арада","показал, предложил"], ["غَرَبَ","гараба","зашло (о солнце)"]]},
+ {id:6, n:"ф, к, л: ف ق ك ل", L:"فقكل", v:"َِ" + "ُ",
+  t:["ف - одна точка сверху, «ф». ق - две точки и хвост ниже строки, глубокое «к» из горла.",
+     "ك - обычное «к». ل - «л»: в начале и середине слова это высокая палочка."],
+  d:["فَ قَ كَ لَ", "قُ كُ قِ كِ", "لَ لِ لُ", "كَتَبَ", "فَلَقَ"],
+  w:[["كَتَبَ","катаба","написал, предписал", "58:21", "كتب"], ["خَلَقَ","халяка","сотворил", "96:2", "خلق"],
+     ["فَلَقَ","фаляка","расщепил", "113:1", "الفلق"], ["قَتَلَ","катала","убил"]]},
+ {id:7, n:"Последние буквы: م ن ه و ي", L:"منهوي", v:"َِ" + "ُ",
+  t:["م - кружок с хвостиком, «м». ن - как ب, но точка сверху и чаша глубже, «н».",
+     "ه меняет вид сильнее всех: ه отдельно, هـ в начале, ـهـ в середине, ـه в конце. Звук - лёгкий выдох.",
+     "و и ي - согласные «в» (как английское w) и «й». Скоро они же станут долгими гласными. Теперь вы знаете все 28 букв."],
+  d:["مَ نَ هَ", "وَ يَ وُ يُ", "هُ هِ هَ", "مِ نِ مُ نُ", "مَلَكَ", "وَهَبَ"],
+  w:[["نَصَرَ","насара","помог", "9:40", "نصره"], ["وَعَدَ","ва'ада","обещал", "48:20", "وعدكم"],
+     ["مَلَكَ","маляка","владел"], ["هَجَرَ","хаджара","оставил, покинул"]]},
+ {id:8, n:"Сукун: закрытый слог", mk:"ْ",
+  t:["Сукун - кружок над буквой: гласной нет, буква «закрывает» слог. قُلْ - «куль».",
+     "Читайте слог целиком: буква с гласной и сразу за ней буква с сукуном, без паузы."],
+  d:["بَبْ", "تِتْ", "مُمْ", "عَنْ", "مِنْ", "يَلِدْ"],
+  w:[["قُلْ","куль","скажи", "112:1", "قل"], ["لَمْ","лям","не (о прошлом)", "112:3", "لم"],
+     ["مِنْ","мин","из, от"], ["هَلْ","халь","ли? (вопрос)"], ["يَلِدْ","ялид","рождает", "112:3", "يلد"]]},
+ {id:9, n:"Долгие гласные", mk:"ا و ي",
+  t:["Буквы ا و ي после подходящей огласовки тянут звук вдвое дольше: بَا - ба̄, بُو - бӯ, بِي - бӣ.",
+     "Фатха и ا - долгое а̄. Дамма и و - долгое ӯ. Касра и ي - долгое ӣ. Это мадд, удлинение, основа правильного чтения Корана."],
+  d:["بَ بَا", "بُ بُو", "بِ بِي", "نَا نُو نِي", "قَالَ", "نُور"],
+  w:[["قَالَ","ка̄ля","сказал", "2:30", "قال"], ["كَانَ","ка̄на","был"], ["نُور","нӯр","свет"],
+     ["دِين","дӣн","религия; воздаяние", "1:4", "الدين"], ["فِيهِ","фӣхи","в нём", "2:2", "فيه"]]},
+ {id:10, n:"Шадда: удвоение", mk:"ّ",
+  t:["Шадда - значок ّ над буквой: буква звучит дважды. رَبّ - «рабб»: первая «б» закрывает слог, вторая открывает следующий.",
+     "Над шаддой ставят ещё и огласовку: رَبِّ - «рабби»."],
+  d:["بَبَّ", "رَبّ", "ثُمَّ", "كُلّ", "إِنَّ"],
+  w:[["رَبِّ","рабби","Господь (мой)", "1:2", "رب"], ["إِنَّ","инна","поистине", "103:2", "ان"], ["ثُمَّ","сумма","затем"],
+     ["مُحَمَّد","Мухаммад","Мухаммад ﷺ", "48:29", "محمد"]]},
+ {id:11, n:"Танвин: -ун, -ан, -ин", mk:"ٌ ً ٍ",
+  t:["Двойная огласовка в конце слова читается с «н»: ٌ - «ун», ً - «ан», ٍ - «ин». Это танвин: звук «н» есть, а буквы ن нет.",
+     "كِتَابٌ - кита̄бун, كِتَابًا - кита̄бан (к танвину «ан» обычно дописывают алиф), كِتَابٍ - кита̄бин."],
+  d:["بٌ بً بٍ", "كِتَابٌ", "كِتَابًا", "كِتَابٍ"],
+  w:[["أَحَدٌ","ахадун","один, единственный", "112:1", "احد"], ["عَلِيمٌ","'алӣмун","знающий", "2:32", "العليم"],
+     ["رَسُولًا","расӯлян","посланника"], ["كِتَابٌ","кита̄бун","книга"]]},
+ {id:12, n:"Артикль аль-: солнечные и лунные буквы", mk:"ال",
+  t:["Артикль ال («аль») пишется всегда, а читается по-разному.",
+     "Перед «лунными» буквами «л» звучит: الْقَمَرُ - аль-камару. Перед «солнечными» «л» не читается, а следующая буква удваивается: الشَّمْسُ - аш-шамсу.",
+     "Солнечные буквы: ت ث د ذ ر ز س ش ص ض ط ظ ل ن. Остальные 14 - лунные."],
+  d:["الْقَمَرُ", "الشَّمْسُ", "الْكِتَابُ", "النَّاسُ"],
+  w:[["الْحَمْدُ","аль-хамду","хвала", "1:2", "الحمد"], ["الرَّحْمَنِ","ар-рахма̄ни","Милостивого", "1:3", "الرحمن"],
+     ["الشَّمْسُ","аш-шамсу","солнце", "91:1", "الشمس"], ["الْقَمَرُ","аль-камару","луна", "54:1", "القمر"], ["النَّاسِ","ан-на̄си","люди", "114:1", "الناس"]]},
+ {id:13, n:"Хамза, та марбута и «Аллах»", mk:"ء ة",
+  t:["Хамза ء - короткая остановка голосом. Пишется отдельно или на подставке: أ إ ؤ ئ. أَ - «а» с чётким началом, إِ - «и».",
+     "Та марбута ة стоит в конце слова: на паузе это «а», в связной речи «т». رَحْمَة - рахма.",
+     "Алиф максура ى в конце слова читается как долгое а̄: هُدَى - худа̄.",
+     "В слове اللَّه «л» после фатхи и даммы звучит твёрдо и глубоко, после касры - мягко: бисми-Лляхи."],
+  d:["أَ إِ أُ", "سَأَلَ", "رَحْمَة", "هُدَى", "اللَّه"],
+  w:[["رَحْمَة","рахма","милость"], ["هُدًى","худан","верное руководство", "2:2", "هدي"],
+     ["سَمَاء","сама̄'","небо", "2:22", "السماء"], ["اللَّه","Аллах","Аллах", "112:2", "الله"]]},
+ {id:14, n:"Читаем аль-Фатиху", fat:1,
+  t:["Вы знаете все буквы и знаки. Прочитайте суру аль-Фатиха слово за словом: сначала вслух сами, потом нажмите на слово и сверьтесь.",
+     "В мусхафе есть свои знаки: маленький алиф над буквой (ٰ) - долгое а̄, как в «ар-Рахма̄н»; ٱ (алиф васла) не читается, если перед ним есть слово; маленькие значки над строкой показывают, где можно остановиться."],
+  d:[], w:[]}
+];
+
 /* буквы, которые не соединяются со следующей: у них нет начальной и срединной формы */
 var AR_NOJOIN = "اأإآدذرزو";
 
@@ -6775,6 +6890,7 @@ function arOpts(right, pool, n){
 }
 function arExMake(uid){
   var tasks = [];
+  if(String(uid).indexOf("rd") === 0) return rdMake(String(uid).slice(2));
   if(uid === "pron"){
     for(var q = 0; q < 10; q++){ tasks.push({ k:"pr", i:Math.floor(Math.random() * AR_PRON.length), j:Math.round(Math.random()) }); }
     return tasks;
@@ -6810,12 +6926,15 @@ function arExStart(uid){
 /* задание на слух: слово звучит само, как только задание открылось */
 function arExAuto(){
   var t = AR.x && AR.x.t[AR.x.i];
+  if(t && t.k === "sy"){ var sw = t.say; setTimeout(function(){ arTts(sw); }, 250); return; }
   if(t && t.k === "pr"){ var pw = AR_PRON[t.i].w[t.j][0]; setTimeout(function(){ arSay(pw, null, "pr-" + t.i + "-" + t.j); }, 250); return; }
   if(t && t.k === "au"){ var w = arWord(t.id); if(w) setTimeout(function(){ arSay(w.ar, null, w.id); }, 250); }
 }
 function arExRight(t){
   if(t.k === "build") return t.got.map(function(j){ return t.ans[j]; }).join(" ") === t.ans.join(" ");
   if(t.k === "pr") return t.pick === t.j;
+  if(t.k === "sy") return t.opts[t.pick] === t.say;
+  if(t.k === "rd") return t.self === 1;
   return t.k === "let" ? t.pick === t.i : t.pick === t.id;
 }
 function arExCheck(){
@@ -6843,6 +6962,8 @@ function arExNext(){
     if(pct > was){ st.x[x.u] = pct; }
     /* баллы - один раз за урок, когда результат впервые дошёл до 80% */
     if(pct >= 80 && was < 80){ addPoints(2, "arabic"); scoreSync(); }
+    /* урок чтения засчитан, если упражнение выполнено на 80% и выше */
+    if(x.u.indexOf("rd") === 0 && pct >= 80){ if(!st.rd) st.rd = {}; if(!st.rd[x.u.slice(2)]){ st.rd[x.u.slice(2)] = todayKey(); addPoints(2, "arabic"); toast("Урок чтения пройден, машаа Аллах"); } }
     save();
     arActivity("ex");
   }
@@ -6857,13 +6978,14 @@ function viewArEx(){
     var pct = Math.round(x.ok / x.t.length * 100);
     h.push('<section class="card ar-fin"><div class="ar-fin-ic">'+(pct >= 80 ? "✓" : "↻")+'</div>'+
       '<b>'+pct+'% верно</b><p>'+x.ok+' из '+x.t.length+'. '+(pct >= 80 ? "Отлично, машаа Аллах." : "Повторите ещё раз - с каждым кругом легче.")+
-      (x.wrong && x.u !== "abc" && x.u !== "pron" ? ' Слова с ошибками вернутся в карточки сегодня.' : '')+'</p>'+
+      (x.wrong && x.u !== "abc" && x.u !== "pron" && x.u.indexOf("rd") !== 0 ? ' Слова с ошибками вернутся в карточки сегодня.' : '')+'</p>'+
       '<div class="ar-cta"><button class="btn sec" data-ar="ex:'+x.u+'">Ещё раз</button>'+
-      '<button class="btn" data-ar="'+(x.u === "abc" || x.u === "pron" ? x.u : "unit:" + x.u)+'">Готово</button></div></section></div>');
+      '<button class="btn" data-ar="'+(x.u === "abc" || x.u === "pron" ? x.u : x.u.indexOf("rd") === 0 ? "rdl:" + x.u.slice(2) : "unit:" + x.u)+'">Готово</button></div></section></div>');
     return h.join("");
   }
   var t = x.t[x.i];
   h.push('<div class="ar-prog"><i style="width:'+Math.round(x.i / x.t.length * 100)+'%"></i></div>');
+  if(t.k === "sy" || t.k === "rd"){ h.push(rdExView(t, x)); h.push('</div>'); return h.join(""); }
   if(t.k === "pr"){
     var P = AR_PRON[t.i];
     h.push('<div class="ar-cnt">'+(x.i + 1)+' из '+x.t.length+' · Какое слово прозвучало?</div>');
@@ -7006,6 +7128,8 @@ function arTitle(){
   if(p === "abc") return "Буквы";
   if(p === "dict") return "Словарь";
   if(p === "pron") return "Произношение";
+  if(p === "rd") return "Для новичков";
+  if(p.indexOf("rd:") === 0) return "Чтение, урок " + p.slice(3);
   if(p.indexOf("g:") === 0) return "Говорим";
   if(p.indexOf("x:") === 0) return "Упражнения";
   if(p.charAt(0) === "s") return "Карточки";
@@ -7017,6 +7141,8 @@ function arBackTo(p){
   if(p.indexOf("s:") === 0) return "u:" + p.slice(2);
   if(p === "x:abc") return "abc";
   if(p === "x:pron") return "pron";
+  if(p.indexOf("x:rd") === 0) return "rd:" + p.slice(4);
+  if(p.indexOf("rd:") === 0) return "rd";
   if(p === "s:dict") return "dict";
   if(p.indexOf("g:") === 0) return "u:" + p.slice(2);
   if(p.indexOf("x:") === 0) return "u:" + p.slice(2);
@@ -7029,10 +7155,13 @@ function viewArabic(){
   if(p === "abc") return viewArAbc();
   if(p === "dict") return viewArDict();
   if(p === "pron") return viewArPron();
+  if(p === "rd") return viewArRead();
+  if(p.indexOf("rd:") === 0) return viewArReadLesson(rdLesson(p.slice(3)));
   if(p.indexOf("g:") === 0) return viewArTalk();
   if(p.indexOf("u:") === 0) return viewArUnit(arUnit(p.slice(2)));
   var h = ['<div class="stack">'];
   h.push(arHero(true));
+  h.push(rdCard());
   h.push(arGoalCard());
   h.push(arTodayCard());
   h.push(arClubCard());
@@ -7042,7 +7171,7 @@ function viewArabic(){
     '<button class="btn sec" data-ar="unit:'+cur.id+'">Урок '+cur.id+': '+esc(cur.n)+'</button></div>');
 
   h.push('<button class="ar-abc-card" data-ar="abc"><span class="ar-abc-l" dir="rtl">أ ب ت</span>'+
-    '<span class="ar-st-t"><b>Буквы и огласовки</b><span>'+(arS().x.abc ? 'узнаёте '+arS().x.abc+'% букв' : 'если читать по-арабски пока трудно, начните здесь')+'</span></span><span class="cw-go">›</span></button>');
+    '<span class="ar-st-t"><b>Азбука</b><span>'+(arS().x.abc ? 'узнаёте '+arS().x.abc+'% букв' : 'все буквы и огласовки на одной странице')+'</span></span><span class="cw-go">›</span></button>');
   h.push('<button class="ar-abc-card" data-ar="pron"><span class="ar-abc-l" dir="rtl">ق ع ح</span>'+
     '<span class="ar-st-t"><b>Тренажёр произношения</b><span>11 трудных пар звуков: слышать разницу и говорить</span></span><span class="cw-go">›</span></button>');
   h.push('<button class="ar-abc-card" data-ar="dict"><span class="ar-abc-l" dir="rtl">قَامُوس</span>'+
@@ -7190,6 +7319,18 @@ function arClick(v){
   if(k === "mark"){ var mk = AR_MARKS[+p[1]]; if(mk){ arStop(); arTts(mk[2]); } return; }
   if(k === "stop"){ arStop(); return; }
   if(k === "har"){ arS().har = p[1]; save(); render(); return; }
+  if(k === "rd"){ arStop(); open("arabic", "rd"); return; }
+  if(k === "rdl"){ arStop(); open("arabic", "rd:" + p[1]); return; }
+  if(k === "tts"){ arStop(); arTts(p.slice(1).join(":")); return; }
+  if(k === "rdsyall"){ var ru = rdLesson(p[1]); if(!ru) return; arStop(); AR.play = { i:0 }; arPlayList(rdSyl(ru).map(function(x){ return { t:x.ar }; }), 0); return; }
+  if(k === "rdq"){
+    var rq = rdLesson(p[1]), rw = rq && rq.w.filter(function(w){ return w[0] === p.slice(2).join(":"); })[0]; if(!rw) return;
+    arStop(); sheet('<h3>'+esc(rw[2])+'</h3><div class="ar-wa" dir="rtl" style="font-size:26px;text-align:center;margin:4px 0 10px">'+esc(rw[0])+'</div>'+
+      arAyahHtml({ q:rw[3], s:rw[4] })+'<p class="ar-note">Подсвечено слово с теми же буквами. В аяте может стоять другая форма того же корня.</p>');
+    return;
+  }
+  if(k === "rdshow"){ var ts = AR.x && AR.x.t[AR.x.i]; if(ts){ ts.shown = true; render(); arTts(ts.ar); } return; }
+  if(k === "rdself"){ var tr = AR.x && AR.x.t[AR.x.i]; if(tr && !tr.done){ tr.self = +p[1]; arExCheck(); } return; }
   if(k === "club"){ sheetArClub(); return; }
   if(k === "clubsend"){ arClubSend(); return; }
   if(k === "goal"){ sheetArGoal(); return; }
@@ -7227,7 +7368,7 @@ function arClick(v){
   /* упражнения */
   if(k === "pick"){
     var t = AR.x && AR.x.t[AR.x.i]; if(!t || t.done) return;
-    t.pick = t.k === "let" || t.k === "pr" ? +p[1] : p[1];
+    t.pick = t.k === "let" || t.k === "pr" || t.k === "sy" ? +p[1] : p[1];
     arExCheck(); return;
   }
   if(k === "tile"){ var tb = AR.x && AR.x.t[AR.x.i]; if(tb && !tb.done && tb.got.indexOf(+p[1]) < 0){ tb.got.push(+p[1]); render(); } return; }
@@ -7728,6 +7869,145 @@ function arClubSend(){
     .then(function(r){ if(!r.ok) throw 0; done(); toast("Вы в листе ожидания. Напишем, когда соберём группу"); })
     .catch(function(){ done(); window.open(waLink("Ассаламу алейкум! Хочу в разговорный клуб арабского в RIZQ. " + note + " Имя: " + name + ", телефон: " + phone), "_blank"); });
 }
+/* ---------- арабский для новичков: экраны и упражнения ---------- */
+var RD_V = { "َ":"а", "ِ":"и", "ُ":"у" };
+/* как читается слог: согласный по-русски и гласный огласовки; ل с «а» и «у» - мягко, как в чтении Корана по-русски */
+var RD_C = { "ب":"б","ت":"т","ث":"с̱","ج":"дж","ح":"х̣","خ":"х","د":"д","ذ":"з̱","ر":"р","ز":"з","س":"с","ش":"ш","ص":"с̣","ض":"д̣","ط":"т̣","ظ":"з̣","ع":"'","غ":"г","ف":"ф","ق":"к","ك":"к","ل":"л","م":"м","н":"н","ن":"н","ه":"х","و":"в","ي":"й" };
+function rdTr(ch, m){ var v = RD_V[m]; if(ch === "ل") return { "а":"ля", "и":"ли", "у":"лю" }[v]; if(ch === "ي") return { "а":"я", "и":"йи", "у":"ю" }[v]; return (RD_C[ch] || "") + v; }
+function rdLesson(n){ return AR_READ.filter(function(x){ return x.id === +n; })[0]; }
+function rdDone(n){ var r = arS().rd || {}; return r[n]; }
+function rdDoneCount(){ return Object.keys(arS().rd || {}).length; }
+function rdCurrent(){ for(var i = 0; i < AR_READ.length; i++) if(!rdDone(AR_READ[i].id)) return AR_READ[i]; return AR_READ[AR_READ.length - 1]; }
+/* слоги урока: каждая новая буква с каждой огласовкой урока */
+function rdSyl(u){
+  var out = [];
+  if(!u.L) return out;
+  u.L.split("").forEach(function(ch){
+    if(ch === "ا") return;
+    u.v.split("").forEach(function(m){ out.push({ ar:ch + m, tr:rdTr(ch, m) }); });
+  });
+  return out;
+}
+/* слова аль-Фатихи из самого текста мусхафа */
+function rdFatiha(){ var w = []; for(var i = 0; i < 7; i++) String(QA[i] || "").split(" ").forEach(function(x){ if(x && !/^[۝٠-٩]+$/.test(x)) w.push({ ar:x, a:i + 1 }); }); return w; }
+function rdReadItems(u){
+  if(u.fat) return rdFatiha().map(function(x){ return x.ar; });
+  return u.d.concat(u.w.map(function(w){ return w[0]; }));
+}
+function rdCard(){
+  var done = rdDoneCount(), cur = rdCurrent(), all = AR_READ.length;
+  return '<button class="rd-card" data-ar="rd"><span class="rd-card-l" dir="rtl">اِقْرَأْ</span>'+
+    '<span class="ar-st-t"><b>Арабский для новичков</b><span>'+(done
+      ? (done >= all ? 'все 14 уроков пройдены - вы читаете по-арабски' : 'читаем с нуля · пройдено '+done+' из '+all+' · дальше: '+esc(cur.n))
+      : 'научиться читать с нуля: 14 уроков, от первой буквы до суры аль-Фатиха')+'</span>'+
+    '<i class="rd-card-bar"><i style="width:'+Math.round(done / all * 100)+'%"></i></i></span><span class="cw-go">›</span></button>';
+}
+function viewArRead(){
+  var cur = rdCurrent(), done = rdDoneCount();
+  var h = ['<div class="stack">'];
+  h.push('<section class="ar-uhead"><div class="ar-uhead-ar" dir="rtl">اِقْرَأْ</div>'+
+    '<div class="ar-uhead-h">Арабский для новичков</div>'+
+    '<div class="ar-uhead-s">Читаем с нуля: 14 коротких уроков. Буквы идут группами по форме, огласовки - по одной, в каждом уроке только знакомые буквы. В конце вы прочитаете суру аль-Фатиха.</div></section>');
+  h.push('<div class="ar-goal-bar" style="margin:0 4px"><i style="width:'+Math.round(done / AR_READ.length * 100)+'%"></i></div>');
+  h.push('<button class="btn" data-ar="rdl:'+cur.id+'">'+(done ? 'Продолжить: урок '+cur.id : 'Начать с урока 1')+'</button>');
+  h.push('<div class="ar-path">');
+  AR_READ.forEach(function(u){
+    var d = rdDone(u.id), now = u === cur && !d, best = arS().x["rd" + u.id];
+    h.push('<button class="ar-step'+(d ? " done" : "")+(now ? " now" : "")+'" data-ar="rdl:'+u.id+'">'+
+      '<span class="ar-num">'+(d ? "✓" : u.id)+'</span>'+
+      '<span class="ar-st-t"><b>'+esc(u.n)+'</b><span>'+(d ? 'пройден' + (best ? ', упражнение '+best+'%' : '') : (best ? 'упражнение '+best+'%, нужно 80%' : 'не начат'))+'</span></span>'+
+      '<span class="ar-st-ar" dir="rtl">'+esc(u.L ? u.L.split("").join(" ") : (u.mk || "الفاتحة"))+'</span></button>');
+  });
+  h.push('</div>');
+  h.push('<p class="disclaimer" style="text-align:left">Урок считается пройденным, когда упражнение выполнено на 80% и выше. '+
+    'Читайте вслух всегда, даже в упражнениях: глаз учится вместе с языком. Порядок уроков - как в азбуках для чтения Корана «Нураниййа» и «Каида Багдадия»; '+
+    'проверить произношение с преподавателем по-прежнему лучше всего.</p>');
+  h.push('</div>');
+  return h.join("");
+}
+function viewArReadLesson(u){
+  if(!u) return '<div class="stack"><div class="empty"><b>Урок не найден</b></div></div>';
+  var h = ['<div class="stack">'], d = rdDone(u.id), best = arS().x["rd" + u.id];
+  h.push('<section class="ar-uhead"><div class="rd-big" dir="rtl">'+esc(u.L ? u.L.split("").join("  ") : (u.mk || "الفاتحة"))+'</div>'+
+    '<div class="ar-uhead-h">Урок '+u.id+' · '+esc(u.n)+'</div>'+
+    '<div class="ar-uhead-s">'+(d ? 'Пройден'+(best ? ', упражнение '+best+'%' : '') : (best ? 'Упражнение '+best+'%, для зачёта нужно 80%' : 'Прочитайте объяснение, послушайте и повторите вслух, затем упражнение'))+'</div></section>');
+  h.push('<section class="card rd-expl">'+u.t.map(function(p){ return '<p>'+esc(p)+'</p>'; }).join("")+'</section>');
+
+  if(u.L){
+    h.push('<div class="sec-h"><h3>Буквы урока</h3></div><div class="ar-abc">'+u.L.split("").map(function(ch){
+      var i = AR_ABC.map(function(a){ return a[0]; }).indexOf(ch), L = AR_ABC[i];
+      return '<button class="ar-letter" data-ar="letter:'+i+'"><b dir="rtl">'+ch+'</b><span>'+esc(L[2])+'</span></button>'; }).join("")+'</div>');
+    var sy = rdSyl(u);
+    h.push('<div class="sec-h"><h3>Слоги</h3><button class="more" data-ar="rdsyall:'+u.id+'">▶ все подряд</button></div>'+
+      '<p class="ar-note" style="margin:-4px 4px 0">Точка под русской буквой - горловой или «толстый» звук (х̣, с̣), черта - межзубный (с̱, з̱).</p>'+
+      '<div class="rd-syl">'+sy.map(function(x){ return '<button data-ar="tts:'+esc(x.ar)+'"><b dir="rtl">'+esc(x.ar)+'</b><span>'+esc(x.tr)+'</span></button>'; }).join("")+'</div>');
+  }
+  if(u.fat){
+    var fw = rdFatiha(), last = 0;
+    h.push('<div class="sec-h"><h3>Сура аль-Фатиха по словам</h3></div><section class="card rd-fat" dir="rtl">'+fw.map(function(x){
+      var mark = x.a !== last ? (last ? '<span class="rd-an">'+arNum(last)+'</span>' : '') : ''; last = x.a;
+      return mark + '<button data-ar="tts:'+esc(x.ar)+'">'+esc(x.ar)+'</button>'; }).join("")+'<span class="rd-an">'+arNum(7)+'</span></section>');
+    h.push('<button class="btn sec" data-ar="open:1:1">Открыть аль-Фатиху в мусхафе</button>');
+  } else {
+    h.push('<div class="sec-h"><h3>Читаем цепочки</h3></div><section class="card rd-drill">'+u.d.map(function(x){
+      return '<button data-ar="tts:'+esc(x)+'"><b dir="rtl">'+esc(x)+'</b><span>▶</span></button>'; }).join("")+'</section>');
+    h.push('<div class="sec-h"><h3>Слова</h3></div><section class="card ar-list">'+u.w.map(function(w){
+      return '<div class="ar-w"><button class="ar-play" data-ar="tts:'+esc(w[0])+'" aria-label="Слушать">▶</button>'+
+        '<div class="ar-wt"><div class="ar-wa" dir="rtl">'+esc(w[0])+'</div><div class="ar-wr">'+esc(w[1])+' · '+esc(w[2])+'</div></div>'+
+        (w[3] ? '<button class="ar-qchip" data-ar="rdq:'+u.id+':'+w[0]+'">Коран '+w[3]+'</button>' : '')+'</div>'; }).join("")+'</section>');
+  }
+  h.push('<p class="ar-note" style="padding:0 4px">Сначала прочитайте вслух сами, потом нажмите и сверьтесь с голосом.</p>');
+  h.push('<section class="card ar-exc"><div><b>Упражнение</b><span>'+(best ? 'лучший результат '+best+'%' : 'на слух, чтение вслух'+(u.L ? ', буквы' : ''))+'</span></div>'+
+    '<button class="btn sm" data-ar="ex:rd'+u.id+'">'+(best ? 'Ещё раз' : 'Начать')+'</button></section>');
+  var nx = rdLesson(u.id + 1);
+  if(nx) h.push('<button class="btn ghost sm" data-ar="rdl:'+nx.id+'">Следующий урок: '+esc(nx.n)+' ›</button>');
+  else h.push('<button class="btn ghost sm" data-ar="home">К урокам разговорного курса ›</button>');
+  h.push('</div>');
+  return h.join("");
+}
+/* упражнение урока чтения: на слух выбрать слог или слово, прочитать вслух и
+   сверить себя, узнать букву урока */
+function rdMake(n){
+  var u = rdLesson(n), tasks = []; if(!u) return tasks;
+  var sy = rdSyl(u).map(function(x){ return x.ar; });
+  var items = rdReadItems(u);
+  var pool = sy.length >= 4 ? sy : items;
+  arShuffle(pool).slice(0, 4).forEach(function(x){
+    var opts = arShuffle(pool.filter(function(y){ return y !== x; })).slice(0, 3).concat([x]);
+    tasks.push({ k:"sy", say:x, opts:arShuffle(opts) });
+  });
+  arShuffle(u.fat ? items : items.slice()).slice(0, u.fat ? 6 : 4).forEach(function(x){
+    var w = u.w.filter(function(y){ return y[0] === x; })[0];
+    tasks.push({ k:"rd", ar:x, tr:w ? w[1] : "", ru:w ? w[2] : "" });
+  });
+  if(u.L) arShuffle(u.L.split("")).slice(0, 2).forEach(function(ch){
+    var i = AR_ABC.map(function(a){ return a[0]; }).indexOf(ch);
+    tasks.push({ k:"let", i:i, opts:arOpts(i, AR_ABC.map(function(a, j){ return j; }), 4) });
+  });
+  return arShuffle(tasks);
+}
+function rdExView(t, x){
+  var h = [];
+  if(t.k === "sy"){
+    h.push('<div class="ar-cnt">'+(x.i + 1)+' из '+x.t.length+' · Что прозвучало?</div>');
+    h.push('<section class="ar-card"><button class="ar-play xl" data-ar="tts:'+esc(t.say)+'" aria-label="Слушать ещё раз">▶</button>'+
+      '<div class="ar-note" style="text-align:center">Нажмите, чтобы послушать ещё раз</div></section>');
+    h.push('<div class="rd-opts">'+t.opts.map(function(o, j){
+      var cls = t.done ? (o === t.say ? " ok" : (j === t.pick ? " bad" : "")) : "";
+      return '<button class="ar-opt'+cls+'" data-ar="pick:'+j+'"'+(t.done ? ' disabled' : '')+'><span class="ar-opt-big" dir="rtl">'+esc(o)+'</span></button>'; }).join("")+'</div>');
+  } else {
+    h.push('<div class="ar-cnt">'+(x.i + 1)+' из '+x.t.length+' · Прочитайте вслух</div>');
+    h.push('<section class="ar-card"><div class="ar-big" dir="rtl" style="font-size:40px">'+esc(t.ar)+'</div>'+
+      (t.shown ? (t.tr ? '<div class="ar-ans-tr">'+esc(t.tr)+'</div><div class="ar-ans-ru">'+esc(t.ru)+'</div>' : '')+
+        '<button class="ar-play lg" data-ar="tts:'+esc(t.ar)+'" aria-label="Слушать">▶</button>'
+      : '<p class="ar-note" style="text-align:center">Прочитайте вслух, потом проверьте себя</p>')+'</section>');
+    if(!t.shown) h.push('<button class="btn" data-ar="rdshow">Проверить</button>');
+    else if(!t.done) h.push('<div class="ar-cta"><button class="btn sec" data-ar="rdself:0">Была ошибка</button><button class="btn" data-ar="rdself:1">Прочитала верно</button></div>');
+  }
+  if(t.done) h.push('<button class="btn" data-ar="next">Дальше</button>');
+  return h.join("");
+}
+
 function viewArTalk(){
   var g = AR.g, h = ['<div class="stack">'];
   if(!g || !g.t.length){ h.push('<div class="empty"><b>Нет фраз для тренировки</b></div></div>'); return h.join(""); }
@@ -14299,7 +14579,7 @@ var ADM_ST = { ok:"виден всем", hidden:"скрыт", check:"на про
 /* названия разделов для сводки: ключ - то, что присылает телефон */
 var ST_NAMES = { "tab:home":"Главная", "tab:quran":"Коран: оглавление", "reader":"Чтение Корана", "tab:dua":"Знания", "tab:journal":"Журнал",
   "tab:income":"Ризкъ и обучение", "tab:prof":"Профиль", "arabic":"Арабский: главная курса", "arabic:u":"Арабский: урок", "arabic:s":"Арабский: карточки", "arabic:x":"Арабский: упражнения",
-  "arabic:g":"Арабский: «Говорим»", "arabic:abc":"Арабский: буквы", "arabic:pron":"Арабский: тренажёр произношения", "arabic:dict":"Арабский: словарь", "halal":"Халяль рядом", "top":"Рейтинг участников",
+  "arabic:g":"Арабский: «Говорим»", "arabic:abc":"Арабский: буквы", "arabic:pron":"Арабский: тренажёр произношения", "arabic:dict":"Арабский: словарь", "arabic:rd":"Арабский: читаем с нуля", "halal":"Халяль рядом", "top":"Рейтинг участников",
   "cat":"Азкары и дуа", "names":"99 имён", "name":"Разбор имени", "tasbih":"Тасбих", "qduas":"Дуа из Корана", "hadith":"40 хадисов",
   "hadithone":"Хадис", "sira":"Сира", "calendar":"Календарь", "qibla":"Кибла", "zakat":"Закят", "kids":"Детям", "kidstory":"Детская история",
   "courses":"Программы обучения", "course":"Программа", "planner":"Планер", "finance":"Финансы", "settings":"Настройки", "admin":"Управление",
