@@ -915,6 +915,42 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .ar-exc div{flex:1;min-width:0}
 .ar-exc b{display:block;font-family:var(--f-display);font-size:15px}
 .ar-exc span{font-size:12.5px;color:var(--ink-3)}
+.ar-goal{display:flex;flex-direction:column;gap:10px;border:1px solid rgba(212,175,55,.45)}
+.ar-goal.empty{gap:4px}
+.ar-goal-top{display:flex;gap:12px;align-items:flex-start}
+.ar-goal-top>div:first-child{flex:1;min-width:0}
+.ar-goal-t{display:block;font-family:var(--f-display);font-size:16px;line-height:1.35;margin-top:4px;text-wrap:balance}
+.ar-goal-why{font-size:13px;color:var(--ink-2);font-style:italic;margin-top:4px;line-height:1.45}
+.ar-goal-pct{flex:none;text-align:center}
+.ar-goal-pct b{display:block;font-family:var(--f-display);font-size:28px;line-height:1;color:var(--accent-ink);font-variant-numeric:tabular-nums}
+.ar-goal-pct span{font-size:11px;color:var(--ink-3)}
+.ar-goal-bar{position:relative;height:10px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line)}
+.ar-goal-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:10px;background:linear-gradient(90deg,#D4AF37,#F1D77E)}
+.ar-goal-bar em{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:var(--ink-2);border-radius:2px}
+.ar-goal-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ar-goal-nums b{display:block;font-family:var(--f-display);font-size:17px;font-variant-numeric:tabular-nums}
+.ar-goal-nums span{font-size:11.5px;color:var(--ink-3)}
+.ar-goal-st{align-self:flex-start;font-size:13px;font-weight:600;padding:5px 11px;border-radius:999px}
+.ar-goal-st.ok{background:rgba(62,155,114,.16);color:#3E9B72}
+.ar-goal-st.mid{background:rgba(212,175,55,.16);color:var(--accent-ink)}
+.ar-goal-st.bad{background:rgba(212,106,91,.15);color:#D46A5B}
+.ar-goal-today{font-size:14.5px;font-weight:600}
+.ar-gchart{width:100%;max-width:100%;height:auto;display:block}
+.ar-gpresets{display:flex;flex-direction:column;gap:7px;margin-top:6px}
+.ar-pair{display:flex;flex-direction:column;gap:10px}
+.ar-pair-h{display:flex;align-items:center;gap:10px}
+.ar-pair-h b{font-family:"Amiri Quran",var(--f-ar);font-size:36px;line-height:1.2;font-weight:400;color:var(--accent-ink)}
+.ar-pair-h span{font-size:13px;color:var(--ink-3)}
+.ar-pair-h em{margin-left:auto;font-style:normal;font-size:12px;font-weight:600;padding:4px 9px;border-radius:999px}
+.ar-pair-h em.ok{background:rgba(62,155,114,.16);color:#3E9B72}
+.ar-pair-h em.bad{background:rgba(212,106,91,.15);color:#D46A5B}
+.ar-pair p{font-size:14px;line-height:1.55;color:var(--ink-2);margin:0}
+.ar-pair-w{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ar-pair-w>div{display:flex;flex-direction:column;gap:5px}
+.ar-pair-word{display:flex;flex-direction:column;align-items:center;padding:8px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line)}
+.ar-pair-word b{font-family:"Amiri Quran",var(--f-ar);font-size:28px;line-height:1.5;font-weight:400;color:var(--ink)}
+.ar-pair-word span{font-size:12.5px;color:var(--ink-3)}
+.ar-pair-mic{font-size:12.5px;padding:6px;border-radius:10px;border:1px dashed var(--line);color:var(--ink-2)}
 .ar-today{display:flex;flex-direction:column;gap:8px}
 .ar-today-h{display:flex;align-items:center;gap:12px;margin-bottom:2px}
 .ar-today-h>div:first-child{flex:1;min-width:0}
@@ -6705,6 +6741,10 @@ function arOpts(right, pool, n){
 }
 function arExMake(uid){
   var tasks = [];
+  if(uid === "pron"){
+    for(var q = 0; q < 10; q++){ tasks.push({ k:"pr", i:Math.floor(Math.random() * AR_PRON.length), j:Math.round(Math.random()) }); }
+    return tasks;
+  }
   if(uid === "abc"){
     arShuffle(AR_ABC.map(function(x, i){ return i; })).slice(0, 10).forEach(function(i){
       tasks.push({ k:"let", i:i, opts:arOpts(i, AR_ABC.map(function(x, j){ return j; }), 4) });
@@ -6736,10 +6776,12 @@ function arExStart(uid){
 /* задание на слух: слово звучит само, как только задание открылось */
 function arExAuto(){
   var t = AR.x && AR.x.t[AR.x.i];
+  if(t && t.k === "pr"){ var pw = AR_PRON[t.i].w[t.j][0]; setTimeout(function(){ arSay(pw, null, "pr-" + t.i + "-" + t.j); }, 250); return; }
   if(t && t.k === "au"){ var w = arWord(t.id); if(w) setTimeout(function(){ arSay(w.ar, null, w.id); }, 250); }
 }
 function arExRight(t){
   if(t.k === "build") return t.got.map(function(j){ return t.ans[j]; }).join(" ") === t.ans.join(" ");
+  if(t.k === "pr") return t.pick === t.j;
   return t.k === "let" ? t.pick === t.i : t.pick === t.id;
 }
 function arExCheck(){
@@ -6753,6 +6795,7 @@ function arExCheck(){
     if(t.id && arS().w[t.id]){ arS().w[t.id].due = todayKey(); save(); }
   }
   t.ok = ok;
+  if(t.k === "pr"){ var pr = arPr(); var rr = pr[t.i] || { n:0, ok:0 }; rr.n++; if(ok) rr.ok++; pr[t.i] = rr; save(); }
   render();
   if(t.k === "build"){ var u = arUnit(x.u); if(u) arSay(u.d[t.li][1], null, "d" + u.id + "-" + t.li); }
 }
@@ -6780,13 +6823,26 @@ function viewArEx(){
     var pct = Math.round(x.ok / x.t.length * 100);
     h.push('<section class="card ar-fin"><div class="ar-fin-ic">'+(pct >= 80 ? "✓" : "↻")+'</div>'+
       '<b>'+pct+'% верно</b><p>'+x.ok+' из '+x.t.length+'. '+(pct >= 80 ? "Отлично, машаа Аллах." : "Повторите ещё раз - с каждым кругом легче.")+
-      (x.wrong && x.u !== "abc" ? ' Слова с ошибками вернутся в карточки сегодня.' : '')+'</p>'+
+      (x.wrong && x.u !== "abc" && x.u !== "pron" ? ' Слова с ошибками вернутся в карточки сегодня.' : '')+'</p>'+
       '<div class="ar-cta"><button class="btn sec" data-ar="ex:'+x.u+'">Ещё раз</button>'+
-      '<button class="btn" data-ar="'+(x.u === "abc" ? "abc" : "unit:" + x.u)+'">Готово</button></div></section></div>');
+      '<button class="btn" data-ar="'+(x.u === "abc" || x.u === "pron" ? x.u : "unit:" + x.u)+'">Готово</button></div></section></div>');
     return h.join("");
   }
   var t = x.t[x.i];
   h.push('<div class="ar-prog"><i style="width:'+Math.round(x.i / x.t.length * 100)+'%"></i></div>');
+  if(t.k === "pr"){
+    var P = AR_PRON[t.i];
+    h.push('<div class="ar-cnt">'+(x.i + 1)+' из '+x.t.length+' · Какое слово прозвучало?</div>');
+    h.push('<section class="ar-card"><button class="ar-play xl" data-ar="prw:'+t.i+':'+t.j+'" aria-label="Слушать ещё раз">▶</button>'+
+      '<div class="ar-note" style="text-align:center">'+P.a+' или '+P.b+'? Нажмите, чтобы послушать ещё раз</div>'+
+      (t.done ? '<div class="ar-ex-sol">'+esc(P.t)+'</div>' : '')+'</section>');
+    h.push('<div class="ar-opts">'+[0, 1].map(function(j){
+      var cls = t.done ? (j === t.j ? " ok" : (j === t.pick ? " bad" : "")) : "";
+      return '<button class="ar-opt'+cls+'" data-ar="pick:'+j+'"'+(t.done ? ' disabled' : '')+'><span class="ar-opt-big" dir="rtl">'+P.w[j][0]+'</span> '+esc(P.w[j][1])+'</button>'; }).join("")+'</div>');
+    if(t.done) h.push('<button class="btn" data-ar="next">Дальше</button>');
+    h.push('</div>');
+    return h.join("");
+  }
   var titles = { ru:"Что значит это слово?", ar:"Как это по-арабски?", au:"Какое слово прозвучало?", build:"Соберите фразу", let:"Как называется эта буква?" };
   h.push('<div class="ar-cnt">'+(x.i + 1)+' из '+x.t.length+' · '+titles[t.k]+'</div>');
 
@@ -6865,6 +6921,7 @@ function viewArAbc(){
     return '<div class="ar-w"><button class="ar-play" data-ar="mark:'+i+'" aria-label="Слушать">▶</button>'+
       '<div class="ar-wt"><div class="ar-wr"><b>'+esc(m[1])+'</b> - '+esc(m[3])+'</div></div>'+
       '<div class="ar-wa" dir="rtl" style="flex:none">'+esc(m[2])+'</div></div>'; }).join("")+'</section>');
+  h.push('<button class="btn sec" data-ar="pron">Тренажёр трудных звуков</button>');
   h.push('<p class="disclaimer" style="text-align:left">Звуки, которых нет в русском (ع, ح, ق, ص, ض, ط, ظ), лучше поставить с преподавателем: по голосу телефона их легко услышать неточно.</p>');
   h.push('</div>');
   return h.join("");
@@ -6902,6 +6959,7 @@ function arHero(big){
       '<div><b>'+arDlgDone()+'</b><span>из '+AR_UNITS.length+' диалогов</span></div>'+
       '<div><b>'+arWeek()+'</b><span>слов за неделю</span></div>'+
     '</div>'+
+    (function(){ var gi = arGoalInfo(); return gi ? '<div class="ar-hero-wd"><span>Цель</span><em>'+gi.pct+'% · '+(gi.need ? esc(arGoalToday(gi)) : "достигнута")+'</em></div>' : ''; })()+
     '<div class="ar-hero-wd"><span>Слово дня</span><b dir="rtl">'+esc(arWordOfDay().ar)+'</b><em>'+esc(arWordOfDay().ru)+'</em></div>'+
     '<div class="ar-hero-bar"><i style="width:'+Math.max(pct, learned ? 3 : 0)+'%"></i></div>'+
     '<div class="ar-hero-go">'+(due ? 'Пора повторить: ' + plural(due, "слово", "слова", "слов")
@@ -6913,6 +6971,7 @@ function arTitle(){
   if(p.indexOf("u:") === 0) return "Урок " + p.slice(2);
   if(p === "abc") return "Буквы";
   if(p === "dict") return "Словарь";
+  if(p === "pron") return "Произношение";
   if(p.indexOf("g:") === 0) return "Говорим";
   if(p.indexOf("x:") === 0) return "Упражнения";
   if(p.charAt(0) === "s") return "Карточки";
@@ -6923,6 +6982,7 @@ function arBackTo(p){
   p = String(p || "");
   if(p.indexOf("s:") === 0) return "u:" + p.slice(2);
   if(p === "x:abc") return "abc";
+  if(p === "x:pron") return "pron";
   if(p === "s:dict") return "dict";
   if(p.indexOf("g:") === 0) return "u:" + p.slice(2);
   if(p.indexOf("x:") === 0) return "u:" + p.slice(2);
@@ -6934,10 +6994,12 @@ function viewArabic(){
   if(p.indexOf("x:") === 0) return viewArEx();
   if(p === "abc") return viewArAbc();
   if(p === "dict") return viewArDict();
+  if(p === "pron") return viewArPron();
   if(p.indexOf("g:") === 0) return viewArTalk();
   if(p.indexOf("u:") === 0) return viewArUnit(arUnit(p.slice(2)));
   var h = ['<div class="stack">'];
   h.push(arHero(true));
+  h.push(arGoalCard());
   h.push(arTodayCard());
   var due = arDue().length, cur = arCurrent();
   h.push('<div class="ar-cta">'+
@@ -6946,6 +7008,8 @@ function viewArabic(){
 
   h.push('<button class="ar-abc-card" data-ar="abc"><span class="ar-abc-l" dir="rtl">أ ب ت</span>'+
     '<span class="ar-st-t"><b>Буквы и огласовки</b><span>'+(arS().x.abc ? 'узнаёте '+arS().x.abc+'% букв' : 'если читать по-арабски пока трудно, начните здесь')+'</span></span><span class="cw-go">›</span></button>');
+  h.push('<button class="ar-abc-card" data-ar="pron"><span class="ar-abc-l" dir="rtl">ق ع ح</span>'+
+    '<span class="ar-st-t"><b>Тренажёр произношения</b><span>11 трудных пар звуков: слышать разницу и говорить</span></span><span class="cw-go">›</span></button>');
   h.push('<button class="ar-abc-card" data-ar="dict"><span class="ar-abc-l" dir="rtl">قَامُوس</span>'+
     '<span class="ar-st-t"><b>Словарь</b><span>'+arAll().length+' слов, поиск и повторение</span></span><span class="cw-go">›</span></button>');
 
@@ -7091,12 +7155,42 @@ function arClick(v){
   if(k === "mark"){ var mk = AR_MARKS[+p[1]]; if(mk){ arStop(); arTts(mk[2]); } return; }
   if(k === "stop"){ arStop(); return; }
   if(k === "har"){ arS().har = p[1]; save(); render(); return; }
+  if(k === "goal"){ sheetArGoal(); return; }
+  if(k === "gpreset"){
+    var gp = AR_GOALS[+p[1]]; if(!gp) return;
+    var gwEl = document.getElementById("arGw");
+    var gn = gp.all ? arAll().length : (gp.rel ? arGoalVal(gp.k, todayKey()) + gp.n : gp.n);
+    if(gp.k === "units") gn = Math.min(AR_UNITS.length, gn);
+    arGoalSet(gp.t, gp.k, gn, arDayAdd(gp.days), gwEl ? gwEl.value.trim() : (arS().goal || {}).why);
+    return;
+  }
+  if(k === "gsave"){
+    var gk = (document.getElementById("arGk") || {}).value === "units" ? "units" : "words";
+    var gnum = parseInt((document.getElementById("arGn") || {}).value, 10);
+    var gd = (document.getElementById("arGd") || {}).value;
+    if(!gnum || gnum < 1){ toast("Укажите, сколько"); return; }
+    if(!gd || gd <= todayKey()){ toast("Дата должна быть позже сегодняшней"); return; }
+    var gbase = arGoalVal(gk, todayKey());
+    var gtarget = gk === "units" ? Math.min(AR_UNITS.length, gbase + gnum) : Math.min(arAll().length, gbase + gnum);
+    arGoalSet((gk === "units" ? "Пройти " + arGoalUnit("units", gtarget - gbase) : "Выучить " + arGoalUnit("words", gtarget - gbase)) + " до " + gd.slice(8,10) + "." + gd.slice(5,7),
+      gk, gtarget, gd, (document.getElementById("arGw") || {}).value || "");
+    return;
+  }
+  if(k === "gdel"){ if(confirm("Убрать цель? Прогресс в уроках останется.")){ delete arS().goal; save(); render(); } return; }
+  if(k === "pron"){ arStop(); open("arabic", "pron"); return; }
+  if(k === "prw"){ var pw2 = AR_PRON[+p[1]]; if(pw2){ arStop(); arSay(pw2.w[+p[2]][0], null, "pr-" + p[1] + "-" + p[2]); } return; }
+  if(k === "prp"){
+    var pp = AR_PRON[+p[1]]; if(!pp) return;
+    arStop(); AR.play = { i:0 };
+    arPlayList([{ t:pp.w[0][0], k:"pr-" + p[1] + "-0" }, { t:pp.w[1][0], k:"pr-" + p[1] + "-1" }], 0); return;
+  }
+  if(k === "prm"){ arPronMic(+p[1], +p[2]); return; }
   if(k === "rem"){ arS().remind = p[1]; save(); render(); try{ pushSync(true); }catch(e){} toast(p[1] === "off" ? "Напоминание выключено" : "Напомним в " + p[1] + ":00"); return; }
   if(k === "pause"){ arS().pause = p[1] === "1" ? 1 : 0; save(); render(); return; }
   /* упражнения */
   if(k === "pick"){
     var t = AR.x && AR.x.t[AR.x.i]; if(!t || t.done) return;
-    t.pick = t.k === "let" ? +p[1] : p[1];
+    t.pick = t.k === "let" || t.k === "pr" ? +p[1] : p[1];
     arExCheck(); return;
   }
   if(k === "tile"){ var tb = AR.x && AR.x.t[AR.x.i]; if(tb && !tb.done && tb.got.indexOf(+p[1]) < 0){ tb.got.push(+p[1]); render(); } return; }
@@ -7167,6 +7261,7 @@ function arActivity(kind){
   if(!was && arDayDone(td)){ addPoints(3, "arabic"); toast("Норма арабского на сегодня выполнена, машаа Аллах"); }
   save();
   if(!was && arDayDone(td) || st.days && Object.keys(st.days).length === 1) try{ pushSoon(); }catch(e){}
+  arGoalCheck();
 }
 function arDayDone(td){ return td.cards >= AR_DAY.cards && td.talk >= AR_DAY.talk && td.ex >= AR_DAY.ex; }
 /* серия: сколько дней подряд были занятия, считая сегодня или вчера */
@@ -7336,6 +7431,219 @@ function arListen(){
   r.onend = function(){ g.listening = false; if(g.stage === "ask") g.stage = "show"; render(); if(g.score >= 0) arSay(x.l[1], null, "d" + x.u.id + "-" + x.i); };
   try{ r.start(); }catch(e){ g.listening = false; render(); }
 }
+/* ---------- цель ----------
+   Человек выбирает цель: сколько слов выучить или сколько уроков пройти к дате.
+   Каждый день видно, сколько сделано, сколько осталось, что нужно сегодня,
+   идёт ли он по плану и когда дойдёт при нынешнем темпе. Всё считается по
+   датам, которые уже лежат в прогрессе, поэтому график честный и задним числом. */
+var AR_GOALS = [
+  { t:"Заговорить за 3 месяца", s:"все 16 уроков с диалогами", k:"units", n:16, days:90 },
+  { t:"50 новых слов за месяц", s:"примерно 2 слова в день", k:"words", n:50, rel:1, days:30 },
+  { t:"Все слова курса за 2 месяца", s:"весь словарь", k:"words", n:0, all:1, days:60 },
+  { t:"4 урока за месяц", s:"урок в неделю", k:"units", n:4, rel:1, days:30 }
+];
+function arDaysBetween(a, b){ return Math.round((new Date(b + "T12:00:00") - new Date(a + "T12:00:00")) / 864e5); }
+function arKeyAdd(k, n){ var d = new Date(k + "T12:00:00"); d.setDate(d.getDate() + n); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+function arUnitDoneDate(u){
+  var st = arS(), last = st.d[u.id];
+  if(!last) return null;
+  for(var i = 0; i < u.w.length; i++){ var l = st.l[u.w[i].id]; if(!l) return null; if(l > last) last = l; }
+  return last;
+}
+/* сколько было сделано к концу дня key */
+function arGoalVal(kind, key){
+  var n = 0;
+  if(kind === "units"){ AR_UNITS.forEach(function(u){ var d = arUnitDoneDate(u); if(d && d <= key) n++; }); return n; }
+  var l = arS().l; for(var id in l) if(l[id] <= key) n++;
+  return n;
+}
+function arGoalUnit(kind, n){ return kind === "units" ? plural(n, "урок", "урока", "уроков") : plural(n, "слово", "слова", "слов"); }
+function arGoalInfo(){
+  var g = arS().goal; if(!g) return null;
+  var t = todayKey(), cur = arGoalVal(g.k, t);
+  var total = Math.max(1, arDaysBetween(g.start, g.by)), el = Math.min(total, Math.max(0, arDaysBetween(g.start, t)));
+  var left = arDaysBetween(t, g.by), span = Math.max(1, g.n - g.from);
+  var pct = Math.max(0, Math.min(100, Math.round((cur - g.from) / span * 100)));
+  var expected = g.from + span * el / total, diff = cur - expected;
+  var need = Math.max(0, g.n - cur);
+  /* темп за последние 7 дней (но не раньше, чем поставлена цель) */
+  var back = Math.min(7, Math.max(1, arDaysBetween(g.start, t)));
+  var pace = (cur - arGoalVal(g.k, arKeyAdd(t, -back))) / back;
+  var eta = need && pace > 0 ? arKeyAdd(t, Math.ceil(need / pace)) : null;
+  var todayGain = cur - arGoalVal(g.k, arKeyAdd(t, -1));
+  var perDay = left > 0 ? need / (left + 1) : need;
+  return { g:g, cur:cur, pct:pct, left:left, need:need, diff:diff, pace:pace, eta:eta, todayGain:todayGain, perDay:perDay, total:total, el:el };
+}
+function arGoalCheck(){
+  var i = arGoalInfo(); if(!i || i.g.doneAt || i.cur < i.g.n) return;
+  i.g.doneAt = todayKey(); addPoints(10, "arabic"); save();
+  toast("Цель достигнута: " + i.g.t + ". Машаа Аллах!");
+}
+function arGoalToday(i){
+  if(i.need <= 0) return "Цель достигнута";
+  if(i.g.k === "units"){
+    var perWeek = Math.max(1, Math.ceil(i.need / Math.max(1, (i.left + 1) / 7)));
+    return "по плану: " + arGoalUnit("units", perWeek) + " в неделю";
+  }
+  var p = Math.max(1, Math.ceil(i.perDay));
+  return i.todayGain >= p ? "сегодня уже " + arGoalUnit("words", i.todayGain) + " - норма есть" : "сегодня выучить " + arGoalUnit("words", p) + (i.todayGain ? " (уже " + i.todayGain + ")" : "");
+}
+function arGoalStatus(i){
+  if(i.cur >= i.g.n) return { k:"ok", t:"Цель достигнута" + (i.g.doneAt ? " " + i.g.doneAt.slice(8,10) + "." + i.g.doneAt.slice(5,7) : "") };
+  if(i.left < 0) return { k:"bad", t:"Срок прошёл - поставьте новую дату" };
+  var d = Math.round(i.diff);
+  if(d >= 1) return { k:"ok", t:"Опережаете план на " + arGoalUnit(i.g.k, d) };
+  if(d <= -1) return { k:"bad", t:"Отстаёте от плана на " + arGoalUnit(i.g.k, -d) };
+  return { k:"mid", t:"Идёте по плану" };
+}
+/* график: пунктир - план, золотая линия - как было на самом деле */
+function arGoalChart(i){
+  var g = i.g, W = 300, H = 96, L = 6, R = 6, T = 8, B = 20;
+  var lo = g.from, hi = Math.max(g.n, i.cur, lo + 1);
+  function X(d){ return L + (W - L - R) * d / i.total; }
+  function Y(v){ return T + (H - T - B) * (1 - (v - lo) / (hi - lo)); }
+  var pts = [], step = Math.max(1, Math.ceil(i.el / 40));
+  for(var d = 0; d <= i.el; d += step) pts.push(X(d).toFixed(1) + "," + Y(arGoalVal(g.k, arKeyAdd(g.start, d))).toFixed(1));
+  pts.push(X(i.el).toFixed(1) + "," + Y(i.cur).toFixed(1));
+  function dm(k){ return k.slice(8,10) + "." + k.slice(5,7); }
+  return '<svg class="ar-gchart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="План и факт">'+
+    '<line x1="'+L+'" y1="'+Y(lo)+'" x2="'+(W-R)+'" y2="'+Y(lo)+'" stroke="var(--line)" stroke-width="1" fill="none"/>'+
+    '<line x1="'+X(0)+'" y1="'+Y(g.from)+'" x2="'+X(i.total)+'" y2="'+Y(g.n)+'" stroke="var(--ink-3)" stroke-width="1.5" stroke-dasharray="4 4" fill="none"/>'+
+    '<polyline points="'+pts.join(" ")+'" stroke="#D4AF37" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>'+
+    '<circle cx="'+X(i.el)+'" cy="'+Y(i.cur)+'" r="4" fill="#D4AF37"/>'+
+    '<text x="'+L+'" y="'+(H-5)+'" font-size="10" fill="var(--ink-3)">'+dm(g.start)+'</text>'+
+    '<text x="'+(W-R)+'" y="'+(H-5)+'" font-size="10" fill="var(--ink-3)" text-anchor="end">'+dm(g.by)+'</text>'+
+    '<text x="'+L+'" y="'+(T+2)+'" font-size="10" fill="var(--ink-3)" dominant-baseline="hanging">цель '+g.n+'</text>'+
+  '</svg>';
+}
+function arGoalCard(){
+  var i = arGoalInfo();
+  if(!i){
+    return '<section class="card ar-goal empty"><div class="eyebrow">Моя цель</div>'+
+      '<b class="ar-goal-t">Поставьте цель - и каждый день будет видно, насколько вы к ней ближе</b>'+
+      '<div class="ar-chips" style="margin-top:10px">'+AR_GOALS.slice(0, 2).map(function(x, k){
+        return '<button class="chip" data-ar="gpreset:'+k+'">'+esc(x.t)+'</button>'; }).join("")+
+        '<button class="chip" data-ar="goal">Своя цель</button></div></section>';
+  }
+  var st = arGoalStatus(i), g = i.g;
+  function dm(k){ return k.slice(8,10) + "." + k.slice(5,7); }
+  return '<section class="card ar-goal">'+
+    '<div class="ar-goal-top"><div><div class="eyebrow">Моя цель</div><b class="ar-goal-t">'+esc(g.t)+'</b>'+
+      (g.why ? '<div class="ar-goal-why">«'+esc(g.why)+'»</div>' : '')+'</div>'+
+      '<div class="ar-goal-pct"><b>'+i.pct+'%</b><span>пройдено</span></div></div>'+
+    '<div class="ar-goal-bar"><i style="width:'+i.pct+'%"></i><em style="left:'+Math.round(i.el / i.total * 100)+'%"></em></div>'+
+    '<div class="ar-goal-nums">'+
+      '<div><b>'+i.cur+' / '+g.n+'</b><span>'+(g.k === "units" ? "уроков" : "слов")+'</span></div>'+
+      '<div><b>'+(i.left >= 0 ? i.left : 0)+'</b><span>'+plural(Math.max(0, i.left), "день", "дня", "дней").replace(/^\d+\s/, "")+' до '+dm(g.by)+'</span></div>'+
+      '<div><b>'+i.need+'</b><span>осталось</span></div></div>'+
+    '<div class="ar-goal-st '+st.k+'">'+esc(st.t)+'</div>'+
+    (i.need ? '<div class="ar-goal-today">'+esc(arGoalToday(i))+'</div>' : '')+
+    arGoalChart(i)+
+    '<div class="ar-note" style="margin-top:4px">'+
+      (i.need ? (i.eta ? 'При нынешнем темпе цель будет достигнута ' + dm(i.eta) + (i.eta > g.by ? ' - позже срока.' : ' - в срок.') : 'Темп появится, когда за неделю будут выучены первые слова.') : 'Можно поставить новую цель.')+
+      ' Пунктир - план, золотая линия - ваш путь.</div>'+
+    '<div class="ar-cta" style="margin-top:10px"><button class="btn sm sec" data-ar="goal">Изменить цель</button>'+
+      '<button class="btn sm ghost" data-ar="gdel">Убрать</button></div>'+
+  '</section>';
+}
+function sheetArGoal(){
+  var g = arS().goal || {};
+  sheet('<h3>Цель по арабскому</h3>'+
+    '<label class="eyebrow" for="arGw">Зачем мне это</label>'+
+    '<input class="search" id="arGw" placeholder="Например: понимать суры, которые читаю в намазе" value="'+esc(g.why || "")+'" style="margin:6px 0 12px">'+
+    '<div class="eyebrow">Готовые цели</div>'+
+    '<div class="ar-gpresets">'+AR_GOALS.map(function(x, k){
+      return '<button class="ar-td" data-ar="gpreset:'+k+'"><span><b>'+esc(x.t)+'</b><span>'+esc(x.s)+'</span></span><em>'+x.days+' дн.</em></button>'; }).join("")+'</div>'+
+    '<div class="eyebrow" style="margin-top:14px">Или своя</div>'+
+    '<div style="display:flex;gap:8px;margin-top:6px">'+
+      '<input class="search" id="arGn" type="number" min="1" max="500" value="'+esc(g.n ? g.n - (g.from || 0) : 30)+'" style="flex:1" aria-label="Сколько">'+
+      '<select class="search" id="arGk" style="flex:1" aria-label="Чего"><option value="words"'+(g.k !== "units" ? " selected" : "")+'>новых слов</option><option value="units"'+(g.k === "units" ? " selected" : "")+'>уроков</option></select></div>'+
+    '<label class="eyebrow" for="arGd" style="display:block;margin-top:10px">К дате</label>'+
+    '<input class="search" id="arGd" type="date" value="'+esc(g.by || arDayAdd(30))+'" style="margin-top:6px">'+
+    '<button class="btn" data-ar="gsave" style="margin-top:14px">Сохранить свою цель</button>');
+}
+function arGoalSet(t, kind, n, by, why){
+  var from = arGoalVal(kind, todayKey());
+  arS().goal = { t:t, k:kind, n:n, from:Math.min(from, n), start:todayKey(), by:by, why:why || "" };
+  save(); closeSheet(); render(); try{ pushSoon(); }catch(e){}
+  toast("Цель поставлена: " + t);
+  arGoalCheck();
+}
+
+/* ---------- тренажёр произношения ----------
+   Пары звуков, которые русскоязычные чаще всего путают. У каждой пары - где
+   рождается звук и два слова, которые отличаются только этим звуком. Сначала
+   ухо учится слышать разницу (упражнение на слух), потом язык - произносить. */
+var AR_PRON = [
+  { a:"ق", b:"ك", w:[["قَلْب","сердце"],["كَلْب","собака"]],
+    t:"ق - корень языка упирается в мягкое нёбо у самого горла, звук глухой и «толстый». ك - обычное «к», ближе ко рту." },
+  { a:"ح", b:"ه", w:[["حَرْب","война"],["هَرَبَ","убежал"]],
+    t:"ح - середина горла: сузьте горло и выдохните с напряжением, без хрипа, как будто дышите на стекло. ه - лёгкий свободный выдох из глубины горла, как английское h." },
+  { a:"خ", b:"ح", w:[["خَلَقَ","создал"],["حَلَقَ","побрил"]],
+    t:"خ - верх горла, ближе ко рту: «х» с хрипотцой, как в слове «хлеб». ح - середина горла, чистый выдох без хрипа." },
+  { a:"ع", b:"أ", w:[["عَلِمَ","узнал"],["أَلِمَ","почувствовал боль"]],
+    t:"ع - середина горла: горло сжимается, звук звонкий, как короткое усилие. أ (хамза) - просто чёткое начало гласной, горло не сжимается." },
+  { a:"ص", b:"س", w:[["صَيْف","лето"],["سَيْف","меч"]],
+    t:"ص - «толстое» с: задняя часть языка поднимается к нёбу, гласная рядом звучит ближе к «о». س - тонкое, как русское «с»." },
+  { a:"ض", b:"د", w:[["ضَلَّ","заблудился"],["دَلَّ","указал"]],
+    t:"ض - боковой край языка прижимается к верхним коренным зубам, звук густой и «толстый». Самый трудный звук языка. د - обычное «д»." },
+  { a:"ط", b:"ت", w:[["طِين","глина"],["تِين","инжир"]],
+    t:"ط - «толстое» т: язык поднят к нёбу, звук глубже и твёрже. ت - тонкое, как русское «т»." },
+  { a:"ظ", b:"ذ", w:[["ظَلَّ","оставался"],["ذَلَّ","унизился"]],
+    t:"Обе межзубные: кончик языка между зубами. ظ - «толстая», язык поднят к нёбу. ذ - тонкая, как th в английском this." },
+  { a:"ث", b:"س", w:[["ثَارَ","восстал"],["سَارَ","пошёл"]],
+    t:"ث - кончик языка между зубами, глухо, как th в английском think. س - язык за зубами, обычное «с»." },
+  { a:"ذ", b:"ز", w:[["ذَكِيّ","умный"],["زَكِيّ","чистый"]],
+    t:"ذ - кончик языка между зубами, звонко. ز - язык за зубами, обычное «з»." },
+  { a:"غ", b:"خ", w:[["غَالِي","дорогой"],["خَالِي","пустой"]],
+    t:"Обе из верха горла. غ - звонкая, как при полоскании горла или картавое r. خ - глухая, «х» с хрипотцой." }
+];
+function arPr(){ var st = arS(); if(!st.pr) st.pr = {}; return st.pr; }
+function viewArPron(){
+  var h = ['<div class="stack">'], pr = arPr();
+  h.push('<section class="ar-uhead"><div class="ar-uhead-ar" dir="rtl">مَخَارِجُ الحُرُوفِ</div>'+
+    '<div class="ar-uhead-h">Тренажёр произношения</div>'+
+    '<div class="ar-uhead-s">11 пар звуков, которые русскоязычные путают чаще всего. Сначала научитесь слышать разницу, потом произносить.</div></section>');
+  h.push('<div class="ar-cta"><button class="btn" data-ar="ex:pron">Упражнение на слух</button></div>');
+  if(arS().x.pron) h.push('<div class="ar-note" style="text-align:center;margin:0">Лучший результат на слух: '+arS().x.pron+'%</div>');
+  AR_PRON.forEach(function(p, i){
+    var r = pr[i], acc = r && r.n ? Math.round(r.ok / r.n * 100) : -1;
+    h.push('<section class="card ar-pair">'+
+      '<div class="ar-pair-h"><b dir="rtl">'+p.a+'</b><span>или</span><b dir="rtl">'+p.b+'</b>'+
+        (acc >= 0 ? '<em class="'+(acc >= 80 ? "ok" : "bad")+'">на слух '+acc+'%</em>' : '')+'</div>'+
+      '<p>'+esc(p.t)+'</p>'+
+      '<div class="ar-pair-w">'+p.w.map(function(w, j){
+        return '<div><button class="ar-pair-word" data-ar="prw:'+i+':'+j+'"><b dir="rtl">'+w[0]+'</b><span>'+esc(w[1])+'</span></button>'+
+          (AR_REC ? '<button class="ar-pair-mic" data-ar="prm:'+i+':'+j+'">🎤 скажите</button>' : '')+'</div>'; }).join("")+'</div>'+
+      '<button class="btn ghost sm" data-ar="prp:'+i+'">▶ Слушать пару подряд</button>'+
+    '</section>');
+  });
+  h.push('<p class="disclaimer" style="text-align:left">Голос телефона передаёт эти звуки не всегда точно, а распознавание речи может ошибаться. '+
+    'Тренажёр помогает услышать разницу и начать, а поставить звуки окончательно лучше с преподавателем таджвида.</p>');
+  h.push('</div>');
+  return h.join("");
+}
+/* проверка голосом: какое из двух слов пары распознал телефон */
+function arPronMic(i, j){
+  var p = AR_PRON[i]; if(!p || !AR_REC) return;
+  arStop();
+  var r; try{ r = new AR_REC(); }catch(e){ toast("Микрофон недоступен"); return; }
+  r.lang = "ar-SA"; r.maxAlternatives = 3;
+  toast("Говорите: " + p.w[j][0]);
+  r.onresult = function(ev){
+    var best = -1, which = -1;
+    for(var k = 0; k < ev.results[0].length; k++){
+      var t = ev.results[0][k].transcript;
+      [0, 1].forEach(function(m){ var sc = arSimilar(t, p.w[m][0]); if(sc > best){ best = sc; which = m; } });
+    }
+    if(which === j && best >= 60) toast("Верно: прозвучало " + p.w[j][0] + " (" + p.w[j][1] + ")");
+    else if(which >= 0 && which !== j) toast("Прозвучало похоже на " + p.w[which][0] + " (" + p.w[which][1] + "). Попробуйте ещё раз");
+    else toast("Не расслышала точно, попробуйте ещё раз");
+  };
+  r.onerror = function(e){ toast(e && e.error === "not-allowed" ? "Разрешите доступ к микрофону в настройках" : "Не расслышала, попробуйте ещё раз"); };
+  try{ r.start(); }catch(e){}
+}
+
 function viewArTalk(){
   var g = AR.g, h = ['<div class="stack">'];
   if(!g || !g.t.length){ h.push('<div class="empty"><b>Нет фраз для тренировки</b></div></div>'); return h.join(""); }
@@ -15997,7 +16305,7 @@ function pushItems(){
       if(atAr > now && !(k === 0 && arDayDone(arToday()))){
         var arSk = arStreak();
         items.push({ at:new Date(atAr).toISOString(), title:"Арабский: 15 минут",
-          body: k === 0 && arSk ? "Серия " + plural(arSk, "день", "дня", "дней") + ". Карточки, 5 фраз вслух и упражнение" : "Карточки, 5 фраз вслух и одно упражнение", tag:"arabic" });
+          body: k === 0 && arGoalInfo() && arGoalInfo().need ? "Цель " + arGoalInfo().pct + "%: " + arGoalToday(arGoalInfo()) : k === 0 && arSk ? "Серия " + plural(arSk, "день", "дня", "дней") + ". Карточки, 5 фраз вслух и упражнение" : "Карточки, 5 фраз вслух и одно упражнение", tag:"arabic" });
       }
     }
     /* Итоги недели в рейтинге: в воскресенье днём - что неделя закрывается и где вы сейчас,
