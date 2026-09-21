@@ -1197,6 +1197,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   transition:background .3s ease;border-radius:12px;
 }
 .ayah.now{background:rgba(212,175,55,.12)}
+.qw{border-radius:7px;transition:background .12s,box-shadow .12s,color .12s}
+.qw-now{background:rgba(212,175,55,.34);box-shadow:0 0 0 3px rgba(212,175,55,.34);color:var(--ink)}
+.mdn-w.qw-now{color:inherit;background:rgba(212,175,55,.42);border-radius:6px;box-shadow:inset 0 0 0 2px #C9A12F,0 2px 8px -2px rgba(150,110,20,.55)}
 .ayah-h{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .ayah-n{
   min-width:30px;height:30px;padding:0 7px;border-radius:99px;display:grid;place-items:center;
@@ -2005,7 +2008,7 @@ var DEF = {
   fin:[], todos:[], leads:[], phone:"", quiz:{}, nav:{}, account:{registered:false, queued:false, at:0, ads:false},
   azkarLifetime:0, levelSeen:0, weekSeen:0, welcomed:0,
   qLast:0, qMax:0, qMarks:[], qSize:28, qTr:true, qReciter:"ar.alafasy",
-  qSpeed:1, qRepeat:1, qContinue:true, qScroll:20,
+  qSpeed:1, qRepeat:1, qContinue:true, qFollow:true, qScroll:20,
   hifz:{on:false, items:{}},
   push:{on:false, at:0, sig:""},
   salahKid:false,
@@ -3887,12 +3890,14 @@ function zakatICS(){
    КОРАН: помощники
    ============================================================ */
 var RECITERS = [
-  {id:"ar.alafasy",            n:"Мишари Аль-Афаси"},
-  {id:"ar.husary",             n:"Махмуд Аль-Хусари"},
-  {id:"ar.abdulbasitmurattal", n:"Абдуль-Басит (мураттель)"},
-  {id:"ar.abdurrahmaansudais", n:"Абдуррахман Ас-Судайс"},
+  /* qc - номер чтеца на quran.com (есть время каждого слова), vb - откуда брать аяты,
+     если не с cdn.islamic.network. У Афаси файлы там и там одинаковые. */
+  {id:"ar.alafasy",            n:"Мишари Аль-Афаси", qc:7},
+  {id:"ar.husary",             n:"Махмуд Аль-Хусари", qc:6, vb:"https://mirrors.quranicaudio.com/everyayah/Husary_64kbps/"},
+  {id:"ar.abdulbasitmurattal", n:"Абдуль-Басит (мураттель)", qc:2, vb:"https://verses.quran.com/AbdulBaset/Murattal/mp3/"},
+  {id:"ar.abdurrahmaansudais", n:"Абдуррахман Ас-Судайс", qc:3, vb:"https://verses.quran.com/Sudais/mp3/"},
   {id:"ar.mahermuaiqly",       n:"Махер Аль-Муайкли"},
-  {id:"ar.minshawi",           n:"Мухаммад Аль-Миншави"}
+  {id:"ar.minshawi",           n:"Мухаммад Аль-Миншави", qc:9, vb:"https://verses.quran.com/Minshawi/Murattal/mp3/"}
 ];
 var QTOTAL = (typeof QA !== "undefined") ? QA.length : 0;
 
@@ -4021,7 +4026,12 @@ function isSajda(i){ return QSAJ.indexOf(i) > -1; }
 function surahTitle(s){ var x = QSUR[s]; return x[2]; }
 function qRef(i){ return surahTitle(surahOf(i)) + ", аят " + ayahInSurah(i); }
 function isMark(i){ return S.qMarks.indexOf(i) > -1; }
-function audioUrl(i){ return "https://cdn.islamic.network/quran/audio/128/" + S.qReciter + "/" + (i + 1) + ".mp3"; }
+function qRec(){ return RECITERS.filter(function(x){ return x.id === S.qReciter; })[0] || RECITERS[0]; }
+function audioUrl(i){
+  var r = qRec();
+  if(r.vb){ var s = surahOf(i), a = i - QSUR[s][6] + 1; return r.vb + ("00" + (s + 1)).slice(-3) + ("00" + a).slice(-3) + ".mp3"; }
+  return "https://cdn.islamic.network/quran/audio/128/" + r.id + "/" + (i + 1) + ".mp3";
+}
 
 /* ---------- аудио без сети ----------
    Коран целиком - это около семисот мегабайт: скачивать «всё» бессмысленно,
@@ -4042,6 +4052,10 @@ function qOffState(){
   if(!S.qoff) S.qoff = {juz:[], sura:[], reciter:""};
   if(!S.qoff.juz) S.qoff.juz = [];
   if(!S.qoff.sura) S.qoff.sura = [];
+  if(!S.qoff.v2){
+    if(["ar.husary", "ar.abdulbasitmurattal", "ar.abdurrahmaansudais", "ar.minshawi"].indexOf(S.qoff.reciter) >= 0){ S.qoff.juz = []; S.qoff.sura = []; }
+    S.qoff.v2 = 1;
+  }
   return S.qoff;
 }
 
@@ -4210,6 +4224,94 @@ function arNorm(s){
           .replace(/ى/g, "ي").replace(/ة/g, "ه");
 }
 
+/* ---------- слово за чтецом ---------- */
+var QW_MARK = /^[ۖ-ۭ]+$/;
+/* слова аята: перед первым аятом суры в тексте стоит «Бисмиллях» - это не слова аята */
+function qTokens(i){
+  var t = String(QA[i]).split(/\s+/).filter(Boolean), out = [], n = 0, s = surahOf(i);
+  if(i === QSUR[s][6] && s !== 0 && s !== 8 && arNorm(t[0]) === arNorm(QA[0].split(/\s+/)[0])){ out.push({ x: t.slice(0, 4).join(" "), w: 0, b: 1 }); t = t.slice(4); }
+  if(i === 3917 && t.length === 4) t = [t[0], t[1], t[2] + " " + t[3]];   /* 37:130 «Иль Ясин» - одно слово */
+  for(var k = 0; k < t.length; k++) out.push(QW_MARK.test(t[k]) ? { x: t[k], w: 0 } : { x: t[k], w: ++n });
+  return out;
+}
+/* номер слова для каждого символа аята (0 - пробел, «Бисмиллях» перед аятом, знак остановки) */
+function qWordMap(i){
+  var ch = Array.from(QA[i] || ""), map = new Array(ch.length), tk = qTokens(i), pos = 0;
+  for(var k = 0; k < map.length; k++) map[k] = 0;
+  tk.forEach(function(o){
+    var len = Array.from(o.x).length;
+    while(pos < ch.length && ch[pos] === " ") pos++;
+    for(var k = 0; k < len && pos + k < ch.length; k++) if(ch[pos + k] !== " ") map[pos + k] = o.b ? -1 : o.w;
+    pos += len;
+  });
+  return map;
+}
+function qWordsHtml(i, noB){
+  return qTokens(i).filter(function(o){ return !(noB && o.b); }).map(function(o){ return o.w ? '<span class="qw" data-w="'+o.w+'">'+esc(o.x)+'</span>' : esc(o.x); }).join(" ");
+}
+var QSEG = {}, QSEG_BUSY = {};
+function qSegParse(j){
+  var m = {};
+  (j.audio_files || []).forEach(function(f){
+    var k = String(f.verse_key).split(":"), s = parseInt(k[0], 10) - 1;
+    if(!QSUR[s]) return;
+    m[QSUR[s][6] + parseInt(k[1], 10) - 1] = (f.segments || []).filter(function(r){ return r && r.length >= 4; })
+      .map(function(r){ return [parseInt(r[1], 10), parseInt(r[2], 10), parseInt(r[3], 10)]; });
+  });
+  return m;
+}
+function qSegLoad(qc, s){
+  var key = qc + ":" + s, b = QSEG_BUSY[key];
+  if(b === 1 || (b && Date.now() - b < 30000) || !window.fetch) return;
+  QSEG_BUSY[key] = 1;
+  var url = "https://api.quran.com/api/v4/recitations/" + qc + "/by_chapter/" + (s + 1) + "?fields=segments&per_page=300", store = null;
+  function done(j){ QSEG[key] = qSegParse(j); QSEG_BUSY[key] = 0; }
+  (window.caches ? caches.open("rizq-audio").then(function(c){ store = c; return c.match(url); }).catch(function(){ return null; }) : Promise.resolve(null))
+    .then(function(hit){
+      if(hit) return hit.json().then(done);
+      return fetch(url).then(function(r){ if(!r.ok) throw 0; if(store) store.put(url, r.clone()); return r.json(); }).then(done);
+    })
+    .catch(function(){ QSEG_BUSY[key] = Date.now(); });
+}
+/* разметка слов для аята: null, если чтец без разметки, подсветка выключена или ещё грузится */
+function qSeg(i){
+  var r = qRec();
+  if(!r.qc || !S.qFollow) return null;
+  var s = surahOf(i), key = r.qc + ":" + s;
+  if(QSEG[key]) return QSEG[key][i] || null;
+  qSegLoad(r.qc, s);
+  return null;
+}
+var QW = { raf:0, i:-1, w:-1 };
+function qWordRun(){ if(!QW.raf) QW.raf = setTimeout(qWordTick, 70); }   /* таймер, а не кадры: работает и при скрытой вкладке */
+function qWordTick(){
+  QW.raf = 0;
+  if(!QP.playing || !QP.audio){ qWordPaint(-1, -1); return; }
+  var seg = qSeg(QP.cur), w = -1;
+  if(seg){
+    var t = QP.audio.currentTime * 1000;
+    for(var k = 0; k < seg.length; k++) if(t >= seg[k][1] - 40) w = seg[k][0];
+  }
+  if(QP.cur !== QW.i || w !== QW.w) qWordPaint(QP.cur, w);
+  QW.raf = setTimeout(qWordTick, 70);
+}
+function qWordPaint(i, w){
+  var old = document.querySelectorAll(".qw-now");
+  for(var k = 0; k < old.length; k++) old[k].classList.remove("qw-now");
+  QW.i = i; QW.w = w;
+  if(i < 0 || w < 1) return;
+  var els = document.querySelectorAll('.ayah[data-i="'+i+'"] .qw[data-w="'+w+'"], .mus-ayah[data-mayah="'+i+'"] .qw[data-w="'+w+'"]');
+  for(var e = 0; e < els.length; e++) els[e].classList.add("qw-now");
+  var md = document.querySelectorAll('.mdn-w[data-mayah="'+i+'"]:not(.mdn-end)');
+  if(md[w - 1]) md[w - 1].classList.add("qw-now");
+  /* длинный аят: если слово ушло за низ экрана - подкручиваем, чтобы глаз не терял чтеца */
+  var el = els[0] || md[w - 1];
+  if(el && $screen){
+    var rc = el.getBoundingClientRect(), vh = window.innerHeight || 700;
+    if(rc.bottom > vh - 90 || rc.top < 70) $screen.scrollBy({ top: rc.top - vh * 0.35, behavior: "smooth" });
+  }
+}
+
 /* ---------- плеер ---------- */
 var QP = { audio:null, playing:false, cur:-1, stopAt:-1, repeatLeft:0 };
 function qStop(){
@@ -4239,12 +4341,13 @@ function qPlay(i){
   if(pr && pr.catch) pr.catch(function(){ QP.playing = false; paintPlayer(); });
   QP.playing = true;
   S.qLast = i; if(i > (S.qMax||0)) S.qMax = i; qPlanTouch(); save();
+  qSeg(i); qWordRun();
   paintPlayer();
   scrollToAyah(i);
 }
 function qToggle(i){
   if(QP.playing && QP.cur === i){ QP.audio.pause(); QP.playing = false; paintPlayer(); return; }
-  if(!QP.playing && QP.cur === i && QP.audio){ QP.audio.play(); QP.playing = true; paintPlayer(); return; }
+  if(!QP.playing && QP.cur === i && QP.audio){ QP.audio.play(); QP.playing = true; qWordRun(); paintPlayer(); return; }
   qPlay(i);
 }
 function paintPlayer(){
@@ -9142,7 +9245,7 @@ function hifzWhen(key){
 function hifzText(i){
   var open = !hifzData().on || HZ.show[i];
   if(open){
-    return '<div class="ayah-ar">'+esc(QA[i])+'</div>'+
+    return '<div class="ayah-ar">'+qWordsHtml(i)+'</div>'+
       ((HAS_TR && S.qTr)? '<div class="ayah-ru">'+esc(QR[i])+'</div>' : '');
   }
   return '<button class="ayah-hide" data-hifzshow="'+i+'"><b>Прочитайте по памяти</b>и нажмите, чтобы проверить себя</button>';
@@ -9315,13 +9418,18 @@ function tjdLoad(){
     .catch(function(){ TJD_BUSY = false; });
 }
 /* текст аята с цветами правил: каждой букве - правило, которое её накрывает */
-function tjdRender(i){
+function tjdRender(i, noB){
   var ch = Array.from(QA[i] || ""), list = (TJD && TJD.a[i]) || [], who = new Array(ch.length);
   list.forEach(function(x){ for(var k = x[1]; k < x[1] + x[2] && k < ch.length; k++) if(!who[k]) who[k] = TJD.r[x[0]]; });
-  var out = "", cur = null, buf = "";
+  var out = "", cur = null, buf = "", wm = qWordMap(i), wd = 0;
+  if(!noB) wm = wm.map(function(v){ return v < 0 ? 0 : v; });
   function flush(){ if(!buf) return; out += cur && TJR[cur] ? '<span class="tjg tjg-'+TJR[cur].g+'">'+esc(buf)+'</span>' : esc(buf); buf = ""; }
-  for(var k = 0; k < ch.length; k++){ var w = who[k] || null; if(w !== cur){ flush(); cur = w; } buf += ch[k]; }
-  flush();
+  for(var k = 0; k < ch.length; k++){
+    if(noB && (wm[k] === -1 || (k > 0 && wm[k - 1] === -1 && ch[k] === " "))) continue;
+    if(wm[k] !== wd){ flush(); if(wd) out += '</span>'; wd = wm[k]; if(wd) out += '<span class="qw" data-w="'+wd+'">'; }
+    var w = who[k] || null; if(w !== cur){ flush(); cur = w; } buf += ch[k];
+  }
+  flush(); if(wd) out += '</span>';
   return out;
 }
 /* разбор под аятом: какие правила и в каких местах */
@@ -9347,8 +9455,8 @@ function tjdExplain(i){
 }
 function mushafText(i){
   var t = QA[i];
-  if(qTajOn()){ if(TJD) return tjdRender(i); tjdLoad(); return tajweed(t); }
-  return esc(t);
+  if(qTajOn()){ if(TJD) return tjdRender(i, true); tjdLoad(); return tajweed(t); }
+  return qWordsHtml(i, true);
 }
 /* перейти на страницу мусхафа */
 function mushafGo(np){
@@ -9662,8 +9770,9 @@ function viewQSettings(){
     '<div class="rows">'+
       (HAS_TR? swRow("qTr","Ru","Показывать перевод") : "")+
       swRow("qContinue","▶","Играть подряд до конца")+
+      swRow("qFollow","◉","Подсвечивать слово за чтецом")+
     '</div>'+
-    '<p class="disclaimer">Аудио загружается из интернета (cdn.islamic.network). Во встроенном окне предпросмотра оно заблокировано - работает в приложении на хостинге.</p>'+
+    '<p class="disclaimer">Слово за чтецом подсвечивается у всех чтецов, кроме Махера Аль-Муайкли, - время слов размечено на quran.com. Аудио загружается из интернета (quran.com, cdn.islamic.network). Во встроенном окне предпросмотра оно заблокировано - работает в приложении на хостинге.</p>'+
     '</div>';
 }
 

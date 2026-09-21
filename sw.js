@@ -1,5 +1,5 @@
 /* Ризк - офлайн-кэш. Меняйте номер версии при каждом обновлении приложения. */
-var CACHE = "rizq-v154";
+var CACHE = "rizq-v155";
 var ASSETS = [
   "./",
   "./index.html",
@@ -76,8 +76,8 @@ self.addEventListener("fetch", function (e) {
   /* Скачанное аудио Корана. Пользователь качает его сам, отдельной кнопкой,
      и лежит оно в своём хранилище: обновление приложения его не стирает.
      Сами ничего сюда не кладём - иначе прослушивание онлайн незаметно
-     забивало бы память телефона. */
-  if (url.hostname === "cdn.islamic.network") {
+     забивало бы память телефона. С 21.09 часть чтецов и разметка слов - с quran.com. */
+  if (url.hostname === "cdn.islamic.network" || url.hostname === "verses.quran.com" || url.hostname === "mirrors.quranicaudio.com" || url.hostname === "api.quran.com") {
     e.respondWith(
       caches.open("rizq-audio").then(function (c) {
         return c.match(e.request).then(function (hit) {
