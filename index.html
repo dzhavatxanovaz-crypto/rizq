@@ -446,6 +446,31 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hl-head .hl-h1{font-family:var(--f-display);font-size:22px;font-weight:700;margin-top:6px}
 .hl-head .hl-sub{font-size:13.5px;color:var(--ink-2);line-height:1.5;margin-top:5px}
 .hl-f{display:flex;gap:7px;flex-wrap:wrap}
+.st-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.st-tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 13px;box-shadow:var(--shadow)}
+.st-tile b{display:block;font-family:var(--f-display);font-size:24px;line-height:1.1;font-variant-numeric:tabular-nums}
+.st-tile span{display:block;font-size:12px;color:var(--ink-3);margin-top:3px}
+.st-tile em,.st-rows em em{font-style:normal;font-size:12px;font-weight:600}
+.st-up{color:#3E9B72}
+.st-down{color:#D46A5B}
+.st-mute{color:var(--ink-3);font-weight:400!important}
+.st-leg{display:flex;gap:14px;font-size:12px;color:var(--ink-2);margin:8px 0 4px}
+.st-leg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px}
+.st-chart{width:100%;max-width:100%;height:auto;display:block}
+.st-rows{display:flex;flex-direction:column;margin-top:6px}
+.st-rows>div{display:flex;align-items:baseline;gap:10px;padding:7px 0;border-top:1px solid var(--line-soft);font-size:13.5px}
+.st-rows>div:first-child{border-top:0}
+.st-rows span{min-width:84px;color:var(--ink-2)}
+.st-rows b{font-variant-numeric:tabular-nums;min-width:38px}
+.st-rows em{font-style:normal;color:var(--ink-3);font-size:12.5px}
+.st-secs{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.st-sec{display:grid;grid-template-columns:1fr 38px;gap:4px 8px;align-items:center}
+.st-sec-t{grid-column:1 / -1}
+.st-sec-t b{font-size:14px}
+.st-sec-t span{display:block;font-size:12px;color:var(--ink-3)}
+.st-bar{height:7px;border-radius:7px;background:var(--surface-2);overflow:hidden}
+.st-bar i{display:block;height:100%;background:#D4AF37;border-radius:7px}
+.st-sec em{font-style:normal;font-size:12px;color:var(--ink-2);text-align:right;font-variant-numeric:tabular-nums}
 .hl-nums{display:flex;gap:8px;margin-top:11px}
 .hl-nums>div{flex:1;text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:9px 4px}
 .hl-nums b{display:block;font-family:var(--f-display);font-size:18px;font-weight:700;color:var(--accent-ink);font-variant-numeric:tabular-nums}
@@ -1469,7 +1494,7 @@ var HADITH_SRC = [{"num":1,"n":"Дела оцениваются по намер�
 var DEF = {
   fav:[], tasbih:{}, tasbihTotal:0, read:{}, dcnt:{}, practice:{}, readDay:"", bought:[], done:[], orders:[],
   theme:"", city:"mah", method:"mwl", madhab:1,
-  name:"", email:"", notifPrayer:true, notifDua:true, notifTasks:true, notifScore:true, notifCourse:false, notifAzan:true,
+  name:"", email:"", notifPrayer:true, notifDua:true, notifTasks:true, notifScore:true, statOn:true, notifCourse:false, notifAzan:true,
   salah:{}, myduas:[], goals:[], namesRead:{}, daily:{}, shukrNotes:{}, shukr:[], shukrMigrated:false, shukrOpen:false, salahOpen:false,
   checks:{}, sunnah:{}, sunnahOpen:false, health:{}, healthOpen:false, pauses:[],
   qada:{p:{}, done:{}, fast:0, fastDone:0, perDay:1, log:[]}, postSeen:"", points:0, pointsDay:{}, cat:{},
@@ -14202,6 +14227,7 @@ function admLoad(){
   var t = ADM.tab;
   var p = t === "reviews" ? admApi("reviews").then(function(j){ ADM.items = j.items; })
         : t === "posts" ? admApi("posts").then(function(j){ ADM.posts = j; })
+        : t === "stats" ? admApi("stats?days="+(ADM.sdays||30)).then(function(j){ ADM.stats = j; })
         : t === "users" ? admApi("users?sort="+(ADM.usort||"week")).then(function(j){ ADM.users = j.items; })
         : t === "winners" ? admApi("week-winners").then(function(j){ ADM.win = j; })
         : t === "auto" ? admApi("auto").then(function(j){ ADM.auto = j; })
@@ -14211,6 +14237,86 @@ function admLoad(){
   p.catch(function(e){ ADM.err = e.message; }).then(function(){ ADM.loading = false; if(V.view==="admin") render(); });
 }
 var ADM_ST = { ok:"виден всем", hidden:"скрыт", check:"на проверке (брань)" };
+/* названия разделов для сводки: ключ - то, что присылает телефон */
+var ST_NAMES = { "tab:home":"Главная", "tab:quran":"Коран: оглавление", "reader":"Чтение Корана", "tab:dua":"Знания", "tab:journal":"Журнал",
+  "tab:income":"Ризкъ и обучение", "tab:prof":"Профиль", "arabic":"Изучаем арабский", "halal":"Халяль рядом", "top":"Рейтинг участников",
+  "cat":"Азкары и дуа", "names":"99 имён", "name":"Разбор имени", "tasbih":"Тасбих", "qduas":"Дуа из Корана", "hadith":"40 хадисов",
+  "hadithone":"Хадис", "sira":"Сира", "calendar":"Календарь", "qibla":"Кибла", "zakat":"Закят", "kids":"Детям", "kidstory":"Детская история",
+  "courses":"Программы обучения", "course":"Программа", "planner":"Планер", "finance":"Финансы", "settings":"Настройки", "admin":"Управление",
+  "post":"Запись журнала", "suras":"Короткие суры", "live":"Мекка онлайн", "mydua":"Мои дуа", "hifz":"Заучивание", "tajwid":"Таджвид",
+  "report":"Отчёт за месяц", "qsettings":"Настройки чтения", "qsearch":"Поиск по Корану", "salahpics":"Как совершать намаз", "hajjtrip":"Хадж и умра",
+  "sadaqa":"Садака", "qada":"Возмещение намазов", "duaall":"Все дуа", "shukr":"Дневник шукра", "guide":"Руководства", "know":"Знания: статья" };
+function stName(k){ return ST_NAMES[k] || k; }
+function stDelta(now, prev){
+  if(!prev) return now ? '<em class="st-up">новое</em>' : '';
+  var d = Math.round((now - prev) / prev * 100);
+  return '<em class="'+(d >= 0 ? "st-up" : "st-down")+'">'+(d >= 0 ? "↑ +" : "↓ ")+d+'%</em>';
+}
+function stMin(sec){ var m = Math.round(sec / 60); return m >= 60 ? Math.floor(m / 60) + " ч " + (m % 60) + " мин" : m + " мин"; }
+function admStatsHtml(){
+  var j = ADM.stats, h = [];
+  h.push('<div class="hl-f">'+[7,30,90].map(function(n){ return '<button class="chip'+((ADM.sdays||30)===n?" on":"")+'" data-adm="sdays:'+n+'">'+n+' дней</button>'; }).join("")+'</div>');
+  if(!j){ admLoad(); h.push('<p class="disclaimer">Загружаем...</p>'); return h.join(""); }
+  var T = j.totals;
+  function tile(v, l, extra){ return '<div class="st-tile"><b>'+v+'</b><span>'+l+'</span>'+(extra||"")+'</div>'; }
+  h.push('<div class="st-tiles">'+
+    tile(T.new7, "новых за 7 дней", stDelta(T.new7, T.new7prev))+
+    tile(T.dau, "открывали сегодня")+
+    tile(T.wau, "активных за неделю", stDelta(T.wau, T.wauPrev))+
+    tile(T.mau, "активных за 30 дней")+
+    tile(T.all, "всего устройств")+
+    tile(T.cohort ? Math.round(T.returned / T.cohort * 100) + "%" : "-", "вернулись через неделю", T.cohort ? '<em class="st-mute">'+T.returned+' из '+T.cohort+'</em>' : '')+
+  '</div>');
+
+  /* график по дням: столбики - новые, линия - активные */
+  var D = j.days, W = 320, H = 130, L = 26, B = 18, top = 8;
+  var mx = Math.max(1, Math.max.apply(null, D.map(function(x){ return Math.max(x.new, x.active); })));
+  var bw = (W - L - 4) / D.length;
+  function Y(v){ return top + (H - top - B) * (1 - v / mx); }
+  var bars = D.map(function(x, i){ var y = Y(x.new); return '<rect x="'+(L + i * bw + bw * 0.15).toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+(bw * 0.7).toFixed(1)+'" height="'+(H - B - y).toFixed(1)+'" rx="1.5" fill="#D4AF37"><title>'+x.d+': новых '+x.new+', активных '+x.active+'</title></rect>'; }).join("");
+  var line = D.map(function(x, i){ return (L + i * bw + bw / 2).toFixed(1) + "," + Y(x.active).toFixed(1); }).join(" ");
+  function dm(d){ return d.slice(8,10) + "." + d.slice(5,7); }
+  h.push('<section class="card"><div class="eyebrow">По дням</div>'+
+    '<div class="st-leg"><span><i style="background:#D4AF37"></i>новые</span><span><i style="background:#3E9B72"></i>открывали приложение</span></div>'+
+    '<svg class="st-chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Новые и активные по дням">'+
+      '<line x1="'+L+'" y1="'+Y(0)+'" x2="'+W+'" y2="'+Y(0)+'" stroke="var(--line)" fill="none"/>'+
+      '<line x1="'+L+'" y1="'+Y(mx)+'" x2="'+W+'" y2="'+Y(mx)+'" stroke="var(--line)" stroke-dasharray="3 3" fill="none"/>'+
+      '<text x="'+(L-4)+'" y="'+(Y(mx)+3)+'" font-size="9" fill="var(--ink-3)" text-anchor="end">'+mx+'</text>'+
+      '<text x="'+(L-4)+'" y="'+(Y(0)+3)+'" font-size="9" fill="var(--ink-3)" text-anchor="end">0</text>'+
+      bars+'<polyline points="'+line+'" fill="none" stroke="#3E9B72" stroke-width="2" stroke-linejoin="round"/>'+
+      '<text x="'+L+'" y="'+(H-4)+'" font-size="9" fill="var(--ink-3)">'+dm(D[0].d)+'</text>'+
+      '<text x="'+W+'" y="'+(H-4)+'" font-size="9" fill="var(--ink-3)" text-anchor="end">'+dm(D[D.length-1].d)+'</text>'+
+    '</svg>'+
+    '<div class="st-rows">'+D.slice(-7).reverse().map(function(x){
+      return '<div><span>'+dm(x.d)+'</span><b>+'+x.new+'</b><em>'+x.active+' открывали · '+stMin(x.min * 60)+'</em></div>'; }).join("")+'</div>'+
+  '</section>');
+
+  /* по месяцам: рост и спад к прошлому месяцу */
+  var MN = ["январь","февраль","март","апрель","май","июнь","июль","август","сентябрь","октябрь","ноябрь","декабрь"];
+  h.push('<section class="card"><div class="eyebrow">По месяцам</div><div class="st-rows">'+
+    (j.months.length ? j.months.map(function(m, i){
+      var prev = j.months[i + 1];
+      return '<div><span>'+MN[+m.m.slice(5,7) - 1]+' '+m.m.slice(0,4)+'</span><b>+'+m.new+'</b><em>'+m.active+' активных '+(prev ? stDelta(m.new, prev.new) : '')+'</em></div>'; }).join("")
+      : '<p class="disclaimer" style="margin:0">Пока нет данных</p>')+'</div></section>');
+
+  /* разделы: где проводят больше времени */
+  var totalSec = j.sections.reduce(function(a, x){ return a + x.sec; }, 0) || 1;
+  h.push('<section class="card"><div class="eyebrow">Где проводят время</div><div class="st-secs">'+
+    (j.sections.length ? j.sections.map(function(x){
+      var share = Math.round(x.sec / totalSec * 100);
+      return '<div class="st-sec"><div class="st-sec-t"><b>'+esc(stName(x.s))+'</b><span>'+stMin(x.sec)+' · '+plural(x.users, "человек", "человека", "человек")+' · '+stMin(x.sec / Math.max(1, x.users))+' на человека</span></div>'+
+        '<div class="st-bar"><i style="width:'+Math.max(2, share)+'%"></i></div><em>'+share+'%</em></div>'; }).join("")
+      : '<p class="disclaimer" style="margin:0">Пока нет данных</p>')+'</div></section>');
+
+  /* откуда пришли новые */
+  h.push('<section class="card"><div class="eyebrow">Откуда пришли новые</div><div class="st-rows">'+
+    (j.sources.length ? j.sources.map(function(x){ return '<div><span>'+esc(x.src === "direct" ? "напрямую, без метки" : x.src)+'</span><b>'+x.c+'</b><em></em></div>'; }).join("")
+      : '<p class="disclaimer" style="margin:0">Пока нет данных</p>')+'</div></section>');
+
+  h.push('<p class="disclaimer">Статистика собирается с 22 сентября 2026 года, раньше её не было. Считаются устройства, а не люди: '+
+    'один человек с двумя телефонами - это два устройства. Кто выключил статистику в настройках, сюда не попадает.</p>');
+  return h.join("");
+}
 function viewAdmin(){
   if(!S.admTok){
     return '<div class="stack"><div class="card flat hl-empty"><b>Нужно войти</b><span>Управление доступно администратору CRM.</span></div>'+
@@ -14219,7 +14325,7 @@ function viewAdmin(){
   var h = ['<div class="stack">'];
   h.push('<div class="card flat" style="display:flex;align-items:center;gap:10px"><div style="flex:1;font-size:13.5px;color:var(--ink-2)">Вы вошли: <b>'+esc(S.admName||"администратор")+'</b>. Правки видны всем сразу.</div>'+
     '<button class="btn sec sm" style="width:auto" data-adm="logout">Выйти</button></div>');
-  h.push('<div class="hl-f">'+[["users","Люди"],["winners","Итоги недели"],["auto","Награды сами"],["reviews","Отзывы"],["flags","Сообщения"],["places","Места"],["posts","Журнал"],["log","История"]].map(function(t){
+  h.push('<div class="hl-f">'+[["stats","Статистика"],["users","Люди"],["winners","Итоги недели"],["auto","Награды сами"],["reviews","Отзывы"],["flags","Сообщения"],["places","Места"],["posts","Журнал"],["log","История"]].map(function(t){
     return '<button class="chip'+(ADM.tab===t[0]?" on":"")+'" data-adm="tab:'+t[0]+'">'+t[1]+'</button>';
   }).join("")+'</div>');
   if(ADM.err) h.push('<p class="disclaimer" style="margin:0">'+esc(ADM.err)+'</p>');
@@ -14287,6 +14393,7 @@ function viewAdmin(){
     }
   }
 
+  if(ADM.tab === "stats"){ h.push(admStatsHtml()); }
   if(ADM.tab === "users"){
     h.push('<div class="hl-f"><button class="chip'+((ADM.usort||"week")==="week"?" on":"")+'" data-adm="usort:week">За неделю</button>'+
       '<button class="chip'+(ADM.usort==="all"?" on":"")+'" data-adm="usort:all">За всё время</button>'+
@@ -14532,7 +14639,8 @@ function admClick(a){
   if(cmd === "loginsheet"){ sheetAdmLogin(); return; }
   if(cmd === "login"){ admLogin(p.slice(1).join(":")); return; }
   if(cmd === "logout"){ admApi("logout", {}).catch(function(){}); S.admTok = ""; S.admName = ""; save(); back(); toast("Вы вышли"); return; }
-  if(cmd === "tab"){ ADM.tab = p[1]; ADM.items = ADM.posts = ADM.log = ADM.flags = ADM.users = ADM.win = ADM.auto = null; render(); return; }
+  if(cmd === "tab"){ ADM.tab = p[1]; ADM.items = ADM.posts = ADM.log = ADM.flags = ADM.users = ADM.win = ADM.auto = ADM.stats = null; render(); return; }
+  if(cmd === "sdays"){ ADM.sdays = +p[1]; ADM.stats = null; render(); return; }
   if(cmd === "autoon"){ admApi("auto", { on: p[1] === "1" }).then(function(){ ADM.auto = null; toast(p[1] === "1" ? "Награды вручаются сами" : "Автоматическая выдача выключена"); render(); }).catch(function(e){ toast(e.message); }); return; }
   if(cmd === "autorun"){ admApi("auto", { run:1 }).then(function(){ ADM.auto = null; toast("Итоги подведены"); render(); }).catch(function(e){ toast(e.message); }); return; }
   if(cmd === "autoedit"){ sheetAdmAuto(p[1]); return; }
@@ -16903,6 +17011,7 @@ function viewProf(){
     swRow("notifAzan","🔊","Звук азана") +
     swRow("notifDua","✦","Дуа дня утром") +
     swRow("notifScore","◈","Итоги недели в рейтинге") +
+    swRow("statOn","◔","Обезличенная статистика") +
     swRow("notifTasks","✓","Напоминания о задачах со временем") +
     '<button class="row" data-pushtoggle="1"><span class="ic">🔔</span>При закрытом приложении'+
       '<span class="sw'+(pushOn()?" on":"")+'"></span></button>'+
@@ -18921,6 +19030,41 @@ $screen.addEventListener("scroll", function(){
 }, {passive:true});
 
 utmCapture();
+/* ---------- статистика посещений ----------
+   Обезличенно: случайный номер установки (тот же, что для отзывов), метка
+   источника и секунды по разделам. Копим в отдельной записи телефона и
+   отправляем раз в 3 минуты и когда приложение уходит в фон. Выключается
+   в настройках - тогда не уходит ничего. */
+var ST_KEY = "rizq.stat";
+function stSection(){
+  var v = V.view ? String(V.view) : "tab:" + V.tab;
+  return v.toLowerCase().replace(/[^a-z0-9:_-]/g, "").slice(0, 40) || "other";
+}
+function stLoad(){ try{ return JSON.parse(localStorage.getItem(ST_KEY) || "null") || { day:todayKey(), sec:{} }; }catch(e){ return { day:todayKey(), sec:{} }; } }
+function stSave(q){ try{ localStorage.setItem(ST_KEY, JSON.stringify(q)); }catch(e){} }
+function stSend(){
+  if(S.statOn === false) { stSave({ day:todayKey(), sec:{} }); return; }
+  var q = stLoad();
+  if(!Object.keys(q.sec).length) return;
+  var body = JSON.stringify({ device:hlDevice(), day:q.day, src:(S.utm && S.utm.utm_source) || "direct", sec:q.sec });
+  stSave({ day:todayKey(), sec:{} });
+  try{
+    if(navigator.sendBeacon && navigator.sendBeacon("api/stat", new Blob([body], { type:"application/json" }))) return;
+  }catch(e){}
+  try{ fetch("api/stat", { method:"POST", headers:{ "Content-Type":"application/json" }, body:body, keepalive:true }).catch(function(){}); }catch(e){}
+}
+function stTick(){
+  if(S.statOn === false || document.visibilityState !== "visible") return;
+  var q = stLoad();
+  if(q.day !== todayKey()){ stSend(); q = { day:todayKey(), sec:{} }; }
+  var k = stSection();
+  q.sec[k] = (q.sec[k] || 0) + 5;
+  stSave(q);
+}
+setInterval(stTick, 5000);
+setInterval(stSend, 180000);
+setTimeout(stSend, 4000); /* что осталось с прошлого раза */
+document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "hidden") stSend(); });
 quizLoad();
 navRestore();
 scoreSync();
