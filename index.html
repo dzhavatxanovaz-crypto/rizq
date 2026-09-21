@@ -556,6 +556,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .qt-mini{height:4px;border-radius:4px;background:rgba(212,175,55,.22);margin-top:9px;overflow:hidden}
 .qt-mini i{display:block;height:100%;background:#D4AF37;border-radius:4px}
 .qt[open] .qt-mini{display:none}
+.qblog-t{font-size:13.5px;color:var(--ink-2);line-height:1.5;margin:10px 0}
+.qblog-in{display:flex;gap:8px;align-items:flex-end}
+.qblog-in label{flex:1;display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ink-3)}
+.qblog-in .search{margin:0}
+.qblog-in .btn{flex:none;height:46px}
 .qd-read{margin-left:auto;font-size:13px;font-weight:600;padding:7px 12px;border-radius:11px;border:1px solid rgba(212,175,55,.5);color:var(--accent-ink);background:rgba(212,175,55,.08)}
 .qd-read.on{background:rgba(62,155,114,.16);border-color:rgba(62,155,114,.5);color:#3E9B72}
 .qrmd{border:1px solid rgba(62,155,114,.5);background:linear-gradient(150deg, rgba(62,155,114,.16), rgba(62,155,114,.03))}
@@ -4567,6 +4572,7 @@ function buildIndex(){
   var GKW = {
     salah:"молитва как молиться ракят рукуг саджда ташаххуд намерение фард",
     sunnah:"раватиб витр тахаджуд духа тарауих добровольные необязательные",
+    quranadab:"адаб адабы этикет коран как читать чистота омовение мусхаф касаться таджвид суджуд тилява",
     istikhara:"истихара истихару намаз истихары выбор решение как выбрать брак замужество работа совет дуа истихары",
     purity:"омовение вуду гусль таяммум мыться чистота осквернение джунуб",
     fasting:"пост рамадан ураза что нарушает разговение сухур каффара када фидья",
@@ -6325,6 +6331,34 @@ function qRamadanCard(){
       (per <= 3 ? ' - это меньше 15 минут.' : per <= 10 ? ' - примерно полчаса.' : '.')+'</p>'+
     '<button class="btn sm" data-qplan="'+readDays+'">План чтения до '+(r.inR ? 'конца Рамадана' : 'Рамадана')+'</button></section>';
 }
+/* Кто читает по бумажному мусхафу, отмечает прочитанное сам: «с какой по какую
+   страницу». Страницы засчитываются так же, как прочитанные в приложении, - в прогресс,
+   в рейтинг и в счётчик до Рамадана. Каждая страница - один раз. */
+function qBookLogCard(){
+  var today = todayKey(), n = 0, r = qReadAll();
+  for(var p in r) if(r[p] === today) n++;
+  return '<details class="card fold qblog"'+(S.qblogOpen ? ' open' : '')+' data-qblogfold="1"><summary>Читаю по книжному мусхафу'+
+      (n ? '<span class="qt-sum">сегодня '+plural(n, "страница", "страницы", "страниц")+'</span>' : '')+'</summary>'+
+    '<p class="qblog-t">Прочитали по бумажному Корану - отметьте страницы здесь, и они засчитаются в прогресс, рейтинг и счётчик до Рамадана.</p>'+
+    '<div class="qblog-in"><label>С<input class="search" id="qbFrom" type="number" min="1" max="604" inputmode="numeric" value="'+(S.qblogNext || "")+'" placeholder="стр."></label>'+
+      '<label>по<input class="search" id="qbTo" type="number" min="1" max="604" inputmode="numeric" placeholder="стр."></label>'+
+      '<button class="btn sm" data-qblog="1">Отметить</button></div>'+
+    '<p class="ar-note">Страницы - как в мединском мусхафе на 604 страницы. Если в вашем издании нумерация другая, отметьте примерно тот же объём. Это ваша честная отметка: приложение её не проверяет.</p>'+
+  '</details>';
+}
+function qBookLog(){
+  var a = parseInt((document.getElementById("qbFrom") || {}).value, 10), b = parseInt((document.getElementById("qbTo") || {}).value, 10);
+  if(!(a >= 1 && a <= 604)){ toast("Укажите, с какой страницы читали (1-604)"); return; }
+  if(!b) b = a;
+  if(!(b >= a && b <= 604)){ toast("Последняя страница должна быть не меньше первой и не больше 604"); return; }
+  if(b - a + 1 > 120){ toast("За один раз - не больше 120 страниц. Отметьте частями"); return; }
+  var r = qReadAll(), added = 0, t = todayKey();
+  for(var p = a; p <= b; p++) if(!r[p]){ r[p] = t; added++; }
+  S.qblogNext = b < 604 ? b + 1 : 1;
+  if(added) addPoints(POINTS.daily, "quran");
+  save(); render(); scoreSync();
+  toast(added ? "Засчитано: " + plural(added, "страница", "страницы", "страниц") + (added < b - a + 1 ? " (остальные уже были отмечены)" : "") : "Эти страницы уже отмечены раньше");
+}
 function qtSum(days){
   var t = qtAll(), n = 0, d = new Date();
   for(var i = 0; i < days; i++){
@@ -7270,6 +7304,8 @@ function viewArabic(){
   if(p.indexOf("u:") === 0) return viewArUnit(arUnit(p.slice(2)));
   var h = ['<div class="stack">'];
   h.push(arHero(true));
+  h.push('<button class="ar-abc-card" data-guide="arabichow"><span class="ar-abc-l" dir="rtl">؟</span>'+
+    '<span class="ar-st-t"><b>Как заниматься, чтобы была польза</b><span>порядок урока, норма дня, как заговорить</span></span><span class="cw-go">›</span></button>');
   h.push(rdCard());
   h.push(arGoalCard());
   h.push(arTodayCard());
@@ -8187,6 +8223,11 @@ function viewQuranHome(){
     '<span class="cw-t"><b>О Коране</b>'+
     '<span>откровение, сохранение, кираат, тафсир и перевод</span></span>'+
     '<span class="cw-go">›</span></button>');
+  h.push('<button class="cat-wide" data-guide="quranadab" style="margin-top:10px">'+
+    '<span class="cw-ic">✦</span>'+
+    '<span class="cw-t"><b>Адабы к Корану</b>'+
+    '<span>чистота, как читать, как обращаться с мусхафом</span></span>'+
+    '<span class="cw-go">›</span></button>');
 
   /* продолжить чтение */
   var last = S.qLast || 0;
@@ -8206,6 +8247,7 @@ function viewQuranHome(){
     '<div style="font-size:13px;color:var(--ink-3);margin-top:8px">'+plural(qrd, 'страница', 'страницы', 'страниц')+' из 604 прочитано'+(qrd && qrd < 604 && pct === 0 ? ' (меньше 1%)' : '')+'</div>'+
     '<div style="font-size:12px;color:var(--ink-3);margin-top:5px;line-height:1.45">Страница засчитывается, когда была открыта не меньше 30 секунд. Каждая страница - один раз, сколько бы вы её ни открывали.</div></section>');
 
+  h.push(qBookLogCard());
   h.push(qRamadanCard());
   h.push(qtCard());
   h.push(qPlanCard());
@@ -11363,11 +11405,90 @@ aboutquran: {
 /* порядок руководств в разделе «Как совершать» */
 /* намаз и хадж не дублируются здесь: у них своя плитка над этим списком */
 var HOWTO = [
-  ["salahfix","↻"],["duatimes","✦"],["istikhara","☾"],["sunnah","◈"],["purity","◌"],
+  ["salahfix","↻"],["duatimes","✦"],["istikhara","☾"],["quranadab","﴾﴿"],["sunnah","◈"],["purity","◌"],
   ["fasting","☼"],["zakat","◈"],["jumua","✦"],
   ["women","❁"],["nikah","∞"],["child","✧"],
   ["janaza","☾"],["money","◈"],["aqida","✾"]
 ];
+
+/* Как заниматься в курсе арабского, чтобы была польза. */
+GUIDES.arabichow = {
+  n:"Как заниматься, чтобы была польза",
+  sub:"Курс «Изучаем арабский с JAVATTI»: порядок и привычки",
+  madhab:"Курс устроен так, чтобы заниматься по 15 минут каждый день. Ниже - как пройти его с наибольшей пользой.",
+  blocks:[
+    {div:"С чего начать"},
+    {t:"1. Если пока не читаете по-арабски", p:"Начните с раздела «Арабский для новичков»: 14 уроков, от первой буквы до суры аль-Фатиха. Рядом - азбука со всеми буквами. Пока чтение не станет уверенным, разговорные уроки лучше отложить."},
+    {t:"2. Поставьте цель", p:"Например, «50 новых слов за месяц» или «Заговорить за 3 месяца». Каждый день будет видно, идёте ли вы по плану, и что нужно сделать сегодня."},
+    {t:"3. Выберите время напоминания", p:"Лучше утром, пока голова свежая. Напоминание не придёт, если норма дня уже выполнена."},
+    {div:"Каждый день"},
+    {t:"Норма дня - 15 минут", rows:[
+      ["Карточки", "10 штук: сначала то, что пора повторить, потом новые слова"],
+      ["Говорим вслух", "5 фраз: скажите сами, потом сверьтесь"],
+      ["Упражнение", "одно, по текущему уроку"]
+    ]},
+    {t:"Всегда вслух", p:"Читайте и произносите вслух каждое слово, даже в карточках и упражнениях. Слово, сказанное своим голосом, запоминается в несколько раз крепче, чем прочитанное глазами."},
+    {t:"Не пропускайте повторение", p:"Слова возвращаются через 1, 2, 4, 8 и больше дней - это интервальное повторение. Оно работает, только если приходить каждый день. Десять минут ежедневно дают больше, чем час раз в неделю. Устали - сделайте хотя бы карточки."},
+    {div:"Как проходить урок"},
+    {t:"Порядок урока", rows:[
+      ["1. Слова", "послушайте, повторите вслух, выучите в карточках"],
+      ["2. Диалог", "послушайте по фразам, затем включите режим с паузой и повторяйте за диктором"],
+      ["3. Правило урока", "прочитайте и найдите его в диалоге"],
+      ["4. Говорим", "скажите фразы сами без подсказки"],
+      ["5. Упражнения", "добейтесь 80% и выше, потом - следующий урок"]
+    ]},
+    {t:"Огласовки уходят постепенно", p:"Не выключайте их раньше времени: приложение само убирает огласовки у слов, которые вы уже уверенно узнаёте. Так глаз привыкает читать без подсказок."},
+    {t:"Связь с Кораном", p:"У многих слов есть кнопка «Коран» - откройте аят, где это слово встречается, и найдите его глазами. Так слова урока начинают звучать в намазе и при чтении Корана."},
+    {div:"Чтобы заговорить"},
+    {t:"Произношение", p:"Раз в несколько дней по 5 минут занимайтесь в тренажёре трудных звуков: ق и ك, ح и ه, ص и س. Сначала учитесь слышать разницу, потом произносить."},
+    {t:"Живая речь", p:"За три месяца можно заговорить простыми фразами, только если говорить с людьми. Запишитесь в разговорный клуб или найдите собеседницу и два раза в неделю говорите фразами из уроков."},
+    {t:"Словарь перед сном", p:"В словаре выберите «Выученные» и повторите их перед сном - это закрепляет память."},
+    {div:"Намерение"},
+    {t:"Ради чего", p:"Напишите в цели, зачем вам арабский: понимать суры в намазе, читать Коран, говорить с детьми. В трудный день это слово удержит лучше любой серии."}
+  ]
+};
+
+/* Адабы к Корану: как обращаться с мусхафом и как читать. Аяты сверены с текстом приложения. */
+GUIDES.quranadab = {
+  n:"Адабы к Корану",
+  sub:"Как читать Коран и как обращаться с мусхафом",
+  madhab:"Основа - Коран и достоверные хадисы. Правила о чистоте даны по шафиитскому мазхабу, принятому в Дагестане.",
+  blocks:[
+    {div:"Зачем"},
+    {t:"Награда за каждую букву", ar:"مَنْ قَرَأَ حَرْفًا مِنْ كِتَابِ اللَّهِ فَلَهُ بِهِ حَسَنَةٌ، وَالْحَسَنَةُ بِعَشْرِ أَمْثَالِهَا، لَا أَقُولُ الم حَرْفٌ، وَلَكِنْ أَلِفٌ حَرْفٌ، وَلَامٌ حَرْفٌ، وَمِيمٌ حَرْفٌ",
+     tr:"Ман кара\'а харфан мин Кита̄би Лла̄хи фа-ляху бихи хасана, валь-хасанату би-\'ашри амса̄лиха. Ля акӯлю Алиф-Ля̄м-Мӣм харф, ва ля̄кин алифун харф, ва ля̄мун харф, ва мӣмун харф",
+     ru:"Кто прочитает одну букву из Книги Аллаха, тому - благое дело, а благое дело - в десятикратном размере. Я не говорю, что «Алиф-Лям-Мим» - одна буква: алиф - буква, лям - буква и мим - буква.",
+     src:"Ибн Мас\'уд, да будет доволен им Аллах. Ат-Тирмизи (2910), хороший достоверный хадис"},
+    {t:"Заступник в Судный день", ar:"اقْرَءُوا الْقُرْآنَ فَإِنَّهُ يَأْتِي يَوْمَ الْقِيَامَةِ شَفِيعًا لِأَصْحَابِهِ",
+     tr:"Икра\'ӯ ль-Кур\'а̄на фа-иннаху я\'тӣ яуман ль-кия̄мати шафӣ\'ан ли-асха̄бих",
+     ru:"Читайте Коран: в Судный день он придёт заступником за тех, кто его читал.",
+     src:"Абу Умама, да будет доволен им Аллах. Муслим (804)"},
+    {div:"До чтения"},
+    {t:"Чистота", p:"Касаться мусхафа можно только с омовением - так по шафиитскому мазхабу. Читать наизусть или с экрана телефона без касания мусхафа можно и без малого омовения, но с ним лучше. В состоянии большого осквернения (джунуб) и в хайд Коран не читают, пока не совершат гусль.",
+     ar:"لَا يَمَسُّهُ إِلَّا الْمُطَهَّرُونَ", tr:"Ля ямассуху илля ль-мутаххарӯн", ru:"Его касаются только очищенные.", src:"Сура «Аль-Ваки\'а», 56:79"},
+    {t:"Место и вид", p:"Чистое место, чистая одежда, по возможности лицом к кибле. Мусхаф не кладут на пол и не ставят на него другие вещи, его не берут в уборную."},
+    {t:"Прибегнуть к защите", p:"Перед чтением произносят: «А\'ӯзу би-Лла̄хи мина ш-шайта̄ни р-раджӣм». В начале каждой суры, кроме суры «Ат-Тауба», читают басмалу.",
+     ar:"فَإِذَا قَرَأْتَ الْقُرْآنَ فَاسْتَعِذْ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ", tr:"Фа-иза кара\'та ль-Кур\'а̄на фа-ста\'из би-Лла̄хи мина ш-шайта̄ни р-раджӣм",
+     ru:"Когда читаешь Коран, прибегай к защите Аллаха от изгнанного шайтана.", src:"Сура «Ан-Нахль», 16:98"},
+    {div:"Во время чтения"},
+    {t:"Не спешить", p:"Читайте размеренно, соблюдая таджвид: каждую букву из её места, удлинения - на свою длину. Лучше меньше, но правильно.",
+     ar:"وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا", tr:"Ва раттили ль-Кур\'а̄на тартӣля", ru:"И читай Коран размеренно.", src:"Сура «Аль-Муззаммиль», 73:4"},
+    {t:"Украшать голосом", ar:"زَيِّنُوا الْقُرْآنَ بِأَصْوَاتِكُمْ", tr:"Зайинӯ ль-Кур\'а̄на би-асва̄тикум", ru:"Украшайте Коран своими голосами.",
+     src:"Аль-Бара ибн \'Азиб, да будет доволен им Аллах. Абу Дауд (1468), ан-Насаи (1015), достоверный хадис"},
+    {t:"Размышлять", p:"Коран ниспослан, чтобы над ним думали. Читайте перевод смыслов, останавливайтесь на аятах, которые касаются вас, спрашивайте у Аллаха милости на аятах о милости и защиты - на аятах о наказании.",
+     ar:"كِتَابٌ أَنْزَلْنَاهُ إِلَيْكَ مُبَارَكٌ لِيَدَّبَّرُوا آيَاتِهِ وَلِيَتَذَكَّرَ أُولُو الْأَلْبَابِ", tr:"Кита̄бун анзальна̄ху иляйка муба̄ракун ли-яддаббарӯ а̄йа̄тихи ва ли-ятазаккара улю ль-альба̄б",
+     ru:"Мы ниспослали тебе благословенное Писание, чтобы они размышляли над его аятами и чтобы обладающие разумом помнили назидание.", src:"Сура «Сад», 38:29"},
+    {t:"Земной поклон на аятах суджуда", p:"В мусхафе отмечены аяты, после которых совершают земной поклон чтения (суджуд тилява). По шафиитскому мазхабу таких мест 14. Это сунна, а не обязанность."},
+    {t:"Слушать молча", p:"Когда рядом читают Коран, слушают и не перебивают разговором.",
+     ar:"وَإِذَا قُرِئَ الْقُرْآنُ فَاسْتَمِعُوا لَهُ وَأَنْصِتُوا لَعَلَّكُمْ تُرْحَمُونَ", tr:"Ва иза кури\'а ль-Кур\'а̄ну фа-стами\'ӯ ляху ва ансыту ла\'аллякум турхамӯн",
+     ru:"Когда читается Коран, слушайте его и храните молчание, - быть может, вы будете помилованы.", src:"Сура «Аль-А\'раф», 7:204"},
+    {t:"Прерваться, если зеваете или устали", p:"Если одолевает зевота или сон, чтение лучше отложить: слова должны звучать ясно и с присутствием сердца."},
+    {div:"Постоянство"},
+    {t:"Каждый день понемногу", p:"Лучше две страницы каждый день, чем джуз раз в месяц. Сподвижникам не советовали завершать весь Коран быстрее чем за три дня: тот, кто читает быстрее, не успевает понять. А нижней границы нет - важно не бросать.",
+     ar:"لَا يَفْقَهُ مَنْ قَرَأَهُ فِي أَقَلَّ مِنْ ثَلَاثٍ", tr:"Ля яфкаху ман кара\'аху фӣ акалля мин саля̄с", ru:"Не поймёт тот, кто прочитает его быстрее чем за три дня.",
+     src:"\'Абдуллах ибн \'Амр, да будет доволен им Аллах. Абу Дауд (1394), ат-Тирмизи (2949), достоверный хадис"}
+  ]
+};
 
 /* Руководство «Истихара-намаз». Основа - хадис Джабира в «Сахихе» аль-Бухари.
    Там, где учёные расходятся (что читать в ракятах, можно ли без намаза, нужно ли
@@ -18769,6 +18890,7 @@ document.getElementById("app").addEventListener("toggle", function(ev){
   var t = ev.target;
   if(t && t.dataset && t.dataset.qtfold !== undefined){ S.qtOpen = t.open ? 1 : 0; save(); }
   if(t && t.dataset && t.dataset.tjx !== undefined){ S.tjxOpen = t.open ? 1 : 0; save(); }
+  if(t && t.dataset && t.dataset.qblogfold !== undefined){ S.qblogOpen = t.open ? 1 : 0; save(); }
   if(t && t.dataset && t.dataset.bfold !== undefined){ S.badgesOpen = t.open ? 1 : 0; save(); }
 }, true);
 document.getElementById("app").addEventListener("change", function(ev){
@@ -18782,7 +18904,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -18930,6 +19052,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.qoffclear!==undefined){ qOffClear(); return; }
   if(d.qplan){ qPlanStart(parseInt(d.qplan,10)); render();
     toast("План на " + d.qplan + " дней. Считаем с текущей страницы"); return; }
+  if(d.qblog){ qBookLog(); return; }
   if(d.qrmd){ S.qrmdOff = Math.max(0, Math.min(15, (S.qrmdOff || 0) + parseInt(d.qrmd, 10))); save(); render(); return; }
   if(d.qplanoff!==undefined){ qPlanStop(); render(); toast("План убран"); return; }
   if(d.qmode){ V.qmode = d.qmode; render(); return; }
