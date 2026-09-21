@@ -781,6 +781,38 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .um-q summary span{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:rgba(212,175,55,.16);color:var(--accent-ink);font-size:12.5px;font-weight:700}
 .um-q p{margin:10px 0 0 36px;font-size:14px;line-height:1.6;color:var(--ink-2)}
 .um-foot{display:flex;justify-content:space-between;gap:8px}
+.um-hero-s2{padding:16px 18px 14px}
+.um-hero-s2 .um-hero-ar{font-size:32px}
+.um-rite{padding:14px 14px 16px;border-color:rgba(212,175,55,.55);background:linear-gradient(170deg,rgba(212,175,55,.10),var(--surface) 40%)}
+.um-rite-h{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.um-rite-h b{font-family:var(--f-display);font-size:18px}
+.um-rite-h span{margin-left:auto;font-size:12.5px;color:var(--accent-ink);font-weight:600}
+.um-rs{position:relative;display:flex;align-items:center;gap:13px;width:100%;text-align:left;padding:12px 0}
+.um-rs:not(.last)::after{content:"";position:absolute;left:21px;top:56px;height:calc(100% - 44px);width:2px;background:rgba(212,175,55,.35)}
+.um-rn{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:2px solid rgba(212,175,55,.6);background:var(--surface);font-family:var(--f-display);font-size:18px;font-weight:700;color:var(--accent-ink);position:relative;z-index:1}
+.um-rs.cur .um-rn{background:linear-gradient(150deg,#E9C85E,#C9A12F);border-color:#C9A12F;color:#1E2A5A;box-shadow:0 0 0 5px rgba(212,175,55,.2)}
+.um-rs.done .um-rn{background:#3E9B72;border-color:#3E9B72;color:#fff}
+.um-rt{flex:1;min-width:0}
+.um-rt b{display:flex;align-items:center;gap:8px;font-family:var(--f-display);font-size:17px}
+.um-rt b em{font-style:normal;font-family:var(--f-body);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:rgba(212,175,55,.18);color:var(--accent-ink)}
+.um-rt>span{display:block;font-size:13px;line-height:1.4;color:var(--ink-3);margin-top:2px}
+.um-rs.done .um-rt b{color:var(--ink-2)}
+.um-rs>i{flex:none;font-style:normal;color:var(--ink-3);font-size:20px}
+.um-count{width:100%;margin-top:10px}
+.um-gh{margin:6px 2px 0}
+.um-gh b{font-family:var(--f-display);font-size:16px}
+.um-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.um-tile{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:13px 12px;border-radius:16px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow)}
+.um-tile i{font-style:normal;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(212,175,55,.14);color:var(--accent-ink);margin-bottom:5px;font-family:var(--f-ar)}
+.um-tile b{font-size:14px;line-height:1.25}
+.um-tile span{font-size:12px;line-height:1.35;color:var(--ink-3)}
+.um-back{align-self:flex-start;font-size:13.5px;font-weight:600;color:var(--accent-ink);padding:4px 2px}
+.um-mini{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:4px;border-radius:16px;background:var(--surface-2);border:1px solid var(--line)}
+.um-mini button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px;border-radius:12px;font-size:12px;font-weight:600;color:var(--ink-2)}
+.um-mini button span{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;border:1.5px solid rgba(212,175,55,.6);font-family:var(--f-display);font-size:12.5px;color:var(--accent-ink)}
+.um-mini button.done span{background:#3E9B72;border-color:#3E9B72;color:#fff}
+.um-mini button.on{background:var(--accent-ink);color:var(--surface)}
+.um-mini button.on span{background:var(--surface);border-color:var(--surface);color:var(--accent-ink)}
 .um-foot .btn{width:auto;flex:none}
 .jp-card{position:relative;padding:0}
 .jp-open{display:block;width:100%;text-align:left;padding:16px 16px 16px}
@@ -5126,10 +5158,10 @@ function viewDua(){
   h.push('<div class="cats">'+
     [["salah","☾","Намаз","пошагово, в картинках, сунна"],
      ["fasting","☼","Пост","что нарушает и как восполнять"],
-     ["hajj","◍","Хадж и Умра","основной хадж и малый хадж"],
+     ["hajj","◍","Хадж и Умра","умра и основной хадж","umrah"],
      ["zakat","◈","Закят","кто, с чего и сколько"]
     ].map(function(g){
-      return '<button class="cat" data-guide="'+g[0]+'"><div class="ic">'+g[1]+'</div>'+
+      return '<button class="cat" '+(g[4] ? 'data-umopen="1"' : 'data-guide="'+g[0]+'"')+'><div class="ic">'+g[1]+'</div>'+
         '<b>'+esc(g[2])+'</b><span>'+esc(g[3])+'</span></button>';
     }).join("")+'</div>');
 
@@ -5143,10 +5175,6 @@ function viewDua(){
   h.push('<button class="cat-wide gold" data-open="kids">'+
     '<span class="cw-ic">✧</span>'+
     '<span class="cw-t"><b>Детям</b><span>истории пророков, перед сном, дуа, имена</span></span>'+
-    '<span class="cw-go">›</span></button>');
-  h.push('<button class="cat-wide" data-open="hajjtrip">'+
-    '<span class="cw-ic">◍</span>'+
-    '<span class="cw-t"><b>Хадж и умра в пути</b><span>чек-лист по шагам, счёт кругов</span></span>'+
     '<span class="cw-go">›</span></button>');
 
   KNOW.forEach(function(k){
@@ -11024,8 +11052,8 @@ function umPromo(){
 /* вкладки раздела «Хадж и Умра» */
 function hajjTabs(on){
   return '<div class="hj-tabs">'+
-    '<button class="'+(on === "hajj" ? "on" : "")+'" data-hjtab="hajj"><b>Основной хадж</b><span>зуль-хиджа, 6 дней</span></button>'+
-    '<button class="'+(on === "umrah" ? "on" : "")+'" data-hjtab="umrah"><b>Умра</b><span>малый хадж, круглый год</span></button></div>';
+    '<button class="'+(on === "umrah" ? "on" : "")+'" data-hjtab="umrah"><b>Умра</b><span>малый хадж, круглый год</span></button>'+
+    '<button class="'+(on === "hajj" ? "on" : "")+'" data-hjtab="hajj"><b>Основной хадж</b><span>зуль-хиджа, 6 дней</span></button></div>';
 }
 /* список вещей текстом: отправить в мессенджер или скопировать */
 function umShareText(){
@@ -11044,30 +11072,97 @@ function umShare(){
   try{ navigator.clipboard.writeText(txt).then(function(){ toast("Список скопирован - вставьте в мессенджер"); }, function(){ toast("Не получилось скопировать"); }); }
   catch(e){ toast("Не получилось скопировать"); }
 }
+/* Умра: обзор вместо ленты глав (просьба Заиры 21.09). Сверху - порядок
+   совершения из четырёх шагов: видно, какой шаг сейчас и какие пройдены
+   (по отметкам в «Считать круги»). Ниже - плитки «До поездки» и «Полезно
+   знать». Внутри шага сверху всегда мини-лента из четырёх шагов. */
+var UM_RITE = [
+  {id:"ihram", n:"Ихрам", s:"на микате - в самолёте до посадки", trip:["ihram"]},
+  {id:"tawaf", n:"Таваф", s:"7 кругов, Кааба слева", trip:["haram", "tawaf"]},
+  {id:"say", n:"Са'й", s:"7 проходов, от Сафы до Марвы", trip:["say"]},
+  {id:"hair", n:"Волосы", s:"бритьё или укорачивание - умра завершена", trip:["hair"]}
+];
+var UM_BEFORE = ["about", "season", "prep", "pack"];
+var UM_AFTER = ["madina", "women", "mist", "help"];
+var UM_SUB = {about:"что это и награда", season:"погода, люди, цены", prep:"виза, билеты, деньги", pack:"чек-лист вещей",
+  madina:"мечеть Пророка ﷺ, Рауда, Куба", women:"ихрам, хайд, махрам", mist:"12 частых ошибок", help:"потерялся, сбился со счёта"};
+function umSec(id){ return UM_SECS.filter(function(s){ return s.id === id; })[0]; }
+/* шаг пройден, если в «Считать круги» отмечено всё по этому шагу */
+function umRiteState(){
+  var st = (typeof tripStages === "function") ? tripStages() : [], by = {};
+  st.forEach(function(s){ by[s.id] = s; });
+  var cur = -1;
+  var done = UM_RITE.map(function(r){
+    return r.trip.every(function(t){ return by[t] && tripStageLeft(by[t]) === 0; });
+  });
+  for(var i = 0; i < done.length; i++){ if(!done[i]){ cur = i; break; } }
+  return { done: done, cur: cur };
+}
+function umTile(id, extra){
+  var s = umSec(id);
+  return '<button class="um-tile" data-umsec="'+id+'"><i>'+esc(s.ic)+'</i><b>'+esc(s.n)+'</b><span>'+esc(extra || UM_SUB[id] || "")+'</span></button>';
+}
+function umMini(active){
+  var rs = umRiteState();
+  return '<div class="um-mini">'+UM_RITE.map(function(r, i){
+    var cls = (r.id === active ? " on" : "") + (rs.done[i] ? " done" : "");
+    return '<button class="'+cls.trim()+'" data-umsec="'+r.id+'"><span>'+(rs.done[i] ? "✓" : (i + 1))+'</span>'+esc(r.n)+'</button>';
+  }).join("")+'</div>';
+}
 function viewUmrah(){
-  var cur = V.umSec || "about", idx = 0;
-  UM_SECS.forEach(function(s, i){ if(s.id === cur) idx = i; });
+  var cur = V.umSec || "";
   var U = umData(), prepN = 0, prepT = 0, packN = 0, packT = 0;
   UM_PREP.forEach(function(g){ prepT += g[1].length; g[1].forEach(function(x, i){ if(U.c["prep." + g[0] + "." + i]) prepN++; }); });
   UM_PACK.forEach(function(g){ packT += g[1].length; g[1].forEach(function(x, i){ if(U.c["pack." + g[0] + "." + i]) packN++; }); });
   var h = ['<div class="stack">'];
   h.push(hajjTabs("umrah"));
-  h.push('<section class="um-hero"><div class="um-hero-ar">عُمْرَة</div>'+
-    '<div class="um-hero-t">Умра - малый хадж</div>'+
-    '<div class="um-hero-s">Полный путеводитель: когда ехать, что взять, как совершать шаг за шагом</div>'+
-    '<div class="um-hero-chips"><span>4 шага</span><span>3-5 часов</span><span>круглый год</span></div>'+
-    '<div class="um-hero-prog"><button data-umsec="prep">Сборы · '+prepN+'/'+prepT+'</button><button data-umsec="pack">Что взять · '+packN+'/'+packT+'</button>'+
-      '<button data-umtrip="1">Считать круги ›</button></div></section>');
-  h.push('<div class="um-nav" id="umNav">'+UM_SECS.map(function(s){
-    return '<button class="'+(s.id === cur ? 'on' : '')+'" data-umsec="'+s.id+'"><i>'+esc(s.ic)+'</i>'+esc(s.n)+'</button>';
-  }).join("")+'</div>');
-  h.push('<div class="um-sec-h"><span>'+(idx + 1)+' / '+UM_SECS.length+'</span><b>'+esc(UM_SECS[idx].n)+'</b></div>');
+
+  if(!cur || !umSec(cur)){
+    var rs = umRiteState();
+    h.push('<section class="um-hero um-hero-s2"><div class="um-hero-ar">عُمْرَة</div>'+
+      '<div class="um-hero-t">Умра - малый хадж</div>'+
+      '<div class="um-hero-s">Четыре шага, обычно 3-5 часов. Совершается круглый год.</div></section>');
+
+    h.push('<section class="card um-rite"><div class="um-rite-h"><b>Порядок умры</b><span>'+
+      (rs.cur < 0 ? "все шаги пройдены" : "сейчас: шаг " + (rs.cur + 1) + " из 4")+'</span></div>'+
+      UM_RITE.map(function(r, i){
+        var cls = (rs.done[i] ? " done" : (i === rs.cur ? " cur" : "")) + (i === UM_RITE.length - 1 ? " last" : "");
+        return '<button class="um-rs'+cls+'" data-umsec="'+r.id+'"><span class="um-rn">'+(rs.done[i] ? "✓" : (i + 1))+'</span>'+
+          '<span class="um-rt"><b>'+esc(r.n)+(i === rs.cur ? '<em>сейчас</em>' : '')+'</b><span>'+esc(r.s)+'</span></span><i>›</i></button>';
+      }).join("")+
+      '<button class="btn um-count" data-umtrip="1">Отмечать шаги и считать круги на месте</button>'+
+      (rs.cur < 0 ? '<p class="um-p" style="text-align:center">Умра завершена. Пусть Аллах примет.</p>' : '')+
+    '</section>');
+
+    h.push('<div class="um-gh"><b>До поездки</b></div>');
+    h.push('<div class="um-tiles">'+umTile("about")+umTile("season")+umTile("prep", "сделано " + prepN + " из " + prepT)+umTile("pack", "собрано " + packN + " из " + packT)+'</div>');
+    h.push('<div class="um-gh"><b>Полезно знать</b></div>');
+    h.push('<div class="um-tiles">'+UM_AFTER.map(function(id){ return umTile(id); }).join("")+'</div>');
+    h.push('<p class="disclaimer">По шафиитскому мазхабу. Правила въезда, визы и разрешения меняются - проверяйте их перед поездкой. Спорные вопросы решайте с преподавателем или руководителем группы.</p>');
+    h.push('</div>');
+    return h.join("");
+  }
+
+  var ri = -1; UM_RITE.forEach(function(r, i){ if(r.id === cur) ri = i; });
+  h.push('<button class="um-back" data-umsec="home">‹ Все разделы умры</button>');
+  if(ri >= 0){
+    h.push(umMini(cur));
+    h.push('<div class="um-sec-h"><span>шаг '+(ri + 1)+' из 4</span><b>'+esc(UM_RITE[ri].n)+'</b></div>');
+  } else {
+    h.push('<div class="um-sec-h"><b>'+esc(umSec(cur).n)+'</b></div>');
+  }
   h.push(umSection(cur));
-  var next = UM_SECS[idx + 1], prev = UM_SECS[idx - 1];
-  h.push('<div class="um-foot">'+
-    (prev ? '<button class="btn sec sm" data-umsec="'+prev.id+'">‹ '+esc(prev.n)+'</button>' : '<span></span>')+
-    (next ? '<button class="btn sm" data-umsec="'+next.id+'">'+esc(next.n)+' ›</button>' : '<button class="btn sm" data-umtrip="1">Считать круги на месте ›</button>')+'</div>');
-  h.push('<p class="disclaimer">По шафиитскому мазхабу. Правила въезда, визы и разрешения меняются - проверяйте их перед поездкой. Спорные вопросы решайте с преподавателем или руководителем группы.</p>');
+  if(ri >= 0){
+    var nx = UM_RITE[ri + 1], pv = UM_RITE[ri - 1];
+    h.push('<div class="um-foot">'+
+      (pv ? '<button class="btn sec sm" data-umsec="'+pv.id+'">‹ '+esc(pv.n)+'</button>' : '<span></span>')+
+      (nx ? '<button class="btn sm" data-umsec="'+nx.id+'">Шаг '+(ri + 2)+': '+esc(nx.n)+' ›</button>' : '<button class="btn sm" data-umtrip="1">Отметить шаги ›</button>')+'</div>');
+  } else {
+    var grp = UM_BEFORE.indexOf(cur) >= 0 ? UM_BEFORE : UM_AFTER, gi = grp.indexOf(cur), gn = grp[gi + 1];
+    h.push('<div class="um-foot"><button class="btn sec sm" data-umsec="home">‹ Все разделы</button>'+
+      (gn ? '<button class="btn sm" data-umsec="'+gn+'">'+esc(umSec(gn).n)+' ›</button>' :
+        (grp === UM_BEFORE ? '<button class="btn sm" data-umsec="ihram">К порядку: ихрам ›</button>' : '<span></span>'))+'</div>');
+  }
   h.push('</div>');
   return h.join("");
 }
@@ -20209,7 +20304,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -20936,11 +21031,12 @@ document.getElementById("app").addEventListener("click", function(ev){
     save(); applyFontSize(); sheetFontSize(); render();
     return;
   }
+  if(d.umopen!==undefined){ V.tab = "dua"; V.umSec = ""; open("umrah", null); return; }
   if(d.hjtab){ V.tab = "dua"; if(d.hjtab === "umrah") open("umrah", null); else open("guide", "hajj"); return; }
   if(d.rzsec){ var rze = document.getElementById("rz-" + d.rzsec); if(rze) rze.scrollIntoView({behavior:"smooth", block:"start"}); return; }
   if(d.rzgo){ scrollToDua(d.rzgo); return; }
   if(d.umshare){ umShare(); return; }
-  if(d.umsec){ V.umSec = d.umsec; render(); $screen.scrollTop = 0; return; }
+  if(d.umsec){ V.umSec = d.umsec === "home" ? "" : d.umsec; render(); $screen.scrollTop = 0; return; }
   if(d.umchk){ var UD = umData(); if(UD.c[d.umchk]) delete UD.c[d.umchk]; else UD.c[d.umchk] = todayKey(); save(); render(); return; }
   if(d.umtrip!==undefined){ var TD = tripData(); TD.mode = "umra"; save(); open("hajjtrip", null); return; }
   if(d.why!==undefined){ sheetWhy(); return; }
