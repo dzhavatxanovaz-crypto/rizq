@@ -1118,6 +1118,13 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .mdn-flow{direction:rtl;text-align:justify;text-align-last:right;font-size:calc((min(100vw, 520px) - 64px) / 17.2 * var(--mdn-k));line-height:2.05;word-spacing:.08em;margin:.1em 0}
 .mdn-flow .mdn-w{display:inline}
 .mdn-w{cursor:pointer;border-radius:4px}
+.mdn-w.tjw-m1{background:linear-gradient(transparent 30%,rgba(232,178,74,.34) 30%,rgba(232,178,74,.34) 82%,transparent 82%)}
+.mdn-w.tjw-m2{background:linear-gradient(transparent 30%,rgba(224,137,58,.34) 30%,rgba(224,137,58,.34) 82%,transparent 82%)}
+.mdn-w.tjw-m3{background:linear-gradient(transparent 30%,rgba(217,96,62,.34) 30%,rgba(217,96,62,.34) 82%,transparent 82%)}
+.mdn-w.tjw-m4{background:linear-gradient(transparent 30%,rgba(199,59,59,.34) 30%,rgba(199,59,59,.34) 82%,transparent 82%)}
+.mdn-w.tjw-m5{background:linear-gradient(transparent 30%,rgba(158,42,85,.34) 30%,rgba(158,42,85,.34) 82%,transparent 82%)}
+.mdn-w.tjw-n{background:linear-gradient(transparent 30%,rgba(63,178,122,.34) 30%,rgba(63,178,122,.34) 82%,transparent 82%)}
+.mdn-w.tjw-q{background:linear-gradient(transparent 30%,rgba(90,169,230,.34) 30%,rgba(90,169,230,.34) 82%,transparent 82%)}
 .mdn-w.mark{background:rgba(212,175,55,.22)}
 .mdn-w.now{background:rgba(62,155,114,.22)}
 .mdn-w:active{background:rgba(212,175,55,.3)}
@@ -9231,7 +9238,7 @@ function mdnLoad(p){
   if(!(p >= 1 && p <= 604)) return;
   if(!MDN.pages[p] && !MDN.busy[p] && window.fetch){
     MDN.busy[p] = 1;
-    fetch("mushaf/v1/p" + mdnPad(p) + ".json").then(function(r){ if(!r.ok) throw 0; return r.json(); })
+    fetch("mushaf/v1/p" + mdnPad(p) + ".json?d=2") /* d - версия данных страницы: 2 - с подсказками таджвида */.then(function(r){ if(!r.ok) throw 0; return r.json(); })
       .then(function(j){ MDN.pages[p] = j; MDN.busy[p] = 0; mdnDone(p); })
       .catch(function(){ MDN.busy[p] = 0; MDN.err[p] = 1; mdnDone(p); });
   }
@@ -9251,7 +9258,7 @@ var MDN_K = [1, 1.25, 1.5, 1.8];
 function mdnSize(){ var s = S.mdnSize | 0; return s < 0 ? 0 : s > 3 ? 3 : s; }
 function mdnPageHtml(p){
   if(mdnSize() > 0) return mdnFlowHtml(p);
-  var j = MDN.pages[p], by = {}, hs = {}, bs = {}, max = j.c ? 8 : 15, out = "", fam = mdnFam(p);
+  var j = MDN.pages[p], by = {}, hs = {}, bs = {}, max = j.c ? 8 : 15, out = "", fam = mdnFam(p), tj = qTajOn();
   (j.l || []).forEach(function(x){ by[x[0]] = x[1]; });
   (j.h || []).forEach(function(x){ hs[x[0]] = x[1]; });
   (j.b || []).forEach(function(x){ bs[x] = 1; });
@@ -9263,7 +9270,7 @@ function mdnPageHtml(p){
       out += '<div class="mdn-line mdn-bism">'+esc(MDN_BISM)+'</div>';
     } else if(by[ln]){
       out += '<div class="mdn-line'+(j.c ? ' mdn-c' : '')+'" style="font-family:\''+fam+'\'">'+by[ln].map(function(w){
-        return '<span class="mdn-w'+(w[2] ? ' mdn-end' : '')+(isMark(w[1]) ? ' mark' : '')+'" data-mayah="'+w[1]+'">'+esc(w[0])+'</span>';
+        return '<span class="mdn-w'+(w[2] ? ' mdn-end' : '')+(tj && w[3] ? ' tjw-'+w[3] : '')+(isMark(w[1]) ? ' mark' : '')+'" data-mayah="'+w[1]+'">'+esc(w[0])+'</span>';
       }).join("")+'</div>';
     } else out += '<div class="mdn-line"></div>';
   }
@@ -9271,7 +9278,7 @@ function mdnPageHtml(p){
 }
 /* крупный вид: слова страницы сплошным текстом с переносами */
 function mdnFlowHtml(p){
-  var j = MDN.pages[p], by = {}, hs = {}, bs = {}, max = j.c ? 8 : 15, out = "", buf = [], fam = mdnFam(p);
+  var j = MDN.pages[p], by = {}, hs = {}, bs = {}, max = j.c ? 8 : 15, out = "", buf = [], fam = mdnFam(p), tj = qTajOn();
   (j.l || []).forEach(function(x){ by[x[0]] = x[1]; });
   (j.h || []).forEach(function(x){ hs[x[0]] = x[1]; });
   (j.b || []).forEach(function(x){ bs[x] = 1; });
@@ -9281,22 +9288,23 @@ function mdnFlowHtml(p){
       out += '<div class="mdn-line mdn-sura"><span>'+esc(s[1])+'</span><em>'+esc(s[2])+' · '+s[4]+'</em></div>'; }
     else if(bs[ln]){ flush(); out += '<div class="mdn-line mdn-bism">'+esc(MDN_BISM)+'</div>'; }
     else if(by[ln]){ by[ln].forEach(function(w){
-      buf.push('<span class="mdn-w'+(w[2] ? ' mdn-end' : '')+(isMark(w[1]) ? ' mark' : '')+'" data-mayah="'+w[1]+'">'+esc(w[0])+'</span>'); }); }
+      buf.push('<span class="mdn-w'+(w[2] ? ' mdn-end' : '')+(tj && w[3] ? ' tjw-'+w[3] : '')+(isMark(w[1]) ? ' mark' : '')+'" data-mayah="'+w[1]+'">'+esc(w[0])+'</span>'); }); }
   }
   flush();
   return out;
 }
 function viewMadina(){
   var p = mushafPage(), a = pageFirst(p), h = [];
+  if(qTajOn()) tjdLoad();
   mdnLoad(p); mdnLoad(p + 1); if(p > 1) mdnLoad(p - 1);
   h.push('<div class="qbar">'+
     '<button class="qbtn" id="qPlayAll" data-qplayall="1" title="Слушать">▶</button>'+
     '<button class="qbtn" data-mdnsz="-1" title="Меньше"'+(mdnSize() ? '' : ' disabled')+'>A−</button>'+
     '<button class="qbtn" data-mdnsz="1" title="Крупнее"'+(mdnSize() < 3 ? '' : ' disabled')+'>A+</button>'+
+    '<button class="qbtn'+(qTajOn()?" on":"")+'" data-qtaj="1" title="Подсказки по правилам">ت</button>'+
     '<button class="qbtn" data-qview="1" title="Вид и шрифт">Аа</button>'+
     '<button class="qbtn on" data-qbook="0" title="Список аятов">☰</button>'+
     '<button class="qbtn" data-open="qsettings" title="Настройки">⚙</button>'+
-    '<span style="margin-left:auto;font-size:13px;color:var(--ink-3);white-space:nowrap">джуз '+juzOf(a)+'</span>'+
   '</div>');
   var inner;
   if(mdnReady(p)) inner = mdnPageHtml(p);
@@ -9309,10 +9317,16 @@ function viewMadina(){
       '<button class="mus-nav" data-mpage="'+(p-1)+'"'+(p<=1?' disabled':'')+'>назад ›</button></div>'+
   '</div></div>');
   h.push(mushafTools());
+  if(qTajOn()){
+    h.push('<div class="mus-legend">'+TJ_GROUPS.filter(function(g){ return g[0] !== "s"; }).map(function(g){
+      return '<span><i style="background:'+g[2]+'"></i>'+esc(g[1])+'</span>'; }).join("")+'</div>'+
+      '<p class="disclaimer">Подсвечены слова, в которых есть правило, - цветом этого правила. Нажмите на слово: откроется аят и разбор, какие правила в нём и как читать. '+
+      'Разметка - по мусхафам с цветным таджвидом (проект quran-tajweed, CC BY 4.0). Подсказки помогают глазу, но таджвид ставят с учителем.</p>');
+  }
   h.push('<p class="disclaimer">Мединский мусхаф, издание 1405 г. х.: шрифт и вёрстка Комплекса короля Фахда по печатанию Корана. '+
     (mdnSize() ? 'Крупный вид: текст страницы тот же, но строки переносятся не так, как в печатном. Кнопка A− до конца вернёт вид «как в печатном». ' : 'Нужен текст крупнее - кнопка A+. ')+
     'Нажмите на слово - откроется аят с переводом, звуком и закладкой. Листайте кнопками или проведите пальцем. '+
-    'Цветная подсветка таджвида - в шрифте «Как в мусхафе».</p>');
+    (qTajOn() ? '' : 'Подсказки по правилам таджвида - кнопка ت.')+'</p>');
   return h.join("");
 }
 /* окно «Вид и шрифт»: книга или список, и какой шрифт */
