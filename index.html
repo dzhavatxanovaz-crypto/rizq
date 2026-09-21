@@ -640,6 +640,116 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .qf-ic{flex:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(212,175,55,.13);color:var(--accent-ink);font-size:15px;line-height:1}
 .qf-ic svg{width:26px;height:26px}
 .qf-t{white-space:nowrap}
+/* ---------- раздел «Намаз» ---------- */
+.nm-hub{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.nm-tile{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:14px 13px 13px;border-radius:var(--r-lg);border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);min-height:118px}
+.nm-tile.gold{background:linear-gradient(150deg,rgba(212,175,55,.22),rgba(212,175,55,.05));border-color:rgba(212,175,55,.55)}
+.nm-ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(212,175,55,.16);color:var(--accent-ink);font-size:18px;margin-bottom:6px}
+.nm-tile b{font-family:var(--f-display);font-size:14.5px;line-height:1.25;color:var(--ink)}
+.nm-s{font-size:12px;line-height:1.35;color:var(--ink-3)}
+.sd-head{display:grid;grid-template-columns:78px 1fr 62px 1fr;gap:6px;margin-top:12px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.sd-head span:first-child{grid-column:2;text-align:right}
+.sd-head span:nth-child(2){text-align:center}
+.sd-row{display:grid;grid-template-columns:78px 1fr 62px 1fr;gap:6px;align-items:center;padding:9px 0;border-top:1px solid var(--line-soft)}
+.sd-n b{display:block;font-family:var(--f-display);font-size:14px}
+.sd-n span{font-size:11.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.sd-b{display:flex;gap:4px;justify-content:flex-end}
+.sd-a{display:flex;gap:4px}
+.sd-f{text-align:center;font-size:11.5px;font-weight:600;color:var(--ink-2);background:var(--surface-2);border-radius:9px;padding:6px 2px}
+.sd-c{display:inline-grid;place-items:center;min-width:26px;height:26px;border-radius:8px;border:1.5px solid rgba(212,175,55,.7);color:var(--accent-ink);font-family:var(--f-display);font-size:13px;font-weight:700;padding:0 4px}
+.sd-c.m{background:linear-gradient(150deg,#E9C85E,#C9A12F);border-color:#C9A12F;color:#1E2A5A}
+.sd-extra{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:10px}
+.sd-extra div{display:flex;flex-direction:column;align-items:center;text-align:center;gap:1px;padding:9px 4px;border-radius:12px;background:var(--surface-2)}
+.sd-extra i{font-style:normal;color:var(--accent-ink);font-size:15px}
+.sd-extra b{font-size:12.5px}
+.sd-extra span{font-size:11px;color:var(--ink-3)}
+.sd-leg{display:flex;flex-direction:column;gap:6px;margin-top:12px;font-size:12px;color:var(--ink-3)}
+.sd-leg span{display:flex;align-items:center;gap:8px}
+@media (max-width:359px){ .sd-head,.sd-row{grid-template-columns:64px 1fr 54px 1fr} .sd-c{min-width:22px;height:22px;font-size:12px} }
+/* ---------- Хадж и Умра: вкладки ---------- */
+.hj-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;padding:4px;border-radius:16px;background:var(--surface-2);border:1px solid var(--line)}
+.hj-tabs button{display:flex;flex-direction:column;align-items:center;gap:1px;padding:10px 6px;border-radius:12px;color:var(--ink-2)}
+.hj-tabs button b{font-family:var(--f-display);font-size:14.5px;font-weight:600}
+.hj-tabs button span{font-size:11px;color:var(--ink-3)}
+.hj-tabs button.on{background:var(--accent-ink);color:var(--surface);box-shadow:0 6px 16px -8px rgba(0,0,0,.4)}
+.hj-tabs button.on span{color:rgba(255,255,255,.8)}
+/* ---------- Умра ---------- */
+.um-promo{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:16px;border-radius:var(--r-lg);
+  background:linear-gradient(140deg,#1E2A5A 0%,#15204A 60%,#2B2A1F 100%);border:1.5px solid rgba(212,175,55,.6);color:#F4EBD0;box-shadow:0 10px 26px -12px rgba(0,0,0,.5)}
+.um-promo-ar{flex:none;width:58px;height:58px;border-radius:16px;display:grid;place-items:center;background:rgba(212,175,55,.16);color:#E9C85E;font-family:"Amiri Quran",var(--f-ar);font-size:19px}
+.um-promo-t{flex:1;min-width:0}
+.um-promo-t b{display:block;font-family:var(--f-display);font-size:16px;letter-spacing:.02em;color:#F1D77E}
+.um-promo-t span{display:block;font-size:12.5px;line-height:1.45;color:rgba(244,235,208,.78);margin-top:3px}
+.um-promo-go{flex:none;font-size:22px;color:#E9C85E}
+.um-hero{border-radius:var(--r-lg);padding:20px 18px 16px;text-align:center;color:#F4EBD0;
+  background:radial-gradient(120% 90% at 50% 0%,#2B3A78 0%,#1E2A5A 45%,#111A3F 100%);border:1.5px solid rgba(212,175,55,.55)}
+.um-hero-ar{font-family:"Amiri Quran",var(--f-ar);font-size:40px;line-height:1.4;color:#E9C85E}
+.um-hero-t{font-family:var(--f-display);font-size:21px;font-weight:700;margin-top:2px}
+.um-hero-s{font-size:13px;line-height:1.5;color:rgba(244,235,208,.78);margin-top:6px}
+.um-hero-chips{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.um-hero-chips span{font-size:12px;padding:4px 10px;border-radius:999px;background:rgba(212,175,55,.16);color:#F1D77E}
+.um-hero-prog{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:14px}
+.um-hero-prog button{font-size:12px;font-weight:600;padding:9px 4px;border-radius:12px;background:rgba(255,255,255,.08);color:#F4EBD0;border:1px solid rgba(212,175,55,.35)}
+.um-nav{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 6px;margin:0 -2px;scrollbar-width:none}
+.um-nav::-webkit-scrollbar{display:none}
+.um-nav button{flex:none;display:flex;align-items:center;gap:6px;font-size:13px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);white-space:nowrap}
+.um-nav button i{font-style:normal;color:var(--accent-ink);font-family:var(--f-ar)}
+.um-nav button.on{background:var(--accent-ink);border-color:var(--accent-ink);color:var(--surface);font-weight:600}
+.um-nav button.on i{color:var(--surface)}
+.um-sec-h{display:flex;align-items:baseline;gap:10px;margin:4px 2px 0}
+.um-sec-h b{font-family:var(--f-display);font-size:20px;font-weight:700}
+.um-sec-h span{font-size:12px;color:var(--ink-3);order:2;margin-left:auto}
+.um-card .um-p,.um-p{font-size:14.5px;line-height:1.65;color:var(--ink-2);margin:10px 0 0}
+.um-lead{font-size:14.5px;line-height:1.6;color:var(--ink-2);margin:0 2px}
+.um-svg{display:block;width:100%;height:auto;margin-top:12px}
+.um-leg{display:flex;flex-direction:column;gap:6px;margin-top:8px;font-size:12px;line-height:1.4;color:var(--ink-3)}
+.um-leg span{display:flex;gap:8px;align-items:flex-start}
+.um-leg i{flex:none;width:12px;height:4px;border-radius:2px;margin-top:6px}
+.um-t{font-family:var(--f-body);font-size:10.5px;fill:var(--ink-2)}
+.um-g{fill:#3E9B72}
+.um-path{display:flex;align-items:stretch;gap:2px;margin-top:14px}
+.um-step{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;padding:10px 4px;border-radius:12px;background:var(--surface-2)}
+.um-step span{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(212,175,55,.16);color:var(--accent-ink);font-size:15px}
+.um-step b{font-size:12px;line-height:1.2}
+.um-step em{font-style:normal;font-size:10.5px;color:var(--ink-3);line-height:1.2}
+.um-step-arr{align-self:center;font-style:normal;color:var(--ink-3);font-size:14px}
+.um-prog{display:flex;align-items:center;gap:10px;margin-top:10px}
+.um-prog b{font-family:var(--f-display);font-size:15px;color:var(--accent-ink);white-space:nowrap}
+.um-bar{flex:1;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.um-bar i{display:block;height:100%;background:var(--accent-ink);border-radius:3px}
+.um-grp{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink);margin:16px 0 4px}
+.um-chk{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;padding:10px 0;border-top:1px solid var(--line-soft)}
+.um-chk span{flex:none;width:22px;height:22px;border-radius:7px;border:2px solid var(--line);display:grid;place-items:center;color:#fff;font-size:13px;margin-top:1px}
+.um-chk em{font-style:normal;font-size:14.5px;line-height:1.5;color:var(--ink)}
+.um-chk.on span{background:var(--emerald,#2D6A4F);border-color:var(--emerald,#2D6A4F)}
+.um-chk.on em{color:var(--ink-3);text-decoration:line-through}
+.um-season-h{display:flex;align-items:baseline;gap:10px}
+.um-season-h b{font-family:var(--f-display);font-size:17px}
+.um-season-h span{margin-left:auto;font-size:12px;color:var(--ink-3);text-align:right}
+.um-season-r{display:flex;gap:10px;margin-top:9px}
+.um-season-r i{flex:none;font-style:normal;color:var(--accent-ink);width:18px;text-align:center}
+.um-season-r p{margin:0;font-size:14px;line-height:1.55;color:var(--ink-2)}
+.um-ul{margin:10px 0 0;padding-left:20px;font-size:14.5px;line-height:1.65;color:var(--ink-2)}
+.um-ul li{margin-bottom:6px}
+.um-q{padding:13px 14px}
+.um-q summary{list-style:none;cursor:pointer;display:flex;gap:10px;align-items:center;font-weight:600;font-size:14.5px;line-height:1.4}
+.um-q summary::-webkit-details-marker{display:none}
+.um-q summary span{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:rgba(212,175,55,.16);color:var(--accent-ink);font-size:12.5px;font-weight:700}
+.um-q p{margin:10px 0 0 36px;font-size:14px;line-height:1.6;color:var(--ink-2)}
+.um-foot{display:flex;justify-content:space-between;gap:8px}
+.um-foot .btn{width:auto;flex:none}
+.jp-card{position:relative;padding:0}
+.jp-open{display:block;width:100%;text-align:left;padding:16px 16px 16px}
+.jp-star{position:absolute;right:10px;bottom:9px;width:38px;height:38px;border-radius:12px;font-size:19px;line-height:1;color:var(--ink-3);display:grid;place-items:center}
+.jp-star.on{color:var(--accent-ink)}
+.jp-favchip{font-size:13px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink-2)}
+.jp-favchip.on{border-color:var(--accent);background:rgba(212,175,55,.14);color:var(--accent-ink);font-weight:600}
+.blinks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.blink{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 12px 11px;border-radius:14px;border:1px solid var(--line);background:var(--surface-2);text-align:left;transition:transform .12s ease}
+.blink:active{transform:scale(.97)}
+.blink-ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:rgba(212,175,55,.15);color:var(--accent-ink);font-size:16px;margin-bottom:6px;font-family:var(--f-ar)}
+.blink b{font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.25}
+.blink-s{font-size:11.5px;color:var(--ink-3);line-height:1.3}
 .bsteps{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column;gap:10px}
 .bsteps li{display:flex;gap:11px;align-items:flex-start}
 .bsteps li>span{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:rgba(212,175,55,.16);color:var(--accent-ink);font-family:var(--f-display);font-size:13px;font-weight:700;margin-top:1px}
@@ -919,6 +1029,32 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .ayah.now .ayah-n{background:var(--gold);border-color:var(--gold);color:var(--on-gold)}
 /* ---------- книжный вид ---------- */
 .mus-wrap{padding:2px 0 6px}
+/* мединский мусхаф: 15 строк, каждая растянута на всю ширину, как в печатном */
+.mdn-wrap{padding:2px 0 6px}
+.mdn-page{border-radius:14px;padding:14px 10px 10px;background:#FBF7EC;color:#1E1A14;
+  border:1px solid rgba(160,128,50,.45);box-shadow:inset 0 0 0 4px rgba(212,175,55,.10),0 10px 30px -18px rgba(0,0,0,.55)}
+.mdn-line{display:flex;justify-content:space-between;align-items:center;direction:rtl;white-space:nowrap;
+  font-size:calc((min(100vw, 520px) - 64px) / 17.2);line-height:1.95;height:1.95em}
+.mdn-line.mdn-c{justify-content:center;gap:.18em}
+.mdn-first .mdn-line{font-size:calc((min(100vw, 520px) - 64px) / 13);}
+.mdn-w{cursor:pointer;border-radius:4px}
+.mdn-w.mark{background:rgba(212,175,55,.22)}
+.mdn-w.now{background:rgba(62,155,114,.22)}
+.mdn-w:active{background:rgba(212,175,55,.3)}
+.mdn-end{color:#8A6D12}
+.mdn-sura{justify-content:center;gap:10px;margin:0 2px;border:1.5px solid rgba(160,128,50,.6);border-radius:10px;
+  background:linear-gradient(180deg,rgba(212,175,55,.16),rgba(212,175,55,.05));height:1.7em;margin-top:.12em;margin-bottom:.13em}
+.mdn-sura span{font-family:"Amiri Quran",var(--f-ar);font-size:.9em;color:#6B5413}
+.mdn-sura em{font-style:normal;font-family:var(--f-body);font-size:11px;color:#8A7A55;direction:ltr}
+.mdn-bism{justify-content:center;font-family:"Amiri Quran",var(--f-ar);font-size:calc((min(100vw, 520px) - 64px) / 19);color:#1E1A14}
+.mdn-page .mus-foot{border-top-color:rgba(160,128,50,.3)}
+.mdn-page .mus-foot span{color:#8A7A55}
+.mdn-page .mus-nav{color:#5A4A2A;border-color:rgba(160,128,50,.4)}
+.mdn-wait{padding:60px 16px;text-align:center;font-size:14px;line-height:1.6;color:#6B5E45}
+.mdn-spin{display:block;width:26px;height:26px;margin:0 auto 12px;border-radius:50%;border:3px solid rgba(160,128,50,.25);border-top-color:#A0802F;animation:mdnspin 1s linear infinite}
+@keyframes mdnspin{to{transform:rotate(360deg)}}
+.qv-row{align-items:flex-start}
+.qv-s{display:block;direction:rtl;text-align:right;font-size:21px;line-height:1.9;color:var(--ink);margin-top:4px}
 .mus-page{
   border-radius:18px;padding:10px;
   background:linear-gradient(160deg, rgba(212,175,55,.22), rgba(212,175,55,.06));
@@ -1685,7 +1821,7 @@ var DEF = {
   hifz:{on:false, items:{}},
   push:{on:false, at:0, sig:""},
   salahKid:false,
-  trip:{},
+  trip:{}, umrah:{},
   kids:{},
   finReqs:[], finLimits:{}, debts:[], finRepeat:[], fontSize:"",
   qplan:{on:false, days:0, startPage:1, startAt:"", log:{}},
@@ -3097,7 +3233,7 @@ function streak(){
    ДНЕВНОЙ ТРЕКЕР: пять направлений
    ============================================================ */
 var DAILY = [
-  {k:"quran",    n:"Коран",    ic:"﴾﴿", d:"Прочитал сегодня"},
+  {k:"quran",    n:"Коран",    ic:"۞", d:"Прочитал сегодня"},
   {k:"salah",    n:"Намазы",   ic:"◉",  d:"Все пять"},
   {k:"tahajjud", n:"Тахаджуд", ic:"☾",  d:"Ночной намаз"},
   {k:"sadaqa",   n:"Садака",   ic:"❁",  d:"Милостыня"},
@@ -3884,6 +4020,10 @@ function paintPlayer(){
     var idx = parseInt(nodes[k].getAttribute("data-i"), 10);
     nodes[k].classList.toggle("now", QP.playing && idx === QP.cur);
   }
+  var mnodes = document.querySelectorAll("[data-mayah]");
+  for(var m = 0; m < mnodes.length; m++){
+    mnodes[m].classList.toggle("now", QP.playing && parseInt(mnodes[m].getAttribute("data-mayah"), 10) === QP.cur);
+  }
   /* кнопки play есть не только в ридере, но и у дуа из Корана - переключаем все разом */
   var btns = document.querySelectorAll("[data-qplay]");
   for(var j = 0; j < btns.length; j++){
@@ -3974,11 +4114,13 @@ function applyQSize(){
    с полной огласовкой. «Крупный насх» - Scheherazade New, у него шире буквы и выше строка.
    Оба свободные (OFL) и лежат рядом с приложением, интернет для них не нужен. */
 var QFONTS = [
+  {id:"madina", n:"Мединский мусхаф", d:"страница в страницу как в печатном, шрифт Комплекса короля Фахда", css:'"Amiri Quran","Noto Naskh Arabic",serif', lh:2.55},
   {id:"naskh",  n:"Обычный насх",   d:"Noto Naskh Arabic, как было",         css:'"Noto Naskh Arabic","Segoe UI",serif', lh:2.35},
   {id:"mushaf", n:"Как в мусхафе",  d:"Amiri Quran, печатное начертание",    css:'"Amiri Quran","Noto Naskh Arabic",serif', lh:2.55},
   {id:"large",  n:"Крупный насх",   d:"Scheherazade New, шире и разборчивее", css:'"Scheherazade New","Noto Naskh Arabic",serif', lh:2.3}
 ];
-function qFont(){ return QFONTS.filter(function(f){ return f.id === (S.qFont || "mushaf"); })[0] || QFONTS[1]; }
+function qFont(){ return QFONTS.filter(function(f){ return f.id === (S.qFont || "mushaf"); })[0] || QFONTS[2]; }
+function qMadina(){ return S.qFont === "madina"; }
 function applyQFont(){
   var f = qFont();
   document.documentElement.style.setProperty("--f-quran", f.css);
@@ -4146,6 +4288,7 @@ function renderHdr(){
         : V.view==="kids" ? "Детям"
         : V.view==="kidstory" ? "История"
         : V.view==="installment" ? "Исламская рассрочка"
+        : V.view==="umrah" ? "Хадж и Умра"
         : V.view==="settings" ? "Настройки" : "";
     $hdr.innerHTML = '<header class="hdr"><div class="hdr-row">'+
       '<button class="back" data-back="1" aria-label="Назад">‹</button>'+
@@ -4212,19 +4355,6 @@ function viewHomeMain(){
       '<button class="btn ghost sm" style="margin-top:6px;width:100%" data-vhide="1">Не сейчас</button></section>');
   }
 
-  /* план чтения Корана: одна строка, если план идёт.
-     На главной он нужен не для отчёта, а чтобы вспомнить о нём до вечера. */
-  (function(){
-    var qp = qPlanState();
-    if(!qp || qp.done) return;
-    h.push('<button class="card" style="display:flex;align-items:center;gap:12px;width:100%;text-align:left" data-go="quran">'+
-      '<span style="font-size:20px;flex:none">﴾﴿</span>'+
-      '<span style="flex:1;min-width:0"><b style="font-family:var(--f-display);font-size:14.5px;display:block">'+
-        (qp.todayLeft ? 'Коран: ' + plural(qp.todayLeft, 'страница', 'страницы', 'страниц') + ' на сегодня' : 'Коран: норма на сегодня прочитана')+'</b>'+
-      '<span style="font-size:12.5px;color:var(--ink-3)">прочитано '+qp.read+' из 604 · '+daysWord(qp.daysLeft)+' до конца плана</span></span>'+
-      '<span style="color:var(--ink-3)">›</span></button>');
-  })();
-
   /* дуа дня */
   h.push('<section class="mihrab"><div class="eyebrow">Дуа дня</div>'+
     '<div class="ar">'+esc(d.ar)+'</div>'+
@@ -4252,6 +4382,20 @@ function viewHomeMain(){
     }).join("") +'</div>'+
     '<div class="city-row"><span>📍 '+esc(tn.city.n)+' · '+esc(METHODS[S.method].n)+'</span>'+
     '<button data-open="settings" style="margin-left:auto">Изменить</button></div></section>');
+
+  /* план чтения Корана: одна строка, если план идёт - сразу под временем намаза (просьба Заиры 21.09).
+     На главной он нужен не для отчёта, а чтобы вспомнить о нём до вечера. */
+  (function(){
+    var qp = qPlanState();
+    if(!qp || qp.done) return;
+    h.push('<button class="card" style="display:flex;align-items:center;gap:12px;width:100%;text-align:left" data-go="quran">'+
+      '<span style="font-size:20px;flex:none;color:var(--accent-ink)">۞</span>'+
+      '<span style="flex:1;min-width:0"><b style="font-family:var(--f-display);font-size:14.5px;display:block">'+
+        (qp.todayLeft ? 'Коран: ' + plural(qp.todayLeft, 'страница', 'страницы', 'страниц') + ' на сегодня' : 'Коран: норма на сегодня прочитана')+'</b>'+
+      '<span style="font-size:12.5px;color:var(--ink-3)">прочитано '+qp.read+' из 604 · '+daysWord(qp.daysLeft)+' до конца плана</span></span>'+
+      '<span style="color:var(--ink-3)">›</span></button>');
+  })();
+
 
   /* трекер дня - пять направлений */
   syncSalahFlag();
@@ -4402,10 +4546,9 @@ function viewHomeMain(){
     '<button class="cat" data-open="qibla"><div class="ic">✧</div><b>Кибла</b><span>'+Math.round(qiblaBearing())+'° от севера</span></button>'+
     '<button class="cat" data-open="live"><div class="ic" style="font-size:24px">🕋</div><b>Мекка онлайн</b><span>прямой эфир из Харама</span></button>'+
     '</div>');
-  /* изучаем арабский с JAVATTI */
-  h.push(arHero(false).replace('<div class="ar-hero">', '<button class="ar-hero" data-ar="home">').replace(/<\/div>$/, '</button>'));
+  /* рейтинг участников - над курсом арабского (просьба Заиры 21.09) */
   var scH = scoreState(), scMe = S.scoreMe;
-  h.push('<button class="cat-wide" data-open="top" style="margin-top:10px">'+
+  h.push('<button class="cat-wide" data-open="top">'+
     '<span class="cw-ic">◈</span>'+
     '<span class="cw-t"><b>Рейтинг участников</b><span>'+
       (scH.on
@@ -4413,6 +4556,8 @@ function viewHomeMain(){
                               : "считаем ваше место")
         : "неделя начинается заново каждый понедельник")+'</span></span>'+
     '<span class="cw-go">›</span></button>');
+  /* изучаем арабский с JAVATTI - под рейтингом */
+  h.push(arHero(false).replace('<div class="ar-hero">', '<button class="ar-hero" data-ar="home">').replace(/<\/div>$/, '</button>'));
   h.push('<button class="cat-wide gold" data-open="halal" style="margin-top:10px">'+
     '<span class="cw-ic">☪</span>'+
     '<span class="cw-t"><b>Халяль рядом</b><span>еда, магазины и ближайшая мечеть</span></span>'+
@@ -4485,7 +4630,7 @@ var SHARE_TEXT = "Ассаламу алейкум! Нашла приложени
 /* Экраны, которые можно открыть ссылкой. Белый список, а не любое значение:
    по чужой ссылке приложение не должно оказываться где угодно. */
 var DEEP_VIEWS = ["courses","sadaqa","zakat","names","hadith","sira","book1","qibla",
-                  "calendar","tasbih","suras","halal","top","qduas","duaall","report","share","consulting","live","installment","kids","hajjtrip","salahpics","arabic"];
+                  "calendar","tasbih","suras","halal","top","qduas","duaall","report","share","consulting","live","umrah","installment","kids","hajjtrip","salahpics","arabic"];
 var DEEP_TABS  = ["home","quran","dua","journal","income","prof"];
 
 function deepOpen(){
@@ -4775,6 +4920,7 @@ function buildIndex(){
    ["Детям","истории пророков, перед сном, дуа, имена","open:kids","дети детям ребенок ребёнок истории пророков сказки перед сном на ночь дуа для детей имена имя для ребенка мальчику девочке"],
    ["Исламская рассрочка","партнёры и покупка товара в рассрочку","open:installment","рассрочка исламская халяль мурабаха кредит без процентов частями взносы купить в рассрочку партнерское финансирование"],
    ["Размер текста","крупный шрифт для чтения","go:prof","шрифт размер крупный текст мелко зрение увеличить"],
+   ["Умра - малый хадж","путеводитель: сезоны, вещи, ихрам, таваф, са'й","open:umrah","умра умру малый хадж паломничество мекка медина ихрам микат таваф сай сафа марва кааба путеводитель чек-лист вещи виза нусук"],
    ["Восполнение","пропущенные намазы и посты","open:qada","каза восполнение пропущенный намаз пост долг восполнить казаа qada"],
    ["Куда помочь","сборы, которые мы посмотрели","open:sadaqa","садака милостыня помочь сбор пожертвование благотворительность нуждающимся закят раздать туба tooba"],
   ].forEach(function(x){ add(x[0], x[1], x[2], x[3], "Разделы"); });
@@ -4890,9 +5036,9 @@ function viewDua(){
 
   /* самое частое - сразу, без захода в «Как совершать» */
   h.push('<div class="cats">'+
-    [["salah","☾","Намаз пошагово","порядок и что читать"],
+    [["salah","☾","Намаз","пошагово, в картинках, сунна"],
      ["fasting","☼","Пост","что нарушает и как восполнять"],
-     ["hajj","◍","Хадж","виды, порядок, сборы"],
+     ["hajj","◍","Хадж и Умра","основной хадж и малый хадж"],
      ["zakat","◈","Закят","кто, с чего и сколько"]
     ].map(function(g){
       return '<button class="cat" data-guide="'+g[0]+'"><div class="ic">'+g[1]+'</div>'+
@@ -4913,10 +5059,6 @@ function viewDua(){
   h.push('<button class="cat-wide" data-open="hajjtrip">'+
     '<span class="cw-ic">◍</span>'+
     '<span class="cw-t"><b>Хадж и умра в пути</b><span>чек-лист по шагам, счёт кругов</span></span>'+
-    '<span class="cw-go">›</span></button>');
-  h.push('<button class="cat-wide gold" data-open="salahpics">'+
-    '<span class="cw-ic">☾</span>'+
-    '<span class="cw-t"><b>Намаз в картинках</b><span>для новичков и детей, с озвучкой</span></span>'+
     '<span class="cw-go">›</span></button>');
 
   KNOW.forEach(function(k){
@@ -8868,10 +9010,100 @@ $screen.addEventListener("touchend", function(e){
   MUS_X = null;
   if(Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.5) mushafGo(mushafPage() + (dx > 0 ? 1 : -1));
 }, {passive:true});
+/* ---------- мединский мусхаф ---------- */
+var MDN = { pages:{}, fonts:{}, busy:{}, fbusy:{}, err:{} };
+function mdnPad(n){ return (n < 10 ? "00" : n < 100 ? "0" : "") + n; }
+function mdnFam(p){ return "QCF_P" + mdnPad(p); }
+function mdnReady(p){ return !!(MDN.pages[p] && MDN.fonts[p]); }
+function mdnDone(p){ if(V.view === "reader" && qBookOn() && qMadina() && mushafPage() === p) render(); }
+function mdnLoad(p){
+  if(!(p >= 1 && p <= 604)) return;
+  if(!MDN.pages[p] && !MDN.busy[p] && window.fetch){
+    MDN.busy[p] = 1;
+    fetch("mushaf/v1/p" + mdnPad(p) + ".json").then(function(r){ if(!r.ok) throw 0; return r.json(); })
+      .then(function(j){ MDN.pages[p] = j; MDN.busy[p] = 0; mdnDone(p); })
+      .catch(function(){ MDN.busy[p] = 0; MDN.err[p] = 1; mdnDone(p); });
+  }
+  if(!MDN.fonts[p] && !MDN.fbusy[p]){
+    if(!window.FontFace || !document.fonts){ MDN.err[p] = 1; return; }
+    MDN.fbusy[p] = 1;
+    try{
+      var ff = new FontFace(mdnFam(p), "url(mushaf/v1/f/p" + mdnPad(p) + ".woff2)");
+      ff.load().then(function(f){ document.fonts.add(f); MDN.fonts[p] = 1; MDN.fbusy[p] = 0; mdnDone(p); })
+        .catch(function(){ MDN.fbusy[p] = 0; MDN.err[p] = 1; mdnDone(p); });
+    }catch(e){ MDN.fbusy[p] = 0; MDN.err[p] = 1; }
+  }
+}
+var MDN_BISM = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
+/* строки страницы: заголовок суры, басмала или слова */
+function mdnPageHtml(p){
+  var j = MDN.pages[p], by = {}, hs = {}, bs = {}, max = j.c ? 8 : 15, out = "", fam = mdnFam(p);
+  (j.l || []).forEach(function(x){ by[x[0]] = x[1]; });
+  (j.h || []).forEach(function(x){ hs[x[0]] = x[1]; });
+  (j.b || []).forEach(function(x){ bs[x] = 1; });
+  for(var ln = 1; ln <= max; ln++){
+    if(hs[ln]){
+      var s = QSUR[hs[ln] - 1];
+      out += '<div class="mdn-line mdn-sura"><span>'+esc(s[1])+'</span><em>'+esc(s[2])+' · '+s[4]+'</em></div>';
+    } else if(bs[ln]){
+      out += '<div class="mdn-line mdn-bism">'+esc(MDN_BISM)+'</div>';
+    } else if(by[ln]){
+      out += '<div class="mdn-line'+(j.c ? ' mdn-c' : '')+'" style="font-family:\''+fam+'\'">'+by[ln].map(function(w){
+        return '<span class="mdn-w'+(w[2] ? ' mdn-end' : '')+(isMark(w[1]) ? ' mark' : '')+'" data-mayah="'+w[1]+'">'+esc(w[0])+'</span>';
+      }).join("")+'</div>';
+    } else out += '<div class="mdn-line"></div>';
+  }
+  return out;
+}
+function viewMadina(){
+  var p = mushafPage(), a = pageFirst(p), h = [];
+  mdnLoad(p); mdnLoad(p + 1); if(p > 1) mdnLoad(p - 1);
+  h.push('<div class="qbar">'+
+    '<button class="qbtn" id="qPlayAll" data-qplayall="1" title="Слушать">▶</button>'+
+    '<button class="qbtn" data-qview="1" title="Вид и шрифт">Аа</button>'+
+    '<button class="qbtn on" data-qbook="0" title="Список аятов">☰</button>'+
+    '<button class="qbtn" data-open="qsettings" title="Настройки">⚙</button>'+
+    '<span style="margin-left:auto;font-size:13px;color:var(--ink-3);white-space:nowrap">'+esc(QSUR[surahOf(a)][2])+' · джуз '+juzOf(a)+'</span>'+
+  '</div>');
+  var inner;
+  if(mdnReady(p)) inner = mdnPageHtml(p);
+  else if(MDN.err[p]) inner = '<div class="mdn-wait">Не получилось загрузить страницу. Нужен интернет, чтобы открыть её в первый раз: потом она будет открываться и без него.'+
+    '<button class="btn sec sm" style="margin-top:12px" data-mdnretry="'+p+'">Попробовать ещё раз</button></div>';
+  else inner = '<div class="mdn-wait"><span class="mdn-spin"></span>Открываем страницу '+p+'</div>';
+  h.push('<div class="mdn-wrap"><div class="mdn-page'+(MDN.pages[p] && MDN.pages[p].c ? ' mdn-first' : '')+'">'+inner+
+    '<div class="mus-foot"><button class="mus-nav" data-mpage="'+(p+1)+'"'+(p>=QPAGE.length?' disabled':'')+'>‹ дальше</button>'+
+      '<span>'+p+'</span>'+
+      '<button class="mus-nav" data-mpage="'+(p-1)+'"'+(p<=1?' disabled':'')+'>назад ›</button></div>'+
+  '</div></div>');
+  h.push(mushafTools());
+  h.push('<p class="disclaimer">Мединский мусхаф, издание 1405 г. х.: шрифт и вёрстка Комплекса короля Фахда по печатанию Корана. '+
+    'Нажмите на слово - откроется аят с переводом, звуком и закладкой. Листайте кнопками или проведите пальцем. '+
+    'Цветная подсветка таджвида - в шрифте «Как в мусхафе».</p>');
+  return h.join("");
+}
+/* окно «Вид и шрифт»: книга или список, и какой шрифт */
+function sheetQView(){
+  var cur = S.qFont || "mushaf", book = qBookOn();
+  sheet('<h3>Вид и шрифт</h3>'+
+    '<div class="pill-row" style="justify-content:flex-start;margin:4px 0 14px">'+
+      '<button class="pill'+(book ? " on" : "")+'" data-qbook="1">Страница книги</button>'+
+      '<button class="pill'+(!book ? " on" : "")+'" data-qbook="0">Список аятов с переводом</button></div>'+
+    '<div class="rows">'+QFONTS.map(function(f){
+      var sample = f.id === "madina" ? '<span class="qv-s" style="font-family:\'Amiri Quran\'">'+esc(MDN_BISM)+'</span>'
+        : '<span class="qv-s" style="font-family:'+f.css.replace(/"/g, "&quot;")+'">'+esc(MDN_BISM)+'</span>';
+      return '<button class="row qv-row" data-qfont="'+f.id+'">'+
+        '<span class="ic">'+(cur === f.id ? "◉" : "○")+'</span>'+
+        '<span style="flex:1;min-width:0"><b style="font-weight:600;display:block">'+esc(f.n)+'</b>'+
+        '<span style="display:block;font-size:12.5px;color:var(--ink-3);line-height:1.4">'+esc(f.d)+'</span>'+sample+'</span></button>';
+    }).join("")+'</div>'+
+    '<button class="btn ghost" style="margin-top:12px" data-scrim="1">Готово</button>');
+}
 function viewMushaf(){
+  if(qMadina()) return viewMadina();
   var p = mushafPage(), a = pageFirst(p), b = pageLast(p), h = [];
   h.push('<div class="qbar">'+
     '<button class="qbtn" id="qPlayAll" data-qplayall="1" title="Слушать">▶</button>'+
+    '<button class="qbtn" data-qview="1" title="Вид и шрифт">Аа</button>'+
     '<button class="qbtn" data-qsize="-1" title="Меньше">A−</button>'+
     '<button class="qbtn" data-qsize="1" title="Больше">A+</button>'+
     '<button class="qbtn'+(qTajOn()?" on":"")+'" data-qtaj="1" title="Подсказки чтения">ت</button>'+
@@ -10229,6 +10461,438 @@ function tripSay(kind){
     (src ? '<div class="src">'+esc(src)+'</div>' : '')+'</div>';
 }
 
+/* ============================================================
+   УМРА - МАЛЫЙ ХАДЖ. Путеводитель: от решения поехать до возвращения.
+   По шафиитскому мазхабу, как весь раздел «Хадж». Главы листаются по
+   порядку; чек-листы сборов и вещей сохраняются в S.umrah.c. Считать
+   круги на месте - в «Хадж и умра в пути» (режим «Умра»).
+   Правила въезда, визы и разрешения меняются каждый год - везде, где
+   речь о них, приложение говорит «проверьте», а не называет цифры.
+   ============================================================ */
+function umData(){
+  if(!S.umrah || typeof S.umrah !== "object") S.umrah = {};
+  if(!S.umrah.c || typeof S.umrah.c !== "object") S.umrah.c = {};
+  return S.umrah;
+}
+
+/* ---------- схемы: рисуем сами, чтобы были понятны и в тёмной теме ---------- */
+var UM_SVG = {
+  tawaf:'<svg viewBox="0 0 320 290" class="um-svg" role="img" aria-label="Схема тавафа: Кааба слева, семь кругов против часовой стрелки от Чёрного камня">'+
+    '<defs><marker id="umArr" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--accent-ink)"/></marker></defs>'+
+    '<circle cx="160" cy="145" r="115" fill="none" stroke="var(--line)" stroke-width="22"/>'+
+    '<path d="M 275 145 A 115 115 0 0 0 160 30" fill="none" stroke="var(--accent-ink)" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#umArr)"/>'+
+    '<path d="M 160 30 A 115 115 0 0 0 45 145" fill="none" stroke="var(--accent-ink)" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#umArr)"/>'+
+    '<path d="M 45 145 A 115 115 0 0 0 160 260" fill="none" stroke="var(--accent-ink)" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#umArr)"/>'+
+    '<path d="M 160 260 A 115 115 0 0 0 275 145" fill="none" stroke="#3E9B72" stroke-width="5" marker-end="url(#umArr)"/>'+
+    '<path d="M 150 109.6 A 19 19 0 0 0 124.6 135" fill="none" stroke="#D4AF37" stroke-width="3"/>'+
+    '<rect x="128" y="113" width="64" height="64" rx="3" transform="rotate(45 160 145)" fill="#1B1B1F" stroke="#D4AF37" stroke-width="2"/>'+
+    '<rect x="150" y="114" width="20" height="6" transform="rotate(45 160 145)" fill="#D4AF37"/>'+
+    '<circle cx="205" cy="145" r="6" fill="#D4AF37" stroke="#1B1B1F" stroke-width="2"/>'+
+    '<line x1="211" y1="145" x2="286" y2="145" stroke="#3E9B72" stroke-width="3"/>'+
+    '<circle cx="196" cy="92" r="7" fill="none" stroke="var(--accent-ink)" stroke-width="2"/>'+
+    '<text x="160" y="149" text-anchor="middle" class="um-t" style="fill:#D4AF37;font-weight:700">Кааба</text>'+
+    '<text x="200" y="166" class="um-t">Чёрный камень</text>'+
+    '<text x="206" y="86" class="um-t">Макам Ибрахим</text>'+
+    '<text x="72" y="106" class="um-t">Хиджр Исмаил</text>'+
+    '<text x="160" y="214" text-anchor="middle" class="um-t">Йеменский угол</text>'+
+    '<text x="160" y="16" text-anchor="middle" class="um-t">7 кругов, Кааба всё время слева</text>'+
+  '</svg>'+
+  '<div class="um-leg"><span><i style="background:#3E9B72"></i>зелёная линия - начало и конец круга; зелёная дуга - здесь читают «Раббана атина...»</span>'+
+  '<span><i style="background:var(--accent-ink)"></i>стрелки - направление, против часовой стрелки</span>'+
+  '<span><i style="background:#D4AF37"></i>полукруг у Каабы - Хиджр Исмаил, обходите снаружи</span></div>',
+  say:'<svg viewBox="0 0 330 170" class="um-svg" role="img" aria-label="Схема са‘я: семь проходов между Сафа и Марва">'+
+    '<defs><marker id="umArr2" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--accent-ink)"/></marker></defs>'+
+    '<path d="M 14 120 Q 40 60 66 120 Z" fill="var(--surface-2)" stroke="var(--ink-3)"/>'+
+    '<path d="M 264 120 Q 290 60 316 120 Z" fill="var(--surface-2)" stroke="var(--ink-3)"/>'+
+    '<text x="40" y="140" text-anchor="middle" class="um-t" style="font-weight:700">Сафа</text>'+
+    '<text x="290" y="140" text-anchor="middle" class="um-t" style="font-weight:700">Марва</text>'+
+    '<rect x="135" y="70" width="60" height="50" fill="rgba(62,155,114,.18)" stroke="#3E9B72" stroke-dasharray="4 3"/>'+
+    '<text x="165" y="62" text-anchor="middle" class="um-t um-g">зелёные огни</text>'+
+    '<line x1="70" y1="82" x2="258" y2="82" stroke="var(--accent-ink)" stroke-width="3" marker-end="url(#umArr2)"/>'+
+    '<line x1="258" y1="108" x2="70" y2="108" stroke="var(--ink-3)" stroke-width="3" marker-end="url(#umArr2)"/>'+
+    '<text x="100" y="76" class="um-t">1, 3, 5, 7</text>'+
+    '<text x="200" y="124" class="um-t">2, 4, 6</text>'+
+    '<text x="165" y="160" text-anchor="middle" class="um-t">один проход - около 450 м; седьмой заканчивается на Марве</text>'+
+    '<text x="165" y="22" text-anchor="middle" class="um-t">Начинаем на Сафе</text>'+
+  '</svg>',
+  miqat:'<svg viewBox="0 0 320 300" class="um-svg" role="img" aria-label="Схема микатов вокруг Мекки">'+
+    '<path d="M0 0 L60 0 Q 40 90 58 150 Q 72 210 110 300 L0 300 Z" fill="rgba(90,140,200,.14)"/>'+
+    '<text x="14" y="270" class="um-t" style="fill:#5A8CC8">Красное море</text>'+
+    '<polygon points="150,34 72,112 150,286 232,272 290,190 262,104" fill="rgba(212,175,55,.06)" stroke="var(--accent-ink)" stroke-dasharray="5 4"/>'+
+    '<circle cx="178" cy="194" r="8" fill="#D4AF37" stroke="#1B1B1F" stroke-width="2"/>'+
+    '<text x="178" y="216" text-anchor="middle" class="um-t" style="font-weight:700">Мекка</text>'+
+    '<circle cx="150" cy="34" r="5" fill="var(--accent-ink)"/><text x="160" y="30" class="um-t">Зуль-Хулайфа (Медина) ~450 км</text>'+
+    '<circle cx="72" cy="112" r="5" fill="var(--accent-ink)"/><text x="80" y="108" class="um-t">аль-Джухфа (Рабиг) ~190 км</text>'+
+    '<circle cx="262" cy="104" r="5" fill="var(--accent-ink)"/><text x="258" y="94" text-anchor="end" class="um-t">Зату Ирк ~95 км</text>'+
+    '<circle cx="290" cy="190" r="5" fill="var(--accent-ink)"/><text x="286" y="178" text-anchor="end" class="um-t">Карн аль-Маназиль ~80 км</text>'+
+    '<circle cx="232" cy="272" r="5" fill="var(--accent-ink)"/><text x="226" y="290" text-anchor="end" class="um-t">Ялямлям ~100 км</text>'+
+    '<circle cx="84" cy="196" r="5" fill="#C0392B"/><text x="92" y="200" class="um-t" style="fill:#C0392B">Джидда - внутри миката</text>'+
+    '<path d="M 30 18 Q 50 110 80 188" fill="none" stroke="#C0392B" stroke-width="2" stroke-dasharray="3 4"/>'+
+    '<text x="20" y="16" class="um-t" style="fill:#C0392B">✈ ихрам до посадки</text>'+
+  '</svg>'
+};
+
+/* ---------- главы ---------- */
+var UM_SECS = [
+  {id:"about", ic:"۞", n:"Коротко"},
+  {id:"season", ic:"☼", n:"Когда ехать"},
+  {id:"prep", ic:"✓", n:"Подготовка"},
+  {id:"pack", ic:"◫", n:"Что взять с собой"},
+  {id:"ihram", ic:"◌", n:"Ихрам и микат"},
+  {id:"tawaf", ic:"↺", n:"Таваф"},
+  {id:"say", ic:"⇄", n:"Са'й"},
+  {id:"hair", ic:"✂", n:"Волосы"},
+  {id:"madina", ic:"☾", n:"Медина"},
+  {id:"women", ic:"❁", n:"Женщинам"},
+  {id:"mist", ic:"!", n:"Ошибки"},
+  {id:"help", ic:"?", n:"Если что-то не так"}
+];
+
+var UM_PREP = [
+  ["Документы и виза", [
+    "Загранпаспорт действует не меньше 6 месяцев после даты возвращения",
+    "Виза: туристическая электронная или виза для умры через лицензированного оператора - условия и сроки проверить на официальном сайте перед покупкой билетов",
+    "Прививка от менингококковой инфекции (ACWY) и справка - уточнить, требуется ли на даты поездки",
+    "Медицинская страховка на всю поездку",
+    "Приложение Nusuk: учётная запись, разрешения (на Рауду в Медине, на умру - если требуется в ваши даты)"
+  ]],
+  ["Билеты и жильё", [
+    "Решить маршрут: сначала Мекка (прилёт в Джидду, ихрам до посадки) или сначала Медина (ихрам в Зуль-Хулайфе)",
+    "Гостиница как можно ближе к Хараму: каждые 500 метров - это ходьба в жару пять раз в день",
+    "Трансфер или поезд Харамайн (аэропорт Джидды - Мекка - Медина): время и билеты заранее",
+    "Если едете с группой - телефон руководителя и название гостиницы на арабском записаны на бумаге"
+  ]],
+  ["Деньги и связь", [
+    "Наличные: на 2026 год карты российских банков в Саудовской Аравии, как правило, не работают - берите доллары и меняйте на риялы на месте",
+    "Сим-карта или eSIM местного оператора - покупается в аэропорту",
+    "Близким оставить копии документов, адрес гостиницы и контакт группы"
+  ]],
+  ["Знание и сердце", [
+    "Выучить порядок умры по этому путеводителю, слова тальбии и дуа входа в мечеть",
+    "Вернуть долги или договориться о них, попросить прощения у близких",
+    "Записать список дуа: за себя, родителей, детей, умерших, за дело",
+    "Обновить намерение: ради Аллаха, а не ради фотографий и рассказов"
+  ]]
+];
+
+var UM_PACK = [
+  ["Документы", [
+    "Паспорт, распечатка визы, билеты, бронь гостиницы, страховка",
+    "Справка о прививке",
+    "Копии всего - в телефоне и на бумаге отдельно от оригиналов",
+    "Карточка гостиницы с адресом на арабском"
+  ]],
+  ["Ихрам - мужчинам", [
+    "Два комплекта ихрама (изар и рида), лучше три",
+    "Пояс с карманами для денег и документов",
+    "Сандалии, открывающие пятку и верх стопы"
+  ]],
+  ["Одежда - женщинам", [
+    "Свободная закрытая непрозрачная одежда на каждый день",
+    "Удобные хиджабы, носки",
+    "Удобная разношенная обувь - новую в дорогу не берут"
+  ]],
+  ["Гигиена без запаха", [
+    "Мыло, шампунь и дезодорант без отдушки - в ихраме ароматы запрещены",
+    "Вазелин или крем без запаха от натирания",
+    "Влажные салфетки без запаха"
+  ]],
+  ["Аптечка", [
+    "Свои лекарства с рецептами на весь срок",
+    "Пластыри от мозолей",
+    "Жаропонижающее и обезболивающее",
+    "Средство от расстройства желудка и соли для питья (регидратация)",
+    "От простуды и боли в горле: жара на улице и кондиционеры внутри",
+    "Маски на случай толпы"
+  ]],
+  ["С собой в Харам", [
+    "Маленький рюкзак или сумка через плечо",
+    "Мешок для обуви - обувь носите с собой, у входов она теряется",
+    "Бутылка для Замзама",
+    "Карманный Коран или телефон с приложением, заряд и пауэрбанк",
+    "Зонт от солнца"
+  ]],
+  ["Для намаза и поклонения", [
+    "Карманный Коран или приложение с аудио, наушники",
+    "Тасбих или счётчик в телефоне",
+    "Лёгкий складной коврик",
+    "Список дуа на бумаге: за себя, родителей, детей, умерших"
+  ]],
+  ["Тёплое и от солнца", [
+    "Кофта или лёгкая куртка: зимой ночи в Медине до 10°, в Хараме сильные кондиционеры",
+    "Головной убор от солнца (в ихраме мужчинам голову не покрывают - только зонт)",
+    "Солнцезащитный крем без запаха"
+  ]],
+  ["Деньги и связь", [
+    "Наличные доллары, мелкие купюры для первого дня",
+    "Поясная сумка или кошелёк на шнурке",
+    "Зарядка, пауэрбанк, переходник для розеток британского типа",
+    "Сим-карта или eSIM - можно купить в аэропорту"
+  ]],
+  ["Еда в дорогу", [
+    "Финики и орехи",
+    "Пакетики солей для питья (регидратация)",
+    "Бутылка для воды"
+  ]],
+  ["Если с детьми", [
+    "Браслет или карточка с телефоном родителя и адресом гостиницы",
+    "Лёгкая коляска или переноска: в Хараме много ходьбы",
+    "Детские лекарства и влажные салфетки"
+  ]],
+  ["Мелочи, которые выручают", [
+    "Беруши и маска для сна",
+    "Небольшая подстилка",
+    "Ручка и блокнот",
+    "Пакеты для обуви и грязных вещей"
+  ]]
+];
+
+var UM_SEASONS = [
+  {n:"Зима", m:"декабрь - февраль", t:"Мекка: днём около 28-32°, ночью 18-20°. Медина: днём 22-25°, ночью до 10-12°.", c:"Самое комфортное время. В январе школьные каникулы - людей больше, цены выше.", tip:"Тёплая кофта для Медины и кондиционеров. Таваф можно в любое время дня."},
+  {n:"Весна", m:"март - май", t:"Мекка: 33-42°, к маю жара как летом.", c:"Людей средне, кроме праздников и Рамадана.", tip:"Таваф и са'й - рано утром или после иша."},
+  {n:"Лето", m:"июнь - август", t:"Мекка: 43-46° днём, ночью около 30°. Медина - так же жарко.", c:"Людей меньше, кроме школьных каникул. Цены на гостиницы ниже.", tip:"Всё - ночью и до 9 утра. Вода каждые полчаса, соль, головной убор (женщинам - светлый платок), тень. Мраморный пол у Каабы прохладный даже днём."},
+  {n:"Осень", m:"сентябрь - ноябрь", t:"Мекка: 35-43°, к ноябрю мягче.", c:"После сезона хаджа умра снова открыта, людей немного.", tip:"Сентябрь ещё жаркий - режим как летом."},
+  {n:"Рамадан", m:"даты сдвигаются на 11 дней каждый год", t:"В 2027 году Рамадан приходится на февраль - март, погода мягкая.", c:"Больше всего людей в году, особенно последние десять ночей. Гостиницы у Харама бронируют за месяцы.", tip:"«Умра в Рамадан равна хаджу» (аль-Бухари, Муслим). Планируйте силы: пост, таравих, мало сна. Разрешения на Рауду почти не достать."},
+  {n:"Сезон хаджа", m:"примерно с середины шавваля до конца зуль-хиджа", t:"", c:"Для приезжих по визе умры въезд обычно закрыт или ограничен.", tip:"Точные даты каждый год объявляют заново - проверьте в Nusuk и у оператора."}
+];
+
+var UM_MIST = [
+  ["Пролетели микат без ихрама", "Кто летит в Джидду, должен войти в ихрам в самолёте: Джидда уже внутри миката. Если пересекли микат без ихрама, по шафиитскому мазхабу нужно вернуться на микат или принести жертву - спросите руководителя группы."],
+  ["Надушились после намерения", "Духи на тело - до ихрама можно. После намерения нельзя ни духи, ни ароматное мыло и салфетки."],
+  ["Начали круг не от линии Чёрного камня", "Круг считается от линии камня и заканчивается на ней. Начали раньше - этот отрезок не в счёт, прошли дальше - ничего страшного."],
+  ["Прошли внутри Хиджр Исмаил", "Полукруглая стенка у Каабы - это часть Каабы. Круг, пройденный внутри неё, не засчитывается - обходите снаружи."],
+  ["Таваф без омовения", "Таваф без омовения недействителен. Потеряли омовение посреди тавафа - обновите его и продолжайте с того места. В толпе прикосновения неизбежны - как быть по мазхабу, спросите заранее у преподавателя."],
+  ["Пробивались к Чёрному камню", "Толкаться и причинять вред ради прикосновения нельзя. Достаточно издалека повернуться к камню и поднять правую руку."],
+  ["Плечо открыто весь ихрам", "Мужчина открывает правое плечо только в тавафе. В намазе и остальное время плечи закрыты."],
+  ["Сафа - Марва - Сафа за один проход", "Сафа - Марва - это один проход, обратно - второй. Всего семь, последний заканчивается на Марве."],
+  ["Сняли ихрам до стрижки", "Умра завершается бритьём или укорачиванием волос. До этого ихрам не снимают."],
+  ["Остригли несколько волосков неправильно", "Мужчине лучше побрить всю голову или укоротить волосы по всей голове. Женщина собирает пряди и отрезает кончики примерно на длину фаланги пальца."],
+  ["Женщина в никабе и перчатках", "В ихраме женщине нельзя закрывать лицо никабом и надевать перчатки. Если рядом мужчины, можно опустить ткань, не прижимая её к лицу."],
+  ["Фото вместо дуа", "Кааба перед глазами - время мольбы. Один снимок на память и телефон в карман."]
+];
+
+var UM_HELP = [
+  ["Потерялся в Хараме", "Заранее договоритесь о месте встречи у номера ворот (например, ворота короля Фахда - номер 79) и сфотографируйте ворота, через которые вошли. Сотрудники в форме помогут, покажите им карточку гостиницы."],
+  ["Сбился со счёта кругов", "Берите меньшее число, в котором уверены, и продолжайте. В «Хадж и умра в пути» есть большая кнопка-счётчик."],
+  ["Начались месячные до тавафа", "В ихраме остаются, таваф не совершают до очищения и гусля. Если рейс раньше - это вопрос к учёному заранее, до поездки."],
+  ["Потерял омовение во время тавафа или са'я", "В тавафе - обновить омовение и продолжить с того места. Для са'я омовение желательно, но не обязательно."],
+  ["Устал или болят ноги", "Между кругами можно отдохнуть. На верхних этажах есть коляски и электроскутеры - так таваф длиннее, но свободнее."],
+  ["Жара, кружится голова", "Сразу в тень, вода, соль, прохладная ткань на шею. При спутанности сознания - к медикам Харама: они дежурят у входов."],
+  ["Нарушил запрет ихрама по незнанию", "Решение зависит от того, что именно нарушено. Не гадайте - спросите руководителя группы или преподавателя в тот же день."]
+];
+
+function umCheckList(key, groups){
+  var U = umData(), total = 0, done = 0;
+  groups.forEach(function(g){ total += g[1].length; g[1].forEach(function(x, i){ if(U.c[key + "." + g[0] + "." + i]) done++; }); });
+  return '<div class="um-prog"><b>'+done+' из '+total+'</b><div class="um-bar"><i style="width:'+(total ? Math.round(done * 100 / total) : 0)+'%"></i></div></div>'+
+    groups.map(function(g){
+      return '<div class="um-grp">'+esc(g[0])+'</div>'+g[1].map(function(x, i){
+        var k = key + "." + g[0] + "." + i, on = !!U.c[k];
+        return '<button class="um-chk'+(on ? ' on' : '')+'" data-umchk="'+esc(k)+'"><span>'+(on ? '✓' : '')+'</span><em>'+esc(x)+'</em></button>';
+      }).join("");
+    }).join("");
+}
+function umStepList(items){
+  return '<ol class="bsteps">'+items.map(function(x, k){ return '<li><span>'+(k + 1)+'</span><p>'+esc(x)+'</p></li>'; }).join("")+'</ol>';
+}
+function umDua(ar, tr, ru, src){
+  return '<div class="dua" style="background:var(--surface-2);margin-top:12px"><div class="ar" style="font-size:21px">'+esc(ar)+'</div>'+
+    (tr ? '<div class="tr">'+esc(tr)+'</div>' : '')+(ru ? '<div class="ru">'+esc(ru)+'</div>' : '')+(src ? '<div class="src">'+esc(src)+'</div>' : '')+'</div>';
+}
+function umCard(title, inner){ return '<section class="card um-card"><div class="eyebrow">'+esc(title)+'</div>'+inner+'</section>'; }
+function umP(t){ return '<p class="um-p">'+esc(t)+'</p>'; }
+function umTip(t){ return '<div class="btip">'+esc(t)+'</div>'; }
+function umWarn(t){ return '<div class="bwarn">'+esc(t)+'</div>'; }
+
+function umSection(id){
+  var h = [];
+  if(id === "about"){
+    h.push(umCard("Что такое умра", umP("Умра - малое паломничество: войти в ихрам, обойти Каабу семь раз, пройти семь раз между холмами Сафа и Марва и остричь волосы. Её можно совершить в любое время года, кроме дней, когда въезд закрыт на сезон хаджа. По шафиитскому мазхабу умра обязательна один раз в жизни для того, кто в силах, как и хадж.")+
+      '<div class="um-path">'+[["◌","Ихрам","на микате"],["↺","Таваф","7 кругов"],["⇄","Са\'й","7 проходов"],["✂","Волосы","выход из ихрама"]].map(function(s, i){
+        return '<div class="um-step"><span>'+s[0]+'</span><b>'+(i + 1)+'. '+esc(s[1])+'</b><em>'+esc(s[2])+'</em></div>'; }).join('<i class="um-step-arr">›</i>')+'</div>'+
+      umP("Сама умра на месте занимает обычно 3-5 часов, в толпу дольше.")));
+    h.push(umCard("Столпы и обязанности", umP("Столпы - без них умры нет: намерение (ихрам), таваф, са'й, бритьё или укорачивание волос и соблюдение этого порядка.")+
+      umP("Обязанности - если нарушить, умра действительна, но нужно искупление: войти в ихрам не позже миката и не нарушать запреты ихрама.")));
+    h.push(umCard("Награда", umDua("الْعُمْرَةُ إِلَى الْعُمْرَةِ كَفَّارَةٌ لِمَا بَيْنَهُمَا", "Аль-'умрату иляль-'умрати каффаратун лима байнахума", "Умра до следующей умры - искупление того, что было между ними.", "Абу Хурайра, да будет доволен им Аллах. Аль-Бухари, Муслим")+
+      umDua("عُمْرَةٌ فِي رَمَضَانَ تَعْدِلُ حَجَّةً", "'Умратун фи Рамадана та'дилю хаджжа", "Умра в Рамадан равна хаджу.", "Ибн Аббас, да будет доволен Аллах им и его отцом. Аль-Бухари, Муслим")));
+  }
+  if(id === "season"){
+    h.push('<p class="um-lead">Умру совершают круглый год. Время выбирают по трём вещам: погода, сколько людей и сколько стоит.</p>');
+    UM_SEASONS.forEach(function(s){
+      h.push('<section class="card um-season"><div class="um-season-h"><b>'+esc(s.n)+'</b><span>'+esc(s.m)+'</span></div>'+
+        (s.t ? '<div class="um-season-r"><i>☼</i><p>'+esc(s.t)+'</p></div>' : '')+
+        '<div class="um-season-r"><i>☷</i><p>'+esc(s.c)+'</p></div>'+umTip(s.tip)+'</section>');
+    });
+    h.push(umTip("Совет руководителя групп: лучшее время для первой умры - будни зимой или поздней осенью, вне каникул. Тогда хватает сил и на Медину, и на спокойный таваф."));
+  }
+  if(id === "prep"){
+    h.push(umCard("За 1-2 месяца до поездки", umCheckList("prep", UM_PREP)));
+    h.push(umWarn("Правила виз, прививок и разрешений Саудовская Аравия меняет почти каждый год. Всё, что касается документов, проверяйте на официальных сайтах и в Nusuk перед покупкой билетов."));
+  }
+  if(id === "pack"){
+    h.push(umCard("Что взять с собой", umCheckList("pack", UM_PACK)+
+      '<button class="btn sec sm" style="width:100%;margin-top:14px" data-umshare="pack">Отправить список близким</button>'));
+    h.push(umTip("Замзам: вода есть в кулерах по всему Хараму. Домой её везут в фирменных канистрах из аэропорта или магазинов у Харама - правила авиакомпании уточните заранее."));
+  }
+  if(id === "ihram"){
+    h.push(umCard("Где микат", UM_SVG.miqat+umP("Микат - граница, которую нельзя пересекать с намерением умры без ихрама. Из России летят в Джидду - она уже внутри миката, поэтому ихрам надевают до посадки. Экипаж обычно объявляет микат минут за 20-40.")+
+      umP("Кто едет сначала в Медину, входит в ихрам по дороге в Мекку, в Зуль-Хулайфе (Абьяр Али), примерно в 10 км от Медины: там мечеть с местом для омовения и переодевания.")));
+    h.push(umCard("Как войти в ихрам", umStepList([
+      "Ещё дома или в аэропорту: подстричь ногти, удалить лишние волосы, совершить гусль (если нет возможности - омовение). Духи на тело - можно, на одежду ихрама - нет.",
+      "Мужчине - надеть два несшитых полотна: изар на пояс, рида на плечи, и сандалии. Женщине - обычная закрытая одежда, лицо и кисти открыты.",
+      "Если время не запретное - два ракята ихрама. В самолёте можно без них.",
+      "На микате - намерение в сердце: «Намереваюсь совершить умру и вхожу в ихрам ради Аллаха». Можно сказать: «Ляббайка Аллахумма 'умратан».",
+      "Сразу произнести тальбию и повторять её в пути - мужчинам вслух, женщинам тихо - до начала тавафа."
+    ])+umDua("لَبَّيْكَ اللَّهُمَّ عُمْرَةً", "Ляббайка Аллахумма 'умратан", "Вот я перед Тобой, о Аллах, для умры.", "")+(typeof tripSay === "function" ? tripSay("talbiya") : "")+
+      umTip("Совет руководителя групп: мужчинам - надеть ихрам ещё в аэропорту вылета, а намерение сделать в самолёте, когда объявят микат. Переодеваться в тесном туалете самолёта трудно, и можно не успеть.")));
+    var bans = (typeof tripG === "function" ? (tripG("Чего нельзя в состоянии ихрама").list || []) : []);
+    if(bans.length) h.push(umCard("Чего нельзя в ихраме", '<ul class="um-ul">'+bans.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul>'+
+      umP((typeof tripG === "function" ? (tripG("Если запрет нарушен").p || "") : ""))));
+  }
+  if(id === "tawaf"){
+    h.push(umCard("Схема тавафа", UM_SVG.tawaf+umP("Семь кругов против часовой стрелки, Кааба всё время по левую руку. Начало и конец каждого круга - линия Чёрного камня: напротив него на стене мечети горит зелёный свет.")));
+    h.push(umCard("Вход в Масджид аль-Харам", umStepList([
+      "Проверьте омовение: без него таваф недействителен.",
+      "Войдите правой ногой с дуа входа в мечеть. Увидев Каабу, поднимите руки и сделайте дуа - своими словами, о самом важном."
+    ])+(typeof tripSay === "function" ? tripSay("mosque") : "")));
+    h.push(umCard("Как совершать таваф", umStepList([
+      "Мужчинам: перед тавафом открыть правое плечо - край рида под правую руку, на левое плечо.",
+      "Встать у линии Чёрного камня, повернуться к нему, поднять правую руку и сказать «Бисмиллях, Аллаху Акбар». Тальбию на этом прекращают.",
+      "Идти так, чтобы Кааба была слева. Мужчинам первые три круга - быстрым коротким шагом (рамаль), если позволяет толпа.",
+      "В кругах - дуа своими словами, зикр, Коран. Между Йеменским углом и Чёрным камнем читают «Раббана атина...».",
+      "У Йеменского угла, если удаётся, коснуться его рукой, без поцелуя; если далеко - ничего не делать, рукой не указывают.",
+      "После седьмого круга закрыть плечо и совершить два ракята за Макамом Ибрахима, а если тесно - в любом месте мечети. В первом ракяте - аль-Кафирун, во втором - аль-Ихлас.",
+      "Выпить Замзам, сделать дуа."
+    ])+(typeof tripSay === "function" ? tripSay("q2201") : "")+
+      umTip("Совет руководителя групп: первый таваф - ночью после иша или сразу после фаджра, так прохладнее и свободнее. На первом этаже круг около 300-400 метров, на верхних - до километра и больше.")));
+    h.push(umWarn("Хиджр Исмаил - полукруглая стенка у Каабы - часть самой Каабы. Круг, пройденный внутри неё, не засчитывается."));
+  }
+  if(id === "say"){
+    h.push(umCard("Схема са'я", UM_SVG.say+umP("Са'й - семь проходов между холмами Сафа и Марва, в память о Хаджар, искавшей воду для сына. Сафа - Марва - первый проход, обратно - второй.")));
+    var qa158 = (typeof QA !== "undefined" && typeof QSUR !== "undefined") ? QA[QSUR[1][6] + 157] : "";
+    h.push(umCard("Как совершать са'й", umStepList([
+      "Подняться на Сафа. В начале первого прохода прочитать аят о Сафа и Марве.",
+      "Повернуться к Каабе, поднять руки, трижды сказать «Аллаху акбар», произнести зикр и сделать дуа - трижды.",
+      "Идти к Марве. Мужчинам между зелёными огнями - быстрым шагом, женщинам - обычным.",
+      "На Марве - повернуться к Каабе, тот же зикр и дуа. Это один проход.",
+      "Всего семь проходов, седьмой заканчивается на Марве."
+    ])+(qa158 ? umDua(qa158, "", "Сафа и Марва - из обрядов Аллаха.", "Сура аль-Бакара, 2:158") : "")+
+      umDua("اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ، أَنْجَزَ وَعْدَهُ، وَنَصَرَ عَبْدَهُ، وَهَزَمَ الْأَحْزَابَ وَحْدَهُ",
+        "Аллаху акбар (трижды). Ля иляха илля Ллаху вахдаху ля шарика лях, ляхуль-мульку ва ляхуль-хамду ва хува 'аля кулли шай'ин кадир. Ля иляха илля Ллаху вахдах, анджаза ва'дах, ва насара 'абдах, ва хазамаль-ахзаба вахдах",
+        "Аллах велик. Нет божества, кроме одного Аллаха, у Него нет сотоварища, Ему принадлежит власть и хвала, Он над всем властен. Нет божества, кроме одного Аллаха: Он исполнил Своё обещание, помог Своему рабу и один разбил союзные войска.",
+        "Из описания хаджа Пророка ﷺ, Джабир ибн Абдуллах. Муслим")+
+      umTip("Для са'я омовение желательно, но не обязательно. Весь путь - около 3,2 км; на верхних этажах есть коляски.")));
+  }
+  if(id === "hair"){
+    h.push(umCard("Выход из ихрама", umStepList([
+      "Сразу после са'я. Мужчине лучше побрить голову целиком, можно укоротить волосы по всей голове. Салоны - в торговых рядах у выхода с Марвы.",
+      "Женщина собирает волосы и отрезает кончики примерно на длину фаланги пальца. Делает это в гостинице или в закрытом месте.",
+      "Всё: умра завершена, запреты ихрама сняты. Можно переодеться и надушиться."
+    ])+umTip("Сделайте дуа, чтобы Аллах принял. Многие в эти минуты плачут - это нормально: вы прошли путь, о котором мечтают миллионы.")));
+    h.push(umCard("Что дальше в Мекке", '<ul class="um-ul">'+[
+      "Намазы в Харам, особенно фаджр и иша",
+      "Добровольный таваф - в любое время, без са'я и стрижки",
+      "Повторная умра - многие учёные считают, что лучше больше тавафов, чем много умр подряд; спросите своего преподавателя",
+      "Перед отъездом из Мекки - прощальный таваф (у женщины в хайде - освобождена)"
+    ].map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul>'));
+  }
+  if(id === "madina"){
+    h.push(umCard("Медина - не часть умры, но сердце поездки", umP("Посещение мечети Пророка ﷺ - сунна: «Не отправляются в путь, кроме как к трём мечетям: Масджид аль-Харам, моей мечети и мечети аль-Акса» (аль-Бухари, Муслим). Намаз в мечети Пророка ﷺ лучше тысячи намазов в других мечетях, кроме Масджид аль-Харам (аль-Бухари, Муслим).")));
+    h.push(umCard("Как вести себя", umStepList([
+      "Войти правой ногой, совершить два ракята приветствия мечети.",
+      "Подойти к могиле Пророка ﷺ спокойно, без давки и громкого голоса, произнести приветствие: «Ас-саляму 'аляйка, йа Расуляллах», затем приветствовать Абу Бакра и Умара, да будет доволен ими Аллах.",
+      "Ар-Рауда - место между минбаром и комнатой Пророка ﷺ, «сад из садов Рая» (аль-Бухари, Муслим). Вход - по разрешению в Nusuk, у мужчин и женщин разное время."
+    ])));
+    h.push(umCard("Где ещё побывать", '<ul class="um-ul">'+[
+      "Мечеть Куба - первая мечеть в исламе. Намаз в ней по награде - как умра (ат-Тирмизи, Ибн Маджа). Хорошо прийти туда уже с омовением.",
+      "Кладбище аль-Баки - здесь похоронены многие сподвижники. Посещение - для назидания и дуа за них.",
+      "Гора Ухуд и могилы шахидов битвы при Ухуде."
+    ].map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul>'+
+      umTip("Если умра после Медины: ихрам - в Зуль-Хулайфе (Абьяр Али) по дороге в Мекку. Возьмите ихрам в автобус или поезд.")));
+  }
+  if(id === "women"){
+    h.push(umCard("Что важно знать женщине", '<ul class="um-ul">'+[
+      "Одежда ихрама - обычная закрытая свободная, любого неброского цвета. Лицо и кисти открыты: никаб и перчатки в ихраме запрещены.",
+      "Тальбию произносят тихо. В тавафе не ускоряют шаг и не открывают плечо, между зелёными огнями - обычным шагом.",
+      "Хайд или нифас: в ихрам входить можно (гусль для чистоты желателен), таваф - только после очищения, са'й - только после тавафа.",
+      "Таблетки для отсрочки месячных - вопрос к врачу и преподавателю заранее.",
+      "Волосы - кончики на длину фаланги пальца, в закрытом месте.",
+      "Намаз в Хараме - в женских местах, не в рядах мужчин.",
+      "Поездка без махрама: мнения учёных различаются, особенно для добровольной умры. Обсудите свой случай с преподавателем."
+    ].map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul>'));
+  }
+  if(id === "mist"){
+    h.push('<p class="um-lead">Двенадцать ошибок, которые руководители групп видят чаще всего.</p>');
+    UM_MIST.forEach(function(m, i){
+      h.push('<details class="card um-q"><summary><span>'+(i + 1)+'</span>'+esc(m[0])+'</summary><p>'+esc(m[1])+'</p></details>');
+    });
+  }
+  if(id === "help"){
+    UM_HELP.forEach(function(m){
+      h.push('<details class="card um-q"><summary><span>?</span>'+esc(m[0])+'</summary><p>'+esc(m[1])+'</p></details>');
+    });
+    h.push(umWarn("В спорных случаях решение даёт учёный, а не приложение. Возьмите в поездку телефон преподавателя или руководителя группы."));
+  }
+  return h.join("");
+}
+
+/* карточка-вход в путеводитель: наверху «Хаджа» */
+function umPromo(){
+  return '<button class="um-promo" data-open="umrah"><span class="um-promo-ar">عُمْرَة</span>'+
+    '<span class="um-promo-t"><b>УМРА - малый хадж</b><span>Путеводитель с чек-листом: когда ехать, что взять, ихрам, таваф, са\'й</span></span>'+
+    '<span class="um-promo-go">›</span></button>';
+}
+/* вкладки раздела «Хадж и Умра» */
+function hajjTabs(on){
+  return '<div class="hj-tabs">'+
+    '<button class="'+(on === "hajj" ? "on" : "")+'" data-hjtab="hajj"><b>Основной хадж</b><span>зуль-хиджа, 6 дней</span></button>'+
+    '<button class="'+(on === "umrah" ? "on" : "")+'" data-hjtab="umrah"><b>Умра</b><span>малый хадж, круглый год</span></button></div>';
+}
+/* список вещей текстом: отправить в мессенджер или скопировать */
+function umShareText(){
+  var U = umData(), out = ["Что взять в умру (из приложения RIZQ)", ""];
+  UM_PACK.forEach(function(g){
+    out.push(g[0].toUpperCase());
+    g[1].forEach(function(x, i){ out.push((U.c["pack." + g[0] + "." + i] ? "[x] " : "[ ] ") + x); });
+    out.push("");
+  });
+  out.push("rizq.javattigroup.ru/?open=umrah");
+  return out.join("\n");
+}
+function umShare(){
+  var txt = umShareText();
+  if(navigator.share){ navigator.share({ title: "Что взять в умру", text: txt }).catch(function(){}); return; }
+  try{ navigator.clipboard.writeText(txt).then(function(){ toast("Список скопирован - вставьте в мессенджер"); }, function(){ toast("Не получилось скопировать"); }); }
+  catch(e){ toast("Не получилось скопировать"); }
+}
+function viewUmrah(){
+  var cur = V.umSec || "about", idx = 0;
+  UM_SECS.forEach(function(s, i){ if(s.id === cur) idx = i; });
+  var U = umData(), prepN = 0, prepT = 0, packN = 0, packT = 0;
+  UM_PREP.forEach(function(g){ prepT += g[1].length; g[1].forEach(function(x, i){ if(U.c["prep." + g[0] + "." + i]) prepN++; }); });
+  UM_PACK.forEach(function(g){ packT += g[1].length; g[1].forEach(function(x, i){ if(U.c["pack." + g[0] + "." + i]) packN++; }); });
+  var h = ['<div class="stack">'];
+  h.push(hajjTabs("umrah"));
+  h.push('<section class="um-hero"><div class="um-hero-ar">عُمْرَة</div>'+
+    '<div class="um-hero-t">Умра - малый хадж</div>'+
+    '<div class="um-hero-s">Полный путеводитель: когда ехать, что взять, как совершать шаг за шагом</div>'+
+    '<div class="um-hero-chips"><span>4 шага</span><span>3-5 часов</span><span>круглый год</span></div>'+
+    '<div class="um-hero-prog"><button data-umsec="prep">Сборы · '+prepN+'/'+prepT+'</button><button data-umsec="pack">Что взять · '+packN+'/'+packT+'</button>'+
+      '<button data-umtrip="1">Считать круги ›</button></div></section>');
+  h.push('<div class="um-nav" id="umNav">'+UM_SECS.map(function(s){
+    return '<button class="'+(s.id === cur ? 'on' : '')+'" data-umsec="'+s.id+'"><i>'+esc(s.ic)+'</i>'+esc(s.n)+'</button>';
+  }).join("")+'</div>');
+  h.push('<div class="um-sec-h"><span>'+(idx + 1)+' / '+UM_SECS.length+'</span><b>'+esc(UM_SECS[idx].n)+'</b></div>');
+  h.push(umSection(cur));
+  var next = UM_SECS[idx + 1], prev = UM_SECS[idx - 1];
+  h.push('<div class="um-foot">'+
+    (prev ? '<button class="btn sec sm" data-umsec="'+prev.id+'">‹ '+esc(prev.n)+'</button>' : '<span></span>')+
+    (next ? '<button class="btn sm" data-umsec="'+next.id+'">'+esc(next.n)+' ›</button>' : '<button class="btn sm" data-umtrip="1">Считать круги на месте ›</button>')+'</div>');
+  h.push('<p class="disclaimer">По шафиитскому мазхабу. Правила въезда, визы и разрешения меняются - проверяйте их перед поездкой. Спорные вопросы решайте с преподавателем или руководителем группы.</p>');
+  h.push('</div>');
+  return h.join("");
+}
+
 function viewHajjTrip(){
   var t = tripData(), st = tripStages(), cur = tripCurrent();
   if(V.tripOpen === undefined) V.tripOpen = cur;
@@ -10237,6 +10901,7 @@ function viewHajjTrip(){
     s.items.forEach(function(it){ if(it.only) return; total++; if(tripItemDone(s, it)) done++; }); });
 
   var h = ['<div class="stack">'];
+  h.push(umPromo());
   h.push('<div style="display:flex;gap:8px">'+
     '<button class="btn sm'+(t.mode==="umra"?"":" sec")+'" style="flex:1" data-tripmode="umra">Умра</button>'+
     '<button class="btn sm'+(t.mode==="hajj"?"":" sec")+'" style="flex:1" data-tripmode="hajj">Хадж таматту\'</button></div>');
@@ -10380,7 +11045,7 @@ function viewSalahPics(){
       '<p style="font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:10px 0 0">В трёх- и четырёхракятных намазах после первого ташаххуда встают на третий ракят, а салават и салям - в последнем сидении.</p></section>');
   }
 
-  h.push('<p class="disclaimer">Порядок по шафиитскому мазхабу, как в руководстве «Намаз пошагово». Проверить произношение лучше вживую у преподавателя. Ребёнка учат постепенно и с радостью: сначала он просто встаёт рядом.</p>');
+  h.push('<p class="disclaimer">Порядок по шафиитскому мазхабу, как в разделе «Намаз». Проверить произношение лучше вживую у преподавателя. Ребёнка учат постепенно и с радостью: сначала он просто встаёт рядом.</p>');
   h.push('</div>');
   return h.join("");
 }
@@ -11470,7 +12135,7 @@ var TAJWID = [
 var GUIDES = {
 
 salah: {
-  n:"Намаз пошагово",
+  n:"Намаз",
   sub:"Порядок молитвы и что читать в каждом положении",
   madhab:"Порядок дан по шафиитскому мазхабу - он принят в Дагестане и на Северном Кавказе. Отличия ханафитского мазхаба отмечены отдельно.",
   blocks:[
@@ -11976,71 +12641,152 @@ GUIDES.duatimes = {
 
 /* Дополнительные руководства: сунна-намазы, пост, хадж. Шафиитский мазхаб. */
 GUIDES.sunnah = {
-  n:"Сунна-намазы",
-  sub:"Какие бывают, сколько ракятов и зачем",
-  madhab:"По шафиитскому мазхабу. Число ракятов в других мазхабах может отличаться.",
+  n:"Суннат-намазы",
+  sub:"Все добровольные намазы: когда, сколько ракятов, что читать и как начать",
+  madhab:"По шафиитскому мазхабу. В других мазхабах число ракятов и некоторые правила отличаются - если вы следуете другому мазхабу, сверьтесь с преподавателем.",
   blocks:[
-    {div:"Зачем"},
-    {t:"Зачем их совершать", p:"Добровольные намазы восполняют то, чего не хватило в обязательных, и приближают раба к Всевышнему. Награда за них обещана прямо."},
+    {div:"Главное"},
+    {t:"Что такое суннат-намаз", p:"Суннат (сунна, нафиль) - добровольный намаз сверх пяти обязательных. За него есть награда, за его оставление нет греха. Одни суннаты Пророк ﷺ совершал постоянно - их называют подтверждёнными (муаккада), другие - время от времени.",
+     tip:"В Судный день сначала спросят с обязательного намаза, а недостающее в нём, по хадису, восполнят добровольными. Поэтому сунна - это не украшение, а запас. Передают ат-Тирмизи и ан-Насаи."},
     {t:"Дом в Раю за двенадцать ракятов",
      ar:"مَنْ صَلَّى اثْنَتَيْ عَشْرَةَ رَكْعَةً فِي يَوْمٍ وَلَيْلَةٍ بُنِيَ لَهُ بِهِنَّ بَيْتٌ فِي الْجَنَّةِ",
      tr:"Ман салля иснатай 'ашрата рак'атан фи яумин ва лайлатин, буния ляху бихинна байтун филь-джанна",
      ru:"Кто совершит за сутки двенадцать ракятов добровольного намаза, тому за них будет построен дом в Раю.",
      src:"Умм Хабиба, да будет доволен ею Аллах. Муслим"},
-    {t:"Раватиб - двенадцать ракятов при обязательных намазах", p:"Постоянные добровольные намазы, которые Пророк ﷺ не оставлял никогда, ни дома, ни в пути. Их точный порядок передала Умм Хабиба.", rows:[
-      ["До зухра","4 ракята"],
-      ["После зухра","2 ракята"],
-      ["После магриба","2 ракята"],
-      ["После иша","2 ракята"],
-      ["До фаджра","2 ракята"]
-    ], rep:"Итого двенадцать ракятов в сутки. Умм Хабиба, да будет доволен ею Аллах. Ат-Тирмизи, хадис хороший достоверный"},
-    {t:"Четыре ракята перед асром", p:"Отдельная сунна, не входящая в число двенадцати - её можно совершать дополнительно.",
-     ar:"رَحِمَ اللَّهُ امْرَأً صَلَّى قَبْلَ الْعَصْرِ أَرْبَعًا",
-     tr:"Рахима Ллаху имра'ан салля кабляль-'асри арба'ан",
-     ru:"Да смилуется Аллах над тем, кто помолится четыре ракята перед аср.",
-     src:"Ибн Умар, да будет доволен Аллах им и его отцом. Абу Дауд, ат-Тирмизи, хадис хороший"},
+    {t:"Лучше дома", p:"Обязательный намаз мужчине лучше совершать в мечети, а суннаты - дома: так дом наполняется молитвой, и её видят дети.",
+     ar:"أَفْضَلُ صَلَاةِ الْمَرْءِ فِي بَيْتِهِ إِلَّا الْمَكْتُوبَةَ",
+     tr:"Афдалю саляти-ль-мар'и фи байтихи илля-ль-мактуба",
+     ru:"Лучший намаз человека - в его доме, кроме обязательного.",
+     src:"Зайд ибн Сабит, да будет доволен им Аллах. Аль-Бухари, Муслим"},
+
+    {div:"Раватиб - при пяти намазах"},
+    {t:"Все раватиб одной таблицей", p:"Раватиб - суннаты, привязанные к обязательным намазам. Подтверждённых десять ракятов, ещё двенадцать - желательные.", rows:[
+      ["Фаджр, до","2 - подтверждённые"],
+      ["Зухр, до","2 подтверждённые + 2"],
+      ["Зухр, после","2 подтверждённые + 2"],
+      ["Аср, до","4 - желательные"],
+      ["Магриб, до","2 лёгких - желательные"],
+      ["Магриб, после","2 - подтверждённые"],
+      ["Иша, до","2 - желательные"],
+      ["Иша, после","2 - подтверждённые"]
+    ], rep:"Десять подтверждённых ракятов передал Ибн Умар, да будет доволен Аллах им и его отцом (аль-Бухари, Муслим). Четыре перед зухром - в хадисе Умм Хабибы о двенадцати ракятах."},
     {t:"Два ракята перед фаджром", p:"Самый ценный из добровольных намазов, и его не оставляли даже в пути.",
      ar:"رَكْعَتَا الْفَجْرِ خَيْرٌ مِنَ الدُّنْيَا وَمَا فِيهَا",
      tr:"Рак'атальфаджри хайрун минад-дунья ва ма фиха",
      ru:"Два ракята перед рассветным намазом лучше этого мира и всего, что в нём.",
      src:"Аиша, да будет доволен ею Аллах. Муслим"},
+    {t:"Фаджр: как совершать сунну", steps:[
+      "После азана фаджра и до обязательного намаза совершите два лёгких ракята.",
+      "В первом ракяте после аль-Фатихи - сура аль-Кафирун, во втором - аль-Ихлас. Так читал Пророк ﷺ (Муслим).",
+      "После сунны желательно ненадолго прилечь на правый бок, если это не мешает успеть на фард (аль-Бухари)."
+    ], tip:"Опоздали и икама уже началась - вставайте на обязательный намаз, а сунну совершите после него: по шафиитскому мазхабу её время не прошло до восхода."},
+    {t:"Зухр", p:"Перед зухром - четыре ракята, лучше двумя парами, каждая со своим саламом. После зухра - два подтверждённых ракята и ещё два желательных. Кто совершает четыре до и четыре после, тому в хадисе обещано, что его не коснётся огонь (Абу Дауд, ат-Тирмизи)."},
+    {t:"Четыре ракята перед асром", p:"Отдельная сунна, не входящая в число двенадцати - её можно совершать дополнительно.",
+     ar:"رَحِمَ اللَّهُ امْرَأً صَلَّى قَبْلَ الْعَصْرِ أَرْبَعًا",
+     tr:"Рахима Ллаху имра'ан салля кабляль-'асри арба'ан",
+     ru:"Да смилуется Аллах над тем, кто помолится четыре ракята перед аср.",
+     src:"Ибн Умар, да будет доволен Аллах им и его отцом. Абу Дауд, ат-Тирмизи, хадис хороший"},
+    {t:"Магриб", p:"Между азаном и икамой магриба желательны два лёгких ракята. После обязательного - два подтверждённых.",
+     ar:"صَلُّوا قَبْلَ صَلَاةِ الْمَغْرِبِ",
+     tr:"Саллю кабля саляти-ль-магриб",
+     ru:"Молитесь перед намазом магриб.",
+     src:"Абдуллах ибн Мугаффаль, да будет доволен им Аллах. Аль-Бухари"},
+    {t:"Иша и общее правило", p:"После иша - два подтверждённых ракята, до иша - два желательных. Общее правило для всех намазов: между азаном и икамой есть время для двух ракятов.",
+     ar:"بَيْنَ كُلِّ أَذَانَيْنِ صَلَاةٌ",
+     tr:"Байна кулли азанайни саля",
+     ru:"Между каждыми двумя призывами (азаном и икамой) - намаз.",
+     src:"Абдуллах ибн Мугаффаль, да будет доволен им Аллах. Аль-Бухари, Муслим"},
+    {t:"Пятничный намаз", p:"Суннаты джума - как у зухра: до него два и ещё два ракята, после - два и ещё два. После джума Пророк ﷺ велел совершать четыре.",
+     ar:"إِذَا صَلَّى أَحَدُكُمُ الْجُمُعَةَ فَلْيُصَلِّ بَعْدَهَا أَرْبَعًا",
+     tr:"Иза салля ахадукуму-ль-джум'ата фаль-юсалли ба'даха арба'а",
+     ru:"Когда кто-то из вас совершит пятничный намаз, пусть после него помолится четыре ракята.",
+     src:"Абу Хурайра, да будет доволен им Аллах. Муслим"},
 
-    {div:"Ночные намазы - отдельно от двенадцати"},
-    {t:"Витр и тахаджуд", p:"Это не часть раватиб: витр и тахаджуд совершаются ночью, отдельно, и у каждого свой счёт ракятов.", rows:[
-      ["Витр","нечётное число: от 1 до 11"],
-      ["Тахаджуд","произвольно, часто 2-8 ракятов"]
-    ]},
+    {div:"Ночные намазы"},
     {t:"Витр", p:"Совершается после иша и до рассвета. Пусть он будет последним, что вы совершаете ночью.",
      ar:"اجْعَلُوا آخِرَ صَلَاتِكُمْ بِاللَّيْلِ وِتْرًا",
      tr:"Идж'алю ахира салятикум билляйли витра",
      ru:"Пусть последним вашим ночным намазом будет витр.",
      src:"Аль-Бухари, Муслим"},
+    {t:"Витр: сколько и как", list:[
+      "Самое малое - один ракят, совершенное - три, самое большее - одиннадцать.",
+      "Три ракята лучше разделить: два ракята с саламом, затем один отдельно.",
+      "В трёх ракятах читают после аль-Фатихи: аль-А'ля, аль-Кафирун, затем аль-Ихлас (Абу Дауд, ат-Тирмизи). По шафиитскому мазхабу в третьем к аль-Ихлас добавляют аль-Фаляк и ан-Нас.",
+      "Время - после иша и до рассвета. Кто уверен, что проснётся, пусть оставит витр на конец ночи, это лучше; кто боится проспать - совершит перед сном (Муслим).",
+      "Во второй половине Рамадана в последнем ракяте витра читают дуа кунут."
+    ]},
     {t:"Тахаджуд - ночной намаз", p:"Совершается после сна, в последнюю треть ночи. Время, когда мольба принимается особенно.",
      ar:"أَفْضَلُ الصَّلَاةِ بَعْدَ الْفَرِيضَةِ صَلَاةُ اللَّيْلِ",
      tr:"Афдалюс-саляти ба'даль-фаридати салятуль-лейль",
      ru:"Лучший намаз после обязательного - намаз ночной.",
      src:"Абу Хурайра, да будет доволен им Аллах. Муслим"},
+    {t:"Тахаджуд: как совершать", list:[
+      "Тахаджуд - это намаз после сна. Хоть немного поспать, затем встать - и уже время тахаджуда.",
+      "Ночной намаз совершают по два ракята с саламом: «Ночной намаз - по два, по два» (аль-Бухари, Муслим).",
+      "Начните с двух лёгких ракятов - так советовал Пророк ﷺ (Муслим).",
+      "Лучшее время - последняя треть ночи: в хадисе сказано, что тогда Аллах спрашивает, кто взывает к Нему, чтобы ответить (аль-Бухари, Муслим).",
+      "Витр ставьте последним, после тахаджуда. Если витр уже был до сна, повторять его не нужно."
+    ], tip:"Два ракята за пятнадцать минут до фаджра - уже тахаджуд. Поставьте будильник на 20 минут раньше обычного на неделю и посмотрите, как изменится утро."},
+    {t:"Тарауих", p:"Ночной намаз Рамадана после иша. По шафиитскому мазхабу - двадцать ракятов, по два с саламом, в мечети или дома. После тарауиха - витр. Если нет сил на двадцать, совершайте сколько сможете: лучше постоянно восемь, чем урывками двадцать."},
 
-    {div:"Остальные добровольные"},
+    {div:"Дневной намаз"},
     {t:"Духа - утренний намаз", p:"От 2 до 8 ракятов, примерно через двадцать минут после восхода и до того, как солнце встанет в зенит. Хорошее время - когда день уже начался, а дела ещё не поглотили.",
      ar:"مَنْ صَلَّى الضُّحَى ثِنْتَىْ عَشْرَةَ رَكْعَةً بَنَى اللَّهُ لَهُ قَصْرًا فِي الْجَنَّةِ",
      tr:"Ман салляд-духа синтай 'ашрата рак'атан бана Ллаху ляху каср ан филь-джанна",
      ru:"Кто совершит духа в двенадцать ракятов, тому Аллах построит дворец в Раю.",
      src:"Абу Хурайра, да будет доволен им Аллах. Ат-Тирмизи, хадис хороший"},
+    {t:"Духа: когда лучше", p:"Время духа - примерно через 15-20 минут после восхода и до того, как солнце встанет в зенит. Лучшее время - когда солнце уже греет, ближе к середине утра.",
+     ar:"صَلَاةُ الْأَوَّابِينَ حِينَ تَرْمَضُ الْفِصَالُ",
+     tr:"Саляту-ль-аввабина хина тармаду-ль-фисаль",
+     ru:"Намаз обращающихся к Аллаху - когда верблюжата начинают чувствовать жар земли.",
+     src:"Зайд ибн Аркам, да будет доволен им Аллах. Муслим",
+     rep:"Совершают от 2 до 8 ракятов, по два с саламом. Намаз, который совершают сразу после восхода, по шафиитскому мазхабу - это начало времени духа."},
+
+    {div:"Намазы по случаю"},
     {t:"Тахийят аль-масджид", p:"Два ракята при входе в мечеть, до того как сесть. Это приветствие дому Аллаха.",
      ar:"إِذَا دَخَلَ أَحَدُكُمُ الْمَسْجِدَ فَلَا يَجْلِسْ حَتَّى يُصَلِّيَ رَكْعَتَيْنِ",
      tr:"Иза дахаля ахадукуму-ль-масджида фаля яджлис хатта юсаллия рак'атайн",
      ru:"Если кто-либо из вас входит в мечеть, пусть не садится, пока не совершит два ракята.",
      src:"Абу Катада, да будет доволен им Аллах. Аль-Бухари, Муслим"},
+    {t:"После омовения", p:"Два ракята после каждого омовения. Пророк ﷺ спросил Биляля, за какое дело он слышал его шаги в Раю, и тот ответил: после каждого омовения я молюсь столько, сколько мне суждено (аль-Бухари, Муслим)."},
     {t:"Истихара - намаз о выборе", p:"Два ракята, когда нужно принять решение и нет ясности. После них читается дуа.",
      ar:"اللَّهُمَّ إِنِّي أَسْتَخِيرُكَ بِعِلْمِكَ وَأَسْتَقْدِرُكَ بِقُدْرَتِكَ وَأَسْأَلُكَ مِنْ فَضْلِكَ الْعَظِيمِ، فَإِنَّكَ تَقْدِرُ وَلَا أَقْدِرُ وَتَعْلَمُ وَلَا أَعْلَمُ وَأَنْتَ عَلَّامُ الْغُيُوبِ",
      tr:"Аллахумма инни астахирука би'ильмик, ва астакдирука бикудратик, ва ас'алюка мин фадликаль-'азым, фаиннака такдиру ва ля акдир, ва та'ляму ва ля а'лям, ва Анта 'аллямуль-гуюб",
      ru:"О Аллах, я прошу Тебя указать мне благое Твоим знанием и прошу помощи Твоим могуществом, и прошу Твоей великой милости. Ведь Ты можешь, а я не могу, Ты знаешь, а я не знаю, и Ты - Знающий сокровенное.",
      src:"Джабир, да будет доволен им Аллах. Аль-Бухари"},
-    {t:"Салят аль-хаджа - при нужде", p:"Два ракята, когда есть просьба к Всевышнему. После них - хвала Аллаху, салават Пророку ﷺ и своя мольба."},
-    {t:"Тауба - покаянный намаз", p:"Два ракята после совершённого греха, а затем искреннее покаяние и просьба о прощении."},
-    {t:"Тарауих", p:"Ночной намаз в Рамадан, после иша. По шафиитскому мазхабу - двадцать ракятов, у некоторых других - восемь. Совершается как в мечети, так и дома."},
-    {t:"Если пропущено", p:"Пропущенные сунна-намазы восполнять не обязательно, но желательно - особенно два ракята фаджра и витр. Постоянство важнее количества: два ракята каждый день лучше, чем двадцать раз в году."}
+    {t:"Тауба - покаянный намаз", p:"Совершив грех, человек делает омовение, молится два ракята и просит прощения - и в хадисе сказано, что Аллах простит его. Передают Абу Дауд и ат-Тирмизи. После намаза - искреннее раскаяние, решение не возвращаться и, если обижен человек, возвращение его права."},
+    {t:"Салят аль-хаджа - при нужде", p:"Два ракята, когда есть просьба к Всевышнему. После них - хвала Аллаху, салават Пророку ﷺ и своя мольба своими словами."},
+    {t:"По возвращении из поездки", p:"Вернувшись из дороги, Пророк ﷺ сначала шёл в мечеть и молился там два ракята (аль-Бухари, Муслим). Хорошая привычка и сегодня: прежде чем раскладывать вещи - два ракята."},
+    {t:"Праздничный намаз (Ид)", p:"Два ракята утром в день Ураза-байрама и Курбан-байрама, после восхода солнца на высоту копья и до зенита. В первом ракяте после вступительного такбира - ещё семь такбиров, во втором - пять. Затем хутба."},
+    {t:"При затмении", p:"Когда затмевается солнце или луна, совершают два ракята, в каждом по два стояния и два поясных поклона (аль-Бухари, Муслим). Желательно в мечети, с длинным чтением, затем - дуа, садака и поминание Аллаха."},
+    {t:"О дожде (истиска)", p:"В засуху совершают два ракята, как праздничный намаз, затем хутба и мольба о дожде. До этого желательно поститься, раздать садаку и помириться с теми, с кем в ссоре."},
+
+    {div:"Как совершать"},
+    {t:"Двухракятный суннат шаг за шагом", steps:[
+      "Намерение в сердце: «Совершаю два ракята сунны перед фаджром (или другого намаза) ради Аллаха». Произнести его шёпотом по шафиитскому мазхабу желательно - это помогает сердцу.",
+      "Такбир «Аллаху акбар», руки к ушам, затем сложить на груди. Вступительное дуа.",
+      "Аль-Фатиха и сура или несколько аятов. Суннаты днём читают про себя, ночью - вполголоса.",
+      "Поясной поклон, выпрямление, два земных поклона - как в обязательном намазе.",
+      "Второй ракят так же, затем ташаххуд, салават Пророку ﷺ и салам направо и налево."
+    ], tip:"Четыре ракята сунны лучше совершать двумя парами, каждую с саламом. Можно и четыре подряд с одним ташаххудом посередине."},
+    {t:"Можно сидя и в дороге", p:"Суннат можно совершать сидя, даже если можете стоять, - награда при этом половина (Муслим). В поездке на транспорте добровольный намаз можно совершать сидя, лицом туда, куда едете. В поездке по шафиитскому мазхабу раватиб не отменяются, но Пророк ﷺ в пути больше всего держался двух ракятов перед фаджром и витра."},
+
+    {div:"Когда нельзя"},
+    {t:"Запретные времена", p:"В эти промежутки добровольный намаз без причины совершать нельзя:", list:[
+      "После намаза фаджр - и пока солнце не поднимется на высоту копья (примерно 15-20 минут после восхода).",
+      "Когда солнце в зените - несколько минут до времени зухра. В пятницу это время не запретно.",
+      "После намаза аср - и до заката."
+    ], rep:"Намазы, у которых есть своя причина, в эти времена совершать можно: тахийят аль-масджид, два ракята после омовения, восполнение пропущенного, намаз при затмении, джаназа. В заповедной мечети Мекки запретных времён по шафиитскому мазхабу нет."},
+
+    {div:"Как начать"},
+    {t:"Четыре недели до двенадцати ракятов", steps:[
+      "Неделя 1: только два ракята перед фаджром. Каждый день, без пропусков.",
+      "Неделя 2: добавьте два после магриба.",
+      "Неделя 3: два после иша и один ракят витра перед сном.",
+      "Неделя 4: четыре перед зухром и два после - и у вас все двенадцать ракятов из хадиса о доме в Раю."
+    ], tip:"Отмечайте суннаты в «Моём дне» на главной: видно, что получилось сегодня, и серия не даёт бросить.", jump:"go:home", jn:"Открыть «Мой день»"},
+    {t:"Если пропущено", p:"Пропущенные суннаты восполнять не обязательно, но по шафиитскому мазхабу желательно - особенно два ракята фаджра и витр. Постоянство важнее количества: два ракята каждый день лучше двадцати раз в месяц."},
+    {t:"Женщинам", p:"В дни хайда и нифаса намаз не совершается - ни обязательный, ни сунна, и восполнять суннаты этих дней не нужно. В эти дни можно поминать Аллаха, делать дуа и слушать Коран."}
   ]
 };
 
@@ -12197,8 +12943,8 @@ GUIDES.zakat = {
 };
 
 GUIDES.hajj = {
-  n:"Хадж",
-  sub:"Виды, порядок по дням, подготовка и сборы",
+  n:"Хадж и Умра",
+  sub:"Основной хадж: виды, порядок по дням, подготовка и сборы",
   madhab:"Порядок дан по шафиитскому мазхабу. Организационные детали уточняйте у своего оператора хаджа.",
   blocks:[
     {div:"Прежде хаджа"},
@@ -13371,6 +14117,45 @@ GUIDES.aqida = {
   ]
 };
 
+/* ---------- раздел «Намаз»: плитки ---------- */
+function namazHub(){
+  var T = [
+    ["open", "salahpics", "☾", "Намаз в картинках", "для новичков и детей, с озвучкой", 1],
+    ["guide", "sunnah", "✦", "Суннат-намазы", "раватиб, витр, тахаджуд, духа", 1],
+    ["guide", "istikhara", "◈", "Истихара-намаз", "попросить Аллаха выбрать лучшее", 0],
+    ["guide", "salahfix", "↺", "Ошибки и восполнение", "сахв, пропущенные, в пути", 0]
+  ];
+  return '<div class="nm-hub">'+T.map(function(x){
+    return '<button class="nm-tile'+(x[5] ? ' gold' : '')+'" data-'+x[0]+'="'+x[1]+'"><span class="nm-ic">'+x[2]+'</span>'+
+      '<b>'+esc(x[3])+'</b><span class="nm-s">'+esc(x[4])+'</span></button>';
+  }).join("")+'</div>';
+}
+/* ---------- «Сунна на день» ---------- */
+function sunnahDay(){
+  var t = null; try{ t = timesNow().t; }catch(e){}
+  function tm(k){ return t && typeof t[k] === "number" ? hhmm(t[k]) : ""; }
+  function ch(n, m){ return '<span class="sd-c'+(m ? ' m' : '')+'">'+n+'</span>'; }
+  var R = [
+    ["Фаджр", tm("fajr"), [ch(2, 1)], 2, []],
+    ["Зухр", tm("dhuhr"), [ch(2, 1), ch(2)], 4, [ch(2, 1), ch(2)]],
+    ["Аср", tm("asr"), [ch(4)], 4, []],
+    ["Магриб", tm("maghrib"), [ch(2)], 3, [ch(2, 1)]],
+    ["Иша", tm("isha"), [ch(2)], 4, [ch(2, 1)]]
+  ];
+  return '<section class="card sd">'+
+    '<div class="eyebrow">Сунна на день</div>'+
+    '<div class="sd-head"><span>до</span><span>обязательный</span><span>после</span></div>'+
+    R.map(function(r){
+      return '<div class="sd-row"><div class="sd-n"><b>'+r[0]+'</b>'+(r[1] ? '<span>'+r[1]+'</span>' : '')+'</div>'+
+        '<div class="sd-b">'+r[2].join("")+'</div><div class="sd-f">фард '+r[3]+'</div><div class="sd-a">'+r[4].join("")+'</div></div>';
+    }).join("")+
+    '<div class="sd-extra">'+
+      '<div><i>☼</i><b>Духа</b><span>утром, 2-8</span></div>'+
+      '<div><i>☾</i><b>Тахаджуд</b><span>ночью, от 2</span></div>'+
+      '<div><i>✧</i><b>Витр</b><span>последним, 1-11</span></div></div>'+
+    '<div class="sd-leg"><span>'+ch(2, 1)+' подтверждённая, Пророк ﷺ не оставлял</span><span>'+ch(2)+' желательная</span></div>'+
+  '</section>';
+}
 function viewGuide(){
   var g = GUIDES[V.p];
   if(!g) return '<div class="empty"><b>Раздел не найден</b></div>';
@@ -13383,6 +14168,9 @@ function viewGuide(){
     '<button class="btn ghost sm" style="width:100%;margin-top:13px" data-fav="' + key + '">' +
       (isFav(key) ? "★ Сохранено" : "☆ Сохранить") + '</button></section>');
 
+  if(V.p === "hajj") h.push(hajjTabs("hajj"));
+  if(V.p === "salah") h.push(namazHub());
+  if(V.p === "sunnah") h.push(sunnahDay());
   if(V.p === "aboutquran") h.push('<button class="cat-wide gold" data-guide="quranadab"><span class="cw-ic">✦</span>'+
     '<span class="cw-t"><b>Адабы к Корану</b><span>чистота, как читать, как обращаться с мусхафом</span></span><span class="cw-go">›</span></button>');
 
@@ -13424,6 +14212,11 @@ function renderBlocks(blocks){
         return '<div class="row"><span style="font-size:14px">' + esc(r[0]) + '</span>' +
           '<span class="val" style="color:var(--ink);font-weight:600">' + esc(r[1]) + '</span></div>';
       }).join("") + '</div>');
+    }
+    if(b.links){
+      s.push('<div class="blinks">' + b.links.map(function(l){
+        return '<button class="blink" data-jump="' + esc(l[3]) + '"><span class="blink-ic">' + esc(l[0]) + '</span>' +
+          '<b>' + esc(l[1]) + '</b><span class="blink-s">' + esc(l[2]) + '</span></button>'; }).join("") + '</div>');
     }
     if(b.steps){
       s.push('<ol class="bsteps">' + b.steps.map(function(x, k){
@@ -14144,7 +14937,10 @@ function rubric(id){ return RUBRICS.filter(function(r){ return r.id===id; })[0];
 function viewJournal(){
   var all = postsAll();
   var used = RUBRICS.filter(function(r){ return all.some(function(p){ return p.r===r.id; }); });
-  var list = V.rub ? all.filter(function(p){ return p.r===V.rub; }) : all;
+  var favN = all.filter(function(p){ return isFav("post:" + p.id); }).length;
+  if(V.rub === "_fav" && !favN) V.rub = "";
+  var list = V.rub === "_fav" ? all.filter(function(p){ return isFav("post:" + p.id); })
+    : V.rub ? all.filter(function(p){ return p.r===V.rub; }) : all;
   var h = ['<div class="stack">'];
 
   h.push('<div class="card flat" style="padding:13px 15px;font-size:14px;color:var(--ink-2);line-height:1.55">'+
@@ -14161,7 +14957,9 @@ function viewJournal(){
         return '<button data-rub="'+r.id+'" style="font-size:13px;padding:8px 14px;border-radius:999px;border:1px solid '+
           (on?"var(--accent)":"var(--line)")+';background:'+(on?"rgba(212,175,55,.14)":"var(--surface-2)")+
           ';color:'+(on?"var(--accent-ink)":"var(--ink-2)")+';font-weight:'+(on?"600":"400")+'">'+esc(r.n)+'</button>';
-      }).join("")+'</div>');
+      }).join("")+
+      (favN ? '<button data-rub="_fav" class="jp-favchip'+(V.rub==="_fav"?" on":"")+'">★ Сохранённые · '+favN+'</button>' : '')+
+      '</div>');
   }
 
   if(!list.length){
@@ -14169,7 +14967,8 @@ function viewJournal(){
   } else {
     list.forEach(function(p){
       var r = rubric(p.r);
-      h.push('<button class="card" style="width:100%;text-align:left" data-post="'+esc(p.id)+'">'+
+      var fk = "post:" + p.id, fon = isFav(fk);
+      h.push('<div class="card jp-card"><button class="jp-open" data-post="'+esc(p.id)+'">'+
         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
           (r? '<span style="font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;'+
               'color:var(--accent-ink);background:rgba(212,175,55,.14);padding:3px 9px;border-radius:999px">'+esc(r.n)+'</span>' : '')+
@@ -14177,7 +14976,8 @@ function viewJournal(){
         '</div>'+
         '<div style="font-family:var(--f-display);font-size:17px;font-weight:600;line-height:1.3">'+esc(p.n)+'</div>'+
         (p.s? '<div style="font-size:14px;color:var(--ink-2);margin-top:6px;line-height:1.5">'+esc(p.s)+'</div>' : '')+
-        '<div style="font-size:13px;color:var(--accent-ink);margin-top:10px;font-weight:600">Читать →</div></button>');
+        '<div style="font-size:13px;color:var(--accent-ink);margin-top:10px;font-weight:600">Читать →</div></button>'+
+        '<button class="jp-star'+(fon?" on":"")+'" data-fav="'+esc(fk)+'" aria-label="'+(fon?"Убрать из избранного":"Сохранить в избранное")+'">'+(fon?"★":"☆")+'</button></div>');
     });
   }
   h.push('</div>');
@@ -14196,6 +14996,8 @@ function viewPost(){
     '<button class="btn ghost sm" style="width:100%;margin-top:13px" data-fav="'+key+'">'+
       (isFav(key) ? "★ Сохранено" : "☆ Сохранить")+'</button></section>');
   h.push(renderBlocks(p.body || []));
+  h.push('<button class="btn'+(isFav(key)?" sec":"")+'" style="width:100%" data-fav="'+key+'">'+
+    (isFav(key) ? "★ Запись в избранном" : "☆ Сохранить запись в избранное")+'</button>');
   h.push('</div>');
   return h.join("");
 }
@@ -18132,7 +18934,7 @@ function viewSettings(){
    ============================================================ */
 var BK_KEYS = ["fav","tasbih","tasbihTotal","read","dcnt","practice","orders","readDay","done","salah","myduas","goals",
   "namesRead","daily","shukrNotes","shukr","checks","sunnah","health","pauses","qada","points","pointsDay",
-  "fin","finLimits","debts","finRepeat","fontSize","todos","quiz","azkarLifetime","qLast","qMax","qRead","notes","noteFolders","qMarks","qplan","hifz","ar","zakat","trip","kids","finReqs",
+  "fin","finLimits","debts","finRepeat","fontSize","todos","quiz","azkarLifetime","qLast","qMax","qRead","notes","noteFolders","qMarks","qplan","hifz","ar","zakat","trip","umrah","kids","finReqs",
   "name","city","method","madhab","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll"];
 
 /* Что человек потеряет, если копии не будет. Считаем по тем же данным,
@@ -19023,8 +19825,8 @@ function sheetWhy(){
         ["Перед сном","cat:sleep"],["После намаза","cat:salah"],
         ["Кибла","open:qibla"]
       ]],
-      ["Намаз пошагово и хадж", [
-        ["Намаз пошагово","guide:salah"],["Хадж","guide:hajj"]
+      ["Намаз, хадж и умра", [
+        ["Намаз","guide:salah"],["Суннат-намазы","guide:sunnah"],["Хадж и Умра","guide:hajj"],["Умра - малый хадж","open:umrah"]
       ]],
       ["Практика веры", HOWTO.map(function(g){ return [GUIDES[g[0]].n, "guide:"+g[0]]; })],
       ["Изучение", [
@@ -19179,6 +19981,7 @@ function render(){
   else if(V.view==="kids") html = viewKids();
   else if(V.view==="kidstory") html = viewKidStory();
   else if(V.view==="installment") html = viewInstallment();
+  else if(V.view==="umrah") html = viewUmrah();
   else if(V.tab==="quran") html = viewQuranHome();
   else if(V.tab==="home") html = viewHome();
   else if(V.tab==="dua") html = viewDua();
@@ -19227,7 +20030,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -19521,7 +20324,9 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.qbook!==undefined){
     S.qBook = d.qbook === "1" ? 1 : 0;
     if(qBookOn()) V.qPage = pageOf(V.qFrom || S.qLast || 0);
-    save(); render(); $screen.scrollTop = 0; return;
+    save(); render(); $screen.scrollTop = 0;
+    if(document.querySelector(".sheet [data-qfont]")) sheetQView();
+    return;
   }
   if(d.qtaj!==undefined){ S.qTajweed = qTajOn() ? 0 : 1; save(); render(); toast(S.qTajweed ? "Подсказки чтения включены" : "Подсказки выключены"); return; }
   if(d.ar){ arClick(d.ar); return; }
@@ -19535,7 +20340,15 @@ document.getElementById("app").addEventListener("click", function(ev){
     return;
   }
   if(d.mayah!==undefined){ sheetAyah(parseInt(d.mayah, 10)); return; }
-  if(d.qfont){ S.qFont = d.qfont; save(); applyQFont(); render(); toast("Шрифт: " + qFont().n); return; }
+  if(d.qview!==undefined){ sheetQView(); return; }
+  if(d.mdnretry){ var rp = parseInt(d.mdnretry, 10); MDN.err[rp] = 0; mdnLoad(rp); render(); return; }
+  if(d.qfont){
+    S.qFont = d.qfont;
+    if(d.qfont === "madina") S.qBook = 1; /* мединский мусхаф - это страницы книги */
+    save(); applyQFont(); render();
+    if(document.querySelector(".sheet [data-qfont]")) sheetQView();
+    toast("Шрифт: " + qFont().n); return;
+  }
   if(d.qtgoal){ S.qtGoal = Number(d.qtgoal) || 10; save(); render(); toast("Цель чтения: "+d.qtgoal+" мин в день"); return; }
   if(d.sc){ scoreClick(d.sc); return; }
   if(d.hlshare){ hlShare(d.hlshare); return; }
@@ -19944,6 +20757,11 @@ document.getElementById("app").addEventListener("click", function(ev){
     save(); applyFontSize(); sheetFontSize(); render();
     return;
   }
+  if(d.hjtab){ V.tab = "dua"; if(d.hjtab === "umrah") open("umrah", null); else open("guide", "hajj"); return; }
+  if(d.umshare){ umShare(); return; }
+  if(d.umsec){ V.umSec = d.umsec; render(); $screen.scrollTop = 0; return; }
+  if(d.umchk){ var UD = umData(); if(UD.c[d.umchk]) delete UD.c[d.umchk]; else UD.c[d.umchk] = todayKey(); save(); render(); return; }
+  if(d.umtrip!==undefined){ var TD = tripData(); TD.mode = "umra"; save(); open("hajjtrip", null); return; }
   if(d.why!==undefined){ sheetWhy(); return; }
   if(d.logout!==undefined){ S.name=""; S.email=""; save(); render(); toast("Вы вышли"); return; }
   if(d.saveacc!==undefined){ accountSave(); return; }

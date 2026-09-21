@@ -1,5 +1,5 @@
 /* Ризк - офлайн-кэш. Меняйте номер версии при каждом обновлении приложения. */
-var CACHE = "rizq-v145";
+var CACHE = "rizq-v146";
 var ASSETS = [
   "./",
   "./index.html",
@@ -89,6 +89,22 @@ self.addEventListener("fetch", function (e) {
   }
 
   if (url.origin !== location.origin) return;   /* аудио и внешние сайты мимо кэша */
+  /* Страницы мединского мусхафа и их шрифты не меняются (путь с номером издания v1):
+     храним их отдельно, в rizq-mushaf, - обновление приложения их не стирает,
+     и однажды открытая страница читается без интернета. */
+  if (url.pathname.indexOf("/mushaf/") !== -1) {
+    e.respondWith(
+      caches.open("rizq-mushaf").then(function (c) {
+        return c.match(e.request).then(function (hit) {
+          return hit || fetch(e.request).then(function (resp) {
+            if (resp && resp.status === 200) c.put(e.request, resp.clone());
+            return resp;
+          });
+        });
+      })
+    );
+    return;
+  }
   /* отзывы «Халяль рядом» и прочие обращения к серверу - только из сети, иначе кэш покажет вчерашние */
   if (url.pathname.indexOf("/api/") === 0) return;
 
