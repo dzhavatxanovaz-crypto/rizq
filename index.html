@@ -642,6 +642,30 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .qf-t{white-space:nowrap}
 /* ---------- книга «Девушка, которая смогла» ---------- */
 .b2-card{align-items:center}
+.rzc{padding:13px 12px 12px}
+.rzc-top{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.rzc-top b{flex:1;font-family:var(--f-display);font-size:16px;padding-left:4px}
+.rzc-nav{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);color:var(--accent-ink);font-size:20px;line-height:1}
+.rzc-now{font-size:12.5px;font-weight:600;color:var(--accent-ink);padding:0 8px}
+.rzc-w,.rzc-g{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.rzc-w span{text-align:center;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding-bottom:2px}
+.rzc-d{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;height:44px;border-radius:11px;border:1px solid transparent;background:var(--surface-2)}
+.rzc-e{height:44px}
+.rzc-d b{font-size:14px;font-weight:600;color:var(--ink)}
+.rzc-d.past b{color:var(--ink-3);font-weight:500}
+.rzc-d i{font-style:normal;min-width:16px;height:14px;padding:0 4px;border-radius:7px;font-size:10px;line-height:14px;text-align:center;font-weight:700;color:#1E2A5A;background:#D4AF37}
+.rzc-d i:empty{background:none}
+.rzc-d i.late{background:#C8553D;color:#fff}
+.rzc-d.today{border-color:var(--gold)}
+.rzc-d.sel{background:rgba(212,175,55,.2);border-color:var(--gold)}
+.rzc-day{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.rzc-dh{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:6px}
+.rzc-t{display:flex;align-items:center;gap:10px;padding:7px 2px}
+.rzc-t+.rzc-t{border-top:1px solid var(--line-soft)}
+.rzc-tt{flex:1;min-width:0;font-size:14.5px;line-height:1.4}
+.rzc-tt em{font-style:normal;font-size:12.5px;color:var(--accent-ink);margin-left:8px;font-weight:600}
+.rzc-rep{flex:none;width:26px;text-align:center;color:var(--ink-3)}
+.rzc-none{font-size:14px;color:var(--ink-3);margin:4px 2px}
 .cal-c p{font-size:14.5px;line-height:1.6;color:var(--ink-2);margin:10px 0 12px}
 .cal-h{display:flex;align-items:center;gap:12px}
 .cal-ic{flex:none;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:rgba(212,175,55,.14);color:var(--accent-ink)}
@@ -17869,6 +17893,7 @@ function viewIncome(){
     '<div class="meta"><span class="chip">'+(soon.length ? 'Есть срочные' : 'Список дел')+'</span></div>'+
     '</div></button>');
   h.push('<button class="nt-thin" data-open="notes"><span>✎</span>Заметки'+(notesAll().length ? '<em>'+notesAll().length+'</em>' : '')+'<i>›</i></button>');
+  h.push(rzCalCard());
 
   var mk = finMonthKey(new Date()), ft = finTotals(mk), fcnt = finOf(mk).length;
   h.push('<button class="course" data-open="finance">'+
@@ -18400,6 +18425,53 @@ function plParse(text){
    Семь дней с числом задач: видно, где затор, до того как он случился.
    Клик по дню фильтрует список - это заменяет календарь, которого
    на телефоне всё равно не хватает места показать целиком. */
+/* задача приходится на этот день? повторы - от срока вперёд */
+function plOnDay(x, key){
+  if(x.done || !x.due) return false;
+  if(x.due === key) return true;
+  if(!x.rep || key < x.due) return false;
+  var d = new Date(key + "T12:00:00"), s = new Date(x.due + "T12:00:00"), wd = d.getDay();
+  if(x.rep === "day") return true;
+  if(x.rep === "work") return wd > 0 && wd < 6;
+  if(x.rep === "week") return wd === s.getDay();
+  return false;
+}
+var RZ_MONTHS = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
+function rzCalCard(){
+  var now = new Date(), off = V.rzcm || 0, td = todayKey();
+  var m0 = new Date(now.getFullYear(), now.getMonth() + off, 1), y = m0.getFullYear(), m = m0.getMonth();
+  var days = new Date(y, m + 1, 0).getDate(), lead = (m0.getDay() + 6) % 7;   /* неделя с понедельника */
+  var act = (S.todos || []).filter(function(x){ return !x.done && x.due; });
+  var sel = V.rzcd || (off === 0 ? td : "");
+  var cells = [];
+  for(var b = 0; b < lead; b++) cells.push('<div class="rzc-e"></div>');
+  for(var d = 1; d <= days; d++){
+    var key = y + "-" + pad(m + 1) + "-" + pad(d);
+    var n = act.filter(function(x){ return plOnDay(x, key); }).length;
+    var late = key < td && act.some(function(x){ return x.due === key; });
+    cells.push('<button class="rzc-d'+(key === td ? ' today' : '')+(key === sel ? ' sel' : '')+(key < td ? ' past' : '')+'" data-rzcd="'+key+'">'+
+      '<b>'+d+'</b>'+(n ? '<i class="'+(late ? 'late' : '')+'">'+(n > 9 ? '9+' : n)+'</i>' : '<i></i>')+'</button>');
+  }
+  var h = '<section class="card rzc"><div class="rzc-top">'+
+    '<button class="rzc-nav" data-rzcm="-1" aria-label="Предыдущий месяц">‹</button>'+
+    '<b>'+RZ_MONTHS[m]+' '+y+'</b>'+
+    (off ? '<button class="rzc-now" data-rzcm="0">Сегодня</button>' : '')+
+    '<button class="rzc-nav" data-rzcm="1" aria-label="Следующий месяц">›</button></div>'+
+    '<div class="rzc-w">'+["пн","вт","ср","чт","пт","сб","вс"].map(function(w){ return '<span>'+w+'</span>'; }).join("")+'</div>'+
+    '<div class="rzc-g">'+cells.join("")+'</div>';
+  if(sel){
+    var list = act.filter(function(x){ return plOnDay(x, sel); }).sort(function(a, b2){ return (a.tm || "99") < (b2.tm || "99") ? -1 : 1; });
+    var dl = new Date(sel + "T12:00:00").toLocaleDateString("ru-RU", { weekday:"long", day:"numeric", month:"long" });
+    h += '<div class="rzc-day"><div class="rzc-dh">'+esc(dl)+'</div>'+
+      (list.length ? list.map(function(x){
+        var cur = x.due === sel;   /* отметить можно только ближайший раз */
+        return '<div class="rzc-t">'+(cur ? '<button class="tick" data-pltoggle="'+x.id+'">✓</button>' : '<span class="rzc-rep">↻</span>')+
+          '<span class="rzc-tt">'+esc(x.t)+(x.tm ? '<em>'+esc(x.tm)+'</em>' : '')+'</span></div>';
+      }).join("") : '<p class="rzc-none">Задач на этот день нет</p>')+
+      '<button class="btn ghost sm" style="width:100%;margin-top:8px" data-rzcadd="'+sel+'">+ Задача на этот день</button></div>';
+  }
+  return h + '</section>';
+}
 function plWeekStrip(td){
   var act = (S.todos||[]).filter(function(x){ return !x.done; });
   var days = [];
@@ -21036,7 +21108,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -21074,6 +21146,10 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.post){ V.tab="journal"; open("post", d.post); return; }
   if(d.sq){ V.q = d.sq; render();
     var fq=document.getElementById("knowSearch") || document.getElementById("homeSearch"); if(fq){ fq.value=d.sq; fq.focus(); } return; }
+  if(d.rzcm !== undefined){ var cm = parseInt(d.rzcm, 10); V.rzcm = cm === 0 ? 0 : (V.rzcm || 0) + cm; V.rzcd = null; render(); return; }
+  if(d.rzcd){ V.rzcd = d.rzcd; render(); return; }
+  if(d.rzcadd){ V.plDay = d.rzcadd; V.plDue = d.rzcadd; V.plView = "today"; open("planner");
+    setTimeout(function(){ var ti = document.getElementById("plInput"); if(ti) ti.focus(); }, 80); return; }
   if(d.calon){ calOn(); return; }
   if(d.caloff){ calOff(); return; }
   if(d.calopt){ var co = calS().opt; co[d.calopt] = co[d.calopt] ? 0 : 1; save(); calPush(true); render(); return; }
