@@ -847,6 +847,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .ar-cta{display:flex;gap:10px;flex-wrap:wrap}
 .ar-cta .btn{flex:1 1 140px}
 .ar-chips{display:flex;flex-wrap:wrap;gap:7px}
+/* выбор в курсе - настоящие кнопки: видно, что нажимается и что выбрано */
+.ar-chips .chip{font-size:13.5px;padding:8px 14px;border-radius:12px;cursor:pointer;min-height:38px;display:inline-flex;align-items:center;gap:6px;transition:background .15s,border-color .15s}
+.ar-chips .chip:active{transform:scale(.97)}
+.ar-chips .chip.on{background:var(--accent-ink);color:var(--surface);border-color:var(--accent-ink)}
+.ar-chips .chip.on::before{content:"✓";font-weight:700}
+.ar-chips .chip:focus-visible{outline:2px solid var(--accent-ink);outline-offset:2px}
 .ar-note{font-size:12.5px;color:var(--ink-3);line-height:1.5;margin:10px 0 0}
 .ar-path{display:flex;flex-direction:column;gap:0;position:relative}
 .ar-step{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:11px 12px;border-radius:var(--r-md);position:relative}
@@ -7185,7 +7191,6 @@ function viewArabic(){
   h.push(rdCard());
   h.push(arGoalCard());
   h.push(arTodayCard());
-  h.push(arClubCard());
   var due = arDue().length, cur = arCurrent();
   h.push('<div class="ar-cta">'+
     '<button class="btn" data-ar="study">'+(due ? 'Повторить слова (' + due + ')' : 'Учить новые слова')+'</button>'+
@@ -7225,6 +7230,8 @@ function viewArabic(){
   h.push('<p class="disclaimer" style="text-align:left">Уроки 1-8 идут в том же порядке тем, что первый том «Аль-Арабийя байна ядайк», уроки 9-16 - темы для жизни: работа, покупки, числа, здоровье, природа, поездка, хадж и умра, Рамадан. '+
     'Слова и диалоги составлены для RIZQ. '+(AR_AUDIO.length ? 'Часть слов озвучена преподавателем, остальное - голосом телефона. ' : 'Озвучивает голос телефона. ')+
     'У многих слов есть аят, где стоит это слово или однокоренное. Выученные за неделю слова попадают в рейтинг участников, если вы в нём участвуете.</p>');
+  /* разговорный клуб - в самом низу страницы (просьба Заиры 22.09) */
+  h.push(arClubCard());
   h.push('</div>');
   return h.join("");
 }
