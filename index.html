@@ -642,6 +642,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .qf-t{white-space:nowrap}
 /* ---------- книга «Девушка, которая смогла» ---------- */
 .b2-card{align-items:center}
+.cal-c p{font-size:14.5px;line-height:1.6;color:var(--ink-2);margin:10px 0 12px}
+.cal-h{display:flex;align-items:center;gap:12px}
+.cal-ic{flex:none;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:rgba(212,175,55,.14);color:var(--accent-ink)}
+.cal-h b{display:block;font-family:var(--f-display);font-size:16.5px}
+.cal-h em{display:block;font-style:normal;font-size:12.5px;color:var(--ink-3);margin-top:2px}
+.cal-c.on{border-color:rgba(62,155,114,.45)}
 .hs{position:relative}
 .hs .search{padding-left:40px;padding-right:40px}
 .hs-ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:19px;color:var(--ink-3);pointer-events:none}
@@ -2041,6 +2047,7 @@ function save(){
     if(!SAVE_FAIL){ SAVE_FAIL = true; setTimeout(function(){ if(typeof sheetSaveFail === "function") sheetSaveFail(); }, 400); }
   }
   if(typeof VT !== "undefined" && VT && VT.code) vaultSoon();
+  if(S.cal && S.cal.on && typeof calSoon === "function") calSoon();
 }
 
 /* ---------- утилиты ---------- */
@@ -2317,6 +2324,110 @@ function buildICS(days, alarmMin){
   out.push("END:VCALENDAR");
   return out.join("\r\n");
 }
+/* ---------- календарь по подписке ---------- */
+var CAL = { last:"", timer:null, busy:false };
+function calS(){ if(!S.cal || typeof S.cal !== "object") S.cal = {}; var c = S.cal; if(!c.opt) c.opt = { pr:1, hj:1, fast:0, td:1 }; return c; }
+function calUrl(){ return crmApi() + "/api/public/calfeed/" + calS().token + ".ics"; }
+function calWebcal(){ return calUrl().replace(/^https?:/, "webcal:"); }
+function calGoogle(){ return "https://calendar.google.com/calendar/r?cid=" + encodeURIComponent(calWebcal()); }
+function icsDate(d){ return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()); }
+function calBuild(){
+  var c = calS(), o = c.opt, city = currentCity(), now = new Date(), out = [];
+  var tz = (S.city === "gps" && S.gps) ? -now.getTimezoneOffset() / 60 : city.tz;
+  var stamp = icsStamp(new Date(now.getFullYear(), now.getMonth(), now.getDate()));
+  function ev(uid, lines){ out.push("BEGIN:VEVENT", "UID:" + uid + "@rizq", "DTSTAMP:" + stamp); lines.forEach(function(l){ out.push(l); }); out.push("END:VEVENT"); }
+  out.push("BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//RIZQ//Calendar//RU", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
+    "X-WR-CALNAME:RIZQ", "X-WR-CALDESC:" + icsEscape("Намазы, исламские даты и задачи из приложения RIZQ"), "X-PUBLISHED-TTL:PT6H", "REFRESH-INTERVAL;VALUE=DURATION:PT6H");
+  if(o.pr){
+    for(var i = 0; i < 30; i++){
+      var d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
+      var t = prayerTimes(d, city.lat, city.lng, tz, S.method, S.madhab);
+      FARD.forEach(function(f){
+        var st = prayerMoment(d, t[f.k], tz);
+        ev("p-" + dayKey(d) + "-" + f.k, ["DTSTART:" + icsStamp(st), "DTEND:" + icsStamp(new Date(st.getTime() + 15 * 60000)),
+          "SUMMARY:" + icsEscape(f.n), "DESCRIPTION:" + icsEscape("Время намаза · " + city.n), "TRANSP:TRANSPARENT"]);
+      });
+    }
+  }
+  if(o.hj){
+    [[9,1,"Начало Рамадана"],[10,1,"Ид аль-Фитр"],[12,9,"День Арафа"],[12,10,"Ид аль-Адха"],[1,10,"День Ашура"],[1,1,"Исламский Новый год"]].forEach(function(e){
+      var r = findNext(e[0], e[1]); if(!r) return;
+      var n1 = new Date(r.date); n1.setDate(n1.getDate() + 1);
+      ev("h-" + e[0] + "-" + e[1] + "-" + icsDate(r.date), ["DTSTART;VALUE=DATE:" + icsDate(r.date), "DTEND;VALUE=DATE:" + icsDate(n1),
+        "SUMMARY:" + icsEscape(e[2]), "DESCRIPTION:" + icsEscape("По календарю Умм аль-Кура. В вашем регионе дата может сдвинуться на день."), "TRANSP:TRANSPARENT"]);
+    });
+  }
+  if(o.fast){
+    for(var k = 0; k < 30; k++){
+      var fd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + k, 12), fl = isFastDay(fd);
+      if(!fl.length) continue;
+      var fn = new Date(fd); fn.setDate(fn.getDate() + 1);
+      ev("f-" + icsDate(fd), ["DTSTART;VALUE=DATE:" + icsDate(fd), "DTEND;VALUE=DATE:" + icsDate(fn), "SUMMARY:" + icsEscape("Пост: " + fl.join(", ")), "TRANSP:TRANSPARENT"]);
+    }
+  }
+  if(o.td){
+    (S.todos || []).forEach(function(td){
+      if(td.done || !/^\d{4}-\d{2}-\d{2}$/.test(td.due || "")) return;
+      var dd = td.due.replace(/-/g, ""), L = [];
+      if(/^\d{2}:\d{2}$/.test(td.tm || "")){
+        var hm = td.tm.replace(":", ""), p0 = td.due.split("-"), e = new Date(+p0[0], +p0[1] - 1, +p0[2], +td.tm.slice(0, 2), +td.tm.slice(3) + 30);
+        L.push("DTSTART:" + dd + "T" + hm + "00", "DTEND:" + icsDate(e) + "T" + pad(e.getHours()) + pad(e.getMinutes()) + "00");
+      } else {
+        var p1 = td.due.split("-"), nx = new Date(+p1[0], +p1[1] - 1, +p1[2] + 1);
+        L.push("DTSTART;VALUE=DATE:" + dd, "DTEND;VALUE=DATE:" + icsDate(nx));
+      }
+      if(td.rep === "day") L.push("RRULE:FREQ=DAILY");
+      else if(td.rep === "week") L.push("RRULE:FREQ=WEEKLY");
+      else if(td.rep === "work") L.push("RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR");
+      L.push("SUMMARY:" + icsEscape(td.t || "Задача"), "DESCRIPTION:" + icsEscape("Задача из RIZQ"));
+      ev("t-" + td.id, L);
+    });
+  }
+  out.push("END:VCALENDAR");
+  return out.join("\r\n") + "\r\n";
+}
+function calPush(force){
+  var c = calS();
+  if(!c.on || !c.token || CAL.busy || !window.fetch) return;
+  var txt = calBuild();
+  if(!force && txt === CAL.last) return;
+  CAL.busy = true;
+  fetch(crmApi() + "/api/public/calfeed/" + c.token, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ ics: txt }) })
+    .then(function(r){ CAL.busy = false; if(!r.ok) throw 0; CAL.last = txt; c.at = Date.now(); c.err = ""; try{ localStorage.setItem("rizq.v1", JSON.stringify(S)); }catch(e){} })
+    .catch(function(){ CAL.busy = false; c.err = "Нет связи - календарь обновится, когда появится интернет"; });
+}
+function calSoon(){ clearTimeout(CAL.timer); CAL.timer = setTimeout(calPush, 4000); }
+function calOn(){
+  var c = calS(), a = new Uint8Array(16);
+  try{ crypto.getRandomValues(a); }catch(e){ for(var i = 0; i < 16; i++) a[i] = Math.floor(Math.random() * 256); }
+  c.token = Array.prototype.map.call(a, function(b){ return ("0" + b.toString(16)).slice(-2); }).join("");
+  c.on = true; CAL.last = ""; save(); calPush(true); render();
+}
+function calOff(){
+  var c = calS(), tk = c.token;
+  if(tk && window.fetch) fetch(crmApi() + "/api/public/calfeed/" + tk, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ ics: "" }) }).catch(function(){});
+  c.on = false; c.token = ""; c.at = 0; CAL.last = ""; save(); render(); toast("Синхронизация выключена, календарь удалён с сервера");
+}
+function calCard(){
+  var c = calS();
+  if(!c.on){
+    return '<section class="card cal-c"><div class="cal-h"><span class="cal-ic">▦</span><div><b>Google Календарь</b><em>и календарь iPhone</em></div></div>'+
+      '<p>Время намазов, исламские даты и ваши задачи с датой появятся в календаре телефона и будут обновляться сами.</p>'+
+      '<button class="btn" data-calon="1">Подключить календарь</button>'+
+      '<p class="note" style="margin-top:10px">Работает в одну сторону: из RIZQ в календарь. Задачи хранятся на сервере школы по секретной ссылке, которую знаете только вы; выключить можно в любой момент.</p></section>';
+  }
+  var o = c.opt;
+  function opt(k, n){ return '<button class="row" data-calopt="'+k+'"><span class="ic">'+(o[k] ? "☑" : "☐")+'</span>'+esc(n)+'</button>'; }
+  return '<section class="card cal-c on"><div class="cal-h"><span class="cal-ic">▦</span><div><b>Календарь подключён</b><em>'+
+      (c.err ? esc(c.err) : c.at ? 'обновлено в '+pad(new Date(c.at).getHours())+':'+pad(new Date(c.at).getMinutes()) : 'отправляем...')+'</em></div></div>'+
+    '<div class="rows" style="margin:10px 0">'+opt("pr", "Время намазов на 30 дней")+opt("hj", "Исламские даты")+opt("fast", "Дни желательного поста")+opt("td", "Задачи с датой")+'</div>'+
+    '<a class="btn" style="display:block;text-align:center;text-decoration:none" href="'+esc(calGoogle())+'" target="_blank" rel="noopener">Добавить в Google Календарь</a>'+
+    '<a class="btn sec" style="display:block;text-align:center;text-decoration:none;margin-top:8px" href="'+esc(calWebcal())+'">iPhone и другие календари</a>'+
+    '<button class="btn ghost sm" style="width:100%;margin-top:8px" data-calcopy="1">Скопировать ссылку</button>'+
+    '<p class="note" style="margin-top:10px">Добавить нужно один раз. Google обновляет подписку сам, обычно раз в несколько часов, поэтому новая задача появится в календаре не сразу. В Google Календаре на телефоне включите календарь «RIZQ» в настройках, если его не видно.</p>'+
+    '<button class="btn ghost sm" style="width:100%;margin-top:4px;color:var(--ink-3)" data-caloff="1">Отключить</button></section>';
+}
+
 function downloadICS(){
   try{
     var days = 60, alarm = 10;
@@ -17441,6 +17552,7 @@ function viewCalendar(){
       (hj? hj.d+" "+HIJRI_MONTHS[hj.m-1] : "-")+'</div>'+
     '<div class="ru" style="color:rgba(255,255,255,.72);font-size:14.5px">'+(hj? hj.y+" год хиджры" : "")+' · '+esc(ruDate())+'</div></section>');
 
+  h.push(calCard());
   var events = [
     {m:9,  d:1,  n:"Начало Рамадана", ic:"☾"},
     {m:10, d:1,  n:"Ид аль-Фитр",     ic:"✦"},
@@ -20924,7 +21036,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -20962,6 +21074,15 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.post){ V.tab="journal"; open("post", d.post); return; }
   if(d.sq){ V.q = d.sq; render();
     var fq=document.getElementById("knowSearch") || document.getElementById("homeSearch"); if(fq){ fq.value=d.sq; fq.focus(); } return; }
+  if(d.calon){ calOn(); return; }
+  if(d.caloff){ calOff(); return; }
+  if(d.calopt){ var co = calS().opt; co[d.calopt] = co[d.calopt] ? 0 : 1; save(); calPush(true); render(); return; }
+  if(d.calcopy){
+    var cu = calUrl();
+    if(navigator.clipboard) navigator.clipboard.writeText(cu).then(function(){ toast("Ссылка скопирована"); }, function(){ toast(cu); });
+    else toast(cu);
+    return;
+  }
   if(d.hsclear){ V.q = ""; render(); var hs0 = document.getElementById("homeSearch"); if(hs0) hs0.focus(); return; }
   if(d.gto!==undefined){
     var el2 = document.getElementById("gb-"+d.gto);
@@ -21890,6 +22011,8 @@ document.addEventListener("visibilitychange", function(){ if(document.visibility
 window.addEventListener("pagehide", navTouch);
 ordersCheck();
 if(ordersPending().length) ordersWatch();
+if(S.cal && S.cal.on) setTimeout(calPush, 3000);
+document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible" && S.cal && S.cal.on) calSoon(); });
 document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible") ordersCheck(); });
 applyQSize();
 render();
