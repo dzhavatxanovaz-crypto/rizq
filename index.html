@@ -809,6 +809,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .ar-hero-st{display:flex;gap:18px;margin-top:12px;position:relative;z-index:1}
 .ar-hero-st b{display:block;font-family:var(--f-display);font-size:21px;font-weight:700;color:#FFF8E6;font-variant-numeric:tabular-nums;line-height:1.1}
 .ar-hero-st span{font-size:11.5px;color:rgba(244,235,208,.72)}
+.ar-hero-wd{display:flex;align-items:baseline;gap:9px;margin-top:12px;position:relative;z-index:1;flex-wrap:wrap}
+.ar-hero-wd span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(244,235,208,.6)}
+.ar-hero-wd b{font-family:"Amiri Quran",var(--f-ar);font-size:22px;font-weight:400;color:#F1D77E;line-height:1.3}
+.ar-hero-wd em{font-style:normal;font-size:13.5px;color:#FFF8E6}
 .ar-hero-bar{height:6px;border-radius:6px;background:rgba(255,255,255,.12);margin-top:13px;overflow:hidden}
 .ar-hero-bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#D4AF37,#F1D77E)}
 .ar-hero-go{display:flex;align-items:center;margin-top:12px;font-size:13.5px;font-weight:600;color:#F1D77E;position:relative;z-index:1}
@@ -6544,6 +6548,9 @@ var AR = { q:[], i:0, show:false, from:"", ok:0, again:0, fresh:0, play:null, t:
    ключ сюда. Ключ слова - его id (например 1a), фразы диалога - d<урок>-<номер>
    (d1-0), буквы - abc-<номер> (abc-0). Пока записи нет, звучит голос телефона. */
 var AR_AUDIO = [];
+/* список готовых записей собирает scripts/ar-audio.js при выпуске - вписывать руками не нужно */
+try{ fetch("audio/ar/list.json").then(function(r){ return r.ok ? r.json() : []; })
+  .then(function(l){ if(Array.isArray(l)) AR_AUDIO = l; }).catch(function(){}); }catch(e){}
 
 function arS(){
   if(!S.ar) S.ar = { w:{}, l:{}, d:{}, x:{}, har:"auto", pause:0 };
@@ -6883,6 +6890,7 @@ function arWordRow(w){
     (w.q ? '<button class="ar-qchip" data-ar="q:'+w.id+'">Коран '+w.q+'</button>' : '')+
     dot+'</div>';
 }
+function arWordOfDay(){ var all = arAll(); return all[dayIndex() % all.length]; }
 function arHero(big){
   var total = arAll().length, learned = arLearned(), due = arDue().length, cur = arCurrent();
   var pct = Math.round(learned / total * 100);
@@ -6894,6 +6902,7 @@ function arHero(big){
       '<div><b>'+arDlgDone()+'</b><span>из '+AR_UNITS.length+' диалогов</span></div>'+
       '<div><b>'+arWeek()+'</b><span>слов за неделю</span></div>'+
     '</div>'+
+    '<div class="ar-hero-wd"><span>Слово дня</span><b dir="rtl">'+esc(arWordOfDay().ar)+'</b><em>'+esc(arWordOfDay().ru)+'</em></div>'+
     '<div class="ar-hero-bar"><i style="width:'+Math.max(pct, learned ? 3 : 0)+'%"></i></div>'+
     '<div class="ar-hero-go">'+(due ? 'Пора повторить: ' + plural(due, "слово", "слова", "слов")
         : (learned || arS().w[cur.w[0].id] ? 'Продолжить: урок ' + cur.id + ' · ' + esc(cur.n) : 'Начать с урока 1 · Приветствие'))+'<span>›</span></div>'+
@@ -6960,6 +6969,10 @@ function viewArabic(){
     '<div class="ar-chips" style="margin-top:8px">'+
       '<button class="chip'+(arS().pause ? "" : " on")+'" data-ar="pause:0">Подряд</button>'+
       '<button class="chip'+(arS().pause ? " on" : "")+'" data-ar="pause:1">С паузой, чтобы повторить</button></div>'+
+    '<div class="eyebrow" style="margin-top:14px">Напоминание о занятии</div>'+
+    '<div class="ar-chips" style="margin-top:8px">'+[["7","7:00"],["9","9:00"],["13","13:00"],["off","Выключено"]].map(function(x){
+      return '<button class="chip'+((arS().remind || "9") === x[0] ? " on" : "")+'" data-ar="rem:'+x[0]+'">'+x[1]+'</button>'; }).join("")+'</div>'+
+    '<p class="ar-note">Приходит, когда включены уведомления RIZQ. Если норма на сегодня уже выполнена, не беспокоит.</p>'+
   '</section>');
 
   h.push('<p class="disclaimer" style="text-align:left">Уроки 1-8 идут в том же порядке тем, что первый том «Аль-Арабийя байна ядайк», уроки 9-16 - темы для жизни: работа, покупки, числа, здоровье, природа, поездка, хадж и умра, Рамадан. '+
@@ -7078,6 +7091,7 @@ function arClick(v){
   if(k === "mark"){ var mk = AR_MARKS[+p[1]]; if(mk){ arStop(); arTts(mk[2]); } return; }
   if(k === "stop"){ arStop(); return; }
   if(k === "har"){ arS().har = p[1]; save(); render(); return; }
+  if(k === "rem"){ arS().remind = p[1]; save(); render(); try{ pushSync(true); }catch(e){} toast(p[1] === "off" ? "Напоминание выключено" : "Напомним в " + p[1] + ":00"); return; }
   if(k === "pause"){ arS().pause = p[1] === "1" ? 1 : 0; save(); render(); return; }
   /* упражнения */
   if(k === "pick"){
@@ -7152,6 +7166,7 @@ function arActivity(kind){
   st.days[t] = 1;
   if(!was && arDayDone(td)){ addPoints(3, "arabic"); toast("Норма арабского на сегодня выполнена, машаа Аллах"); }
   save();
+  if(!was && arDayDone(td) || st.days && Object.keys(st.days).length === 1) try{ pushSoon(); }catch(e){}
 }
 function arDayDone(td){ return td.cards >= AR_DAY.cards && td.talk >= AR_DAY.talk && td.ex >= AR_DAY.ex; }
 /* серия: сколько дней подряд были занятия, считая сегодня или вчера */
@@ -7170,7 +7185,7 @@ function arPlan(){
   var st = arS();
   if(!st.start) return { week:1, target:1 };
   var d0 = new Date(st.start + "T12:00:00"), days = Math.floor((Date.now() - d0.getTime()) / 864e5);
-  var week = Math.min(13, Math.floor(days / 7) + 1);
+  var week = Math.max(1, Math.min(13, Math.floor(days / 7) + 1));
   return { week:week, target:Math.min(AR_UNITS.length, Math.ceil(week * AR_UNITS.length / 12)) };
 }
 function arTodayCard(){
@@ -15974,6 +15989,17 @@ function pushItems(){
       var dua = pool[(dayIndex() + k) % pool.length];
       if(morning > now) items.push({ at: new Date(morning).toISOString(), title: "Дуа дня", body: dua.n, tag: "dua" });
     }
+    /* Арабский: одно напоминание в день в выбранный час. Кто уже выполнил норму
+       сегодня - сегодня не беспокоим. Тем, кто курс не начинал, не приходит. */
+    if(S.ar && S.ar.start && S.ar.remind !== "off"){
+      var arH = parseInt(S.ar.remind || "9", 10);
+      var atAr = new Date(day.getFullYear(), day.getMonth(), day.getDate(), arH, 0, 0).getTime();
+      if(atAr > now && !(k === 0 && arDayDone(arToday()))){
+        var arSk = arStreak();
+        items.push({ at:new Date(atAr).toISOString(), title:"Арабский: 15 минут",
+          body: k === 0 && arSk ? "Серия " + plural(arSk, "день", "дня", "дней") + ". Карточки, 5 фраз вслух и упражнение" : "Карточки, 5 фраз вслух и одно упражнение", tag:"arabic" });
+      }
+    }
     /* Итоги недели в рейтинге: в воскресенье днём - что неделя закрывается и где вы сейчас,
        в понедельник утром - что всё началось заново. Место берём из последней сверки. */
     if(S.notifScore !== false && scoreState().on){
@@ -16003,7 +16029,8 @@ function pushSig(){
     .map(function(x){ return x.due + x.id; }).join(",");
   return [c.lat, c.lng, c.tz, S.method, S.madhab, S.notifPrayer ? 1 : 0, S.notifDua ? 1 : 0,
           S.notifTasks === false ? 0 : 1, S.notifScore === false ? 0 : 1, scoreState().on ? 1 : 0,
-          (S.scoreMe && S.scoreMe.place) || 0, pauseNow() ? 1 : 0, todayKey(), tasks].join("|");
+          (S.scoreMe && S.scoreMe.place) || 0, pauseNow() ? 1 : 0, todayKey(), tasks,
+          S.ar ? (S.ar.start ? 1 : 0) + ":" + (S.ar.remind || "9") + ":" + (arDayDone(arToday()) ? 1 : 0) : ""].join("|");
 }
 function pushSync(force){
   if(!pushOn() || !pushSupported() || PUSH_BUSY) return;
