@@ -562,6 +562,15 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .qblog-in .search{margin:0}
 .qblog-in .btn{flex:none;height:46px}
 .nt-new{display:flex;gap:8px}
+.nt-folders{display:flex;gap:7px;flex-wrap:wrap}
+.nt-folders::-webkit-scrollbar{display:none}
+.nt-fold{flex:none;display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;padding:8px 13px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);white-space:nowrap}
+.nt-fold em{font-style:normal;font-size:11.5px;color:var(--ink-3);font-weight:400}
+.nt-fold.on{background:var(--accent-ink);border-color:var(--accent-ink);color:var(--surface)}
+.nt-fold.on em{color:var(--surface)}
+.nt-fold.add{border-style:dashed;color:var(--accent-ink)}
+.nt-fsel{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink-2)}
+.nt-fsel .search{margin:0;flex:1}
 .nt-new .btn:first-child{flex:2}.nt-new .btn:last-child{flex:1}
 .nt-tpl{margin-top:-4px}
 .nt-h{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:4px 2px 8px}
@@ -605,6 +614,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .nt-thin span{color:var(--accent-ink);font-size:16px}
 .nt-thin em{font-style:normal;font-size:12px;color:var(--ink-3);font-weight:400;margin-left:4px}
 .nt-thin i{margin-left:auto;font-style:normal;color:var(--accent-ink);font-size:18px}
+.top-chat{display:flex;align-items:center;gap:12px;padding:13px 15px;border-radius:var(--r-md);text-decoration:none;color:var(--ink);border:1.5px solid rgba(37,211,102,.55);background:linear-gradient(150deg, rgba(37,211,102,.16), rgba(37,211,102,.04));box-shadow:var(--shadow)}
+.top-chat-ic{width:40px;height:40px;flex:none;border-radius:12px;display:grid;place-items:center;background:#25D366;font-size:19px}
+.top-chat .cw-t b{display:block;font-size:15px}
+.top-chat .cw-t span{font-size:12.5px;color:var(--ink-2)}
+.top-chat .cw-go{color:#25D366}
 .qd-read{margin-left:auto;font-size:13px;font-weight:600;padding:7px 12px;border-radius:11px;border:1px solid rgba(212,175,55,.5);color:var(--accent-ink);background:rgba(212,175,55,.08)}
 .qd-read.on{background:rgba(62,155,114,.16);border-color:rgba(62,155,114,.5);color:#3E9B72}
 .qrmd{border:1px solid rgba(62,155,114,.5);background:linear-gradient(150deg, rgba(62,155,114,.16), rgba(62,155,114,.03))}
@@ -6215,14 +6229,34 @@ var NOTE_TPL = [
   { n:"Дуа, которые учу", t:"Дуа, которые учу", b:"#дуа", list:["", ""] },
   { n:"Намерения", t:"Мои намерения", b:"Ради Аллаха я хочу:\n- \n#намерения" }
 ];
-var NT = { q:"", tag:"", timer:0 };
+var NT = { q:"", tag:"", folder:"", timer:0 };
+/* папки: список названий в S.noteFolders, у заметки - поле f */
+function noteFolders(){ if(!S.noteFolders) S.noteFolders = []; return S.noteFolders; }
+function noteFolderAdd(){
+  var name = String(prompt("Название папки", "") || "").trim().slice(0, 30);
+  if(!name) return "";
+  if(noteFolders().indexOf(name) < 0){ noteFolders().push(name); save(); }
+  return name;
+}
+function sheetNoteFolders(){
+  var fl = noteFolders();
+  sheet('<h3>Папки</h3>'+
+    (fl.length ? '<div class="rows">'+fl.map(function(f, i){
+      var cnt = notesAll().filter(function(n){ return n.f === f; }).length;
+      return '<div class="row"><span class="ic">🗀</span><div style="flex:1;min-width:0">'+esc(f)+'<div style="font-size:12px;color:var(--ink-3)">'+plural(cnt, "заметка", "заметки", "заметок")+'</div></div>'+
+        '<button class="btn sec sm" style="width:auto" data-nfren="'+i+'">Переименовать</button>'+
+        '<button class="btn ghost sm" style="width:auto" data-nfdel="'+i+'">Удалить</button></div>'; }).join("")+'</div>'
+      : '<p class="ar-note">Папок пока нет.</p>')+
+    '<button class="btn" style="margin-top:12px" data-nfnew="1">+ Новая папка</button>'+
+    '<p class="ar-note">Если удалить папку, её заметки останутся - они просто перейдут в «Без папки».</p>');
+}
 function notesAll(){ if(!S.notes) S.notes = []; return S.notes; }
 function noteById(id){ return notesAll().filter(function(n){ return n.id === id; })[0]; }
 function noteTags(n){ var m = String((n.t || "") + " " + (n.b || "")).match(/#[0-9A-Za-zА-Яа-яЁё_]+/g) || []; return m.map(function(x){ return x.toLowerCase(); }).filter(function(x, i, a){ return a.indexOf(x) === i; }); }
 function noteDate(ts){ var d = new Date(ts); return pad(d.getDate()) + "." + pad(d.getMonth() + 1) + (d.getFullYear() !== new Date().getFullYear() ? "." + d.getFullYear() : "") + ", " + pad(d.getHours()) + ":" + pad(d.getMinutes()); }
 function noteNew(tpl){
   var T = NOTE_TPL[tpl || 0] || NOTE_TPL[0], now = Date.now();
-  var n = { id:"n" + now.toString(36), t:T.t, b:T.b, c:"", pin:0, cr:now, up:now,
+  var n = { id:"n" + now.toString(36), t:T.t, b:T.b, c:"", pin:0, cr:now, up:now, f:(NT.folder && NT.folder !== "_") ? NT.folder : "",
     list:(T.list || []).map(function(x){ return { t:x, d:0 }; }) };
   notesAll().unshift(n); save();
   open("notes", n.id);
@@ -6242,11 +6276,14 @@ function noteCard(n){
     (li.length ? '<div class="nt-li">'+li.slice(0, 4).map(function(x){ return '<span class="'+(x.d ? "d" : "")+'">'+(x.d ? "☑" : "☐")+' '+esc(String(x.t).slice(0, 40))+'</span>'; }).join("")+
       (li.length > 4 ? '<em>ещё '+(li.length - 4)+'</em>' : '')+'</div><div class="nt-prog">'+done+' из '+li.length+'</div>' : '')+
     (noteTags(n).length ? '<div class="nt-tags">'+noteTags(n).slice(0, 3).map(function(t){ return '<span>'+esc(t)+'</span>'; }).join("")+'</div>' : '')+
-    '<div class="nt-d">'+noteDate(n.up)+'</div></button>';
+    '<div class="nt-d">'+(n.f && !NT.folder ? '🗀 '+esc(n.f)+' · ' : '')+noteDate(n.up)+'</div></button>';
 }
 function notesListHtml(){
   var q = NT.q.trim().toLowerCase(), tag = NT.tag;
+  var fold = NT.folder;
   var list = notesAll().filter(function(n){
+    if(fold === "_" && n.f) return false;
+    if(fold && fold !== "_" && n.f !== fold) return false;
     if(tag && noteTags(n).indexOf(tag) < 0) return false;
     if(!q) return true;
     return (String(n.t) + " " + String(n.b) + " " + (n.list || []).map(function(x){ return x.t; }).join(" ")).toLowerCase().indexOf(q) >= 0;
@@ -6264,6 +6301,13 @@ function viewNotes(){
   var h = ['<div class="stack">'];
   h.push('<div class="nt-new"><button class="btn" data-nnew="0">+ Новая заметка</button><button class="btn sec" data-nnew="1">☑ Список</button></div>');
   h.push('<div class="ar-chips nt-tpl">'+NOTE_TPL.slice(2).map(function(t, i){ return '<button class="chip" data-nnew="'+(i + 2)+'">'+esc(t.n)+'</button>'; }).join("")+'</div>');
+  var fl = noteFolders();
+  h.push('<div class="nt-folders">'+
+    [["", "Все", all.length]].concat(fl.length ? [["_", "Без папки", all.filter(function(n){ return !n.f; }).length]] : [])
+      .concat(fl.map(function(f){ return [f, f, all.filter(function(n){ return n.f === f; }).length]; })).map(function(x){
+        return '<button class="nt-fold'+(NT.folder === x[0] ? " on" : "")+'" data-nfold="'+esc(x[0])+'">'+(x[0] && x[0] !== "_" ? "🗀 " : "")+esc(x[1])+'<em>'+x[2]+'</em></button>'; }).join("")+
+    '<button class="nt-fold add" data-nfnew="1">+ Папка</button>'+
+    (fl.length ? '<button class="nt-fold add" data-nfman="1">⚙ Папки</button>' : '')+'</div>');
   if(all.length){
     h.push('<input class="search" id="notesQ" placeholder="Поиск по заметкам" value="'+esc(NT.q)+'">');
     if(tags.length) h.push('<div class="ar-chips">'+['<button class="chip'+(NT.tag ? "" : " on")+'" data-ntag="">Все</button>'].concat(tags.map(function(t){
@@ -6293,6 +6337,10 @@ function viewNote(n){
         '<input class="nt-itin" data-nit="'+i+'" value="'+esc(x.t)+'" placeholder="Пункт списка"><button class="nt-x" data-nitdel="'+i+'" aria-label="Удалить пункт">×</button></div>'; }).join("")+
     '</div><button class="nt-add" data-nitadd="1">+ пункт списка</button>'+
   '</section>');
+  h.push('<label class="nt-fsel"><span>Папка</span><select id="nF" class="search">'+
+    '<option value=""'+(n.f ? "" : " selected")+'>Без папки</option>'+
+    noteFolders().map(function(f){ return '<option value="'+esc(f)+'"'+(n.f === f ? " selected" : "")+'>'+esc(f)+'</option>'; }).join("")+
+    '<option value="__new">+ Новая папка...</option></select></label>');
   h.push('<div class="nt-foot">Изменено '+noteDate(n.up)+' · '+plural(words, "слово", "слова", "слов")+(noteTags(n).length ? ' · '+noteTags(n).join(" ") : '')+'</div>');
   h.push('</div>');
   return h.join("");
@@ -6302,6 +6350,21 @@ function notesClick(d){
   if(d.nnew !== undefined){ noteNew(+d.nnew); return true; }
   if(d.nopen){ open("notes", d.nopen); return true; }
   if(d.ntag !== undefined){ NT.tag = d.ntag; render(); return true; }
+  if(d.nfold !== undefined){ NT.folder = d.nfold; render(); return true; }
+  if(d.nfnew !== undefined){ var nf = noteFolderAdd(); if(nf){ closeSheet(); NT.folder = nf; render(); toast("Папка «" + nf + "» создана"); } return true; }
+  if(d.nfman !== undefined){ sheetNoteFolders(); return true; }
+  if(d.nfren !== undefined){
+    var fo = noteFolders()[+d.nfren]; if(!fo) return true;
+    var nn2 = String(prompt("Новое название папки", fo) || "").trim().slice(0, 30);
+    if(nn2 && nn2 !== fo){ noteFolders()[+d.nfren] = nn2; notesAll().forEach(function(x){ if(x.f === fo) x.f = nn2; }); if(NT.folder === fo) NT.folder = nn2; save(); sheetNoteFolders(); render(); }
+    return true;
+  }
+  if(d.nfdel !== undefined){
+    var fd = noteFolders()[+d.nfdel]; if(!fd) return true;
+    if(!confirm("Удалить папку «" + fd + "»? Заметки из неё останутся, без папки.")) return true;
+    noteFolders().splice(+d.nfdel, 1); notesAll().forEach(function(x){ if(x.f === fd) x.f = ""; }); if(NT.folder === fd) NT.folder = "";
+    save(); sheetNoteFolders(); render(); return true;
+  }
   if(!n) return false;
   if(d.npin !== undefined){ n.pin = n.pin ? 0 : 1; noteTouch(n); save(); render(); toast(n.pin ? "Закреплено наверху" : "Откреплено"); return true; }
   if(d.ncol !== undefined){ n.c = d.ncol; noteTouch(n); save(); render(); return true; }
@@ -14286,12 +14349,16 @@ function badgeList(){
     return { id:b.id, n:b.n, d:b.d, have:have, need:b.need, done:have >= b.need, pct:Math.min(100, Math.round(have*100/b.need)) };
   });
 }
+var TOP_CHAT = "https://chat.whatsapp.com/L4ov5GapIHqJfoTDH6AOV1?mode=gi_t";
 function viewTop(){
   var sc = scoreState(), h = ['<div class="stack">'];
   if(!TOP.data && !TOP.loading && TOP.tried !== TOP.period) topLoad();
 
   var me = TOP.data && TOP.data.me, d = TOP.data;
   h.push(topDash(sc, d, me));
+  /* женский чат участниц в WhatsApp (ссылка от Заиры 22.09) */
+  h.push('<a class="top-chat" href="'+TOP_CHAT+'" target="_blank" rel="noopener"><span class="top-chat-ic">💬</span>'+
+    '<span class="cw-t"><b>Вступить в женский чат участниц</b><span>группа в WhatsApp: поддержка, итоги недели, вопросы</span></span><span class="cw-go">›</span></a>');
   var aw = (S.scoreMe && S.scoreMe.awards) || (TOP.data && TOP.data.awards) || [];
   if(aw.length){
     h.push('<div class="sec-h"><h3>Ваши награды</h3></div>');
@@ -17988,7 +18055,7 @@ function viewSettings(){
    ============================================================ */
 var BK_KEYS = ["fav","tasbih","tasbihTotal","read","dcnt","practice","orders","readDay","done","salah","myduas","goals",
   "namesRead","daily","shukrNotes","shukr","checks","sunnah","health","pauses","qada","points","pointsDay",
-  "fin","finLimits","debts","finRepeat","fontSize","todos","quiz","azkarLifetime","qLast","qMax","qRead","notes","qMarks","qplan","hifz","ar","zakat","trip","kids","finReqs",
+  "fin","finLimits","debts","finRepeat","fontSize","todos","quiz","azkarLifetime","qLast","qMax","qRead","notes","noteFolders","qMarks","qplan","hifz","ar","zakat","trip","kids","finReqs",
   "name","city","method","madhab","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll"];
 
 /* Что человек потеряет, если копии не будет. Считаем по тем же данным,
@@ -19082,7 +19149,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -19811,6 +19878,12 @@ $screen.addEventListener("input", function(ev){
   if(t.id==="nameSearch" || t.id==="hadSearch" || t.id==="qSearchInput" || t.id==="knowSearch"){ V.q = t.value; render(); return; }
   if(t.id==="arDictQ"){ AR.dq = t.value; var dl = document.getElementById("arDictList"); if(dl) dl.innerHTML = arDictList(); return; }
   if(t.id==="notesQ"){ NT.q = t.value; var nl = document.getElementById("notesList"); if(nl) nl.innerHTML = notesListHtml(); return; }
+  if(t.id==="nF" && V.view==="notes" && V.p){
+    var nf2 = noteById(V.p); if(!nf2) return;
+    var v = t.value;
+    if(v === "__new"){ v = noteFolderAdd(); if(!v){ render(); return; } }
+    nf2.f = v; noteTouch(nf2); save(); render(); toast(v ? "Перенесено в папку «" + v + "»" : "Без папки"); return;
+  }
   if(V.view==="notes" && V.p && (t.id==="nT" || t.id==="nB" || (t.dataset && t.dataset.nit !== undefined))){
     var nn = noteById(V.p); if(!nn) return;
     if(t.id==="nT") nn.t = t.value; else if(t.id==="nB"){ nn.b = t.value; t.style.height = "auto"; t.style.height = t.scrollHeight + "px"; }
