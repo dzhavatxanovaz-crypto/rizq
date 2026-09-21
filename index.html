@@ -640,6 +640,50 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .qf-ic{flex:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(212,175,55,.13);color:var(--accent-ink);font-size:15px;line-height:1}
 .qf-ic svg{width:26px;height:26px}
 .qf-t{white-space:nowrap}
+/* ---------- «Удел и дело» ---------- */
+.dua-when{display:inline-block;margin:-2px 0 8px;font-size:12px;font-weight:600;color:var(--accent-ink);background:rgba(212,175,55,.12);padding:3px 10px;border-radius:999px}
+.dua-why{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--surface-2);font-size:13px;line-height:1.55;color:var(--ink-2)}
+.dua-why b{display:block;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:3px}
+.rz-hero{position:relative;overflow:hidden;border-radius:var(--r-lg);padding:26px 20px 18px;text-align:center;color:#F4EBD0;
+  background:radial-gradient(130% 100% at 50% -10%,#3A3312 0%,#1E2A5A 42%,#0F1738 100%);border:1.5px solid rgba(212,175,55,.6);box-shadow:0 18px 40px -20px rgba(0,0,0,.7)}
+.rz-orn{position:absolute;inset:8px;border-radius:calc(var(--r-lg) - 6px);border:1px solid rgba(212,175,55,.28);pointer-events:none}
+.rz-ar{font-family:"Amiri Quran",var(--f-ar);font-size:52px;line-height:1.35;color:#EBCB63;text-shadow:0 4px 22px rgba(212,175,55,.35)}
+.rz-t{font-family:var(--f-display);font-size:22px;font-weight:700;letter-spacing:.02em;margin-top:2px}
+.rz-s{font-size:13px;line-height:1.55;color:rgba(244,235,208,.78);margin:8px auto 0;max-width:320px}
+.rz-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:16px;border-top:1px solid rgba(212,175,55,.25);padding-top:12px}
+.rz-stats b{display:block;font-family:var(--f-display);font-size:22px;color:#EBCB63}
+.rz-stats span{font-size:11px;color:rgba(244,235,208,.7)}
+.rz-nav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px}
+.rz-nav::-webkit-scrollbar{display:none}
+.rz-nav button{flex:none;font-size:13px;padding:8px 13px;border-radius:999px;border:1px solid rgba(212,175,55,.45);background:var(--surface);color:var(--accent-ink);white-space:nowrap}
+.rz-h{display:flex;align-items:center;gap:12px;margin:10px 2px 0;scroll-margin-top:90px}
+.rz-h>span{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;border:1.5px solid rgba(212,175,55,.6);color:var(--accent-ink);font-family:Georgia,serif;font-size:13px;font-weight:700}
+.rz-h b{display:block;font-family:var(--f-display);font-size:18px}
+.rz-h em{display:block;font-style:normal;font-size:12.5px;color:var(--ink-3)}
+.rz-keys{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.rz-key{border-radius:16px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow)}
+.rz-key[open]{grid-column:1/-1;border-color:rgba(212,175,55,.55)}
+.rz-key summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:3px;padding:13px 12px}
+.rz-key summary::-webkit-details-marker{display:none}
+.rz-key summary i{font-style:normal;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(150deg,rgba(212,175,55,.28),rgba(212,175,55,.08));color:var(--accent-ink);font-size:16px;margin-bottom:5px}
+.rz-key summary b{font-family:var(--f-display);font-size:14px;line-height:1.25}
+.rz-key summary span{font-size:12px;line-height:1.35;color:var(--ink-3)}
+.rz-key-in{padding:0 14px 14px}
+.rz-key-in .ar{font-family:var(--f-quran);direction:rtl;text-align:right;font-size:22px;line-height:2;color:var(--ink)}
+.rz-key-in .ru{font-size:14.5px;line-height:1.6;margin-top:6px}
+.rz-key-in .src{font-size:12.5px;color:var(--ink-3);margin-top:8px}
+.rz-note{margin-top:8px;font-size:13px;line-height:1.5;color:var(--ink-2);font-style:italic}
+.rz-day{padding:6px 14px}
+.rz-dr{display:flex;gap:12px;padding:12px 0}
+.rz-dr+.rz-dr{border-top:1px solid var(--line-soft)}
+.rz-dr>i{flex:none;font-style:normal;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(212,175,55,.14);color:var(--accent-ink)}
+.rz-dr b{display:block;font-size:14.5px}
+.rz-dr span{display:block;font-size:12.5px;line-height:1.45;color:var(--ink-3);margin-top:2px}
+.rz-dg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.rz-dg button{font-size:12px;padding:5px 10px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2);text-align:left}
+.rz-list{counter-reset:rz;display:flex;flex-direction:column;gap:12px}
+.rz-list .dua{position:relative;border-top:2px solid rgba(212,175,55,.55)}
+.rz-list .dua::before{counter-increment:rz;content:counter(rz, decimal-leading-zero);position:absolute;top:-13px;left:16px;padding:1px 9px;border-radius:999px;background:var(--bg);border:1px solid rgba(212,175,55,.55);font-family:var(--f-display);font-size:11px;font-weight:700;color:var(--accent-ink)}
 /* ---------- раздел «Намаз» ---------- */
 .nm-hub{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
 .nm-tile{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:14px 13px 13px;border-radius:var(--r-lg);border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);min-height:118px}
@@ -2557,12 +2601,14 @@ var DUAS = [
  src:"Ан-Насаи (о чтении после фард-намаза)"},
 
 /* --- удел и дело --- */
-{id:"r1",c:"rizq",n:"Дозволенным избавь меня от запретного",rep:1,
+{id:"r1",c:"rizq",n:"Дозволенным избавь меня от запретного",rep:1,when:"при долгах и нужде",
+ why:"К Али, да будет доволен им Аллах, пришёл раб, выкупавший себя, и попросил помощи с долгом. Али научил его этим словам, которым его научил Пророк ﷺ, и сказал: даже если на тебе долг величиной с гору, Аллах выплатит его за тебя. Ат-Тирмизи, хадис хороший.",
  ar:"اللَّهُمَّ اكْفِنِي بِحَلَالِكَ عَنْ حَرَامِكَ، وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ",
  tr:"Аллахуммакфини бихаляликя 'ан харамик, ва агнини бифадлика 'амман сивак",
  ru:"О Аллах, сделай дозволенное Тобой достаточным для меня, чтобы я не нуждался в запретном, и обогати меня Своей милостью, чтобы я не нуждался ни в ком, кроме Тебя.",
  src:"Ат-Тирмизи"},
-{id:"r2",c:"rizq",n:"Прошу полезного знания и благого удела",rep:1,
+{id:"r2",c:"rizq",n:"Прошу полезного знания и благого удела",rep:1,when:"после утреннего намаза",
+ why:"Умм Саляма, да будет доволен ею Аллах, передала, что Пророк ﷺ говорил это после утреннего намаза, произнеся салам.",
  ar:"اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلًا مُتَقَبَّلًا",
  tr:"Аллахумма инни ас'алюка 'ильман нафи'ан, ва ризкан таййибан, ва 'амалян мутакаббалян",
  ru:"О Аллах, я прошу у Тебя полезного знания, благого удела и деяния, которое будет принято.",
@@ -2572,6 +2618,48 @@ var DUAS = [
  tr:"Рабби шрах ли садри, ва яссир ли амри, вахлюль 'укдатан мин лисани, яфкаху каули",
  ru:"Господи, раскрой для меня мою грудь, облегчи мою задачу и развяжи узел на моём языке, чтобы они поняли мою речь.",
  src:"Сура «Та Ха», 25-28"},
+{id:"rz1",c:"rizq",n:"О прямом пути, чистоте и богатстве",rep:1,when:"в любое время",
+ ar:"اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى",
+ tr:"Аллахумма инни ас'алюкаль-худа, ват-тука, валь-'афафа, валь-гина",
+ ru:"О Аллах, я прошу у Тебя прямого пути, богобоязненности, целомудрия и богатства.",
+ why:"Пророк ﷺ просил о богатстве вместе с прямым путём и чистотой - о достатке, который не отнимает веры и не заставляет просить у людей.",
+ src:"Ибн Мас'уд, да будет доволен им Аллах. Муслим"},
+{id:"rz2",c:"rizq",n:"Пять просьб, которые собирают обе жизни",rep:1,when:"в намазе и после него",
+ ar:"اللَّهُمَّ اغْفِرْ لِي، وَارْحَمْنِي، وَاهْدِنِي، وَعَافِنِي، وَارْزُقْنِي",
+ tr:"Аллахуммагфир ли, вархамни, вахдини, ва 'афини, варзукни",
+ ru:"О Аллах, прости меня, помилуй меня, веди меня прямым путём, даруй мне здоровье и надели меня уделом.",
+ why:"Этим словам Пророк ﷺ учил принявших ислам и сказал о них: они соберут для тебя благо твоей мирской жизни и вечной.",
+ src:"Тарик аль-Ашджаи, да будет доволен им Аллах. Муслим"},
+{id:"rz3",c:"rizq",n:"Исправь мне религию, мирскую жизнь и вечную",rep:1,when:"утром, перед делами",
+ ar:"اللَّهُمَّ أَصْلِحْ لِي دِينِيَ الَّذِي هُوَ عِصْمَةُ أَمْرِي، وَأَصْلِحْ لِي دُنْيَايَ الَّتِي فِيهَا مَعَاشِي، وَأَصْلِحْ لِي آخِرَتِي الَّتِي فِيهَا مَعَادِي، وَاجْعَلِ الْحَيَاةَ زِيَادَةً لِي فِي كُلِّ خَيْرٍ، وَاجْعَلِ الْمَوْتَ رَاحَةً لِي مِنْ كُلِّ شَرٍّ",
+ tr:"Аллахумма аслих ли динияллязи хуа 'исмату амри, ва аслих ли дунйаяллати фиха ма'аши, ва аслих ли ахиратияллати фиха ма'ади, вадж'алиль-хаята зиядатан ли фи кулли хайр, вадж'алиль-маута рахатан ли мин кулли шарр",
+ ru:"О Аллах, исправь для меня мою религию - защиту всех моих дел, исправь для меня мою мирскую жизнь, в которой мой заработок, исправь для меня мою вечную жизнь, к которой я вернусь. Сделай жизнь прибавкой во всяком благе, а смерть - избавлением от всякого зла.",
+ why:"«Мирская жизнь, в которой мой заработок» - Пророк ﷺ просил за удел так же, как за религию: одним дуа, в правильном порядке.",
+ src:"Абу Хурайра, да будет доволен им Аллах. Муслим"},
+{id:"rz4",c:"rizq",n:"Мольба Мусы: я нуждаюсь в благе от Тебя",rep:1,when:"когда нет работы и опоры",
+ ar:"رَبِّ إِنِّي لِمَا أَنْزَلْتَ إِلَيَّ مِنْ خَيْرٍ فَقِيرٌ",
+ tr:"Рабби инни лима анзальта илайя мин хайрин факир",
+ ru:"Господи, я нуждаюсь в любом благе, которое Ты ниспошлёшь мне.",
+ why:"Так сказал Муса, мир ему, когда оказался на чужбине без дома, работы и еды. Сразу после этого Аллах дал ему кров, работу и затем семью - об этом в следующих аятах суры.",
+ src:"Сура аль-Касас, 28:24"},
+{id:"rz5",c:"rizq",n:"Мольба Исы: надели нас уделом",rep:1,when:"в любое время",
+ ar:"وَارْزُقْنَا وَأَنْتَ خَيْرُ الرَّازِقِينَ",
+ tr:"Варзукна ва Анта хайру-р-разикин",
+ ru:"Надели нас уделом, ведь Ты - лучший из дающих удел.",
+ why:"Окончание мольбы Исы, мир ему, о трапезе с неба. Обращение к Аллаху по Его качеству «лучший из дающих удел».",
+ src:"Сура аль-Маида, 5:114"},
+{id:"rz6",c:"rizq",n:"Благо в этом мире и в вечном",rep:1,when:"чаще всего, в таваф и после намаза",
+ ar:"رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+ tr:"Раббана атина фид-дунья хасанатан ва филь-ахирати хасанатан ва кина 'азабан-нар",
+ ru:"Господь наш, даруй нам благо в этом мире и благо в вечном и защити нас от мучений Огня.",
+ why:"Анас, да будет доволен им Аллах, сказал, что чаще всего Пророк ﷺ произносил именно это дуа (аль-Бухари, Муслим). Благо этого мира включает и дозволенный удел, и хорошую семью, и здоровье.",
+ src:"Сура аль-Бакара, 2:201"},
+{id:"rz7",c:"rizq",n:"Дуа Пророка ﷺ о достатке и баракате",rep:1,when:"за детей и близких",
+ ar:"اللَّهُمَّ أَكْثِرْ مَالَهُ وَوَلَدَهُ، وَبَارِكْ لَهُ فِيمَا أَعْطَيْتَهُ",
+ tr:"Аллахумма аксир малаху ва валядаху, ва барик ляху фима а'тайтах",
+ ru:"О Аллах, умножь его имущество и потомство и дай баракат в том, что Ты ему даровал.",
+ why:"Так Пророк ﷺ помолился за Анаса по просьбе его матери, и Анас потом рассказывал о большом достатке и многочисленном потомстве. Так просят за детей; о себе говорят: «Аллахумма аксир мали ва валади, ва барик ли фима а'тайтани».",
+ src:"Анас, да будет доволен им Аллах. Аль-Бухари, Муслим"},
 {id:"r4",c:"rizq",n:"Нет силы, кроме как от Аллаха",rep:10,
  ar:"لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
  tr:"Ля хауля ва ля куввата илля биЛлях",
@@ -2900,7 +2988,7 @@ var DUAS = [
  ar:"بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
  tr:"Бисмилляхи, таваккальту 'аляллах, ва ля хауля ва ля куввата илля билляхи.",
  ru:"С именем Аллаха. Я уповаю на Аллаха, и нет силы и мощи ни у кого, кроме Аллаха.",
- src:"Хадис (сборник в присланном списке не указан)"},
+ src:"Абу Дауд, ат-Тирмизи - это дуа при выходе из дома"},
 {id:"nd4",c:"tawba",n:"Тасбих и мольба о прощении, милости и уделе",
  ar:"سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ. اللَّهُمَّ اغْفِرْ لِي، اللَّهُمَّ ارْحَمْنِي، اللَّهُمَّ ارْزُقْنِي",
  tr:"Субханаллах, вальхамдулиллях, ва ля иляха илляллах, валлаху акбар. Аллахуммагфирли, Аллахумма архамни, Аллахумма арзукни.",
@@ -4092,7 +4180,7 @@ function scrollToDua(id){
   requestAnimationFrame(function(){
     var n = document.getElementById("dua-"+id);
     if(!n) return;
-    $screen.scrollTop = Math.max(0, n.offsetTop - 12);
+    $screen.scrollTop = Math.max(0, $screen.scrollTop + n.getBoundingClientRect().top - $screen.getBoundingClientRect().top - 12);
     n.classList.add("found");
     setTimeout(function(){ n.classList.remove("found"); }, 1800);
   });
@@ -5183,12 +5271,14 @@ function duaCard(d){
   return '<article class="dua" id="dua-'+d.id+'">'+
     '<div class="dua-h"><b>'+esc(d.n)+'</b>'+
       (d.rep>1? '<span class="chip" style="margin-left:auto;flex:none">'+d.rep+'×</span>':'')+'</div>'+
+    (d.when ? '<div class="dua-when">◷ '+esc(d.when)+'</div>' : '')+
     (d.bs ? '<div class="ar">'+esc(QA[0])+'</div>' : '')+
     '<div class="ar">'+esc(d.ar)+'</div>'+
     (d.bs ? '<div class="tr">Бисмилляхи-р-Рахмани-р-Рахим</div>' : '')+
     '<div class="tr">'+esc(d.tr)+'</div>'+
     (d.bs ? '<div class="ru">С именем Аллаха, Милостивого, Милосердного.</div>' : '')+
     '<div class="ru">'+esc(d.ru).replace(/\n/g, "<br>")+'</div>'+
+    (d.why ? '<div class="dua-why"><b>Почему</b>'+esc(d.why)+'</div>' : '')+
     '<div class="src">'+esc(d.src)+'</div>'+
     '<div class="dua-f">'+
       '<button class="fav'+(isFav(k)?" on":"")+'" data-fav="'+k+'" aria-label="В избранное">'+(isFav(k)?"★":"☆")+'</button>'+
@@ -5198,7 +5288,96 @@ function duaCard(d){
     '</div></article>';
 }
 
+/* ---------- «Удел и дело»: дуа о ризке ---------- */
+var RZ_KEYS = [
+  {ic:"✦", n:"Богобоязненность", s:"выход и удел, откуда не ждёшь",
+   ar:"وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا وَيَرْزُقْهُ مِنْ حَيْثُ لَا يَحْتَسِبُ",
+   ru:"Тому, кто боится Аллаха, Он создаст выход и наделит уделом оттуда, откуда он не ожидает.", src:"Сура ат-Талак, 65:2-3"},
+  {ic:"☁", n:"Упование", s:"как птицы: утром голодные, вечером сытые",
+   ar:"لَوْ أَنَّكُمْ كُنْتُمْ تَوَكَّلُونَ عَلَى اللَّهِ حَقَّ تَوَكُّلِهِ لَرُزِقْتُمْ كَمَا تُرْزَقُ الطَّيْرُ، تَغْدُو خِمَاصًا وَتَرُوحُ بِطَانًا",
+   ru:"Если бы вы уповали на Аллаха должным образом, Он наделял бы вас уделом, как наделяет птиц: утром они улетают голодными, а вечером возвращаются сытыми.", src:"Умар, да будет доволен им Аллах. Ат-Тирмизи, хадис хороший достоверный"},
+  {ic:"✧", n:"Истигфар", s:"прощение открывает дождь и имущество",
+   ar:"اسْتَغْفِرُوا رَبَّكُمْ إِنَّهُ كَانَ غَفَّارًا يُرْسِلِ السَّمَاءَ عَلَيْكُم مِّدْرَارًا وَيُمْدِدْكُم بِأَمْوَالٍ وَبَنِينَ",
+   ru:"Просите прощения у вашего Господа, ведь Он - Прощающий. Он пошлёт вам с неба обильный дождь, поможет вам имуществом и сыновьями.", src:"Сура Нух, 71:10-12"},
+  {ic:"❦", n:"Родственные связи", s:"расширяют удел и продлевают жизнь",
+   ar:"مَنْ أَحَبَّ أَنْ يُبْسَطَ لَهُ فِي رِزْقِهِ، وَيُنْسَأَ لَهُ فِي أَثَرِهِ، فَلْيَصِلْ رَحِمَهُ",
+   ru:"Кто хочет, чтобы его удел был расширен, а жизнь продлена, пусть поддерживает родственные связи.", src:"Анас, да будет доволен им Аллах. Аль-Бухари, Муслим"},
+  {ic:"❁", n:"Садака", s:"не уменьшает имущества",
+   ar:"مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ",
+   ru:"Садака не уменьшает имущества.", src:"Абу Хурайра, да будет доволен им Аллах. Муслим"},
+  {ic:"☀", n:"Раннее утро", s:"баракат - в начале дня",
+   ar:"اللَّهُمَّ بَارِكْ لِأُمَّتِي فِي بُكُورِهَا",
+   ru:"О Аллах, благослови мою общину в её раннем утре.", src:"Сахр аль-Гамиди, да будет доволен им Аллах. Абу Дауд, ат-Тирмизи, хадис хороший",
+   note:"Сахр, передавший этот хадис, был торговцем и отправлял караваны ранним утром - и разбогател."},
+  {ic:"⚖", n:"Честная торговля", s:"правда даёт сделке баракат",
+   ar:"فَإِنْ صَدَقَا وَبَيَّنَا بُورِكَ لَهُمَا فِي بَيْعِهِمَا، وَإِنْ كَتَمَا وَكَذَبَا مُحِقَتْ بَرَكَةُ بَيْعِهِمَا",
+   ru:"Если продавец и покупатель правдивы и говорят о недостатках, их сделка будет благословенна, а если скрывают и лгут - благодать их сделки будет стёрта.", src:"Хаким ибн Хизам, да будет доволен им Аллах. Аль-Бухари, Муслим"},
+  {ic:"◍", n:"Хадж и умра", s:"устраняют бедность и грехи",
+   ar:"تَابِعُوا بَيْنَ الْحَجِّ وَالْعُمْرَةِ، فَإِنَّهُمَا يَنْفِيَانِ الْفَقْرَ وَالذُّنُوبَ",
+   ru:"Совершайте хадж и умру одно за другим: они устраняют бедность и грехи.", src:"Ибн Мас'уд, да будет доволен им Аллах. Ат-Тирмизи, ан-Насаи, хадис хороший достоверный", go:"open:umrah"},
+  {ic:"◷", n:"Удел записан", s:"ищите его достойно",
+   ar:"أَيُّهَا النَّاسُ اتَّقُوا اللَّهَ وَأَجْمِلُوا فِي الطَّلَبِ، فَإِنَّ نَفْسًا لَنْ تَمُوتَ حَتَّى تَسْتَوْفِيَ رِزْقَهَا",
+   ru:"Люди, бойтесь Аллаха и ищите удел достойным путём: ни одна душа не умрёт, пока не получит свой удел сполна.", src:"Джабир, да будет доволен им Аллах. Ибн Маджа"},
+  {ic:"◈", n:"Богатство души", s:"богатство - не в количестве вещей",
+   ar:"لَيْسَ الْغِنَى عَنْ كَثْرَةِ الْعَرَضِ، وَلَكِنَّ الْغِنَى غِنَى النَّفْسِ",
+   ru:"Богатство - не в обилии имущества, богатство - в богатстве души.", src:"Абу Хурайра, да будет доволен им Аллах. Аль-Бухари, Муслим"}
+];
+var RZ_QURAN = ["rz6", "rz4", "rz5", "r3"];
+var RZ_SUNNAH = ["r1", "r2", "rz1", "rz2", "rz3", "rz7", "m17", "h4", "n2", "m2", "r4"];
+var RZ_DAY = [
+  ["☀", "После утреннего намаза", "полезное знание, благой удел, принятое дело", ["r2"]],
+  ["☼", "Утром и вечером", "от бедности - 3 раза, и господин просьб о прощении", ["m17", "m2"]],
+  ["➤", "Выходя из дома, на работу", "«Бисмиллях, таваккальту...» - тебе достаточно", ["n2"]],
+  ["✧", "В течение дня", "истигфар: Пророк ﷺ просил прощения больше семидесяти раз в день (аль-Бухари)", ["rz2"]],
+  ["⛨", "Когда долги и тревога", "дозволенным избавь от запретного; от тревоги и бремени долга", ["r1", "h4"]]
+];
+function rzById(id){ return DUAS.filter(function(d){ return d.id === id; })[0]; }
+function viewRizq(){
+  var cat = CATS.filter(function(c){ return c.id === "rizq"; })[0];
+  var used = {}; RZ_QURAN.concat(RZ_SUNNAH).forEach(function(id){ used[id] = 1; }); used.nd3 = 1;
+  var own = DUAS.filter(function(d){ return d.c === "rizq" && !used[d.id]; });
+  var nQ = RZ_QURAN.filter(rzById).length, nS = RZ_SUNNAH.filter(rzById).length;
+  var h = ['<div class="stack">'];
+  h.push('<section class="rz-hero"><div class="rz-orn"></div>'+
+    '<div class="rz-ar">الرَّزَّاق</div>'+
+    '<div class="rz-t">Дуа о ризке</div>'+
+    '<div class="rz-s">Удел, деньги и достаток - из Корана и достоверной Сунны. Ар-Раззак - Дающий удел: просим у Него, а не у людей.</div>'+
+    '<div class="rz-stats"><div><b>'+(nQ + nS)+'</b><span>дуа</span></div><div><b>'+RZ_KEYS.length+'</b><span>ключей удела</span></div><div><b>'+RZ_DAY.length+'</b><span>моментов дня</span></div></div>'+
+  '</section>');
+  h.push('<div class="rz-nav">'+[["keys", "Ключи удела"], ["day", "На каждый день"], ["quran", "Из Корана"], ["sunnah", "Из Сунны"]].concat(own.length ? [["own", "Своими словами"]] : [])
+    .map(function(x){ return '<button data-rzsec="'+x[0]+'">'+x[1]+'</button>'; }).join("")+'</div>');
+
+  h.push('<div class="rz-h" id="rz-keys"><span>I</span><div><b>Ключи удела</b><em>что открывает удел - по аятам и хадисам</em></div></div>');
+  h.push('<div class="rz-keys">'+RZ_KEYS.map(function(k){
+    return '<details class="rz-key"><summary><i>'+k.ic+'</i><b>'+esc(k.n)+'</b><span>'+esc(k.s)+'</span></summary>'+
+      '<div class="rz-key-in"><div class="ar">'+esc(k.ar)+'</div><div class="ru">'+esc(k.ru)+'</div>'+
+      (k.note ? '<div class="rz-note">'+esc(k.note)+'</div>' : '')+
+      '<div class="src">'+esc(k.src)+'</div>'+
+      (k.go ? '<button class="btn sec sm" style="width:100%;margin-top:10px" data-jump="'+k.go+'">Путеводитель по умре</button>' : '')+'</div></details>';
+  }).join("")+'</div>');
+
+  h.push('<div class="rz-h" id="rz-day"><span>II</span><div><b>На каждый день</b><em>пять моментов, когда просить об уделе</em></div></div>');
+  h.push('<section class="card rz-day">'+RZ_DAY.map(function(r){
+    return '<div class="rz-dr"><i>'+r[0]+'</i><div><b>'+esc(r[1])+'</b><span>'+esc(r[2])+'</span>'+
+      '<div class="rz-dg">'+r[3].filter(rzById).map(function(id){ var d = rzById(id);
+        return '<button data-rzgo="'+id+'">'+esc(d.n)+' ›</button>'; }).join("")+'</div></div></div>';
+  }).join("")+'</section>');
+
+  h.push('<div class="rz-h" id="rz-quran"><span>III</span><div><b>Из Корана</b><em>мольбы пророков и праведников</em></div></div>');
+  h.push('<div class="rz-list">'+RZ_QURAN.filter(rzById).map(function(id){ return duaCard(rzById(id)); }).join("")+'</div>');
+  h.push('<div class="rz-h" id="rz-sunnah"><span>IV</span><div><b>Из Сунны</b><em>слова Пророка ﷺ с источниками</em></div></div>');
+  h.push('<div class="rz-list">'+RZ_SUNNAH.filter(rzById).map(function(id){ return duaCard(rzById(id)); }).join("")+'</div>');
+  if(own.length){
+    h.push('<div class="rz-h" id="rz-own"><span>V</span><div><b>Своими словами</b><em>из присланного списка</em></div></div>');
+    h.push('<div class="btip" style="margin-top:0">У этих мольб нет источника в хадисах - это не слова Пророка ﷺ, а хорошие просьбы, которые можно читать как свои. Просить Аллаха своими словами, на любом языке, дозволено и желательно.</div>');
+    h.push('<div class="rz-list">'+own.map(duaCard).join("")+'</div>');
+  }
+  h.push('<p class="disclaimer">Арабский текст и источники сверены по сборникам хадисов. Перед широкой публикацией раздел стоит показать преподавателю.</p>');
+  h.push('</div>');
+  return h.join("");
+}
 function viewCat(){
+  if(V.p === "rizq") return viewRizq();
   var cat = CATS.filter(function(c){return c.id===V.p;})[0];
   var list = DUAS.filter(function(d){return d.c===V.p;});
   var h = ['<div class="stack">'];
@@ -20030,7 +20209,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -20758,6 +20937,8 @@ document.getElementById("app").addEventListener("click", function(ev){
     return;
   }
   if(d.hjtab){ V.tab = "dua"; if(d.hjtab === "umrah") open("umrah", null); else open("guide", "hajj"); return; }
+  if(d.rzsec){ var rze = document.getElementById("rz-" + d.rzsec); if(rze) rze.scrollIntoView({behavior:"smooth", block:"start"}); return; }
+  if(d.rzgo){ scrollToDua(d.rzgo); return; }
   if(d.umshare){ umShare(); return; }
   if(d.umsec){ V.umSec = d.umsec; render(); $screen.scrollTop = 0; return; }
   if(d.umchk){ var UD = umData(); if(UD.c[d.umchk]) delete UD.c[d.umchk]; else UD.c[d.umchk] = todayKey(); save(); render(); return; }
