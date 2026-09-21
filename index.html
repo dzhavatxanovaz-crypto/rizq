@@ -6220,6 +6220,23 @@ function qtAdd(sec){
   if(keys.length > 800){ keys.sort(); keys.slice(0, keys.length - 800).forEach(function(x){ delete t[x]; }); }
   save();
 }
+/* Прочитанные страницы. Раньше «прочитано» считалось по самому дальнему аяту, до которого
+   человек дошёл: открыл суру в середине - и выходило, что прочитана половина Корана (а в
+   рейтинге номер аята шёл за номер страницы, отсюда «560%»). Теперь страница считается
+   прочитанной, только если она была открыта на экране не меньше 30 секунд. Место, где
+   человек остановился, - отдельно, это не прогресс. */
+var QR_NEED = 30;
+function qReadAll(){ if(!S.qRead) S.qRead = {}; return S.qRead; }
+function qReadCount(){ return Object.keys(qReadAll()).length; }
+function qPageTick(sec){
+  var p = qBookOn() ? mushafPage() : pageOf(S.qLast || 0);
+  if(!(p >= 1 && p <= 604)) return;
+  var r = qReadAll();
+  if(r[p]) return;
+  if(!S.qPageSec) S.qPageSec = {};
+  S.qPageSec[p] = (S.qPageSec[p] || 0) + sec;
+  if(S.qPageSec[p] >= QR_NEED){ r[p] = todayKey(); delete S.qPageSec[p]; }
+}
 function qtSum(days){
   var t = qtAll(), n = 0, d = new Date();
   for(var i = 0; i < days; i++){
@@ -8091,13 +8108,14 @@ function viewQuranHome(){
     '<div class="ru" style="font-size:13.5px;color:rgba(255,255,255,.7)">Страница '+pageOf(last)+' · джуз '+juzOf(last)+'</div></button>');
 
   /* прогресс хатма */
-  var pct = Math.round(((S.qMax||0)+1)/QTOTAL*100);
+  var qrd = qReadCount(), pct = Math.min(100, Math.round(qrd / 604 * 100));
   h.push('<section class="card">'+
     '<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:9px">'+
       '<b style="font-family:var(--f-display);font-size:15px">Прочитано Корана</b>'+
       '<span style="margin-left:auto;font-family:var(--f-display);font-weight:700;color:var(--accent-ink)">'+pct+'%</span></div>'+
     '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
-    '<div style="font-size:13px;color:var(--ink-3);margin-top:8px">'+((S.qMax||0)+1)+' из '+QTOTAL+' аятов · страница '+pageOf(S.qMax||0)+' из 604</div></section>');
+    '<div style="font-size:13px;color:var(--ink-3);margin-top:8px">'+plural(qrd, 'страница', 'страницы', 'страниц')+' из 604 прочитано'+(qrd && qrd < 604 && pct === 0 ? ' (меньше 1%)' : '')+'</div>'+
+    '<div style="font-size:12px;color:var(--ink-3);margin-top:5px;line-height:1.45">Страница засчитывается, когда была открыта не меньше 30 секунд. Каждая страница - один раз, сколько бы вы её ни открывали.</div></section>');
 
   h.push(qtCard());
   h.push(qPlanCard());
@@ -13628,7 +13646,7 @@ function scoreStats(){
   return {
     points: S.points || 0, today: today, streak: streak(),
     azkars: S.azkarLifetime || 0, tasbih: S.tasbihTotal || 0,
-    names: namedCount(), quran: S.qMax || 0, words: arWeek()
+    names: namedCount(), quran: qReadCount(), words: arWeek()
   };
 }
 /* отправляем не чаще раза в час и только если человек включил участие */
@@ -17459,7 +17477,7 @@ function viewSettings(){
    ============================================================ */
 var BK_KEYS = ["fav","tasbih","tasbihTotal","read","dcnt","practice","orders","readDay","done","salah","myduas","goals",
   "namesRead","daily","shukrNotes","shukr","checks","sunnah","health","pauses","qada","points","pointsDay",
-  "fin","finLimits","debts","finRepeat","fontSize","todos","quiz","azkarLifetime","qLast","qMax","qMarks","qplan","hifz","ar","zakat","trip","kids","finReqs",
+  "fin","finLimits","debts","finRepeat","fontSize","todos","quiz","azkarLifetime","qLast","qMax","qRead","qMarks","qplan","hifz","ar","zakat","trip","kids","finReqs",
   "name","city","method","madhab","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll"];
 
 /* Что человек потеряет, если копии не будет. Считаем по тем же данным,
@@ -17473,7 +17491,7 @@ function backupCount(o){
     marks: len(o.qMarks),
     read:  len(o.read),
     shukr: len(o.shukr) + len(o.shukrNotes),
-    ayat:  o.qMax || 0
+    pages: len(o.qRead)
   };
 }
 function backupLines(c){
@@ -17482,7 +17500,7 @@ function backupLines(c){
   if(c.duas)  out.push(plural(c.duas,"своя дуа","своих дуа","своих дуа"));
   if(c.fav)   out.push(plural(c.fav,"запись","записи","записей")+" в избранном");
   if(c.marks) out.push(plural(c.marks,"закладка","закладки","закладок")+" в Коране");
-  if(c.ayat)  out.push("прочитано аятов: "+c.ayat);
+  if(c.pages) out.push("прочитано страниц Корана: "+c.pages);
   if(c.shukr) out.push(plural(c.shukr,"запись","записи","записей")+" благодарности");
   return out;
 }
@@ -19436,6 +19454,7 @@ scoreSync();
 setInterval(function(){
   if(V.view !== "reader") return;
   if(document.visibilityState && document.visibilityState !== "visible") return;
+  qPageTick(QT_STEP);
   qtAdd(QT_STEP);
   if(V.tab === "quran" && !V.view) render();
 }, QT_STEP * 1000);
