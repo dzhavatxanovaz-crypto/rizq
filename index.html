@@ -640,6 +640,17 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .qf-ic{flex:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(212,175,55,.13);color:var(--accent-ink);font-size:15px;line-height:1}
 .qf-ic svg{width:26px;height:26px}
 .qf-t{white-space:nowrap}
+/* ---------- книга «Девушка, которая смогла» ---------- */
+.b2-card{align-items:center}
+.b2-cov{flex:none;width:58px;height:84px;object-fit:cover;border-radius:6px;box-shadow:0 6px 14px -6px rgba(0,0,0,.5)}
+.b2-hero{display:flex;gap:16px;align-items:center;padding:18px;border-radius:var(--r-lg);background:linear-gradient(150deg,#1E2A5A,#111A3F);border:1.5px solid rgba(212,175,55,.5);color:#F4EBD0}
+.b2-hero img{flex:none;width:104px;height:150px;object-fit:cover;border-radius:8px;box-shadow:0 14px 30px -12px rgba(0,0,0,.7)}
+.b2-hero b{display:block;font-family:var(--f-display);font-size:21px;line-height:1.25;margin-top:6px}
+.b2-hero span{display:block;font-size:13px;color:rgba(244,235,208,.75);margin-top:6px}
+.b2-ch-h h3{font-family:var(--f-display);font-size:22px;font-weight:700;margin:6px 2px 0;line-height:1.3}
+.b2-ch-h .eyebrow{margin:0 2px}
+.b2-text p{font-size:16.5px;line-height:1.8;margin:0 0 14px;color:var(--ink)}
+.b2-text p:last-child{margin-bottom:0}
 /* ---------- «Удел и дело» ---------- */
 .dua-when{display:inline-block;margin:-2px 0 8px;font-size:12px;font-weight:600;color:var(--accent-ink);background:rgba(212,175,55,.12);padding:3px 10px;border-radius:999px}
 .dua-why{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--surface-2);font-size:13px;line-height:1.55;color:var(--ink-2)}
@@ -4420,6 +4431,8 @@ function renderHdr(){
         : V.view==="kidstory" ? "История"
         : V.view==="installment" ? "Исламская рассрочка"
         : V.view==="umrah" ? "Хадж и Умра"
+        : V.view==="book2" ? "Девушка, которая смогла"
+        : V.view==="book2ch" ? "Девушка, которая смогла"
         : V.view==="settings" ? "Настройки" : "";
     $hdr.innerHTML = '<header class="hdr"><div class="hdr-row">'+
       '<button class="back" data-back="1" aria-label="Назад">‹</button>'+
@@ -4761,7 +4774,7 @@ var SHARE_TEXT = "Ассаламу алейкум! Нашла приложени
 /* Экраны, которые можно открыть ссылкой. Белый список, а не любое значение:
    по чужой ссылке приложение не должно оказываться где угодно. */
 var DEEP_VIEWS = ["courses","sadaqa","zakat","names","hadith","sira","book1","qibla",
-                  "calendar","tasbih","suras","halal","top","qduas","duaall","report","share","consulting","live","umrah","installment","kids","hajjtrip","salahpics","arabic"];
+                  "calendar","tasbih","suras","halal","top","qduas","duaall","report","share","consulting","live","book2","umrah","installment","kids","hajjtrip","salahpics","arabic"];
 var DEEP_TABS  = ["home","quran","dua","journal","income","prof"];
 
 function deepOpen(){
@@ -5052,6 +5065,7 @@ function buildIndex(){
    ["Исламская рассрочка","партнёры и покупка товара в рассрочку","open:installment","рассрочка исламская халяль мурабаха кредит без процентов частями взносы купить в рассрочку партнерское финансирование"],
    ["Размер текста","крупный шрифт для чтения","go:prof","шрифт размер крупный текст мелко зрение увеличить"],
    ["Умра - малый хадж","путеводитель: сезоны, вещи, ихрам, таваф, са'й","open:umrah","умра умру малый хадж паломничество мекка медина ихрам микат таваф сай сафа марва кааба путеводитель чек-лист вещи виза нусук"],
+   ["Девушка, которая смогла","книга Заиры Джаватхановой, бизнес-роман","open:book2","книга девушка которая смогла бизнес роман амина читать купить книгу"],
    ["Восполнение","пропущенные намазы и посты","open:qada","каза восполнение пропущенный намаз пост долг восполнить казаа qada"],
    ["Куда помочь","сборы, которые мы посмотрели","open:sadaqa","садака милостыня помочь сбор пожертвование благотворительность нуждающимся закят раздать туба tooba"],
   ].forEach(function(x){ add(x[0], x[1], x[2], x[3], "Разделы"); });
@@ -12241,6 +12255,93 @@ function chapterForName(i){
   return -1;
 }
 
+/* ---------- книга «Девушка, которая смогла» ---------- */
+var BOOK2 = {
+  id:"book2", n:"Девушка, которая смогла", a:"Заира Джаватханова", price:550, cover:"icons/book-devushka.jpg",
+  about:"Бизнес-роман. Героиня из провинциального городка уезжает с ребёнком от мужа-тирана в столицу, встречает наставника и с нуля строит бизнес по производству одежды. История собрана из реальных событий в жизни клиенток автора. В конце глав - задания, которые помогут найти слабые места в вашем деле."
+};
+var B2 = { busy:false, err:"" };
+function b2Data(){ try{ var j = JSON.parse(localStorage.getItem("rizq.book2") || "null"); return j && j.chapters && j.chapters.length ? j : null; }catch(e){ return null; } }
+function b2Order(){ return (S.orders || []).filter(function(o){ return o.id === BOOK2.id && o.status === "paid"; })[0] || null; }
+function b2Owned(){ return bought(BOOK2.id) || !!b2Order() || !!b2Data(); }
+/* забрать книгу по номеру оплаченного заказа и положить в телефон */
+function b2Load(then){
+  var o = b2Order();
+  if(!o || B2.busy || !window.fetch) return;
+  B2.busy = true; B2.err = "";
+  fetch(crmApi() + "/api/public/checkout/" + encodeURIComponent(o.token) + "/book")
+    .then(function(r){ return r.json().then(function(j){ return { ok:r.ok, j:j }; }); })
+    .then(function(x){
+      B2.busy = false;
+      if(!x.ok || !x.j.chapters){ B2.err = (x.j && x.j.error) || "Не получилось загрузить книгу"; render(); return; }
+      try{ localStorage.setItem("rizq.book2", JSON.stringify({ at: Date.now(), title: x.j.title, chapters: x.j.chapters })); }
+      catch(e){ B2.err = "Не хватает памяти телефона, чтобы сохранить книгу"; render(); return; }
+      if(!bought(BOOK2.id)){ S.bought.push(BOOK2.id); save(); }
+      if(then) then(); else render();
+    })
+    .catch(function(){ B2.busy = false; B2.err = "Нет связи - книга загрузится, когда появится интернет"; render(); });
+}
+function b2Paras(t){
+  return String(t || "").split(/\n\s*\n|\n/).map(function(s){ return s.trim(); }).filter(Boolean);
+}
+function book2Card(){
+  var own = b2Owned();
+  return '<button class="course b2-card" data-open="book2">'+
+    '<img class="b2-cov" src="'+BOOK2.cover+'" alt="Обложка книги «'+esc(BOOK2.n)+'»" loading="lazy">'+
+    '<div style="flex:1;min-width:0"><h4>'+esc(BOOK2.n)+'</h4><p>Бизнес-роман · '+esc(BOOK2.a)+'</p>'+
+    '<div class="meta">'+(own ? '<span class="chip own">Куплена</span>' : '<span class="price">'+money(BOOK2.price)+'</span>')+
+      '<span class="chip">пролог, 16 глав, эпилог</span></div></div></button>';
+}
+function viewBook2(){
+  var d = b2Data(), own = b2Owned(), h = ['<div class="stack">'];
+  h.push('<section class="b2-hero"><img src="'+BOOK2.cover+'" alt="Обложка книги «'+esc(BOOK2.n)+'»">'+
+    '<div><div class="eyebrow">Книга</div><b>'+esc(BOOK2.n)+'</b><span>'+esc(BOOK2.a)+'</span></div></section>');
+  h.push('<div class="card flat" style="padding:14px 15px;font-size:14.5px;color:var(--ink-2);line-height:1.65">'+esc(BOOK2.about)+'</div>');
+  if(d){
+    var last = S.b2last | 0;
+    h.push('<button class="btn" data-b2ch="'+last+'">'+(last ? 'Продолжить: '+esc(d.chapters[last] ? d.chapters[last].t : "") : 'Начать читать')+'</button>');
+    h.push('<div class="qlist">'+d.chapters.map(function(c, i){
+      return '<button class="qrow" data-b2ch="'+i+'"><span class="qnum">'+(i + 1)+'</span>'+
+        '<div class="qrow-t"><b>'+esc(c.t)+'</b><span>'+plural(Math.max(1, Math.round(c.x.length / 1500)), "минута", "минуты", "минут")+' чтения</span></div>'+
+        (i === last ? '<span class="chip">здесь</span>' : '')+'</button>';
+    }).join("")+'</div>');
+  } else if(own){
+    if(!B2.busy && !B2.err) b2Load();
+    h.push('<section class="card" style="text-align:center;border-color:rgba(212,175,55,.45)">'+
+      '<div class="eyebrow" style="color:var(--accent-ink)">Книга ваша</div>'+
+      '<p style="font-size:14.5px;line-height:1.6;color:var(--ink-2);margin:9px 0 12px">'+
+        (B2.err ? esc(B2.err) : 'Загружаем книгу в телефон - после этого она будет читаться и без интернета.')+'</p>'+
+      (B2.err && b2Order() ? '<button class="btn" data-b2load="1">Загрузить книгу</button>' : '')+
+      (!b2Order() ? '<p class="note">Книга куплена на другом устройстве или в приложении JAVATTI - там её и читайте, или напишите нам: откроем здесь.</p>' : '')+
+    '</section>');
+  } else {
+    h.push('<section class="card" style="text-align:center;border-color:rgba(212,175,55,.45)">'+
+      '<div class="eyebrow" style="color:var(--accent-ink)">Онлайн-книга</div>'+
+      '<p style="font-size:14.5px;line-height:1.6;color:var(--ink-2);margin:9px 0 12px">Обращение к читателю, пролог, 16 глав и эпилог. '+
+        'Сразу после оплаты книга откроется здесь целиком - без писем и паролей - и будет читаться даже без интернета.</p>'+
+      '<div style="display:flex;align-items:baseline;justify-content:center;gap:9px;margin-bottom:12px">'+
+        '<span class="price" style="font-size:26px">'+money(BOOK2.price)+'</span><span class="chip">доступ навсегда</span></div>'+
+      '<button class="btn" data-buy="'+BOOK2.id+'">Купить книгу - '+money(BOOK2.price)+'</button>'+
+    '</section>');
+  }
+  h.push(waCard('Вопрос по книге?', 'Напишите - ответим', 'Ассаламу алейкум! Вопрос по книге «Девушка, которая смогла».', 'Написать в WhatsApp'));
+  h.push('</div>');
+  return h.join("");
+}
+function viewBook2Ch(){
+  var d = b2Data();
+  if(!d) return viewBook2();
+  var i = Math.max(0, Math.min(d.chapters.length - 1, V.p | 0)), c = d.chapters[i];
+  if((S.b2last | 0) !== i){ S.b2last = i; save(); }
+  var h = ['<div class="stack">'];
+  h.push('<section class="b2-ch-h"><div class="eyebrow">'+esc(BOOK2.n)+' · '+(i + 1)+' из '+d.chapters.length+'</div><h3>'+esc(c.t)+'</h3></section>');
+  h.push('<section class="card b2-text">'+b2Paras(c.x).map(function(t){ return '<p>'+esc(t)+'</p>'; }).join("")+'</section>');
+  h.push('<div class="um-foot">'+
+    (i > 0 ? '<button class="btn sec sm" data-b2ch="'+(i - 1)+'">‹ Назад</button>' : '<button class="btn sec sm" data-open="book2">Все главы</button>')+
+    (i < d.chapters.length - 1 ? '<button class="btn sm" data-b2ch="'+(i + 1)+'">'+esc(d.chapters[i + 1].t)+' ›</button>' : '<button class="btn sm" data-open="book2">Все главы</button>')+'</div>');
+  h.push('</div>');
+  return h.join("");
+}
 function viewBook1(){
   var ch = bookChapters(), pr = bookProlog();
   var h = ['<div class="stack">'];
@@ -18237,7 +18338,8 @@ function viewCourses(){
     h.push('<a class="btn ghost sm" style="display:block;width:100%;text-align:center;text-decoration:none;margin-top:-4px" href="'+esc(javattiUrl(c.id))+'" target="_blank" rel="noopener" data-jopen="'+c.id+'">Подробнее в приложении JAVATTI ›</a>');
     if(c.id === "ai") h.push(consultCard());
   });
-  h.push('<div class="sec-h" style="margin-top:8px"><h3>Книга</h3></div>');
+  h.push('<div class="sec-h" style="margin-top:8px"><h3>Книги</h3></div>');
+  h.push(book2Card());
   h.push(bookCard());
   h.push(waCard(
     'Записаться на обучение',
@@ -19107,7 +19209,8 @@ function viewProf(){
     h.push('<a class="btn" style="text-decoration:none;display:block;text-align:center" href="'+esc(cabinetUrl())+'" target="_blank" rel="noopener">Открыть обучение на платформе</a>'+
       '<p class="note" style="margin:6px 0 12px">Вход по почте или телефону, которые вы указали при оплате.</p>');
   }
-  if(!mine.length){
+  if(b2Owned()) h.push(book2Card());
+  if(!mine.length && !b2Owned()){
     h.push('<div class="card flat" style="text-align:center;padding:20px">'+
       '<div style="font-size:14.5px;color:var(--ink-2);line-height:1.55">Пока нет купленных программ.</div>'+
       '<button class="btn sm sec" style="margin-top:12px" data-open="courses">Посмотреть программы</button></div>');
@@ -19630,13 +19733,14 @@ function digitsOf(v){ return String(v||"").split("").filter(function(ch){ return
    и отдаёт ссылку Prodamus. После оплаты приложение само узнаёт об этом
    и открывает доступ, а данные для входа приходят на почту. */
 function sheetBuy(id, tariff){
-  var isBook = id === BOOK1.id;
+  var isB2 = id === BOOK2.id;
+  var isBook = id === BOOK1.id || isB2;
   var c = isBook ? null : (id === CLUB.id ? CLUB : COURSES.filter(function(x){ return x.id === id; })[0]);
   if(!isBook && !c) return;
   var tars = (c && c.id === "sunnah") ? SUNNAH_TARIFFS : null;
   var t = tars ? (tars.filter(function(x){ return x.n === tariff; })[0] || tars[0]) : null;
-  var price = t ? t.p : isBook ? BOOK1.price : c.price;
-  var title = isBook ? BOOK1.n : c.n;
+  var price = t ? t.p : isB2 ? BOOK2.price : isBook ? BOOK1.price : c.price;
+  var title = isB2 ? BOOK2.n : isBook ? BOOK1.n : c.n;
   var ic = isBook ? "✦" : c.ic;
   V.buyId = id; V.buyTar = t ? t.n : "";
   if(!finData()) finLoad(function(){ if(V.buyId === id && document.getElementById("coGo")){ checkoutKeepInputs(); sheetBuy(V.buyId, V.buyTar); } });
@@ -19645,7 +19749,7 @@ function sheetBuy(id, tariff){
     '<div class="card flat" style="padding:14px"><div style="display:flex;gap:10px;align-items:center">'+
       '<div class="course-ic" style="width:42px;height:42px;font-size:21px">'+ic+'</div>'+
       '<div style="flex:1;min-width:0"><div style="font-size:15px;font-family:var(--f-display);font-weight:600;line-height:1.3">'+esc(title)+'</div>'+
-      '<div style="font-size:13px;color:var(--ink-3);margin-top:3px">'+(isBook ? "Читается в приложении" : (c.start || "Обучение на платформе школы JAVATTI"))+(t ? " · тариф «"+esc(t.n)+"»" : "")+'</div></div></div>'+
+      '<div style="font-size:13px;color:var(--ink-3);margin-top:3px">'+(isB2 ? "Откроется здесь целиком сразу после оплаты" : isBook ? "Читается в приложении" : (c.start || "Обучение на платформе школы JAVATTI"))+(t ? " · тариф «"+esc(t.n)+"»" : "")+'</div></div></div>'+
       (tars ? '<div class="pill-row" style="justify-content:flex-start;margin-top:11px">'+tars.map(function(x){
         return '<button class="pill'+(x.n===t.n?" on":"")+'" data-buytar="'+esc(x.n)+'" style="'+(x.n===t.n?"border-color:var(--accent);color:var(--accent-ink)":"")+'">'+esc(x.n)+' · '+money(x.p)+'</button>';
       }).join("")+'</div>' : '')+
@@ -19717,7 +19821,12 @@ function ordersCheck(){
         if(!j || j.status !== "paid" || o.status === "paid") return;
         o.status = "paid"; o.cabinetUrl = j.cabinetUrl; if(j.plan) o.planInfo = j.plan;
         if(!bought(o.id)) S.bought.push(o.id);
-        save(); render(); sheetAccessOpened(o);
+        save();
+        if(o.id === BOOK2.id){
+          b2Load(function(){ V.tab = "income"; open("book2ch", 0); toast("Оплата получена - книга открыта. Приятного чтения!"); });
+          render(); return;
+        }
+        render(); sheetAccessOpened(o);
       }).catch(function(){});
   });
 }
@@ -20297,6 +20406,8 @@ function render(){
   else if(V.view==="kidstory") html = viewKidStory();
   else if(V.view==="installment") html = viewInstallment();
   else if(V.view==="umrah") html = viewUmrah();
+  else if(V.view==="book2") html = viewBook2();
+  else if(V.view==="book2ch") html = viewBook2Ch();
   else if(V.tab==="quran") html = viewQuranHome();
   else if(V.tab==="home") html = viewHome();
   else if(V.tab==="dua") html = viewDua();
@@ -20345,7 +20456,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -21084,6 +21195,8 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.hjtab){ V.tab = "dua"; if(d.hjtab === "umrah") open("umrah", null); else open("guide", "hajj"); return; }
   if(d.rzsec){ var rze = document.getElementById("rz-" + d.rzsec); if(rze) rze.scrollIntoView({behavior:"smooth", block:"start"}); return; }
   if(d.rzgo){ scrollToDua(d.rzgo); return; }
+  if(d.b2ch !== undefined){ V.tab = "income"; open("book2ch", parseInt(d.b2ch, 10) || 0); return; }
+  if(d.b2load !== undefined){ B2.err = ""; b2Load(function(){ V.tab = "income"; open("book2ch", S.b2last | 0); }); render(); return; }
   if(d.umshare){ umShare(); return; }
   if(d.umsec){ V.umSec = d.umsec === "home" ? "" : d.umsec; render(); $screen.scrollTop = 0; return; }
   if(d.umchk){ var UD = umData(); if(UD.c[d.umchk]) delete UD.c[d.umchk]; else UD.c[d.umchk] = todayKey(); save(); render(); return; }
