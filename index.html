@@ -989,6 +989,61 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .blink-ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:rgba(212,175,55,.15);color:var(--accent-ink);font-size:16px;margin-bottom:6px;font-family:var(--f-ar)}
 .blink b{font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.25}
 .blink-s{font-size:11.5px;color:var(--ink-3);line-height:1.3}
+.vk-head{display:flex;align-items:center;gap:10px;margin:6px 2px 0}
+.vk-head span{font-family:var(--f-display);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink);white-space:nowrap}
+.vk-head i{flex:1;height:1px;background:linear-gradient(90deg,rgba(212,175,55,.6),transparent)}
+.vk-card{border-color:rgba(212,175,55,.32);background:linear-gradient(180deg,rgba(212,175,55,.06),transparent 60%),var(--surface)}
+.vk-keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(94px,1fr));gap:8px;margin-top:12px}
+.vk-key{padding:12px 10px 11px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line);text-align:center}
+.vk-key b{display:block;font-family:var(--f-display);font-size:24px;line-height:1.1;color:var(--accent-ink);font-variant-numeric:tabular-nums}
+.vk-key span{display:block;font-size:12px;line-height:1.35;color:var(--ink-3);margin-top:5px}
+.vk-flow{list-style:none;padding:0;margin:14px 0 0;position:relative}
+.vk-flow li{position:relative;display:flex;gap:12px;padding:0 0 14px}
+.vk-flow li:last-child{padding-bottom:0}
+.vk-flow li:not(:last-child)::before{content:"";position:absolute;left:14px;top:30px;bottom:2px;width:2px;background:linear-gradient(rgba(212,175,55,.55),rgba(212,175,55,.15))}
+.vk-flow i{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-family:var(--f-display);font-weight:700;font-size:13.5px;color:#1E2A5A;background:linear-gradient(135deg,#E9C85E,#C9A12F);box-shadow:0 4px 10px -4px rgba(201,161,47,.7)}
+.vk-flow b{display:block;font-size:15px;line-height:1.3;color:var(--ink);padding-top:4px}
+.vk-flow span{display:block;font-size:13px;line-height:1.45;color:var(--ink-3);margin-top:2px}
+.vk-yn{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.vk-yn>div{border-radius:14px;padding:11px 11px 6px;border:1px solid var(--line)}
+.vk-y{background:rgba(62,155,114,.09);border-color:rgba(62,155,114,.35)!important}
+.vk-n{background:rgba(200,85,61,.08);border-color:rgba(200,85,61,.32)!important}
+.vk-yn h5{margin:0 0 6px;font-size:12.5px;font-weight:700;letter-spacing:.02em}
+.vk-y h5{color:#2F8A62}.vk-n h5{color:#C0503A}
+.vk-yn ul{list-style:none;padding:0;margin:0}
+.vk-yn li{font-size:13px;line-height:1.4;color:var(--ink-2);padding:5px 0;border-top:1px solid var(--line-soft)}
+.vk-yn li:first-child{border-top:none}
+.vk-tblw{overflow-x:auto;margin-top:12px;border-radius:14px;border:1px solid var(--line)}
+.vk-tbl{width:100%;border-collapse:collapse;font-size:13px;line-height:1.4}
+.vk-tbl thead th{background:rgba(212,175,55,.14);color:var(--accent-ink);font-weight:700;text-align:left;padding:9px 10px}
+.vk-tbl tbody th{text-align:left;font-weight:600;color:var(--ink);padding:9px 10px;white-space:nowrap}
+.vk-tbl td{color:var(--ink-2);padding:9px 10px;border-left:1px solid var(--line-soft)}
+.vk-tbl tbody tr+tr th,.vk-tbl tbody tr+tr td{border-top:1px solid var(--line-soft)}
+.vk-pill{margin-top:14px;text-align:center}
+.vk-roof{position:relative;height:54px;margin:0 4px;background:linear-gradient(135deg,#E9C85E,#B8912A);clip-path:polygon(50% 0,100% 100%,0 100%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:9px}
+.vk-roof span{font-family:var(--f-display);font-weight:700;font-size:15px;color:#1E2A5A;letter-spacing:.08em}
+.vk-cols{display:flex;gap:5px;padding:0 10px;background:linear-gradient(rgba(212,175,55,.12),rgba(212,175,55,.03))}
+.vk-col{flex:1;min-width:0;height:118px;border-radius:4px 4px 0 0;background:linear-gradient(90deg,rgba(255,255,255,.04),rgba(212,175,55,.18),rgba(255,255,255,.04));border:1px solid rgba(212,175,55,.35);border-bottom:none;display:flex;align-items:center;justify-content:center}
+.vk-col span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:12.5px;font-weight:600;color:var(--ink);letter-spacing:.02em}
+.vk-base{margin:0 2px;padding:8px;border-radius:0 0 10px 10px;background:linear-gradient(135deg,#1E2A5A,#111A3F);color:#E6C868;font-size:12px;letter-spacing:.06em}
+.vk-lv{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:14px}
+.vk-lvl{width:var(--w);padding:10px 12px;border-radius:12px;text-align:center;background:linear-gradient(135deg,rgba(212,175,55,.26),rgba(212,175,55,.08));border:1px solid rgba(212,175,55,.45)}
+.vk-lvl:first-child{background:linear-gradient(135deg,#E9C85E,#C9A12F);border-color:transparent}
+.vk-lvl:first-child b,.vk-lvl:first-child span{color:#1E2A5A}
+.vk-lvl b{display:block;font-family:var(--f-display);font-size:15px;color:var(--ink)}
+.vk-lvl span{display:block;font-size:12px;color:var(--ink-3);margin-top:2px}
+.vk-bars{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.vk-bar{display:grid;grid-template-columns:64px 1fr 62px;align-items:center;gap:8px;font-size:13px}
+.vk-bl{color:var(--ink-3)}
+.vk-bt{height:12px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.vk-bt i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#C9A12F,#E9C85E)}
+.vk-bv{font-weight:600;color:var(--ink)}
+.vk-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.vk-g{position:relative;padding:12px 12px 11px 42px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line);min-height:52px}
+.vk-g i{position:absolute;left:10px;top:11px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700;color:var(--accent-ink);border:1px solid rgba(212,175,55,.55)}
+.vk-g b{display:block;font-size:13.5px;line-height:1.3;color:var(--ink)}
+.vk-g span{display:block;font-size:12px;line-height:1.35;color:var(--ink-3);margin-top:3px}
+.vk-note{font-size:12.5px;line-height:1.5;color:var(--ink-3);margin:10px 0 0}
 .bsteps{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column;gap:10px}
 .bsteps li{display:flex;gap:11px;align-items:flex-start}
 .bsteps li>span{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:rgba(212,175,55,.16);color:var(--accent-ink);font-family:var(--f-display);font-size:13px;font-weight:700;margin-top:1px}
@@ -15372,6 +15427,86 @@ function sunnahDay(){
     '<div class="sd-leg"><span>'+ch(2, 1)+' подтверждённая, Пророк ﷺ не оставлял</span><span>'+ch(2)+' желательная</span></div>'+
   '</section>';
 }
+var GUIDE_VIS = {
+  purity: [
+    {t:"Главное в цифрах", keys:[["6","обязательных действий вуду"],["2","обязательных действия гусля"],["1","фард - на один таяммум"]]},
+    {t:"Вуду: обязательный порядок", flow:[["Намерение","в момент, когда начинаете мыть лицо"],["Лицо","от линии волос до подбородка, от уха до уха"],["Руки","до локтей включительно"],["Голова","протереть хотя бы часть"],["Ноги","до щиколоток включительно"]],
+      note:"Шестое обязательное - соблюсти именно этот порядок."},
+    {t:"Что с омовением", yn:{y:"Не нарушает", ya:["Кровь из раны, рвота - по шафиитскому мазхабу","Сон сидя, плотно","Касание махрама","Смех, слёзы, еда"],
+      n:"Нарушает", na:["Выход чего-либо из двух путей","Сон не сидя, потеря сознания","Касание кожи того, с кем брак дозволен","Касание половых органов ладонью"]},
+      note:"У ханафитов кровь и рвота омовение нарушают, а касание другого пола - нет."},
+    {t:"Три вида очищения", tbl:{h:["","Вуду","Гусль","Таяммум"], r:[
+      ["Когда","перед намазом, тавафом, касанием мусхафа","после близости, хайда, нифаса","нет воды или она вредит"],
+      ["Чем","водой","водой всё тело до корней волос","чистой землёй"],
+      ["Надолго","пока не нарушено","пока не нарушено","на один фард"]]}}
+  ],
+  jumua: [
+    {t:"Пятница по порядку", flow:[["Гусль","полное омовение"],["Лучшая одежда","благовония, чистые зубы"],["Прийти пораньше","сесть ближе, не перешагивать через людей"],["Хутба","слушать молча, телефон убрать"],["Два ракята джумы","вместо четырёх ракятов зухра"],["До заката","сура «Аль-Кахф», салават, дуа"]]},
+    {t:"Награда за ранний приход", bars:[["1-й час",100,"верблюд"],["2-й час",80,"корова"],["3-й час",60,"баран"],["4-й час",40,"курица"],["5-й час",20,"яйцо"]],
+      note:"Так в хадисе: чем раньше пришёл, тем больше награда."},
+    {t:"Кому обязательна", yn:{y:"Обязательна", ya:["Совершеннолетнему мужчине","В здравом уме","Живущему на месте, не в пути","Здоровому"],
+      n:"Не обязательна - совершают зухр", na:["Женщинам","Детям","Больным","Путникам"]}}
+  ],
+  aqida: [
+    {t:"Три ступени религии", lv:[["Ихсан","поклоняться, будто видишь Его"],["Иман","шесть столпов веры"],["Ислам","пять столпов - дела"]],
+      note:"Так названо в хадисе Джибриля (Муслим)."},
+    {t:"Пять столпов ислама", pill:{roof:"Ислам", cols:["Шахада","Намаз","Закят","Пост","Хадж"], base:"свидетельство - основание"}},
+    {t:"Шесть столпов веры", pill:{roof:"Иман", cols:["Аллах","Ангелы","Писания","Посланники","Последний день","Предопределение"], base:"вера сердцем, словом и делом"}}
+  ],
+  /* Коран (О Коране, Адабы) не трогаем - раздел уже оформлен (просьба Заиры) */
+  fasting: [
+    {t:"День поста", flow:[["Сухур","до рассвета - сунна, в нём благодать"],["Фаджр","с рассвета пост начался"],["День","без еды, питья и близости"],["Магриб","разговляются сразу, не откладывая"],["Дуа","мольба постящегося не отвергается"]]},
+    {t:"Что с постом", yn:{y:"Не нарушает", ya:["Еда по забывчивости","Чистка зубов без проглатывания","Душ, купание","Лечебный укол, анализ крови","Капли в глаза"],
+      n:"Нарушает", na:["Еда и питьё намеренно","Близость","Намеренная рвота","Питательная капельница","Хайд и нифас"]},
+      note:"По хиджаме и ингаляторам учёные расходятся - спросите алима."}
+  ],
+  zakat: [
+    {t:"Главное в цифрах", keys:[["2,5%","с денег, золота, товара"],["85 г","нисаб по золоту"],["595 г","нисаб по серебру"],["1 год","лунный, сверх нисаба"]]},
+    {t:"Как посчитать", flow:[["Сложите","деньги, счета, золото, серебро, товар"],["Вычтите","свои долги"],["Сравните","с нисабом: ниже - закят не платят"],["Проверьте срок","пролежало ли лунный год"],["Отдайте 2,5%","восьми категориям из аята"]]},
+    {t:"Кому отдают закят - сура «Ат-Тауба», 9:60", grid:[["Бедным"],["Неимущим"],["Сборщикам закята"],["Тем, чьи сердца привлекают"],["На освобождение"],["Должникам"],["На пути Аллаха"],["Путникам"]]}
+  ],
+  janaza: [
+    {t:"Порядок", flow:[["Сразу","закрыть глаза, накрыть тело"],["Сообщить","в мечеть и родным"],["Обмывание","нечётное число раз, справа"],["Саван","простая белая ткань"],["Джаназа-намаз","четыре такбира, стоя"],["Похороны","в тот же или на следующий день"],["После","долги, дуа, садака"]]},
+    {t:"Джаназа-намаз: четыре такбира", grid:[["Аль-Фатиха","после 1-го"],["Салават","после 2-го"],["Дуа за умершего","после 3-го"],["Дуа и салям","после 4-го"]]},
+    {t:"Как выражать горе", yn:{y:"Можно", ya:["Тихие слёзы и печаль","Дуа и садака за умершего","Коротко соболезновать, помочь делами"],
+      n:"Нельзя", na:["Бить себя, рвать одежду","Причитать вслух","Застолья за счёт наследства"]}}
+  ],
+  money: [
+    {t:"Где риба, а где нет", yn:{y:"Дозволено", ya:["Торговля с наценкой","Рассрочка с окончательной ценой","Аренда","Партнёрство с общим риском","Беспроцентный заём"],
+      n:"Риба - запрещено", na:["Процент за пользование деньгами","Штраф-процент за просрочку","Проценты по вкладу и на остаток","Кредитная карта с процентом"]}},
+    {t:"Своё жильё: варианты по порядку", flow:[["Исламская программа","мурабаха, иджара с выкупом"],["Рассрочка застройщика","без процента"],["Покупка с роднёй","с выкупом доли"],["Накопить","и пожить в аренде - долго, но чисто"]]}
+  ],
+  nikah: [
+    {t:"Что делает никах действительным", grid:[["Согласие","жениха и невесты"],["Вали","опекун невесты"],["Два свидетеля","мужчины-мусульмане"],["Предложение и принятие","в одном собрании"],["Махр","назначен и назван"],["Нет препятствий","родство, идда, брак"]]},
+    {t:"Идда - срок ожидания", tbl:{h:["Случай","Срок"], r:[["После развода","три менструальных цикла"],["Если циклов нет","три лунных месяца"],["Беременная","до родов"],["Вдова","4 месяца и 10 дней"]]}},
+    {t:"Прежде развода", flow:[["Разговор","спокойно, наедине"],["Посредники","от семьи каждого"],["Время","остыть и подумать"],["Талак","последнее средство"]]}
+  ],
+  women: [
+    {t:"Сроки - шафиитский мазхаб", tbl:{h:["","Хайд","Нифас"], r:[["Наименьший","сутки","нет"],["Обычный","6-7 суток","40 дней"],["Наибольший","15 суток","60 дней"]]},
+      note:"У ханафитов наибольший срок хайда - 10 суток."},
+    {t:"В хайд и нифас", yn:{y:"Доступно", ya:["Зикр, тасбих, истигфар","Дуа в любое время","Салават","Слушать Коран","Читать перевод и тафсир"],
+      n:"Не совершается", na:["Намаз","Пост","Таваф","Касание мусхафа и чтение наизусть","Пребывание в мечети"]}},
+    {t:"Когда закончилось", flow:[["Гусль","полное омовение"],["Намаз","сразу, тот, чьё время не вышло"],["Пост","пропущенные дни - восполнить"]], note:"Пропущенный пост восполняется, пропущенный намаз - нет."}
+  ],
+  salahfix: [
+    {t:"Если не можете стоять", flow:[["Сидя",""],["Лёжа на правом боку","лицом к кибле"],["На спине","ногами к кибле"],["Наклоном головы","суджуд ниже руку"],["Глазами и сердцем","намаз не оставляют"]]},
+    {t:"Что делать", tbl:{h:["Случилось","Решение"], r:[["Забыли сунну или добавили лишнее","саджда сахв перед саламом"],["Сомнение в числе ракятов","берите меньшее и доделайте"],["Пропуск столпа, намеренная речь, еда, потеря омовения","намаз заново"]]}},
+    {t:"В пути от 80 км", tbl:{h:["Намаз","Как"], r:[["Зухр, аср, иша","по 2 ракята"],["Зухр + аср","можно вместе"],["Магриб + иша","можно вместе"],["Фаджр","не сокращается и не объединяется"]]}}
+  ],
+  child: [
+    {t:"Первые дни", flow:[["В первые часы","азан в правое ухо, тахник фиником, дуа"],["7-й день","имя, акыка, бритьё головы"],["Садака","весом волос в серебре"],["Раннее детство","обрезание мальчика"]]},
+    {t:"Акыка", keys:[["2","барана за мальчика"],["1","баран за девочку"],["3","части мяса: семье, родным, нуждающимся"]]}
+  ],
+  istikhara: [
+    {t:"Как совершить", flow:[["Омовение","как для любого намаза"],["Намерение","в сердце: два ракята истихары"],["Два ракята","любые суры после аль-Фатихи"],["Дуа истихары","после салама, называя своё дело"],["Действуйте","сон и знак ждать не нужно - смотрите, как складывается"]]},
+    {t:"Истихара и совет", yn:{y:"Так делают", ya:["Выбирают между дозволенными вариантами","Советуются со знающими людьми","Повторяют, если сомнение осталось"],
+      n:"Так не делают", na:["Истихара о запретном","Ждать обязательного сна","Намаз в запретное время"]}}
+  ],
+  duatimes: [
+    {t:"Доступно каждый день", grid:[["В суджуде","каждого ракята"],["Перед саламом","после ташаххуда"],["Между азаном и икаматом","пять раз в день"],["После азана","просьба о василе"]]},
+    {t:"Особое время", flow:[["Последняя треть ночи","тахаджуд"],["Пятница","во время хутбы и перед закатом"],["Постящийся","пока не разговелся"],["День Арафа","лучшая мольба"],["Ляйлятуль-Кадр","последние десять ночей Рамадана"]]}
+  ]
+};
 function viewGuide(){
   var g = GUIDES[V.p];
   if(!g) return '<div class="empty"><b>Раздел не найден</b></div>';
@@ -15384,6 +15519,11 @@ function viewGuide(){
     '<button class="btn ghost sm" style="width:100%;margin-top:13px" data-fav="' + key + '">' +
       (isFav(key) ? "★ Сохранено" : "☆ Сохранить") + '</button></section>');
 
+  if(GUIDE_VIS[V.p]){
+    h.push('<div class="vk-head"><span>Главное за 30 секунд</span><i></i></div>');
+    h.push(renderBlocks(GUIDE_VIS[V.p], "gv-"));
+    h.push('<div class="vk-head"><span>Подробно</span><i></i></div>');
+  }
   if(V.p === "hajj") h.push(hajjTabs("hajj"));
   if(V.p === "salah") h.push(namazHub());
   if(V.p === "sunnah") h.push(sunnahDay());
@@ -15410,7 +15550,23 @@ function viewGuide(){
 }
 
 /* один рендер блоков на руководства и на журнал */
-function renderBlocks(blocks){
+function visHtml(b){
+  var s = [];
+  if(b.keys) s.push('<div class="vk-keys">'+b.keys.map(function(k){ return '<div class="vk-key"><b>'+esc(k[0])+'</b><span>'+esc(k[1])+'</span></div>'; }).join("")+'</div>');
+  if(b.flow) s.push('<ol class="vk-flow">'+b.flow.map(function(f, n){ return '<li><i>'+(n + 1)+'</i><div><b>'+esc(f[0])+'</b>'+(f[1] ? '<span>'+esc(f[1])+'</span>' : '')+'</div></li>'; }).join("")+'</ol>');
+  if(b.yn) s.push('<div class="vk-yn"><div class="vk-y"><h5>✓ '+esc(b.yn.y)+'</h5><ul>'+b.yn.ya.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul></div>'+
+    '<div class="vk-n"><h5>✕ '+esc(b.yn.n)+'</h5><ul>'+b.yn.na.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul></div></div>');
+  if(b.tbl) s.push('<div class="vk-tblw"><table class="vk-tbl"><thead><tr>'+b.tbl.h.map(function(x){ return '<th>'+esc(x)+'</th>'; }).join("")+'</tr></thead><tbody>'+
+    b.tbl.r.map(function(r){ return '<tr>'+r.map(function(x, j){ return j ? '<td>'+esc(x)+'</td>' : '<th>'+esc(x)+'</th>'; }).join("")+'</tr>'; }).join("")+'</tbody></table></div>');
+  if(b.pill) s.push('<div class="vk-pill"><div class="vk-roof"><span>'+esc(b.pill.roof)+'</span></div><div class="vk-cols">'+
+    b.pill.cols.map(function(c){ var mx = Math.max.apply(null, b.pill.cols.map(function(x){ return x.length; })); return '<div class="vk-col" style="height:'+Math.max(118, mx * 9.5 + 34)+'px"><span>'+esc(c)+'</span></div>'; }).join("")+'</div><div class="vk-base">'+esc(b.pill.base || "")+'</div></div>');
+  if(b.lv) s.push('<div class="vk-lv">'+b.lv.map(function(l, n){ return '<div class="vk-lvl" style="--w:'+(58 + n * 21)+'%"><b>'+esc(l[0])+'</b><span>'+esc(l[1])+'</span></div>'; }).join("")+'</div>');
+  if(b.bars) s.push('<div class="vk-bars">'+b.bars.map(function(r){ return '<div class="vk-bar"><span class="vk-bl">'+esc(r[0])+'</span><span class="vk-bt"><i style="width:'+r[1]+'%"></i></span><span class="vk-bv">'+esc(r[2])+'</span></div>'; }).join("")+'</div>');
+  if(b.grid) s.push('<div class="vk-grid">'+b.grid.map(function(g, n){ return '<div class="vk-g"><i>'+(n + 1)+'</i><b>'+esc(g[0])+'</b>'+(g[1] ? '<span>'+esc(g[1])+'</span>' : '')+'</div>'; }).join("")+'</div>');
+  if(b.note) s.push('<p class="vk-note">'+esc(b.note)+'</p>');
+  return s.join("");
+}
+function renderBlocks(blocks, idp){
   var h = [];
   blocks.forEach(function(b, i){
     if(b.div){
@@ -15419,8 +15575,9 @@ function renderBlocks(blocks){
         '<span style="flex:1;height:1px;background:var(--line)"></span></div>');
       return;
     }
-    var s = ['<section class="card" id="gb-' + i + '">'];
+    var s = ['<section class="card' + (b.keys || b.flow || b.yn || b.tbl || b.pill || b.lv || b.bars || b.grid ? ' vk-card' : '') + '" id="' + (idp || "gb-") + i + '">'];
     s.push('<div class="eyebrow">' + esc(b.t) + '</div>');
+    s.push(visHtml(b));
     if(b.p) s.push('<p style="font-size:14.5px;line-height:1.7;color:var(--ink-2);margin:10px 0 0">' + esc(b.p) + '</p>');
     if(b.fn && typeof window[b.fn] === "function") s.push(window[b.fn]());
     if(b.svg) s.push('<div style="margin-top:14px">' + b.svg + '</div>');
