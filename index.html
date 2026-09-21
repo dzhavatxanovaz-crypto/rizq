@@ -1044,6 +1044,22 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .mus-legend{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:10px;font-size:12px;color:var(--ink-2)}
 .mus-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:5px;vertical-align:middle}
 .tj-gunna{color:#7FC8E8}
+.tjg-s{color:#8E95AD}.tjg-m1{color:#E8B24A}.tjg-m2{color:#E0893A}.tjg-m3{color:#D9603E}.tjg-m4{color:#C73B3B}.tjg-m5{color:#9E2A55}.tjg-n{color:#3FB27A}.tjg-q{color:#5AA9E6}
+:root:not([data-theme="dark"]) .tjg-s{color:#8A8FA3}
+.tjx-box{margin-top:12px;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--surface-2)}
+.tjx-box>summary{cursor:pointer;font-family:var(--f-display);font-weight:600;font-size:14px;list-style:none}
+.tjx-box>summary::-webkit-details-marker{display:none}
+.tjx-box>summary::after{content:" ›";color:var(--accent-ink)}
+.tjx{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.tjx-r{border-top:1px solid var(--line-soft);padding-top:9px}
+.tjx-r:first-child{border-top:0;padding-top:0}
+.tjx-h{display:flex;align-items:center;gap:8px}
+.tjx-h i{width:10px;height:10px;border-radius:3px;flex:none}
+.tjx-h b{font-size:14px}
+.tjx-h em{margin-left:auto;font-style:normal;font-size:12px;color:var(--ink-3)}
+.tjx-r p{font-size:13px;line-height:1.5;color:var(--ink-2);margin:4px 0 6px}
+.tjx-w{display:flex;flex-wrap:wrap;gap:6px}
+.tjx-w span{font-family:var(--f-quran);font-size:20px;line-height:1.6;padding:0 8px;border-radius:9px;background:var(--surface);border:1px solid var(--line)}
 .tj-madd{color:#E8B24A}
 .tj-qalqala{color:#E0806A}
 .tj-ikhfa{color:#8FD3B0}
@@ -8351,9 +8367,77 @@ function tajweed(t){
   }
   return out;
 }
+/* ---------- таджвид по готовой разметке ----------
+   Разметка cpfair/quran-tajweed (CC BY 4.0), сделана по мусхафам с цветным таджвидом
+   Дар аль-Ма'рифа. Позиции перенесены на наш текст скриптом scripts/tajweed-build.js:
+   правило берётся, только если все его буквы совпали. Файл грузим один раз, когда он
+   понадобился, дальше он лежит в офлайн-кэше. Пока файла нет - прежняя подсказка. */
+var TJD = null, TJD_BUSY = false;
+var TJR = {
+  ghunnah:{ n:"Гунна", g:"n", t:"ن или م с шаддой: звук тянется в нос две доли." },
+  idghaam_ghunnah:{ n:"Идгам с гунной", g:"n", t:"ن с сукуном или танвин перед ي ن م و: «н» вливается в следующую букву, звук уходит в нос." },
+  idghaam_no_ghunnah:{ n:"Идгам без гунны", g:"s", t:"ن с сукуном или танвин перед ل или ر: «н» не читается, следующая буква удваивается, без носового звука." },
+  idghaam_mutajanisayn:{ n:"Идгам мутаджанисайн", g:"s", t:"Две буквы одного места произношения рядом: первая вливается во вторую." },
+  idghaam_mutaqaribayn:{ n:"Идгам мутакарибайн", g:"s", t:"Две близкие по месту буквы рядом (например, ل и ر): первая вливается во вторую." },
+  idghaam_shafawi:{ n:"Идгам шафави", g:"n", t:"م с сукуном перед م: две «м» сливаются с носовым звуком." },
+  ikhfa:{ n:"Ихфа", g:"n", t:"ن с сукуном или танвин перед одной из 15 букв: звук «прячется» - не ясное «н» и не слияние, с носовым звуком." },
+  ikhfa_shafawi:{ n:"Ихфа шафави", g:"n", t:"م с сукуном перед ب: губы едва смыкаются, звук с носовым оттенком." },
+  iqlab:{ n:"Икляб", g:"n", t:"ن с сукуном или танвин перед ب: читается как «м» с носовым звуком (маленький мим над буквой)." },
+  madd_2:{ n:"Естественный мадд", g:"m1", t:"Долгий звук: две доли." },
+  madd_246:{ n:"Мадд при остановке", g:"m2", t:"Если останавливаетесь на этом слове: 2, 4 или 6 долей. В связном чтении - обычно." },
+  madd_munfasil:{ n:"Мадд мунфасиль", g:"m3", t:"Долгий звук в конце слова, а в начале следующего - хамза: 4-5 долей." },
+  madd_muttasil:{ n:"Мадд муттасиль", g:"m4", t:"Долгий звук и хамза в одном слове: обязательно 4-5 долей." },
+  madd_6:{ n:"Мадд лязим", g:"m5", t:"Обязательное удлинение: 6 долей." },
+  qalqalah:{ n:"Калькаля", g:"q", t:"ق ط ب ج د с сукуном: лёгкий отскок звука." },
+  hamzat_wasl:{ n:"Хамзат-уль-васль", g:"s", t:"ٱ в связной речи не читается; читается, только если с этого слова начинаете." },
+  lam_shamsiyyah:{ n:"Солнечная «л»", g:"s", t:"ل артикля не читается, следующая буква удваивается." },
+  silent:{ n:"Непроизносимая буква", g:"s", t:"Пишется, но не читается." }
+};
+var TJ_GROUPS = [["s","не читается","#8E95AD"],["m1","мадд 2 доли","#E8B24A"],["m2","мадд 2-6","#E0893A"],["m3","мадд 4-5","#D9603E"],["m4","мадд 4-5 обязательно","#C73B3B"],["m5","мадд 6","#9E2A55"],["n","гунна, ихфа, икляб, идгам","#3FB27A"],["q","калькаля","#5AA9E6"]];
+function tjdLoad(){
+  if(TJD || TJD_BUSY || !window.fetch) return;
+  TJD_BUSY = true;
+  fetch("tajweed.json").then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){ TJD_BUSY = false; if(j && j.a){ TJD = j; if(V.view === "reader") render();
+      /* окно аята уже открыто - дописываем разбор */
+      var b = document.getElementById("tjx-body"); if(b) b.innerHTML = tjdExplain(+b.parentNode.getAttribute("data-tjx")); } })
+    .catch(function(){ TJD_BUSY = false; });
+}
+/* текст аята с цветами правил: каждой букве - правило, которое её накрывает */
+function tjdRender(i){
+  var ch = Array.from(QA[i] || ""), list = (TJD && TJD.a[i]) || [], who = new Array(ch.length);
+  list.forEach(function(x){ for(var k = x[1]; k < x[1] + x[2] && k < ch.length; k++) if(!who[k]) who[k] = TJD.r[x[0]]; });
+  var out = "", cur = null, buf = "";
+  function flush(){ if(!buf) return; out += cur && TJR[cur] ? '<span class="tjg tjg-'+TJR[cur].g+'">'+esc(buf)+'</span>' : esc(buf); buf = ""; }
+  for(var k = 0; k < ch.length; k++){ var w = who[k] || null; if(w !== cur){ flush(); cur = w; } buf += ch[k]; }
+  flush();
+  return out;
+}
+/* разбор под аятом: какие правила и в каких местах */
+function tjdExplain(i){
+  if(!TJD){ tjdLoad(); return '<p class="ar-note">Загружаем разбор правил...</p>'; }
+  var list = TJD.a[i] || [], ch = Array.from(QA[i] || ""), by = {};
+  list.forEach(function(x){
+    var r = TJD.r[x[0]]; if(!TJR[r]) return;
+    /* слово, где стоит правило */
+    var a = x[1], b = x[1] + x[2];
+    while(a > 0 && ch[a - 1] !== " ") a--;
+    while(b < ch.length && ch[b] !== " ") b++;
+    (by[r] = by[r] || []).push(ch.slice(a, b).join(""));
+  });
+  var keys = Object.keys(TJR).filter(function(r){ return by[r]; });
+  if(!keys.length) return '<p class="ar-note">В этом аяте особых правил таджвида не отмечено.</p>';
+  return '<div class="tjx">'+keys.map(function(r){
+    var R = TJR[r], g = TJ_GROUPS.filter(function(x){ return x[0] === R.g; })[0];
+    var words = by[r].filter(function(w, k, arr){ return arr.indexOf(w) === k; });
+    return '<div class="tjx-r"><div class="tjx-h"><i style="background:'+g[2]+'"></i><b>'+esc(R.n)+'</b><em>'+by[r].length+'</em></div>'+
+      '<p>'+esc(R.t)+'</p><div class="tjx-w" dir="rtl">'+words.map(function(w){ return '<span>'+esc(w)+'</span>'; }).join("")+'</div></div>';
+  }).join("")+'</div>';
+}
 function mushafText(i){
   var t = QA[i];
-  return (qTajOn() ? tajweed(t) : esc(t));
+  if(qTajOn()){ if(TJD) return tjdRender(i); tjdLoad(); return tajweed(t); }
+  return esc(t);
 }
 /* перейти на страницу мусхафа */
 function mushafGo(np){
@@ -8410,10 +8494,10 @@ function viewMushaf(){
 
   h.push(mushafTools());
   if(qTajOn()){
-    h.push('<div class="mus-legend">'+TJ_RULES.map(function(r){
-      return '<span><i style="background:'+r.c+'"></i>'+esc(r.n)+'</span>';
-    }).join("")+'</div>'+
-    '<p class="disclaimer">Подсветка ставится автоматически по огласовкам и помогает глазу. Она не заменяет учителя: таджвид ставят с человеком.</p>');
+    h.push('<div class="mus-legend">'+(TJD ? TJ_GROUPS.map(function(g){ return '<span><i style="background:'+g[2]+'"></i>'+esc(g[1])+'</span>'; })
+      : TJ_RULES.map(function(r){ return '<span><i style="background:'+r.c+'"></i>'+esc(r.n)+'</span>'; })).join("")+'</div>'+
+    '<p class="disclaimer">'+(TJD ? 'Цвета - по разметке мусхафов с цветным таджвидом (проект quran-tajweed, CC BY 4.0). Нажмите на аят - покажем, какие правила в нём и как читать. '
+      : 'Подсветка ставится автоматически по огласовкам и помогает глазу. ')+'Разметка не заменяет учителя: таджвид ставят с человеком.</p>');
   }
   h.push('<p class="disclaimer">Нажмите на аят - откроется перевод, звук и закладка. Листайте кнопками внизу страницы или проведите пальцем.</p>');
   return h.join("");
@@ -8421,8 +8505,9 @@ function viewMushaf(){
 /* перевод и действия по нажатию на аят */
 function sheetAyah(i){
   sheet('<h3>'+esc(qRef(i))+'</h3>'+
-    '<div class="ayah-ar" style="margin-top:6px">'+esc(QA[i])+'</div>'+
+    '<div class="ayah-ar" style="margin-top:6px">'+(TJD ? tjdRender(i) : esc(QA[i]))+'</div>'+
     (HAS_TR ? '<div class="ayah-ru" style="margin-top:10px">'+esc(QR[i])+'</div>' : '')+
+    '<details class="tjx-box" data-tjx="'+i+'"'+(S.tjxOpen ? ' open' : '')+'><summary>Правила чтения в этом аяте</summary><div id="tjx-body">'+tjdExplain(i)+'</div></details>'+
     '<div class="hl-act" style="margin-top:12px">'+
       '<button class="btn sm" data-qplay="'+i+'">Слушать аят</button>'+
       '<button class="btn sec sm" data-qmark="'+i+'">'+(isMark(i)?"Убрать закладку":"Закладка")+'</button>'+
@@ -18562,6 +18647,7 @@ document.getElementById("app").addEventListener("input", function(ev){
 document.getElementById("app").addEventListener("toggle", function(ev){
   var t = ev.target;
   if(t && t.dataset && t.dataset.qtfold !== undefined){ S.qtOpen = t.open ? 1 : 0; save(); }
+  if(t && t.dataset && t.dataset.tjx !== undefined){ S.tjxOpen = t.open ? 1 : 0; save(); }
   if(t && t.dataset && t.dataset.bfold !== undefined){ S.badgesOpen = t.open ? 1 : 0; save(); }
 }, true);
 document.getElementById("app").addEventListener("change", function(ev){
@@ -18851,7 +18937,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.hlrvrep){ hlRvPost("report", d.hlrvrep, "Жалоба отправлена. Спасибо"); return; }
   if(d.hlrvdel){ hlRvPost("delete", d.hlrvdel, "Отзыв удалён"); return; }
   if(d.adm){ admClick(d.adm); return; }
-  if(d.qtfold!==undefined || d.bfold!==undefined){ return; }
+  if(d.qtfold!==undefined || d.bfold!==undefined || d.tjx!==undefined){ return; }
   if(d.qbook!==undefined){
     S.qBook = d.qbook === "1" ? 1 : 0;
     if(qBookOn()) V.qPage = pageOf(V.qFrom || S.qLast || 0);
