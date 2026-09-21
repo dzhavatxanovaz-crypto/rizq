@@ -556,6 +556,28 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .qt-mini{height:4px;border-radius:4px;background:rgba(212,175,55,.22);margin-top:9px;overflow:hidden}
 .qt-mini i{display:block;height:100%;background:#D4AF37;border-radius:4px}
 .qt[open] .qt-mini{display:none}
+.qd-read{margin-left:auto;font-size:13px;font-weight:600;padding:7px 12px;border-radius:11px;border:1px solid rgba(212,175,55,.5);color:var(--accent-ink);background:rgba(212,175,55,.08)}
+.qd-read.on{background:rgba(62,155,114,.16);border-color:rgba(62,155,114,.5);color:#3E9B72}
+.qrmd{border:1px solid rgba(62,155,114,.5);background:linear-gradient(150deg, rgba(62,155,114,.16), rgba(62,155,114,.03))}
+.qrmd-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.qrmd-row span{display:block;font-size:12px;color:var(--ink-3)}
+.qrmd-big{display:block;font-family:var(--f-display);font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+.qrmd p{font-size:13.5px;color:var(--ink-2);line-height:1.5;margin:10px 0}
+.qrmd-set{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:13.5px;color:var(--ink-2)}
+.qrmd-set span{flex:1}
+.qrmd-set b{min-width:26px;text-align:center;font-family:var(--f-display);font-size:18px;color:var(--ink)}
+.qrmd-btn{width:36px;height:36px;border-radius:11px;border:1px solid var(--line);background:var(--surface);font-size:20px;color:var(--ink);display:grid;place-items:center}
+.qrmd-note{font-size:12.5px !important}
+/* заголовок «Время с Кораном» - сплошная золотая полоса, самое заметное на экране Корана (просьба Заиры 22.09) */
+.qt.fold{padding:0 !important;overflow:hidden;border:2px solid #D4AF37;box-shadow:0 10px 28px rgba(212,175,55,.28)}
+.qt.fold>summary{white-space:nowrap;background:linear-gradient(120deg,#E9C85E 0%,#D4AF37 55%,#BF9A2C 100%);color:#1E2A5A;padding:15px 16px;font-size:16.5px;font-weight:700}
+.qt.fold>summary .qt-ic{background:#1E2A5A;color:#E9C85E;width:36px;height:36px;font-size:18px}
+.qt.fold>summary .qt-sum{white-space:nowrap;color:#1E2A5A !important;font-weight:600;background:rgba(255,255,255,.45);padding:4px 10px;border-radius:999px;font-size:13px}
+.qt.fold>summary::after{color:#1E2A5A}
+.qt.fold>*:not(summary){margin-left:16px;margin-right:16px}
+.qt.fold>*:last-child{margin-bottom:14px}
+.qt.fold .qt-mini{margin:0 !important;border-radius:0;height:6px;background:rgba(30,42,90,.25)}
+.qt.fold .qt-mini i{background:#1E2A5A;border-radius:0}
 .qt>summary{list-style:none;cursor:pointer;font-family:var(--f-display);font-size:15.5px;font-weight:600;display:flex;align-items:center;gap:8px}
 .qt>summary::-webkit-details-marker{display:none}
 .qt>summary::after{content:"›";color:var(--accent-ink);font-size:19px;transform:rotate(90deg);transition:transform .2s}
@@ -1548,7 +1570,7 @@ var HADITH_SRC = [{"num":1,"n":"Дела оцениваются по намер�
 var DEF = {
   fav:[], tasbih:{}, tasbihTotal:0, read:{}, dcnt:{}, practice:{}, readDay:"", bought:[], done:[], orders:[],
   theme:"", city:"mah", method:"mwl", madhab:1,
-  name:"", email:"", notifPrayer:true, notifDua:true, notifTasks:true, notifScore:true, statOn:true, notifCourse:false, notifAzan:true,
+  name:"", email:"", notifPrayer:true, notifDua:true, notifTasks:true, notifScore:true, notifAzkar:true, statOn:true, notifCourse:false, notifAzan:true,
   salah:{}, myduas:[], goals:[], namesRead:{}, daily:{}, shukrNotes:{}, shukr:[], shukrMigrated:false, shukrOpen:false, salahOpen:false,
   checks:{}, sunnah:{}, sunnahOpen:false, health:{}, healthOpen:false, pauses:[],
   qada:{p:{}, done:{}, fast:0, fastDone:0, perDay:1, log:[]}, postSeen:"", points:0, pointsDay:{}, cat:{},
@@ -2605,7 +2627,12 @@ var DUAS = [
     "Господь мой, сделай меня много благодарным Тебе, много поминающим Тебя, боящимся Тебя, покорным Тебе, смиренным перед Тобой, плачущим и кающимся.\n\n"+
     "Господь мой, прими моё покаяние, смой мои грехи, ответь на мою мольбу, укрепи мои доводы, сделай прямым моё сердце и правдивым мой язык, и удали злобу из моего сердца.",
  src:"Абу Дауд, Ат-Тирмизи, от Ибн Аббаса, да будет доволен Аллах им и его отцом"},
-{id:"L5",c:"long",n:"Дуа истихары сердцем",rep:1,
+{id:"L_ist",c:"long",n:"Дуа истихары: когда выбираете решение",rep:1,
+ ar:"اللَّهُمَّ إِنِّي أَسْتَخِيرُكَ بِعِلْمِكَ، وَأَسْتَقْدِرُكَ بِقُدْرَتِكَ، وَأَسْأَلُكَ مِنْ فَضْلِكَ الْعَظِيمِ، فَإِنَّكَ تَقْدِرُ وَلَا أَقْدِرُ، وَتَعْلَمُ وَلَا أَعْلَمُ، وَأَنْتَ عَلَّامُ الْغُيُوبِ. اللَّهُمَّ إِنْ كُنْتَ تَعْلَمُ أَنَّ هَذَا الْأَمْرَ خَيْرٌ لِي فِي دِينِي وَمَعَاشِي وَعَاقِبَةِ أَمْرِي، فَاقْدُرْهُ لِي وَيَسِّرْهُ لِي، ثُمَّ بَارِكْ لِي فِيهِ، وَإِنْ كُنْتَ تَعْلَمُ أَنَّ هَذَا الْأَمْرَ شَرٌّ لِي فِي دِينِي وَمَعَاشِي وَعَاقِبَةِ أَمْرِي، فَاصْرِفْهُ عَنِّي وَاصْرِفْنِي عَنْهُ، وَاقْدُرْ لِيَ الْخَيْرَ حَيْثُ كَانَ، ثُمَّ أَرْضِنِي بِهِ",
+ tr:"Аллахумма иннӣ астахӣрука би-'ильмика, ва астакдирука би-кудратика, ва ас'алюка мин фадлика ль-'азӣм, фа-иннака такдиру ва ля акдир, ва та'ляму ва ля а'лям, ва анта 'алляму ль-гуйӯб. Аллахумма ин кунта та'ляму анна хаза ль-амра хайрун лӣ фӣ дӣнӣ ва ма'а̄шӣ ва 'а̄кибати амрӣ, фа-кдурху лӣ ва яссирху лӣ, сумма ба̄рик лӣ фӣх. Ва ин кунта та'ляму анна хаза ль-амра шаррун лӣ фӣ дӣнӣ ва ма'а̄шӣ ва 'а̄кибати амрӣ, фа-срифху 'аннӣ ва-срифнӣ 'анху, ва-кдур лия ль-хайра хайсу ка̄н, сумма арднӣ бих",
+ ru:"О Аллах, я прошу Тебя указать мне лучшее по Твоему знанию и прошу у Тебя силы Твоим могуществом, и прошу о Твоей великой милости: Ты можешь, а я не могу, Ты знаешь, а я не знаю, и Ты знаешь сокровенное. О Аллах, если Ты знаешь, что это дело (здесь называют своё дело) - благо для меня в моей религии, в моей жизни и по исходу моих дел, то предопредели его мне, облегчи его мне, а затем благослови меня в нём. А если Ты знаешь, что это дело - зло для меня в моей религии, в моей жизни и по исходу моих дел, то отврати его от меня, а меня от него, и предопредели мне благо, где бы оно ни было, а затем сделай меня довольной им.",
+ src:"Читают после двух ракятов намаза истихары, на месте «это дело» называют своё. Джабир ибн 'Абдуллах. Аль-Бухари (1162, 6382). Порядок - в «Знания» - «Практика веры» - «Истихара-намаз»"},
+{id:"L5",c:"long",n:"Мольба о благе в жизни и смерти",rep:1,
  ar:"اللَّهُمَّ بِعِلْمِكَ الْغَيْبَ وَقُدْرَتِكَ عَلَى الْخَلْقِ أَحْيِنِي مَا عَلِمْتَ الْحَيَاةَ خَيْرًا لِي، وَتَوَفَّنِي إِذَا عَلِمْتَ الْوَفَاةَ خَيْرًا لِي، اللَّهُمَّ وَأَسْأَلُكَ خَشْيَتَكَ فِي الْغَيْبِ وَالشَّهَادَةِ، وَأَسْأَلُكَ كَلِمَةَ الْحَقِّ فِي الرِّضَا وَالْغَضَبِ، وَأَسْأَلُكَ الْقَصْدَ فِي الْفَقْرِ وَالْغِنَى، وَأَسْأَلُكَ نَعِيمًا لَا يَنْفَدُ، وَأَسْأَلُكَ قُرَّةَ عَيْنٍ لَا تَنْقَطِعُ، وَأَسْأَلُكَ الرِّضَاءَ بَعْدَ الْقَضَاءِ، وَأَسْأَلُكَ بَرْدَ الْعَيْشِ بَعْدَ الْمَوْتِ، وَأَسْأَلُكَ لَذَّةَ النَّظَرِ إِلَى وَجْهِكَ، وَالشَّوْقَ إِلَى لِقَائِكَ، فِي غَيْرِ ضَرَّاءَ مُضِرَّةٍ، وَلَا فِتْنَةٍ مُضِلَّةٍ، اللَّهُمَّ زَيِّنَّا بِزِينَةِ الْإِيمَانِ، وَاجْعَلْنَا هُدَاةً مُهْتَدِينَ",
  tr:"Аллахумма би'ильмикаль-гайба ва кудратика 'аляль-халькы ахьини ма 'алимталь-хаята хайран ли, ва таваффани иза 'алимталь-вафата хайран ли. Аллахумма ва ас'алюка хашьятака филь-гайби ваш-шахада, ва ас'алюка калиматаль-хаккы фир-рида валь-гадаб, ва ас'алюкаль-касда филь-факри валь-гина, ва ас'алюка на'иман ля янфад, ва ас'алюка куррата 'айнин ля танкати', ва ас'алюкар-рида'а ба'даль-када', ва ас'алюка бардаль-'айши ба'даль-маут, ва ас'алюка ляззатан-назари иля ваджхика ваш-шаука иля лика'ик, фи гайри дарра'а мудырра, ва ля фитнатин мудылля. Аллахумма заййинна би-зинатиль-иман, вадж'альна худатан мухтадин",
  ru:"О Аллах, я взываю к Тебе посредством Твоего знания сокровенного и Твоей власти над творением: дай мне жить, если Ты знаешь, что жизнь во благо мне, и упокой меня, если Ты знаешь, что в смерти для меня больше пользы.\n\n"+
@@ -4539,7 +4566,8 @@ function buildIndex(){
   /* руководства */
   var GKW = {
     salah:"молитва как молиться ракят рукуг саджда ташаххуд намерение фард",
-    sunnah:"раватиб витр тахаджуд духа тарауих истихара добровольные необязательные",
+    sunnah:"раватиб витр тахаджуд духа тарауих добровольные необязательные",
+    istikhara:"истихара истихару намаз истихары выбор решение как выбрать брак замужество работа совет дуа истихары",
     purity:"омовение вуду гусль таяммум мыться чистота осквернение джунуб",
     fasting:"пост рамадан ураза что нарушает разговение сухур каффара када фидья",
     hajj:"хадж умра паломничество мекка ихрам арафат мина таваф жертва",
@@ -4802,6 +4830,9 @@ function viewKnow(){
       DUAS.length+' текстов в '+CATS.length+' категориях. Под каждым указан источник и, где нужно, число повторений.</div>');
     h.push('<button class="cat-wide gold" data-guide="duatimes"><span class="cw-ic">☾</span>'+
       '<span class="cw-t"><b>Когда принимается дуа</b><span>17 времён и состояний из хадисов: треть ночи, пятница, суджуд, Арафа</span></span>'+
+      '<span class="cw-go">›</span></button>');
+    h.push('<button class="cat-wide" data-guide="istikhara"><span class="cw-ic">☾</span>'+
+      '<span class="cw-t"><b>Истихара-намаз</b><span>как попросить Аллаха выбрать лучшее: порядок и дуа</span></span>'+
       '<span class="cw-go">›</span></button>');
     h.push('<div class="cats">'+ CATS.map(function(c){
       var n = DUAS.filter(function(d){return d.c===c.id;}).length;
@@ -6110,7 +6141,8 @@ function viewQuran(){
       (d.note? '<details style="margin-top:10px"><summary style="font-size:13.5px;color:var(--accent-ink);cursor:pointer">Обстоятельства и результат</summary>'+
         '<p style="font-size:14px;line-height:1.65;color:var(--ink-2);margin:8px 0 0">'+esc(d.note)+'</p></details>' : '')+
       '<div class="dua-f"><button class="fav'+(isFav(k)?" on":"")+'" data-fav="'+k+'">'+(isFav(k)?"★":"☆")+'</button>'+
-      '<span class="rep">Дуа из Корана</span></div></article>');
+      '<span class="rep">Дуа из Корана</span>'+
+      '<button class="qd-read'+(S.read[k] ? " on" : "")+'" data-qdread="'+i+'">'+(S.read[k] ? "✓ Прочитано сегодня" : "Прочитала")+'</button></div></article>');
   });
   h.push('</div>');
   return h.join("");
@@ -6258,6 +6290,40 @@ function qPageTick(sec){
   if(!S.qPageSec) S.qPageSec = {};
   S.qPageSec[p] = (S.qPageSec[p] || 0) + sec;
   if(S.qPageSec[p] >= QR_NEED){ r[p] = todayKey(); delete S.qPageSec[p]; }
+}
+/* Сколько страниц осталось прочитать до Рамадана: честные прочитанные страницы,
+   дни до 1 Рамадана (а в Рамадан - до его конца) и сколько страниц в день нужно. */
+var QRMD = { day:"", v:null };
+function qRamadanInfo(){
+  var k = todayKey();
+  if(QRMD.day === k) return QRMD.v;
+  var h = hijriOf(new Date()), inR = !!(h && h.m === 9), n = inR ? findNext(10, 1) : findNext(9, 1);
+  QRMD.day = k; QRMD.v = n ? { inR:inR, days:n.days, date:n.date } : null;
+  return QRMD.v;
+}
+/* слово без числа: plural даёт «564 страницы», а под крупной цифрой нужно только «страницы» */
+function qrmdWord(n, a, b, c){ return plural(n, a, b, c).split(" ").slice(1).join(" "); }
+/* Сколько дней в месяц человек не читает Коран: у женщин это критические дни. Их
+   вычитаем из оставшихся дней, и норма в день считается только по дням чтения. */
+function qRamadanCard(){
+  var r = qRamadanInfo(); if(!r) return "";
+  var read = qReadCount(), left = Math.max(0, 604 - read);
+  var off = Math.max(0, Math.min(15, S.qrmdOff || 0));
+  var skip = Math.round(r.days * off / 30), readDays = Math.max(1, r.days - skip);
+  var per = Math.ceil(left / readDays);
+  var head = r.inR ? 'Рамадан: до конца месяца ' + daysWord(r.days) : 'До Рамадана ' + daysWord(r.days);
+  if(!left) return '<section class="card qrmd"><div class="eyebrow">'+head+'</div><b class="qrmd-big">Все 604 страницы прочитаны, машаа Аллах</b></section>';
+  return '<section class="card qrmd"><div class="eyebrow">'+head+'</div>'+
+    '<div class="qrmd-row"><div><b class="qrmd-big">'+left+'</b><span>'+qrmdWord(left, "страница", "страницы", "страниц")+' осталось</span></div>'+
+      '<div><b class="qrmd-big">'+per+'</b><span>'+qrmdWord(per, "страница", "страницы", "страниц")+' в день</span></div>'+
+      '<div><b class="qrmd-big">'+readDays+'</b><span>'+qrmdWord(readDays, "день", "дня", "дней")+' чтения</span></div></div>'+
+    '<div class="qrmd-set"><span>Дней без чтения в месяц</span>'+
+      '<button class="qrmd-btn" data-qrmd="-1" aria-label="Меньше">−</button><b>'+off+'</b><button class="qrmd-btn" data-qrmd="1" aria-label="Больше">+</button></div>'+
+    '<p class="qrmd-note">'+(off ? 'Из '+daysWord(r.days)+' вычтено '+daysWord(skip)+', когда читать нельзя (для женщин - критические дни). ' :
+      'Если в месяце есть дни, когда вы не читаете (у женщин - критические дни), укажите их: норма пересчитается только на дни чтения. ')+
+      'Чтобы завершить хатм '+(r.inR ? 'до конца Рамадана' : 'к началу Рамадана')+', читайте '+plural(per, "страницу", "страницы", "страниц")+' в день чтения'+
+      (per <= 3 ? ' - это меньше 15 минут.' : per <= 10 ? ' - примерно полчаса.' : '.')+'</p>'+
+    '<button class="btn sm" data-qplan="'+readDays+'">План чтения до '+(r.inR ? 'конца Рамадана' : 'Рамадана')+'</button></section>';
 }
 function qtSum(days){
   var t = qtAll(), n = 0, d = new Date();
@@ -8140,6 +8206,7 @@ function viewQuranHome(){
     '<div style="font-size:13px;color:var(--ink-3);margin-top:8px">'+plural(qrd, 'страница', 'страницы', 'страниц')+' из 604 прочитано'+(qrd && qrd < 604 && pct === 0 ? ' (меньше 1%)' : '')+'</div>'+
     '<div style="font-size:12px;color:var(--ink-3);margin-top:5px;line-height:1.45">Страница засчитывается, когда была открыта не меньше 30 секунд. Каждая страница - один раз, сколько бы вы её ни открывали.</div></section>');
 
+  h.push(qRamadanCard());
   h.push(qtCard());
   h.push(qPlanCard());
   h.push(hifzCard());
@@ -11296,11 +11363,51 @@ aboutquran: {
 /* порядок руководств в разделе «Как совершать» */
 /* намаз и хадж не дублируются здесь: у них своя плитка над этим списком */
 var HOWTO = [
-  ["salahfix","↻"],["duatimes","✦"],["sunnah","◈"],["purity","◌"],
+  ["salahfix","↻"],["duatimes","✦"],["istikhara","☾"],["sunnah","◈"],["purity","◌"],
   ["fasting","☼"],["zakat","◈"],["jumua","✦"],
   ["women","❁"],["nikah","∞"],["child","✧"],
   ["janaza","☾"],["money","◈"],["aqida","✾"]
 ];
+
+/* Руководство «Истихара-намаз». Основа - хадис Джабира в «Сахихе» аль-Бухари.
+   Там, где учёные расходятся (что читать в ракятах, можно ли без намаза, нужно ли
+   повторять), так и написано - решение за человеком и его учителем. */
+GUIDES.istikhara = {
+  n:"Истихара-намаз",
+  sub:"Как попросить у Аллаха выбрать лучшее",
+  madhab:"Основа - хадис Джабира из «Сахиха» аль-Бухари. Порядок дан по шафиитскому мазхабу; где мнения учёных расходятся, это отмечено.",
+  blocks:[
+    {div:"Что это"},
+    {t:"Просьба выбрать благо", p:"Истихара - это когда человек, собираясь принять решение, просит Аллаха выбрать для него лучшее. Совершают два ракята добровольного намаза и после них читают особую дуа. Это сунна: Пророк ﷺ учил ей сподвижников так же старательно, как суре из Корана."},
+    {t:"Хадис", ar:"كَانَ رَسُولُ اللَّهِ ﷺ يُعَلِّمُنَا الِاسْتِخَارَةَ فِي الْأُمُورِ كُلِّهَا كَمَا يُعَلِّمُنَا السُّورَةَ مِنَ الْقُرْآنِ، يَقُولُ: إِذَا هَمَّ أَحَدُكُمْ بِالْأَمْرِ فَلْيَرْكَعْ رَكْعَتَيْنِ مِنْ غَيْرِ الْفَرِيضَةِ، ثُمَّ لْيَقُلْ...",
+     tr:"Ка̄на Расӯлю Лла̄хи ﷺ ю'аллимуна ль-истиха̄рата фи ль-умӯри куллиха кама ю'аллимуна с-сӯрата мина ль-Кур'а̄н, якӯлю: иза хамма ахадукум биль-амри фаль-яркя' рак'атайни мин гайри ль-фарӣда, сумма ль-якуль...",
+     ru:"Посланник Аллаха ﷺ учил нас истихаре во всех делах, как учил суре из Корана. Он говорил: «Когда кто-то из вас задумает какое-нибудь дело, пусть совершит два ракята, не относящихся к обязательной молитве, а потом скажет...»",
+     src:"Джабир ибн 'Абдуллах, да будет доволен им Аллах. Аль-Бухари (1162)"},
+    {t:"Когда делают истихару", p:"Когда выбираете между дозволенными вариантами и не знаете, что лучше: замужество, работа, переезд, покупка, поездка, большое решение в деле. Об обязательном (совершать ли намаз) и о запретном истихару не делают - там выбор уже сделан. Но можно сделать истихару о том, когда и как выполнить хорошее дело, например, в каком году ехать в хадж."},
+    {div:"Как совершить"},
+    {t:"Порядок", rows:[
+      ["1. Омовение", "как для любого намаза"],
+      ["2. Намерение", "в сердце: два ракята намаза истихары"],
+      ["3. Два ракята", "как обычный добровольный намаз, с саламом в конце"],
+      ["4. Дуа", "после салама: восхваление Аллаха, салават, затем дуа истихары"],
+      ["5. Назвать дело", "на месте слов «хаза ль-амр» - про себя или вслух: «этот брак с таким-то», «эта работа»"]
+    ]},
+    {t:"Что читать в ракятах", p:"Хадис не называет конкретных сур: можно читать любые после аль-Фатихи. Многие учёные шафиитского мазхаба советуют в первом ракяте суру аль-Кафирун, во втором - аль-Ихлас. Это совет, а не условие."},
+    {t:"Когда не совершать", p:"Добровольный намаз без причины не совершают в запретное время: после фаджра до того, как солнце поднимется на высоту копья (примерно 15-20 минут после восхода), в зенит перед зухром и после асра до заката. Истихару лучше отложить на другое время."},
+    {t:"Дуа истихары", ar:"اللَّهُمَّ إِنِّي أَسْتَخِيرُكَ بِعِلْمِكَ، وَأَسْتَقْدِرُكَ بِقُدْرَتِكَ، وَأَسْأَلُكَ مِنْ فَضْلِكَ الْعَظِيمِ، فَإِنَّكَ تَقْدِرُ وَلَا أَقْدِرُ، وَتَعْلَمُ وَلَا أَعْلَمُ، وَأَنْتَ عَلَّامُ الْغُيُوبِ. اللَّهُمَّ إِنْ كُنْتَ تَعْلَمُ أَنَّ هَذَا الْأَمْرَ خَيْرٌ لِي فِي دِينِي وَمَعَاشِي وَعَاقِبَةِ أَمْرِي، فَاقْدُرْهُ لِي وَيَسِّرْهُ لِي، ثُمَّ بَارِكْ لِي فِيهِ، وَإِنْ كُنْتَ تَعْلَمُ أَنَّ هَذَا الْأَمْرَ شَرٌّ لِي فِي دِينِي وَمَعَاشِي وَعَاقِبَةِ أَمْرِي، فَاصْرِفْهُ عَنِّي وَاصْرِفْنِي عَنْهُ، وَاقْدُرْ لِيَ الْخَيْرَ حَيْثُ كَانَ، ثُمَّ أَرْضِنِي بِهِ", tr:"Аллахумма иннӣ астахӣрука би-'ильмика, ва астакдирука би-кудратика, ва ас'алюка мин фадлика ль-'азӣм, фа-иннака такдиру ва ля акдир, ва та'ляму ва ля а'лям, ва анта 'алляму ль-гуйӯб. Аллахумма ин кунта та'ляму анна хаза ль-амра хайрун лӣ фӣ дӣнӣ ва ма'а̄шӣ ва 'а̄кибати амрӣ, фа-кдурху лӣ ва яссирху лӣ, сумма ба̄рик лӣ фӣх. Ва ин кунта та'ляму анна хаза ль-амра шаррун лӣ фӣ дӣнӣ ва ма'а̄шӣ ва 'а̄кибати амрӣ, фа-срифху 'аннӣ ва-срифнӣ 'анху, ва-кдур лия ль-хайра хайсу ка̄н, сумма арднӣ бих", ru:"О Аллах, я прошу Тебя указать мне лучшее по Твоему знанию и прошу у Тебя силы Твоим могуществом, и прошу о Твоей великой милости: Ты можешь, а я не могу, Ты знаешь, а я не знаю, и Ты знаешь сокровенное. О Аллах, если Ты знаешь, что это дело (здесь называют своё дело) - благо для меня в моей религии, в моей жизни и по исходу моих дел, то предопредели его мне, облегчи его мне, а затем благослови меня в нём. А если Ты знаешь, что это дело - зло для меня в моей религии, в моей жизни и по исходу моих дел, то отврати его от меня, а меня от него, и предопредели мне благо, где бы оно ни было, а затем сделай меня довольной им.",
+     src:"Джабир ибн 'Абдуллах, да будет доволен им Аллах. Аль-Бухари (1162, 6382). В одной из версий вместо «в моей религии, в моей жизни и по исходу моих дел» сказано «в ближайшем и отдалённом»"},
+    {div:"После истихары"},
+    {t:"Не ждите обязательно сна", p:"В хадисе нет ни слова о том, что после истихары нужно увидеть сон или почувствовать знак. Ответ - в том, как складываются дела: если Аллах облегчает путь, идите дальше; если дело закрывается, не держитесь за него. Сон может быть, но он не условие и не доказательство."},
+    {t:"Истихара и совет с людьми", p:"Истихара не отменяет совета со знающими людьми. Аллах велел Пророку ﷺ советоваться, а приняв решение - уповать на Аллаха.",
+     ar:"وَشَاوِرْهُمْ فِي الْأَمْرِ فَإِذَا عَزَمْتَ فَتَوَكَّلْ عَلَى اللَّهِ",
+     tr:"Ва ша̄вирхум фи ль-амр, фа-иза 'азамта фа-таваккаль 'аля Лла̄х",
+     ru:"И советуйся с ними о деле, а когда примешь решение, уповай на Аллаха.",
+     src:"Сура «Аль Имран», 3:159"},
+    {t:"Можно ли повторить", p:"Если сомнение осталось, многие учёные разрешают повторить истихару. Так передано и от сподвижников. Повторение - не обязанность, а возможность."},
+    {t:"Если намаз сейчас невозможен", p:"Женщина в месячные или человек, которому сейчас нельзя совершить намаз, по мнению многих учёных, может прочитать одну дуа истихары, без двух ракятов. Полная сунна - с намазом, когда он станет возможен."},
+    {t:"Можно ли за другого", p:"Истихару делают за своё решение. За другого человека - например, за взрослую дочь - лучше сделать обычную дуа, чтобы Аллах выбрал ей благо, а истихару пусть совершит она сама."}
+  ]
+};
 
 /* Руководство «Когда принимается дуа».
    Хадисы разделены по сборникам намеренно: сначала то, что в «Сахихах»
@@ -13833,6 +13940,7 @@ var SCORE_WHY = [
   ["Сунна-намаз", POINTS.sunnah],
   ["Дело из «Моего дня»: Коран, садака, шукр", POINTS.daily],
   ["Прочитанный азкар", POINTS.azkar],
+  ["Прочитанная дуа из Корана", POINTS.azkar],
   ["Круг зикра на тасбихе", POINTS.tasbih],
   ["Названное имя Всевышнего", POINTS.name],
   ["Верный ответ в тесте", POINTS.quiz],
@@ -16860,6 +16968,18 @@ function pushItems(){
           body: money(leftD), tag: "debt" });
       });
     }
+    /* утренние азкары - через 20 минут после фаджра, вечерние - через 20 минут после асра */
+    if(S.notifAzkar !== false && !pauseNow()){
+      var ta = prayerTimes(day, c.lat, c.lng, c.tz, S.method, S.madhab);
+      var baseA = Date.UTC(day.getFullYear(), day.getMonth(), day.getDate());
+      [["fajr", "Утренние азкары", "Время утренних азкаров: после фаджра и до восхода солнца"],
+       ["asr", "Вечерние азкары", "Время вечерних азкаров: после асра и до заката"]].forEach(function(z){
+        var hz = ta[z[0]];
+        if(hz === undefined || isNaN(hz)) return;
+        var atZ = baseA + (hz + 1/3 - c.tz) * 3600000;
+        if(atZ > now) items.push({ at:new Date(atZ).toISOString(), title:z[1], body:z[2], tag:"azkar" });
+      });
+    }
     if(S.notifDua && pool.length){
       var morning = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 8, 0, 0).getTime();
       var dua = pool[(dayIndex() + k) % pool.length];
@@ -16904,7 +17024,7 @@ function pushSig(){
     (S.debts || []).filter(function(x){ return !x.closed && x.due; })
     .map(function(x){ return x.due + x.id; }).join(",");
   return [c.lat, c.lng, c.tz, S.method, S.madhab, S.notifPrayer ? 1 : 0, S.notifDua ? 1 : 0,
-          S.notifTasks === false ? 0 : 1, S.notifScore === false ? 0 : 1, scoreState().on ? 1 : 0,
+          S.notifTasks === false ? 0 : 1, S.notifScore === false ? 0 : 1, scoreState().on ? 1 : 0, S.notifAzkar === false ? 0 : 1,
           (S.scoreMe && S.scoreMe.place) || 0, pauseNow() ? 1 : 0, todayKey(), tasks,
           S.ar ? (S.ar.start ? 1 : 0) + ":" + (S.ar.remind || "9") + ":" + (arDayDone(arToday()) ? 1 : 0) : ""].join("|");
 }
@@ -17470,6 +17590,7 @@ function viewProf(){
     swRow("notifPrayer","🕌","Напоминания о намазе") +
     swRow("notifAzan","🔊","Звук азана") +
     swRow("notifDua","✦","Дуа дня утром") +
+    swRow("notifAzkar","☀","Утренние и вечерние азкары") +
     swRow("notifScore","◈","Итоги недели в рейтинге") +
     swRow("statOn","◔","Обезличенная статистика") +
     swRow("notifTasks","✓","Напоминания о задачах со временем") +
@@ -18661,7 +18782,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -18759,6 +18880,12 @@ document.getElementById("app").addEventListener("click", function(ev){
     var LBL = {dua:"Дуа", name:"Имя", quran:"Дуа из Корана", hadith:"Хадис", sura:"Сура", guide:"Руководство", post:"Запись"};
     toggleFav(d.fav, LBL[d.fav.split(":")[0]] || "Запись"); return;
   }
+  /* дуа из Корана: отметка «прочитала» даёт балл, раз в день за каждую */
+  if(d.qdread!==undefined){
+    var qk = "quran:" + d.qdread, qwas = !!S.read[qk];
+    markRead(qk); render(); toast(qwas ? "Уже отмечено сегодня ✓" : "Отмечено ✓ +" + POINTS.azkar + " балл");
+    return;
+  }
   if(d.count){
     var dua = DUAS.filter(function(x){return x.id===d.count;})[0];
     var was = !!S.read[dua.id];
@@ -18803,6 +18930,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.qoffclear!==undefined){ qOffClear(); return; }
   if(d.qplan){ qPlanStart(parseInt(d.qplan,10)); render();
     toast("План на " + d.qplan + " дней. Считаем с текущей страницы"); return; }
+  if(d.qrmd){ S.qrmdOff = Math.max(0, Math.min(15, (S.qrmdOff || 0) + parseInt(d.qrmd, 10))); save(); render(); return; }
   if(d.qplanoff!==undefined){ qPlanStop(); render(); toast("План убран"); return; }
   if(d.qmode){ V.qmode = d.qmode; render(); return; }
   if(d.qsurah!==undefined){
@@ -19342,7 +19470,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.pushtoggle!==undefined){ if(pushOn()) pushDisable(); else pushEnable(); return; }
   if(d.sw){
     S[d.sw] = !S[d.sw]; save(); render();
-    if(d.sw === "notifPrayer" || d.sw === "notifDua" || d.sw === "notifTasks" || d.sw === "notifScore") pushSync(true);
+    if(d.sw === "notifPrayer" || d.sw === "notifDua" || d.sw === "notifTasks" || d.sw === "notifScore" || d.sw === "notifAzkar") pushSync(true);
     if(S[d.sw] && (d.sw === "notifPrayer" || d.sw === "notifDua")){
       notifAsk().then(function(r){
         if(r === "granted"){ toast("Напоминания включены"); }
