@@ -5227,23 +5227,14 @@ function viewHomeMain(){
       '<button class="btn ghost sm" style="margin-top:6px;width:100%" data-vhide="1">Не сейчас</button></section>');
   }
 
-  /* дуа дня */
-  h.push('<section class="mihrab"><div class="eyebrow">Дуа дня</div>'+
-    '<div class="ar">'+esc(d.ar)+'</div>'+
-    '<div class="mihrab-sep"><i></i><b></b><i></i></div>'+
-    '<div class="tr">'+esc(d.tr)+'</div>'+
-    '<div class="ru">'+esc(d.ru)+'</div>'+
-    '<div class="src">'+esc(d.src)+'</div></section>');
-  h.push('<div style="display:flex;gap:8px">'+
-    '<button class="btn sec sm" style="flex:1" data-cat="'+d.c+'">Открыть раздел</button>'+
-    '<button class="btn sm ghost" data-dshare="'+d.id+'" style="flex:none" aria-label="Поделиться">⤴</button>'+
-    '<button class="btn sm '+(isFav("dua:"+d.id)?"":"ghost")+'" data-fav="dua:'+d.id+'" style="flex:none">'+
-    (isFav("dua:"+d.id)?"★ В избранном":"☆ В избранное")+'</button></div>');
+  /* поиск - в самом верху: с него начинают, когда ищут конкретное */
   /* поиск по приложению - сразу под дуа дня */
   h.push('<div class="hs"><span class="hs-ic">⌕</span><input class="search" id="homeSearch" type="search" enterkeyhint="search" '+
     'placeholder="Поиск: дуа, сура, намаз, заметка..." value="'+esc(V.q||"")+'">'+
     (V.q ? '<button class="hs-x" data-hsclear="1" aria-label="Очистить">×</button>' : '')+'</div>');
   if(V.q && V.q.trim().length > 1) return h.join("") + homeSearchResults(V.q) + '</div>';
+
+  /* намаз - первый блок: ради него открывают приложение чаще всего */
   /* намаз */
   var order = ["fajr","sunrise","dhuhr","asr","maghrib","isha"];
   var nowH = nowHours();
@@ -5261,6 +5252,7 @@ function viewHomeMain(){
     (methodNow() === "rt" ? ' · в мечетях зухр в 12:00, фаджр в '+hhmm(tn.t.sunrise - 91/60) : '')+'</span>'+
     '<button data-open="settings" style="margin-left:auto">Изменить</button></div></section>');
 
+  h.push('<div class="sec-h"><h3>Сегодня</h3></div>');
   /* план чтения Корана: одна строка, если план идёт - сразу под временем намаза (просьба Заиры 21.09).
      На главной он нужен не для отчёта, а чтобы вспомнить о нём до вечера. */
   (function(){
@@ -5273,7 +5265,6 @@ function viewHomeMain(){
       '<span style="font-size:12.5px;color:var(--ink-3)">прочитано '+qp.read+' из 604 · '+daysWord(qp.daysLeft)+' до конца плана</span></span>'+
       '<span style="color:var(--ink-3)">›</span></button>');
   })();
-
   /* азкары: тонкая плашка со «своим» набором по времени суток (просьба Заиры 22.09).
      До полудня - утренние, днём - вечерние, поздним вечером - перед сном. */
   (function(){
@@ -5292,17 +5283,6 @@ function viewHomeMain(){
       (done ? '<span class="azkar-bar" aria-hidden="true"><i style="width:'+pct+'%"></i></span>' : '')+
       '<span class="azkar-go">'+(done >= list.length ? '✓' : '›')+'</span></button>');
   })();
-
-  /* книга на главной: одна строка для тех, кто ещё не купил. Начало бесплатное, поэтому зовём читать, а не покупать */
-  if(!b1Owned()){
-    var b1p = b1S(), b1read = b1p && b1p.pos ? Object.keys(b1p.pos).length : 0;
-    h.push('<button class="card azkar-line" data-open="book1">'+
-      '<img src="'+BOOK1.cover+'" alt="" style="width:34px;height:50px;object-fit:cover;border-radius:4px;flex:none">'+
-      '<span class="azkar-t"><b>'+esc(BOOK1.n)+'</b>'+
-        '<span>'+(b1read ? 'вы начали читать · продолжить' : 'роман о 99 Именах · первые главы бесплатно')+'</span></span>'+
-      '<span class="azkar-go">›</span></button>');
-  }
-
   /* трекер дня - пять направлений */
   syncSalahFlag();
   var tk = todayKey(), rec = dayRec(tk), done = dayCount(tk), st = dailyStreak();
@@ -5391,7 +5371,6 @@ function viewHomeMain(){
       (pz ? '' : '<button class="btn ghost sm" style="margin-left:auto;flex:none" data-pauseopen="1" aria-label="Пауза в трекере">Пауза</button>')+
       '<button class="btn ghost sm" style="'+(pz?"margin-left:auto;":"")+'flex:none" data-open="report">Отчёт за месяц</button>'+
     '</div></section>');
-
   /* благодарность - всегда на виду, а не спрятана за галочкой шукра */
   shukrMigrate();
   var shukrToday = shukrOf(tk);
@@ -5420,6 +5399,31 @@ function viewHomeMain(){
           : '<div style="margin-top:7px;font-size:13.5px;color:var(--ink-3)">Одна строка - чтобы вспомнить через месяц</div>'))+
   '</section>');
 
+  /* слово дня: дуа и хадис рядом, читаются за минуту */
+  /* дуа дня */
+  h.push('<section class="mihrab"><div class="eyebrow">Дуа дня</div>'+
+    '<div class="ar">'+esc(d.ar)+'</div>'+
+    '<div class="mihrab-sep"><i></i><b></b><i></i></div>'+
+    '<div class="tr">'+esc(d.tr)+'</div>'+
+    '<div class="ru">'+esc(d.ru)+'</div>'+
+    '<div class="src">'+esc(d.src)+'</div></section>');
+  h.push('<div style="display:flex;gap:8px">'+
+    '<button class="btn sec sm" style="flex:1" data-cat="'+d.c+'">Открыть раздел</button>'+
+    '<button class="btn sm ghost" data-dshare="'+d.id+'" style="flex:none" aria-label="Поделиться">⤴</button>'+
+    '<button class="btn sm '+(isFav("dua:"+d.id)?"":"ghost")+'" data-fav="dua:'+d.id+'" style="flex:none">'+
+    (isFav("dua:"+d.id)?"★ В избранном":"☆ В избранное")+'</button></div>');
+  /* хадис дня */
+  var hd = HADITHS.length ? HADITHS[dayIndex() % HADITHS.length] : null;
+  if(hd){
+    h.push('<div class="sec-h" style="margin-top:6px"><h3>Хадис дня</h3>'+
+      '<span class="more" style="color:var(--ink-3)">№ '+hd.num+'</span></div>');
+    h.push('<button class="card" style="width:100%;text-align:left" data-hadith="'+HADITHS.indexOf(hd)+'">'+
+      '<div style="font-family:var(--f-display);font-size:16px;font-weight:600;margin-bottom:6px;line-height:1.35">'+esc(hd.n)+'</div>'+
+      '<div style="font-size:14px;line-height:1.6;color:var(--ink-2)">'+esc(hd.text.slice(0,150))+'...</div>'+
+      '<div style="font-size:13px;color:var(--accent-ink);margin-top:9px;font-weight:600">Читать целиком →</div></button>');
+  }
+
+  h.push('<div class="sec-h"><h3>Моё</h3></div>');
   /* цели и намерения - личный список, растёт со временем, как «Мои дуа» */
   var openGoals = S.goals.filter(function(g){ return !g.done; });
   var doneGoals = S.goals.filter(function(g){ return g.done; });
@@ -5452,6 +5456,23 @@ function viewHomeMain(){
     '<button class="cat" data-open="qibla"><div class="ic">✧</div><b>Кибла</b><span>'+Math.round(qiblaBearing())+'° от севера</span></button>'+
     '<button class="cat" data-open="live"><div class="ic" style="font-size:24px">🕋</div><b>Мекка онлайн</b><span>прямой эфир из Харама</span></button>'+
     '</div>');
+
+  h.push('<div class="sec-h"><h3>Читать и учиться</h3></div>');
+  /* книга на главной: одна строка для тех, кто ещё не купил. Начало бесплатное, поэтому зовём читать, а не покупать */
+  if(!b1Owned()){
+    var b1p = b1S(), b1read = b1p && b1p.pos ? Object.keys(b1p.pos).length : 0;
+    h.push('<button class="card azkar-line" data-open="book1">'+
+      '<img src="'+BOOK1.cover+'" alt="" style="width:34px;height:50px;object-fit:cover;border-radius:4px;flex:none">'+
+      '<span class="azkar-t"><b>'+esc(BOOK1.n)+'</b>'+
+        '<span>'+(b1read ? 'вы начали читать · продолжить' : 'роман о 99 Именах · первые главы бесплатно')+'</span></span>'+
+      '<span class="azkar-go">›</span></button>');
+  }
+  /* изучаем арабский с JAVATTI - под рейтингом */
+  h.push(arHero(false).replace('<div class="ar-hero">', '<button class="ar-hero" data-ar="home">').replace(/<\/div>$/, '</button>'));
+  h.push('<button class="cat-wide gold" data-open="halal" style="margin-top:10px">'+
+    '<span class="cw-ic">☪</span>'+
+    '<span class="cw-t"><b>Халяль рядом</b><span>еда, магазины и ближайшая мечеть</span></span>'+
+    '<span class="cw-go">›</span></button>');
   /* рейтинг участников - над курсом арабского (просьба Заиры 21.09) */
   var scH = scoreState(), scMe = S.scoreMe;
   h.push('<button class="cat-wide" data-open="top">'+
@@ -5462,24 +5483,6 @@ function viewHomeMain(){
                               : "считаем ваше место")
         : "неделя начинается заново каждый понедельник")+'</span></span>'+
     '<span class="cw-go">›</span></button>');
-  /* изучаем арабский с JAVATTI - под рейтингом */
-  h.push(arHero(false).replace('<div class="ar-hero">', '<button class="ar-hero" data-ar="home">').replace(/<\/div>$/, '</button>'));
-  h.push('<button class="cat-wide gold" data-open="halal" style="margin-top:10px">'+
-    '<span class="cw-ic">☪</span>'+
-    '<span class="cw-t"><b>Халяль рядом</b><span>еда, магазины и ближайшая мечеть</span></span>'+
-    '<span class="cw-go">›</span></button>');
-
-  /* хадис дня */
-  var hd = HADITHS.length ? HADITHS[dayIndex() % HADITHS.length] : null;
-  if(hd){
-    h.push('<div class="sec-h" style="margin-top:6px"><h3>Хадис дня</h3>'+
-      '<span class="more" style="color:var(--ink-3)">№ '+hd.num+'</span></div>');
-    h.push('<button class="card" style="width:100%;text-align:left" data-hadith="'+HADITHS.indexOf(hd)+'">'+
-      '<div style="font-family:var(--f-display);font-size:16px;font-weight:600;margin-bottom:6px;line-height:1.35">'+esc(hd.n)+'</div>'+
-      '<div style="font-size:14px;line-height:1.6;color:var(--ink-2)">'+esc(hd.text.slice(0,150))+'...</div>'+
-      '<div style="font-size:13px;color:var(--accent-ink);margin-top:9px;font-weight:600">Читать целиком →</div></button>');
-  }
-
   /* обучение - в самом низу */
   h.push('<div class="sec-h" style="margin-top:6px"><h3>Обучение</h3><button class="more" data-open="courses">Все программы →</button></div>');
   var flagship = COURSES.filter(function(c){ return c.id === "sunnah"; })[0] || COURSES[0];
@@ -5491,6 +5494,7 @@ function viewHomeMain(){
   }
 
   h.push('<p class="disclaimer">Под каждым текстом указан источник - сборник хадисов или сура Корана.</p>');
+  h.push('</div>');
   h.push('</div>');
   return h.join("");
 }
