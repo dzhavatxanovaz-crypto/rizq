@@ -2765,6 +2765,18 @@ function ruDate(){
 /* ============================================================
    ДУА И АЗКАРЫ
    ============================================================ */
+/* Порядок чтения утренних и вечерних азкаров (просьба Заиры 22.09): сначала эти, в этом порядке,
+   остальные идут следом в прежнем порядке. */
+var AZKAR_ORDER = {
+  morning: ["m3", "m15", "m4", "m13", "m14", "m9", "m10", "m11", "m24", "m8", "m18"],
+  evening: ["e1", "e2", "e24", "e10", "e6", "e7", "e8", "e5", "e28", "e15", "e4"]
+};
+function azkarOrder(cid, list){
+  var ord = AZKAR_ORDER[cid];
+  if(!ord) return list;
+  var pos = function(d){ var i = ord.indexOf(d.id); return i < 0 ? ord.length : i; };
+  return list.slice().sort(function(a, b){ return pos(a) - pos(b); });
+}
 var CATS = [
   {id:"morning", ic:"☀", n:"Утренние азкары",   s:"после Фаджра"},
   {id:"evening", ic:"☾", n:"Вечерние азкары",   s:"после Асра"},
@@ -5216,6 +5228,16 @@ function viewHomeMain(){
       '<span class="azkar-go">'+(done >= list.length ? '✓' : '›')+'</span></button>');
   })();
 
+  /* книга на главной: одна строка для тех, кто ещё не купил. Начало бесплатное, поэтому зовём читать, а не покупать */
+  if(!b1Owned()){
+    var b1p = b1S(), b1read = b1p && b1p.pos ? Object.keys(b1p.pos).length : 0;
+    h.push('<button class="card azkar-line" data-open="book1">'+
+      '<img src="'+BOOK1.cover+'" alt="" style="width:34px;height:50px;object-fit:cover;border-radius:4px;flex:none">'+
+      '<span class="azkar-t"><b>'+esc(BOOK1.n)+'</b>'+
+        '<span>'+(b1read ? 'вы начали читать · продолжить' : 'роман о 99 Именах · первые главы бесплатно')+'</span></span>'+
+      '<span class="azkar-go">›</span></button>');
+  }
+
   /* трекер дня - пять направлений */
   syncSalahFlag();
   var tk = todayKey(), rec = dayRec(tk), done = dayCount(tk), st = dailyStreak();
@@ -6179,7 +6201,7 @@ function viewRizq(){
 function viewCat(){
   if(V.p === "rizq") return viewRizq();
   var cat = CATS.filter(function(c){return c.id===V.p;})[0];
-  var list = DUAS.filter(function(d){return d.c===V.p;});
+  var list = azkarOrder(V.p, DUAS.filter(function(d){return d.c===V.p;}));
   var h = ['<div class="stack">'];
 
   h.push('<div class="card flat" style="padding:13px 15px"><div class="eyebrow">'+esc(cat.s)+'</div>'+
