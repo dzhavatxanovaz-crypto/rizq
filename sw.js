@@ -1,5 +1,5 @@
 /* Ризк - офлайн-кэш. Меняйте номер версии при каждом обновлении приложения. */
-var CACHE = "rizq-v192";
+var CACHE = "rizq-v193";
 var ASSETS = [
   "./",
   "./index.html",
@@ -135,7 +135,9 @@ self.addEventListener("fetch", function (e) {
      Новая версия приходит сама: при выпуске меняется номер кэша, браузер ставит
      новый офлайн-кэш в фоне, и появляется плашка «Вышла новая версия». */
   if (e.request.mode === "navigate") {
-    var isApp = url.pathname === "/" || /\/index\.html$/.test(url.pathname) || /\/$/.test(url.pathname);
+    /* /kniga/ - отдельная продающая страница книги, её нельзя подменять оболочкой приложения */
+    var isApp = !/^\/kniga(\/|$)/.test(url.pathname) &&
+      (url.pathname === "/" || /\/index\.html$/.test(url.pathname) || /\/$/.test(url.pathname));
     e.respondWith(
       caches.match(isApp ? "./index.html" : e.request).then(function (hit) {
         if (hit) return hit;

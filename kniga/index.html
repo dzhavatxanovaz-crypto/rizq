@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Женщина, которая верит - роман о 99 Именах Аллаха</title>
+<meta name="description" content="Продолжение истории Амины из книги «Девушка, которая смогла». 99 глав - 99 Имён Аллаха. Первые главы бесплатно в приложении RIZQ.">
+<meta property="og:type" content="book">
+<meta property="og:title" content="Женщина, которая верит">
+<meta property="og:description" content="Она смогла всё. Кроме одного. 99 глав - 99 Имён Аллаха. Первые главы бесплатно.">
+<meta property="og:image" content="https://rizq.javattigroup.ru/icons/book-verit.jpg">
+<meta property="og:url" content="https://rizq.javattigroup.ru/kniga/">
+<meta name="theme-color" content="#231B19">
+<link rel="icon" href="../icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geologica:wght@200;300;400;600&family=PT+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#EDEEE1; --ink2:#D7CBBA; --ink3:#A5988A;
+  --bg:#231B19; --bg2:#2E2320; --line:rgba(215,203,186,.18);
+  --gold:#C3AD70; --straw:#D9C490; --cabernet:#5D262E;
+  --r:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:300 17px/1.6 Geologica,"Segoe UI",system-ui,sans-serif;
+  padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+.wrap{max-width:760px;margin:0 auto;padding-inline:20px}
+section{padding-block:clamp(34px,7vw,64px)}
+h1,h2,h3{font-weight:600;line-height:1.1;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:clamp(34px,8.4vw,60px)}
+h2{font-size:clamp(25px,5.4vw,36px);margin-bottom:18px}
+h3{font-size:19px;margin-bottom:6px}
+p+p{margin-top:14px}
+.eyebrow{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.lead{font-size:clamp(17px,3.6vw,20px);color:var(--ink2)}
+a{color:inherit}
+.hero{padding-top:clamp(26px,6vw,52px);border-bottom:1px solid var(--line)}
+.hero-grid{display:grid;gap:28px;grid-template-columns:1fr;align-items:center}
+@media(min-width:720px){.hero-grid{grid-template-columns:1.25fr .75fr;gap:40px}}
+.cover{width:100%;max-width:280px;border-radius:8px;box-shadow:0 26px 60px rgba(0,0,0,.55);display:block;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;font-size:12.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink3);margin-bottom:26px}
+.brand i{width:34px;height:1px;background:var(--gold);display:block}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 24px;border-radius:12px;
+  font:600 16px/1 Geologica,sans-serif;text-decoration:none;border:1px solid transparent;transition:transform .12s ease,filter .2s ease}
+.btn:active{transform:translateY(1px)}
+.btn-main{background:var(--gold);color:#2B211D}
+.btn-ghost{border-color:var(--line);color:var(--ink)}
+.note{font-size:13.5px;color:var(--ink3);margin-top:12px}
+.quote{font-family:"PT Serif",Georgia,serif;font-size:clamp(19px,4.2vw,25px);line-height:1.45;font-style:italic;
+  border-left:3px solid var(--gold);padding-left:18px;color:var(--ink)}
+.quote span{display:block;font:400 13px/1.4 Geologica,sans-serif;font-style:normal;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-top:12px}
+.cards{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:620px){.cards{grid-template-columns:1fr 1fr}}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.card p{font-size:15.5px;color:var(--ink2)}
+ol.steps{list-style:none;counter-reset:s;display:grid;gap:14px}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:14px;align-items:start}
+ol.steps li:before{content:counter(s);font:600 15px/34px Geologica,sans-serif;text-align:center;width:34px;height:34px;
+  border-radius:50%;border:1px solid var(--gold);color:var(--gold)}
+ul.ticks{list-style:none;display:grid;gap:12px}
+ul.ticks li{display:grid;grid-template-columns:20px 1fr;gap:12px;color:var(--ink2);font-size:16px}
+ul.ticks li:before{content:"✦";color:var(--gold)}
+.price{display:flex;flex-wrap:wrap;align-items:baseline;gap:12px;margin-bottom:8px}
+.price b{font:600 44px/1 Geologica,sans-serif;color:var(--straw)}
+.price span{font-size:14px;color:var(--ink3)}
+.faq{display:grid;gap:10px}
+details{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
+summary{cursor:pointer;list-style:none;font-weight:400;font-size:16.5px}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"+";float:right;color:var(--gold)}
+details[open] summary:after{content:"−"}
+details p{margin-top:10px;font-size:15.5px;color:var(--ink2)}
+footer{border-top:1px solid var(--line);padding-block:30px 46px;color:var(--ink3);font-size:13.5px}
+.sticky{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(35,27,25,0),rgba(35,27,25,.96) 28%);
+  padding:18px 20px calc(18px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center}
+.sticky a{width:100%;max-width:420px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="brand"><i></i>JAVATTI · RIZQ</div>
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">Продолжение «Девушки, которая смогла»</div>
+        <h1>Я звала Его,<br>когда горело</h1>
+        <p class="lead" style="margin-top:18px">Как будто Он служба спасения, которой не звонят, пока всё хорошо. Роман о женщине, которая построила дело, выстояла одна и вдруг поняла: рядом всё это время был Тот, Кого она звала только в беде.</p>
+        <div class="cta">
+          <a class="btn btn-main" href="https://rizq.javattigroup.ru/?open=book1">Читать первые главы бесплатно</a>
+          <a class="btn btn-ghost" href="https://rizq.javattigroup.ru/?open=book1">Купить за 550 ₽</a>
+        </div>
+        <p class="note">99 глав - 99 Имён Аллаха. Открывается сразу после оплаты, читается без интернета.</p>
+      </div>
+      <img class="cover" src="../icons/book-verit.jpg" alt="Обложка книги «Женщина, которая верит»">
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">О чём книга</div>
+    <h2>Она смогла всё. Кроме одного</h2>
+    <p class="lead">Амина уехала из Махачкалы с трёхлетней дочерью и одной сумкой. Шила ночами в чужом ателье, подняла своё дело в Москве, и зал аплодировал ей стоя.</p>
+    <p>А дома дочь нарисовала её со спины. В школе дали задание «Моя семья»: на рисунке у мамы не было лица. Учительница спросила: «А где у мамы лицо?» Дочь ответила: «Она работает».</p>
+    <p>С этого рисунка начинается книга. Дальше будет всё, из чего состоит настоящая жизнь: беременность, которая чуть не закончилась бедой. Наставница, которая уходит у неё на руках. Письмо от бывшего мужа через четырнадцать лет. Умра с мамой, которая откладывала поездку сорок лет. И девяносто девять Имён Аллаха, каждое из которых Амина узнаёт не из книги, а из собственного дня.</p>
+  </div>
+</section>
+
+<section style="background:var(--bg2);border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="quote">Я думала, Он великий, и поэтому к Нему страшно. А Он великий, и поэтому к Нему можно.
+      <span>Глава 85. Зу-ль-Джаляли валь-Икрам</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Почему её трудно отложить</div>
+    <h2>Одно Имя - одна история</h2>
+    <div class="cards" style="margin-top:22px">
+      <div class="card"><h3>Сначала сцена</h3><p>Каждая глава - живой эпизод, в котором что-то решается прямо сейчас: пропавший ребёнок, чужие деньги на счёте, разговор, который хочется закончить ударом.</p></div>
+      <div class="card"><h3>Потом смысл Имени</h3><p>Что это Имя говорит об Аллахе и как это видно в только что прочитанной сцене. Без проповеди и без обвинений.</p></div>
+      <div class="card"><h3>Вопрос для себя</h3><p>Один вопрос в конце главы, на который отвечаешь молча. Он и остаётся с вами на следующий день.</p></div>
+      <div class="card"><h3>Личная мольба</h3><p>Короткая мольба своими словами и аят на арабском с переводом. Из книги можно сразу открыть этот аят в Коране.</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg2);border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="eyebrow">Кому эта книга</div>
+    <h2>Вы узнаете себя, если</h2>
+    <ul class="ticks" style="margin-top:20px">
+      <li>вы тянете на себе дело, дом и детей и давно не были ни у кого на руках;</li>
+      <li>вы знаете все Имена списком, но не помните, когда звали Аллаха по Имени;</li>
+      <li>вы просите давно и не видите ответа;</li>
+      <li>вам хочется книги, после которой становится легче, а не стыднее.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Как читать</div>
+    <h2>По главе в день</h2>
+    <ol class="steps" style="margin-top:22px">
+      <li><div><h3>Откройте книгу в приложении RIZQ</h3><p class="note" style="margin-top:4px">Ничего устанавливать не нужно: приложение открывается по ссылке, иконку можно поставить на экран телефона.</p></div></li>
+      <li><div><h3>Прочитайте начало бесплатно</h3><p class="note" style="margin-top:4px">«Перед чтением» и три первые главы открыты всем, без оплаты и регистрации.</p></div></li>
+      <li><div><h3>Оплатите, когда захотите дальше</h3><p class="note" style="margin-top:4px">Книга откроется сразу, без писем и паролей, и продолжится ровно с того места, где вы остановились.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<section style="background:var(--bg2);border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="eyebrow">Цена</div>
+    <div class="price"><b>550 ₽</b><span>навсегда, без подписки</span></div>
+    <p class="lead">Девяносто девять глав. Это меньше шести рублей за главу и дешевле одной книги в магазине.</p>
+    <div class="cta">
+      <a class="btn btn-main" href="https://rizq.javattigroup.ru/?open=book1">Начать читать бесплатно</a>
+    </div>
+    <p class="note">Книга остаётся у вас навсегда и читается без интернета. Оплата картой, чек приходит на вашу почту.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Вопросы</div>
+    <h2>Коротко о главном</h2>
+    <div class="faq" style="margin-top:20px">
+      <details><summary>Нужно ли читать первую книгу?</summary><p>Не обязательно. «Женщина, которая верит» читается отдельно: в начале есть короткая страница «Кто есть кто», чтобы вы сразу понимали, о ком речь. Но если вы читали «Девушку, которая смогла», узнаете героев и поймёте, чем всё закончилось.</p></details>
+      <details><summary>Это художественная книга или религиозная?</summary><p>И то, и другое. Это роман, в котором каждая глава открывает одно из Имён Аллаха. Все аяты приведены с переводом, у каждого хадиса указан сборник и номер.</p></details>
+      <details><summary>Где я буду её читать?</summary><p>В приложении RIZQ, в разделе «Ризкъ». Приложение помнит место, где вы остановились, позволяет увеличить шрифт и читать в тёмной теме, без интернета.</p></details>
+      <details><summary>Что если книга не подойдёт?</summary><p>Поэтому начало открыто бесплатно: «Перед чтением» и три первые главы. Решение об оплате принимаете, когда уже знаете, как книга написана.</p></details>
+      <details><summary>Можно подарить?</summary><p>Да. Напишите нам в WhatsApp, и мы откроем книгу на номер или почту того, кому вы дарите.</p></details>
+    </div>
+  </div>
+</section>
+
+<section style="padding-bottom:10px">
+  <div class="wrap">
+    <div class="quote">Она повернулась. Не сразу. Но повернулась.
+      <span>Последняя страница</span></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Заира Джаватханова. Школа бизнеса JAVATTI. Книга живёт в приложении RIZQ: <a href="https://rizq.javattigroup.ru/">rizq.javattigroup.ru</a></p>
+  </div>
+</footer>
+
+<div class="sticky"><a class="btn btn-main" href="https://rizq.javattigroup.ru/?open=book1">Читать первые главы бесплатно</a></div>
+
+</body>
+</html>
