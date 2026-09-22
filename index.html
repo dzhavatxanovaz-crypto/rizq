@@ -21992,11 +21992,11 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.guide){ V.tab="dua"; open("guide", d.guide); return; }
   if(d.check){ V.tab="dua"; open("check", d.check); return; }
   if(d.chk){ var pr = d.chk.split("|"); chkTap(node, pr[0], pr[1]); return; }
-  if(d.chkreset){ chkReset(d.chkreset); render(); return; }
-  if(d.sunnah){ toggleSunnah(d.sunnah); render(); return; }
-  if(d.sunnahopen!==undefined){ S.sunnahOpen = !S.sunnahOpen; save(); render(); return; }
-  if(d.health){ toggleHealth(d.health); render(); return; }
-  if(d.healthopen!==undefined){ S.healthOpen = !S.healthOpen; save(); render(); return; }
+  if(d.chkreset){ chkReset(d.chkreset); renderInPlace(); return; }
+  if(d.sunnah){ toggleSunnah(d.sunnah); renderInPlace(); return; }
+  if(d.sunnahopen!==undefined){ S.sunnahOpen = !S.sunnahOpen; save(); renderInPlace(); return; }
+  if(d.health){ toggleHealth(d.health); renderInPlace(); return; }
+  if(d.healthopen!==undefined){ S.healthOpen = !S.healthOpen; save(); renderInPlace(); return; }
   if(d.dshare){ shareDua(d.dshare); return; }
   if(d.ptad){ practiceToggleToday(); return; }
   if(d.pahlaq){ var P1 = practiceStore(); P1.ahlaq = P1.ahlaq ? "" : todayKey(); save(); render(); return; }
@@ -22173,9 +22173,9 @@ document.getElementById("app").addEventListener("click", function(ev){
   }
   if(d.namesreset!==undefined){ S.namesRead = {}; save(); render(); toast("Счётчик имён сброшен"); return; }
 
-  if(d.daily){ toggleDaily(d.daily); render(); return; }
+  if(d.daily){ toggleDaily(d.daily); renderInPlace(); return; }
   if(d.pauseopen!==undefined){ sheetPause(); return; }
-  if(d.qadadone){ qadaChange(d.qadadone, -1, true); render(); return; }
+  if(d.qadadone){ qadaChange(d.qadadone, -1, true); renderInPlace(); return; }
   if(d.qadaadd){ qadaChange(d.qadaadd, 1, false); render(); return; }
   if(d.qadabulk!==undefined){ qadaBulk(); return; }
   if(d.qadaundo!==undefined){ qadaUndo(); return; }
@@ -22198,7 +22198,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.pausestart!==undefined){ pauseStart(); return; }
   if(d.pauseend!==undefined){ pauseEnd(); return; }
   if(d.pausedel){ pauseDel(d.pausedel); return; }
-  if(d.salahopen!==undefined){ S.salahOpen = !S.salahOpen; save(); render(); return; }
+  if(d.salahopen!==undefined){ S.salahOpen = !S.salahOpen; save(); renderInPlace(); return; }
   if(d.repperiod){ V.repPeriod = d.repperiod; render(); return; }
   if(d.repmonth){ V.repMonth = d.repmonth; V.repDay = null; render(); return; }
   if(d.repday){ V.repDay = (V.repDay === d.repday) ? null : d.repday; render(); return; }
