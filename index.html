@@ -989,6 +989,60 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .blink-ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:rgba(212,175,55,.15);color:var(--accent-ink);font-size:16px;margin-bottom:6px;font-family:var(--f-ar)}
 .blink b{font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.25}
 .blink-s{font-size:11.5px;color:var(--ink-3);line-height:1.3}
+.ical-hero{display:flex;align-items:center;gap:16px;padding:20px 18px;border-radius:var(--r-lg);background:radial-gradient(120% 120% at 20% 10%,#2E3C80 0%,#1E2A5A 45%,#0E1636 100%);border:1px solid rgba(212,175,55,.4);color:#F4EBD0;box-shadow:var(--shadow)}
+.ical-hero .moon{flex:none;filter:drop-shadow(0 0 18px rgba(241,215,126,.35))}
+.ical-ht{flex:1;min-width:0}
+.ical-ht .eyebrow{color:#E6C868}
+.ical-ht b{display:inline-block;font-family:var(--f-display);font-size:46px;line-height:1;margin-top:4px;color:#F7E7B4}
+.ical-m{display:inline-block;font-family:var(--f-display);font-size:18px;font-weight:600;margin-left:8px;vertical-align:6px}
+.ical-ht em{display:block;font-style:normal;font-size:12.5px;color:rgba(244,235,208,.7);margin-top:6px}
+.ical-prog{height:4px;border-radius:2px;background:rgba(255,255,255,.14);margin-top:12px;overflow:hidden}
+.ical-prog i{display:block;height:100%;background:linear-gradient(90deg,#C9A12F,#F1D77E)}
+.ical-ht small{display:block;font-size:11.5px;color:rgba(244,235,208,.6);margin-top:5px}
+.ical-fast{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:14px;background:rgba(62,155,114,.12);border:1px solid rgba(62,155,114,.4);font-size:14px;color:var(--ink)}
+.ical-fast span{color:#3E9B72}
+.ical-mc{padding:14px 12px}
+.ical-mh{display:flex;align-items:baseline;justify-content:space-between;margin:0 4px 10px}
+.ical-mh b{font-family:var(--f-display);font-size:17px}
+.ical-mh span{font-size:12.5px;color:var(--ink-3)}
+.ical-w,.ical-g{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.ical-w span{text-align:center;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding-bottom:3px}
+.ical-e{height:48px}
+.ical-d{position:relative;height:48px;border-radius:11px;background:var(--surface-2);border:1px solid transparent;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ical-d b{font-family:var(--f-display);font-size:15px;line-height:1.1;color:var(--ink)}
+.ical-d small{font-size:9.5px;color:var(--ink-3);margin-top:1px}
+.ical-d i{position:absolute;top:5px;right:5px;width:5px;height:5px;border-radius:50%;background:#3E9B72}
+.ical-d em{position:absolute;bottom:-1px;left:0;right:0;text-align:center;font-style:normal;font-size:8.5px;font-weight:700;color:#1E2A5A;background:#E6C868;border-radius:0 0 10px 10px;line-height:12px}
+.ical-d.past{opacity:.5}
+.ical-d.white{background:linear-gradient(135deg,rgba(233,200,94,.55),rgba(201,161,47,.32));border-color:rgba(233,200,94,.8)}
+.ical-d.white b{color:#F7E7B4}
+[data-theme="light"] .ical-d.white b{color:#6B4F0E}
+.ical-d.ev{border-color:rgba(212,175,55,.8)}
+.ical-d.ram{background:rgba(62,155,114,.14)}
+.ical-d.today{border-color:var(--gold);box-shadow:0 0 0 2px rgba(212,175,55,.35);opacity:1}
+.ical-lg{display:flex;flex-wrap:wrap;gap:12px;margin:12px 4px 0;font-size:11.5px;color:var(--ink-3)}
+.ical-lg span{display:flex;align-items:center;gap:6px}
+.ical-lg i{width:12px;height:12px;border-radius:4px;display:inline-block}
+.lg-w{background:linear-gradient(135deg,rgba(241,215,126,.6),rgba(212,175,55,.3));border:1px solid rgba(212,175,55,.6)}
+.lg-d{width:6px!important;height:6px!important;border-radius:50%!important;background:#3E9B72}
+.lg-e{border:1.5px solid rgba(212,175,55,.9)}
+.ical-tl{list-style:none;padding:0;margin:12px 0 0;position:relative}
+.ical-tl li{position:relative;display:flex;align-items:center;gap:12px;padding:9px 0}
+.ical-tl li:not(:last-child)::after{content:"";position:absolute;left:17px;top:44px;bottom:-9px;width:2px;background:linear-gradient(rgba(212,175,55,.45),rgba(212,175,55,.1))}
+.ical-ic{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:16px;color:var(--accent-ink);background:var(--surface-2);border:1px solid rgba(212,175,55,.45)}
+.ical-tl li.next .ical-ic{background:linear-gradient(135deg,#E9C85E,#C9A12F);color:#1E2A5A;border-color:transparent}
+.ical-tl div{flex:1;min-width:0}
+.ical-tl b{display:block;font-size:15px}
+.ical-tl small{display:block;font-size:12.5px;color:var(--ink-3);margin-top:1px}
+.ical-cd{flex:none;font-size:12.5px;font-weight:700;color:var(--accent-ink);background:rgba(212,175,55,.12);padding:4px 10px;border-radius:999px}
+.ical-week{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:12px}
+.ical-wd{display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 2px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line)}
+.ical-wd span{font-size:10.5px;text-transform:uppercase;color:var(--ink-3)}
+.ical-wd b{font-family:var(--f-display);font-size:16px}
+.ical-wd small{font-size:10px;color:var(--ink-3)}
+.ical-wd i{font-style:normal;font-size:11px;height:13px;color:#3E9B72}
+.ical-wd.on{background:rgba(62,155,114,.1);border-color:rgba(62,155,114,.4)}
+.ical-wd.now{border-color:var(--gold)}
 .vk-head{display:flex;align-items:center;gap:10px;margin:6px 2px 0}
 .vk-head span{font-family:var(--f-display);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink);white-space:nowrap}
 .vk-head i{flex:1;height:1px;background:linear-gradient(90deg,rgba(212,175,55,.6),transparent)}
@@ -17948,48 +18002,91 @@ function hlOwnerSend(){
 /* ============================================================
    ЭКРАН: КАЛЕНДАРЬ
    ============================================================ */
+/* луна для дня лунного месяца: освещённая часть - справа, пока растёт, слева - когда убывает */
+function moonSvg(d, size){
+  var R = 40, ph = ((d - 0.5) / 29.53) % 1, x = R * Math.cos(2 * Math.PI * ph), ax = Math.abs(x).toFixed(2), path;
+  if(ph < 0.5) path = "M0,-40 A40,40 0 0 1 0,40 A" + ax + ",40 0 0 " + (x > 0 ? 0 : 1) + " 0,-40Z";
+  else path = "M0,-40 A40,40 0 0 0 0,40 A" + ax + ",40 0 0 " + (x > 0 ? 1 : 0) + " 0,-40Z";
+  return '<svg class="moon" width="'+size+'" height="'+size+'" viewBox="-50 -50 100 100" aria-hidden="true">'+
+    '<defs><radialGradient id="mg" cx="35%" cy="35%" r="75%"><stop offset="0" stop-color="#FFF6D6"/><stop offset=".6" stop-color="#F1D77E"/><stop offset="1" stop-color="#C9A12F"/></radialGradient></defs>'+
+    '<circle r="44" fill="rgba(241,215,126,.10)"/><circle r="40" fill="rgba(255,255,255,.07)" stroke="rgba(241,215,126,.35)" stroke-width="1"/>'+
+    '<path d="'+path+'" fill="url(#mg)"/></svg>';
+}
+/* текущий лунный месяц: первый день и длина */
+function hijriMonthSpan(date){
+  var hj = hijriOf(date); if(!hj) return null;
+  var start = new Date(date); start.setHours(12, 0, 0, 0); start.setDate(start.getDate() - (hj.d - 1));
+  var len = 29, t = new Date(start); t.setDate(t.getDate() + 29);
+  var h2 = hijriOf(t); if(h2 && h2.m === hj.m) len = 30;
+  return { hj:hj, start:start, len:len };
+}
 function viewCalendar(){
   var h = ['<div class="stack">'];
-  var hj = hijriOf(new Date());
-  h.push('<section class="mihrab" style="border-radius:90px 90px var(--r-lg) var(--r-lg);padding:24px 20px 18px">'+
-    '<div class="eyebrow">Сегодня</div>'+
-    '<div style="font-family:var(--f-display);font-size:24px;font-weight:700;margin-top:6px">'+
-      (hj? hj.d+" "+HIJRI_MONTHS[hj.m-1] : "-")+'</div>'+
-    '<div class="ru" style="color:rgba(255,255,255,.72);font-size:14.5px">'+(hj? hj.y+" год хиджры" : "")+' · '+esc(ruDate())+'</div></section>');
+  var now = new Date(); now.setHours(12, 0, 0, 0);
+  var hj = hijriOf(now), span = hijriMonthSpan(now), fastToday = isFastDay(now);
 
-  h.push(calCard());
+  /* шапка */
+  h.push('<section class="ical-hero">'+(hj ? moonSvg(hj.d, 108) : '')+
+    '<div class="ical-ht"><div class="eyebrow">Сегодня</div>'+
+      '<b>'+(hj ? hj.d : "-")+'</b><span class="ical-m">'+(hj ? esc(HIJRI_MONTHS[hj.m - 1]) : '')+'</span>'+
+      '<em>'+(hj ? hj.y + ' год хиджры · ' : '')+esc(ruDate())+'</em>'+
+      (span ? '<div class="ical-prog"><i style="width:'+Math.round(hj.d / span.len * 100)+'%"></i></div><small>день '+hj.d+' из '+span.len+'</small>' : '')+
+    '</div></section>');
+  if(fastToday.length) h.push('<div class="ical-fast"><span>◉</span>Сегодня желательно поститься: '+esc(fastToday.join(", "))+'</div>');
+
+  /* сетка лунного месяца */
+  if(span){
+    var cells = [], lead = (span.start.getDay() + 6) % 7;
+    for(var b = 0; b < lead; b++) cells.push('<div class="ical-e"></div>');
+    for(var i = 0; i < span.len; i++){
+      var dd = new Date(span.start); dd.setDate(dd.getDate() + i);
+      var hd = i + 1, wd = dd.getDay(), cls = [];
+      var white = hd >= 13 && hd <= 15, mt = wd === 1 || wd === 4;
+      var ev = (span.hj.m === 1 && (hd === 9 || hd === 10)) ? "Ашура" : (span.hj.m === 12 && hd === 9) ? "Арафа" : (span.hj.m === 12 && hd === 10) ? "Ид" : (span.hj.m === 10 && hd === 1) ? "Ид" : "";
+      if(span.hj.m === 9) cls.push("ram");
+      if(white) cls.push("white");
+      if(ev) cls.push("ev");
+      if(dd.getTime() === now.getTime()) cls.push("today");
+      if(dd < now) cls.push("past");
+      cells.push('<div class="ical-d '+cls.join(" ")+'" aria-label="'+hd+' '+esc(HIJRI_MONTHS[span.hj.m - 1])+', '+dd.getDate()+' '+["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"][dd.getMonth()]+(white ? ', белый день' : '')+(ev ? ', '+ev : '')+'">'+
+        '<b>'+hd+'</b><small>'+dd.getDate()+'.'+pad(dd.getMonth() + 1)+'</small>'+(mt && !white && !ev && span.hj.m !== 9 ? '<i></i>' : '')+(ev ? '<em>'+ev+'</em>' : '')+'</div>');
+    }
+    h.push('<section class="card ical-mc"><div class="ical-mh"><b>'+esc(HIJRI_MONTHS[span.hj.m - 1])+' '+span.hj.y+'</b><span>'+span.len+' дней</span></div>'+
+      '<div class="ical-w">'+["пн","вт","ср","чт","пт","сб","вс"].map(function(w){ return '<span>'+w+'</span>'; }).join("")+'</div>'+
+      '<div class="ical-g">'+cells.join("")+'</div>'+
+      '<div class="ical-lg"><span><i class="lg-w"></i>белые дни 13-15</span><span><i class="lg-d"></i>пн и чт</span><span><i class="lg-e"></i>особый день</span></div></section>');
+  }
+
+  /* ближайшие даты - линия времени */
   var events = [
     {m:9,  d:1,  n:"Начало Рамадана", ic:"☾"},
     {m:10, d:1,  n:"Ид аль-Фитр",     ic:"✦"},
     {m:12, d:9,  n:"День Арафа",      ic:"⛰"},
     {m:12, d:10, n:"Ид аль-Адха",     ic:"❋"},
+    {m:1,  d:1,  n:"Исламский Новый год", ic:"◌"},
     {m:1,  d:10, n:"День Ашура",      ic:"◈"}
   ];
-  h.push('<div class="sec-h"><h3>Ближайшие даты</h3></div>');
   var list = [];
-  events.forEach(function(e){
-    var r = findNext(e.m, e.d);
-    if(r) list.push({n:e.n, ic:e.ic, days:r.days, date:r.date});
-  });
-  list.sort(function(a,b){ return a.days - b.days; });
-  h.push('<div class="rows">'+ list.map(function(e){
-    return '<div class="row"><span class="ic">'+e.ic+'</span>'+
-      '<div><div style="font-size:15px">'+esc(e.n)+'</div>'+
-      '<div style="font-size:12.5px;color:var(--ink-3)">'+e.date.toLocaleDateString("ru-RU",{day:"numeric",month:"long",year:"numeric"})+'</div></div>'+
-      '<span class="val" style="color:var(--accent-ink);font-weight:600">'+(e.days===0?"сегодня":"через "+daysWord(e.days))+'</span></div>';
-  }).join("") +'</div>');
+  events.forEach(function(e){ var r = findNext(e.m, e.d); if(r) list.push({n:e.n, ic:e.ic, days:r.days, date:r.date}); });
+  list.sort(function(a, b2){ return a.days - b2.days; });
+  h.push('<section class="card"><div class="eyebrow">Ближайшие даты</div><ol class="ical-tl">'+list.map(function(e, k){
+    return '<li'+(k === 0 ? ' class="next"' : '')+'><span class="ical-ic">'+e.ic+'</span><div><b>'+esc(e.n)+'</b>'+
+      '<small>'+e.date.toLocaleDateString("ru-RU",{day:"numeric",month:"long",year:"numeric"})+'</small></div>'+
+      '<span class="ical-cd">'+(e.days === 0 ? 'сегодня' : 'через '+daysWord(e.days))+'</span></li>';
+  }).join("")+'</ol></section>');
 
-  h.push('<div class="sec-h"><h3>Дни поста на неделю</h3></div>');
-  var rows = [];
-  for(var i=0;i<7;i++){
-    var d = new Date(); d.setDate(d.getDate()+i); d.setHours(12,0,0,0);
-    var f = isFastDay(d), hh = hijriOf(d);
-    rows.push('<div class="row"><span class="ic">'+(f.length?"◉":"○")+'</span>'+
-      '<div><div style="font-size:14.5px">'+d.toLocaleDateString("ru-RU",{weekday:"long",day:"numeric",month:"short"})+'</div>'+
-      '<div style="font-size:12.5px;color:var(--ink-3)">'+(hh? hh.d+" "+HIJRI_MONTHS[hh.m-1] : "")+'</div></div>'+
-      '<span class="val">'+(f.length? esc(f.join(", ")) : "-")+'</span></div>');
+  /* неделя поста */
+  var wk = [];
+  for(var j = 0; j < 7; j++){
+    var d2 = new Date(now); d2.setDate(d2.getDate() + j);
+    var f = isFastDay(d2), h2 = hijriOf(d2);
+    wk.push('<div class="ical-wd'+(f.length ? ' on' : '')+(j === 0 ? ' now' : '')+'"><span>'+["вс","пн","вт","ср","чт","пт","сб"][d2.getDay()]+'</span><b>'+d2.getDate()+'</b>'+
+      '<small>'+(h2 ? h2.d : '')+'</small>'+(f.length ? '<i title="'+esc(f.join(", "))+'">◉</i>' : '<i></i>')+'</div>');
   }
-  h.push('<div class="rows">'+rows.join("")+'</div>');
+  h.push('<section class="card"><div class="eyebrow">Неделя: дни желательного поста</div><div class="ical-week">'+wk.join("")+'</div>'+
+    '<p class="vk-note">◉ - понедельник, четверг и белые дни. Число снизу - день по хиджре.</p></section>');
+
+  h.push(calCard());
   h.push('<p class="disclaimer">Даты рассчитаны по календарю Умм аль-Кура. Начало месяца в вашем регионе может отличаться на день - уточняйте у местного муфтията.</p>');
   h.push('</div>');
   return h.join("");
