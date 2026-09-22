@@ -764,11 +764,15 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .b1-dua{background:linear-gradient(160deg,rgba(212,175,55,.18),rgba(212,175,55,.05))!important}
 .b1-dua p{font-family:'PT Serif',Georgia,serif;font-style:italic}
 .b1-read .btn{margin-top:8px;width:100%}
-.b2-fab{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom) + 86px);z-index:30;display:flex;flex-direction:column;gap:8px}
-.b2-fab button{width:46px;height:46px;border-radius:14px;border:1px solid rgba(212,175,55,.55);background:rgba(20,27,58,.88);color:#F1D77E;
-  font-family:'PT Serif',Georgia,serif;font-weight:700;font-size:18px;line-height:1;box-shadow:0 8px 20px -8px rgba(0,0,0,.6);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
-.b2-fab button small{font-size:14px;margin-left:1px}
+.b2-fab{position:fixed;right:12px;bottom:calc(env(safe-area-inset-bottom) + 84px);z-index:30;display:flex;align-items:center;
+  border-radius:999px;border:1px solid var(--line);background:color-mix(in srgb, var(--surface) 72%, transparent);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:.7;transition:opacity .25s ease,transform .25s ease;animation:none!important}
+.b2-fab.hid{opacity:0;transform:translateY(8px);pointer-events:none}
+.b2-fab button{width:36px;height:30px;border:0;background:none;color:var(--ink-3);font-family:'PT Serif',Georgia,serif;font-weight:600;font-size:14px;line-height:1;padding:0}
+.b2-fab button+button{border-left:1px solid var(--line);font-size:17px}
+.b2-fab button small{font-size:11px;margin-left:1px}
 .b2-fab button[disabled]{opacity:.35}
+.b2-fab:active{opacity:1}
 .b2-aa{position:absolute;right:-6px;top:-10px;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);color:var(--b2acc);font-family:'PT Serif',Georgia,serif;font-weight:700;font-size:15px;background:transparent}
 .b2-body{font-family:'PT Serif',Georgia,serif;font-size:var(--b2fs);line-height:1.72;text-align:justify;hyphens:auto;-webkit-hyphens:auto;color:var(--b2ink)}
 .b2-sans .b2-body{font-family:var(--f-body)}
@@ -22607,7 +22611,16 @@ setInterval(function(){
 }, 60000);
 
 /* запоминаем, до какого аята дочитали при прокрутке */
-$screen.addEventListener("scroll", function(){ if(V.view === "book2ch") b2Scroll(); else if(V.view === "book1ch") b1Scroll(); }, {passive:true});
+$screen.addEventListener("scroll", function(){ if(V.view === "book2ch") b2Scroll(); else if(V.view === "book1ch") b1Scroll(); if(V.view === "book2ch" || V.view === "book1ch") fabScroll(); }, {passive:true});
+var FAB_Y = 0;
+function fabScroll(){
+  var f = document.querySelector(".b2-fab"); if(!f) return;
+  var y = $screen.scrollTop, max = $screen.scrollHeight - $screen.clientHeight;
+  var edge = y < 120 || y > max - 160;
+  if(edge || y < FAB_Y - 24) f.classList.remove("hid");
+  else if(y > FAB_Y + 8) f.classList.add("hid");
+  if(Math.abs(y - FAB_Y) > 8 || edge) FAB_Y = y;
+}
 /* Панель прячется при листании вниз и возвращается при движении вверх.
    Порог в 10 px - чтобы дрожание пальца её не дёргало. */
 var TB_Y = 0, TB_HID = false;
