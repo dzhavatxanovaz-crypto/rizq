@@ -989,6 +989,24 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .blink-ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:rgba(212,175,55,.15);color:var(--accent-ink);font-size:16px;margin-bottom:6px;font-family:var(--f-ar)}
 .blink b{font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.25}
 .blink-s{font-size:11.5px;color:var(--ink-3);line-height:1.3}
+.zk-hero{display:flex;align-items:center;gap:16px;padding:18px;border-radius:var(--r-lg);background:radial-gradient(120% 120% at 15% 10%,#2E3C80 0%,#1E2A5A 45%,#0E1636 100%);border:1px solid rgba(212,175,55,.4);color:#F4EBD0;box-shadow:var(--shadow);position:sticky;top:0;z-index:4}
+.zk-g{position:relative;flex:none;width:96px;height:96px}
+.zk-ring{width:96px;height:96px;transform:rotate(-90deg)}
+.zk-rb{fill:none;stroke:rgba(255,255,255,.12);stroke-width:9}
+.zk-rf{fill:none;stroke:#E6C868;stroke-width:9;stroke-linecap:round;transition:stroke-dashoffset .35s ease}
+.zk-rf.ok{stroke:#4CC08A}
+.zk-rc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.zk-rc b{font-family:var(--f-display);font-size:21px;color:#F7E7B4}
+.zk-rc span{font-size:10.5px;color:rgba(244,235,208,.65)}
+.zk-ht{flex:1;min-width:0}
+.zk-ht .eyebrow{color:#E6C868}
+.zk-ht b{display:block;font-family:var(--f-display);font-size:30px;line-height:1.15;margin-top:4px;color:rgba(244,235,208,.55)}
+.zk-ht b.on{color:#F7E7B4}
+.zk-ht span{display:block;font-size:12px;color:rgba(244,235,208,.65);margin-top:3px}
+.zk-sh{display:flex;align-items:center;gap:12px}
+.zk-sh i{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-family:var(--f-display);font-weight:700;color:#1E2A5A;background:linear-gradient(135deg,#E9C85E,#C9A12F)}
+.zk-sh b{display:block;font-family:var(--f-display);font-size:16px}
+.zk-sh span{display:block;font-size:12.5px;color:var(--ink-3);margin-top:1px}
 .ical-hero{display:flex;align-items:center;gap:16px;padding:20px 18px;border-radius:var(--r-lg);background:radial-gradient(120% 120% at 20% 10%,#2E3C80 0%,#1E2A5A 45%,#0E1636 100%);border:1px solid rgba(212,175,55,.4);color:#F4EBD0;box-shadow:var(--shadow)}
 .ical-hero .moon{flex:none;filter:drop-shadow(0 0 18px rgba(241,215,126,.35))}
 .ical-ht{flex:1;min-width:0}
@@ -18107,6 +18125,17 @@ function zLabelText(r){
   return r.above ? "Закят обязателен" : "Нисаб не достигнут";
 }
 
+/* кольцо: какая доля нисаба набрана */
+function zGaugeHtml(r){
+  var pct = r.noPrice || !(r.nisab > 0) ? 0 : Math.max(0, Math.min(1, r.net / r.nisab));
+  var C = 2 * Math.PI * 44;
+  return '<svg class="zk-ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44" class="zk-rb"/>'+
+    '<circle id="zGauge" cx="50" cy="50" r="44" class="zk-rf'+(r.above ? ' ok' : '')+'" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+(C * (1 - pct)).toFixed(1)+'"/></svg>'+
+    '<div class="zk-rc"><b id="zPct">'+(r.noPrice ? '-' : r.above ? '✓' : Math.round(pct * 100) + '%')+'</b><span>'+(r.noPrice ? 'нужна цена' : 'от нисаба')+'</span></div>';
+}
+function zStep(n, title, sub, body){
+  return '<section class="card zk-step"><div class="zk-sh"><i>'+n+'</i><div><b>'+esc(title)+'</b>'+(sub ? '<span>'+esc(sub)+'</span>' : '')+'</div></div>'+body+'</section>';
+}
 function viewZakat(){
   var r = zakatCalc(S.zakat);
   var z = S.zakat || {};
@@ -18150,29 +18179,30 @@ function viewZakat(){
   }
 
   return '<div class="stack">'+
-    '<div class="card flat" style="padding:13px 15px;font-size:14px;color:var(--ink-2);line-height:1.55">'+
+    '<section class="zk-hero"><div class="zk-g">'+zGaugeHtml(r)+'</div>'+
+      '<div class="zk-ht"><div class="eyebrow" id="zLabel">'+esc(zLabelText(r))+'</div>'+
+        '<b id="zDue" class="'+(r.above ? 'on' : '')+'">'+(r.noPrice ? "-" : money(Math.round(r.due)))+'</b>'+
+        '<span>к выплате · 2,5% со всей суммы</span></div></section>'+
+    '<div class="card flat" style="padding:12px 15px;font-size:13.5px;color:var(--ink-2);line-height:1.55">'+
       'Закят - 2,5% с имущества, которое пролежало у вас лунный год и превысило нисаб. Считается один раз в год.</div>'+
 
-    '<section class="card"><div class="eyebrow">Активы</div>'+
+    zStep(1, "Что у вас есть", "деньги, товар и долги, которые вам вернут",
       zField("cash","Наличные, ₽")+
       zField("bank","Средства на счетах, ₽")+
       zField("goods","Товар и запасы для продажи, ₽","По текущей цене продажи")+
-      zField("debtsIn","Долги, которые вернут вам, ₽","Только те, в возврате которых вы уверены")+
-    '</section>'+
+      zField("debtsIn","Долги, которые вернут вам, ₽","Только те, в возврате которых вы уверены"))+
 
-    '<section class="card"><div class="eyebrow">Золото и серебро</div>'+
+    zStep(2, "Золото и серебро", "вес и цена за грамм на сегодня",
       zField("goldG","Золото, граммы")+
       zField("silverG","Серебро, граммы")+
       zField("goldPrice","Цена золота за грамм, ₽","Цену берут на день расчёта, а не прошлогоднюю")+
       zField("silverPrice","Цена серебра за грамм, ₽")+
-      priceNote+
-    '</section>'+
+      priceNote)+
 
-    '<section class="card"><div class="eyebrow">Вычеты</div>'+
-      zField("debtsOut","Ваши долги к выплате, ₽","Срочные обязательства на момент расчёта")+
-    '</section>'+
+    zStep(3, "Что вычесть", "ваши долги",
+      zField("debtsOut","Ваши долги к выплате, ₽","Срочные обязательства на момент расчёта"))+
 
-    '<section class="card"><div class="eyebrow">Нисаб считать по</div>'+
+    '<section class="card zk-step"><div class="zk-sh"><i>4</i><div><b>Порог - нисаб</b><span>с какого металла считать</span></div></div>'+
       '<div class="pill-row" style="justify-content:flex-start;margin-top:10px">'+
         '<button class="pill'+(S.zakat.nisab==="gold"?" on":"")+'" data-nisab="gold">Золоту · 85 г</button>'+
         '<button class="pill'+(S.zakat.nisab==="silver"?" on":"")+'" data-nisab="silver">Серебру · 595 г</button>'+
@@ -18186,14 +18216,9 @@ function viewZakat(){
         '<div class="row"><span class="ic">Σ</span>Имущество за вычетом долгов<span class="val" id="zNet" style="color:var(--ink);font-weight:600">'+money(Math.round(r.net))+'</span></div>'+
         '<div class="row"><span class="ic">◦</span>Нисаб<span class="val" id="zNisab" style="color:var(--ink)">'+(r.noPrice ? "-" : money(Math.round(r.nisab)))+'</span></div>'+
       '</div>'+
-      '<div style="text-align:center;margin-top:16px">'+
-        '<div class="eyebrow" id="zLabel">'+esc(zLabelText(r))+'</div>'+
-        '<div id="zDue" style="font-family:var(--f-display);font-size:36px;font-weight:700;color:'+(r.above?"var(--accent-ink)":"var(--ink-3)")+';margin-top:4px">'+
-          (r.noPrice ? "-" : money(Math.round(r.due)))+'</div>'+
-        '<div style="font-size:13px;color:var(--ink-3);margin-top:4px">'+
-          (r.noPrice ? "Порог считается от веса металла, поэтому нужна его цена"
-                     : "2,5% со всей суммы, а не только с превышения над нисабом")+'</div>'+
-      '</div>'+
+      '<div style="font-size:13px;color:var(--ink-3);margin-top:10px;line-height:1.5">'+
+          (r.noPrice ? "Порог считается от веса металла, поэтому нужна его цена."
+                     : "Если нисаб набран, закят - 2,5% со всей суммы, а не только с превышения.")+'</div>'+
       '<button class="btn" style="width:100%;margin-top:16px" data-zsave="1">Записать расчёт</button>'+
       '<button class="btn sec sm" style="width:100%;margin-top:8px" data-zreset="1">Очистить суммы</button>'+
     '</section>'+
@@ -22447,9 +22472,15 @@ $screen.addEventListener("input", function(ev){
     set("zNet", money(Math.round(r.net)));
     set("zNisab", r.noPrice ? "-" : money(Math.round(r.nisab)));
     set("zDue", r.noPrice ? "-" : money(Math.round(r.due)));
-    set("zLabel", r.above ? "Закят обязателен" : "Нисаб не достигнут");
+    set("zLabel", zLabelText(r));
     var due = document.getElementById("zDue");
-    if(due) due.style.color = r.above ? "var(--accent-ink)" : "var(--ink-3)";
+    if(due) due.className = r.above ? "on" : "";
+    var gz = document.getElementById("zGauge"), pz = document.getElementById("zPct");
+    if(gz){
+      var pc = r.noPrice || !(r.nisab > 0) ? 0 : Math.max(0, Math.min(1, r.net / r.nisab)), C = 2 * Math.PI * 44;
+      gz.setAttribute("stroke-dashoffset", (C * (1 - pc)).toFixed(1)); gz.setAttribute("class", "zk-rf" + (r.above ? " ok" : ""));
+      if(pz) pz.textContent = r.noPrice ? "-" : r.above ? "✓" : Math.round(pc * 100) + "%";
+    }
   }
 });
 
