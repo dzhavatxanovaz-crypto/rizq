@@ -5210,7 +5210,7 @@ function viewHomeMain(){
     var pct = Math.round(done / list.length * 100);
     h.push('<button class="card azkar-line" data-cat="'+cid+'">'+
       '<span class="azkar-ic">'+cat.ic+'</span>'+
-      '<span class="azkar-t"><b>'+esc(cat.n)+'</b>'+
+      '<span class="azkar-t"><b>'+esc(cid === "sleep" ? "Азкары перед сном" : cat.n)+'</b>'+
         '<span>'+(done >= list.length ? 'прочитаны сегодня' : done ? 'прочитано '+done+' из '+list.length : list.length+' текстов · '+esc(cat.s))+'</span></span>'+
       (done ? '<span class="azkar-bar" aria-hidden="true"><i style="width:'+pct+'%"></i></span>' : '')+
       '<span class="azkar-go">'+(done >= list.length ? '✓' : '›')+'</span></button>');
