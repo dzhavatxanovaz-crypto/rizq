@@ -764,6 +764,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .b1-dua{background:linear-gradient(160deg,rgba(212,175,55,.18),rgba(212,175,55,.05))!important}
 .b1-dua p{font-family:'PT Serif',Georgia,serif;font-style:italic}
 .b1-read .btn{margin-top:8px;width:100%}
+.b1-retpill{display:flex;align-items:center;justify-content:center;width:100%;margin:0 0 10px;padding:11px 14px;border-radius:14px;border:1px solid rgba(212,175,55,.55);background:rgba(212,175,55,.12);color:var(--ink);font:600 14.5px/1.2 var(--f-ui,inherit);cursor:pointer}
 .b1-name>.b1-ayah{border-color:rgba(212,175,55,.55);background:linear-gradient(170deg,rgba(212,175,55,.13),rgba(212,175,55,.03))}
 .b1-ayah .b1-ayah-ar{font-family:var(--f-ar);font-size:calc(var(--b2fs) * 1.45);line-height:2;text-align:right;color:var(--b2ink);margin:10px 0 4px}
 .b1-ayah .b1-ayah-ru{font-family:'PT Serif',Georgia,serif;font-size:calc(var(--b2fs) * .95);line-height:1.6}
@@ -4857,7 +4858,7 @@ var $hdr = document.getElementById("hdr");
 var $tabbar = document.getElementById("tabbar");
 
 function go(tab){
-  V.ret = null; if(V.view==="arabic") arStop();
+  V.ret = null; V.b1ret = null; if(V.view==="arabic") arStop();
   if(V.view==="reader"){ qStop(); autoScrollOff(); }
   V.tab=tab; V.view=null; V.p=null; V.q=""; render(); $screen.scrollTop=0;
   hdrShow(); tabbarShow(); /* новый экран открываем с видимыми панелями */
@@ -4878,6 +4879,8 @@ function openReader(from, to, kind, focus){
   V.tab = "quran"; V.view = "reader"; V.qFrom = from; V.qTo = to; V.qkind = kind;
   S.qLast = (typeof focus === "number") ? focus : from;
   if(S.qLast > (S.qMax||0)) S.qMax = S.qLast;
+  /* в режиме мусхафа открываем страницу нужного аята, а не начало суры */
+  if(typeof focus === "number") V.qPage = pageOf(focus);
   save(); render(); applyQSize();
   requestAnimationFrame(function(){
     $screen.scrollTop = 0;
@@ -4910,6 +4913,7 @@ function back(){
   if(V.view==="notes" && V.p){ var nb = noteById(V.p); if(nb && noteEmpty(nb)) notesClean(); V.p = null; render(); $screen.scrollTop = 0; return; }
   if(V.view==="arabic"){ arStop(); if(V.p){ V.p = arBackTo(V.p); render(); $screen.scrollTop = 0; return; } }
   if(V.ret==="reader" && (V.view==="tajwid" || V.view==="arabic")){ V.ret = null; V.view = "reader"; render(); $screen.scrollTop = 0; return; }
+  if(V.view==="reader" && V.b1ret && b1Return()) return;
   if(V.view==="reader" || V.view==="qsettings" || V.view==="qsearch"){ qStop(); autoScrollOff(); }
   if(V.view==="qsettings" || V.view==="qsearch"){ V.view=null; V.p=null; V.q=""; render(); return; }
   if(V.view==="name"){ V.view="names"; V.p=null; V.q=""; render(); return; }
@@ -10158,10 +10162,10 @@ function viewReader(){
     /* слушать и листать - в границах открытой страницы */
     if(V.qFrom == null || V.qFrom < pageFirst(mp) || V.qFrom > pageLast(mp)) V.qFrom = pageFirst(mp);
     V.qTo = pageLast(mp);
-    return viewMushaf();
+    return b1RetPill() + viewMushaf();
   }
   var from = V.qFrom, to = V.qTo;
-  var h = [];
+  var h = [b1RetPill()];
   h.push('<div class="qbar">'+
     '<button class="qbtn" id="qPlayAll" data-qplayall="1" title="Слушать">▶</button>'+
     '<button class="qbtn" id="qScrollBtn"'+(AS.on?' class="qbtn on"':'')+' data-qscroll="1" title="Автопрокрутка">↕</button>'+
@@ -13087,12 +13091,7 @@ function viewBook2(){
       '<b>'+esc(lc[0] ? lc[0] + ". " + lc[1] : lc[1])+'</b>'+
       '<span class="b2-cont-m">'+(lpos > .02 && lpos < .92 ? 'осталось около '+b2Min(b2Len(li) * (1 - lpos))+' мин' : 'около '+b2Min(b2Len(li))+' мин')+'</span><i>›</i></button>');
   }
-  if(!own){
-    h.push('<section class="b2-buy"><div class="eyebrow">Начало - бесплатно</div>'+
-      '<p>Обращение к читателю, пролог и первая глава открыты. Вся книга - пролог, 16 глав и эпилог - откроется здесь сразу после оплаты, без писем и паролей, и будет читаться без интернета.</p>'+
-      '<div class="b2-buy-p"><span class="price">'+money(BOOK2.price)+'</span><span class="chip">навсегда</span></div>'+
-      '<button class="btn" data-buy="'+BOOK2.id+'">Купить книгу - '+money(BOOK2.price)+'</button></section>');
-  } else if(!d){
+  if(own && !d){
     if(!B2.busy && !B2.err) b2Load();
     h.push('<section class="b2-buy"><div class="eyebrow">Книга ваша</div><p>'+
       (B2.err ? esc(B2.err) : 'Загружаем книгу в телефон - после этого она будет читаться и без интернета.')+'</p>'+
@@ -13109,6 +13108,11 @@ function viewBook2(){
       '<span class="b2-n">'+(sp[0] ? sp[0].replace("Глава ", "") : (i === 0 ? "✦" : i === 1 ? "П" : "Э"))+'</span>'+
       '<span class="b2-t"><b>'+esc(sp[1])+'</b><em>'+(sp[0] ? sp[0] + " · " : "")+b2Min(b2Len(i))+' мин</em></span>'+st+'</button>';
   }).join("")+'</div>');
+  /* цена и покупка - ниже оглавления: сначала человек видит, что внутри */
+  if(!own) h.push('<section class="b2-buy"><div class="eyebrow">Начало - бесплатно</div>'+
+      '<p>Обращение к читателю, пролог и первая глава открыты. Вся книга - пролог, 16 глав и эпилог - откроется здесь сразу после оплаты, без писем и паролей, и будет читаться без интернета.</p>'+
+      '<div class="b2-buy-p"><span class="price">'+money(BOOK2.price)+'</span><span class="chip">навсегда</span></div>'+
+      '<button class="btn" data-buy="'+BOOK2.id+'">Купить книгу - '+money(BOOK2.price)+'</button></section>');
   h.push(waCard('Вопрос по книге?', 'Напишите - ответим', 'Ассаламу алейкум! Вопрос по книге «Девушка, которая смогла».', 'Написать в WhatsApp'));
   h.push('</div>');
   return h.join("");
@@ -13325,12 +13329,7 @@ function viewBook1(){
       '<b>'+esc(lc[0] ? lc[0] + ". " + lc[1] : lc[1])+'</b>'+
       '<span class="b2-cont-m">'+(lpos > .02 && lpos < .92 ? 'осталось около '+b1Min(b1Len(li) * (1 - lpos))+' мин' : 'около '+b1Min(b1Len(li))+' мин')+'</span><i>›</i></button>');
   }
-  if(!own){
-    h.push('<section class="b2-buy"><div class="eyebrow">Начало - бесплатно</div>'+
-      '<p>«Перед чтением» и три первые главы открыты. Вся книга - 99 глав, по одной на каждое Имя, - откроется здесь сразу после оплаты, без писем и паролей, и будет читаться без интернета.</p>'+
-      '<div class="b2-buy-p"><span class="price">'+money(BOOK1.price)+'</span><span class="chip">навсегда</span></div>'+
-      '<button class="btn" data-buy="'+BOOK1.id+'">Купить книгу - '+money(BOOK1.price)+'</button></section>');
-  } else if(!d){
+  if(own && !d){
     if(!B1.busy && !B1.err) b1Load();
     h.push('<section class="b2-buy"><div class="eyebrow">Книга ваша</div><p>'+
       (B1.err ? esc(B1.err) : 'Загружаем книгу в телефон - после этого она будет читаться и без интернета.')+'</p>'+
@@ -13347,6 +13346,11 @@ function viewBook1(){
       '<span class="b2-n">'+(sp[2] || (i === 0 ? "✦" : "✎"))+'</span>'+
       '<span class="b2-t"><b>'+esc(sp[1])+'</b><em>'+(sp[3] ? esc(sp[3]) + " · " : "")+b1Min(b1Len(i))+' мин</em></span>'+st+'</button>';
   }).join("")+'</div>');
+  /* цена и покупка - ниже оглавления: сначала человек видит, что внутри */
+  if(!own) h.push('<section class="b2-buy"><div class="eyebrow">Начало - бесплатно</div>'+
+      '<p>«Перед чтением» и три первые главы открыты. Вся книга - 99 глав, по одной на каждое Имя, - откроется здесь сразу после оплаты, без писем и паролей, и будет читаться без интернета.</p>'+
+      '<div class="b2-buy-p"><span class="price">'+money(BOOK1.price)+'</span><span class="chip">навсегда</span></div>'+
+      '<button class="btn" data-buy="'+BOOK1.id+'">Купить книгу - '+money(BOOK1.price)+'</button></section>');
   h.push(waCard('Вопрос по книге?', 'Напишите - ответим', 'Ассаламу алейкум! Вопрос по книге «Женщина, которая верит».', 'Написать в WhatsApp'));
   h.push('</div>');
   return h.join("");
@@ -13414,6 +13418,18 @@ function b1Scroll(){
   b.pos[i] = Math.round(r * 1000) / 1000;
   if(r > .92 && !b.read[i]) b.read[i] = 1;
   if(!B1.saveT){ B1.saveT = setTimeout(function(){ B1.saveT = 0; save(); }, 1500); }
+}
+/* возврат из Корана в книгу: та же глава и то же место */
+function b1Return(){
+  var r = V.b1ret; V.b1ret = null;
+  if(!r) return false;
+  qStop(); autoScrollOff(); hdrShow(); tabbarShow();
+  V.tab = r.tab; V.view = "book1ch"; V.p = r.p; V.q = ""; render();
+  setTimeout(function(){ $screen.scrollTop = r.top; }, 60);
+  return true;
+}
+function b1RetPill(){
+  return V.b1ret ? '<button class="b1-retpill" data-b1ret="1">‹ Вернуться к книге</button>' : "";
 }
 function b1Restore(){
   if(V.view !== "book1ch") return;
@@ -21722,7 +21738,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -22505,7 +22521,11 @@ document.getElementById("app").addEventListener("click", function(ev){
     return;
   }
   if(d.b1tk){ var tkk = b1S().tk; if(tkk[d.b1tk]) delete tkk[d.b1tk]; else tkk[d.b1tk] = todayKey(); save(); render(); return; }
-  if(d.b1ayah){ var ay = d.b1ayah.split(":"), sI = (+ay[0]) - 1; if(QSUR[sI]){ var gA = ayahGlobal(+ay[0], +ay[1]); openReader(QSUR[sI][6], QSUR[sI][6] + QSUR[sI][4] - 1, "surah", gA); } return; }
+  if(d.b1ayah){ var ay = d.b1ayah.split(":"), sI = (+ay[0]) - 1; if(QSUR[sI]){
+    /* запоминаем главу и место, чтобы из Корана вернуться в книгу туда же */
+    if(V.view === "book1ch"){ b1Scroll(); save(); V.b1ret = {tab: V.tab, p: V.p | 0, top: $screen.scrollTop}; }
+    var gA = ayahGlobal(+ay[0], +ay[1]); openReader(QSUR[sI][6], QSUR[sI][6] + QSUR[sI][4] - 1, "surah", gA); } return; }
+  if(d.b1ret !== undefined){ b1Return(); return; }
   if(d.b2ch !== undefined){ V.tab = "income"; open("book2ch", parseInt(d.b2ch, 10) || 0); setTimeout(b2Restore, 60); return; }
   if(d.b2load !== undefined){ B2.err = ""; b2Load(function(){ V.tab = "income"; open("book2ch", b2S().last | 0); setTimeout(b2Restore, 60); }); render(); return; }
   if(d.b2set !== undefined){ sheetB2Set(); return; }
