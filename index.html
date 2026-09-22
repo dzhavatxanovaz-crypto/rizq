@@ -692,6 +692,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .cal-h em{display:block;font-style:normal;font-size:12.5px;color:var(--ink-3);margin-top:2px}
 .cal-c.on{border-color:rgba(62,155,114,.45)}
 /* азкары на главной: одна тонкая строка */
+.b1-quote blockquote{margin:10px 0 14px;padding-left:14px;border-left:3px solid var(--gold,#C3AD70);font-family:var(--f-display);font-size:16px;line-height:1.5;color:var(--ink)}
 .azkar-line{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding-top:12px;padding-bottom:12px}
 .azkar-ic{font-size:19px;flex:none;color:var(--accent-ink)}
 .azkar-t{flex:1;min-width:0}
@@ -7297,6 +7298,7 @@ function viewName(){
     h.push('<section class="card"><div class="eyebrow">Разбор имени</div>'+
       '<p style="font-size:15px;line-height:1.7;color:var(--ink-2);margin:9px 0 0">'+esc(n.exp)+'</p></section>');
   }
+  h.push(b1QuoteCard(i + 1)); /* строка из главы книги об этом Имени */
   if(n.dar){
     h.push('<section class="dua"><div class="dua-h"><b>Дуа с этим именем</b></div>'+
       '<div class="ar">'+esc(n.dar)+'</div>'+
@@ -13364,6 +13366,37 @@ function b1AyahCard(m){
     '<button class="btn sec sm" data-b1ayah="' + s + ':' + a + '">Открыть в Коране</button></div>';
 }
 
+/* Цитаты из книги «Женщина, которая верит»: одна строка из главы про это Имя.
+   Текст взят из книги слово в слово, номер - номер главы и Имени. */
+var B1_QUOTES = {
+  1: "Как будто Он служба спасения, которой не звонят, пока всё хорошо.",
+  2: "Солнце выбирает, кого греть?",
+  3: "Он радуется, когда мы возвращаемся",
+  4: "Разве эта комната когда-нибудь была моей?",
+  24: "Мы можем только не мешать человеку стоять во весь рост.",
+  30: "Самая опасная несправедливость - не та, которую совершают со злости.",
+  34: "Величие - это не только необъятность. Это ещё и внимание к тому, что меньше рисового зерна.",
+  35: "Аллах его видел. И покрыл.",
+  41: "А если Его достаточно, то мне не нужно быть достаточной.",
+  47: "И самый честный ответ на вопрос «зачем» - это «я не знаю, но Он знает».",
+  54: "Оказывается, очень тяжело нести в себе мысль, что ты обязана быть сильнее, чем ты есть.",
+  57: "Аллах достоин хвалы не за хорошие новости.",
+  63: "К Вечно Живому можно приносить всё.",
+  64: "И мне не нужно становиться существом, которому не нужен сон, чтобы быть любящей матерью.",
+  82: "Не «Ты прощаешь, если сильно попросить». Не «Ты прощаешь достойных». Ты любишь прощать.",
+  85: "Я думала, Он великий, и поэтому к Нему страшно. А Он великий, и поэтому к Нему можно.",
+  91: "Предопределение - дело Аллаха. Лампа была моим делом.",
+  93: "Свет Аллаха - не прожектор, который делает меня самой яркой в комнате.",
+  99: "Он даёт мне время. Он Терпеливейший."
+};
+function b1QuoteCard(ch){
+  var q = B1_QUOTES[ch];
+  if(!q) return "";
+  return '<section class="card b1-quote">'+
+    '<div class="eyebrow">Из книги «Женщина, которая верит»</div>'+
+    '<blockquote>'+esc(q)+'</blockquote>'+
+    '<button class="btn sec sm" data-bookch="'+ch+'">Глава '+ch+' · читать</button></section>';
+}
 function book1Card(){
   var own = b1Owned(), pct = b1Done();
   return '<button class="course b2-card" data-open="book1">'+
