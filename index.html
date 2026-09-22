@@ -5236,7 +5236,7 @@ function viewHomeMain(){
      До полудня - утренние, днём - вечерние, поздним вечером - перед сном. */
   (function(){
     var hh = new Date().getHours();
-    var cid = hh < 12 ? "morning" : hh < 20 ? "evening" : "sleep";
+    var cid = hh < 12 ? "morning" : "evening"; /* до полудня утренние, после - вечерние */
     var cat = CATS.filter(function(c){ return c.id === cid; })[0];
     if(!cat) return;
     var list = DUAS.filter(function(d){ return d.c === cid; });
