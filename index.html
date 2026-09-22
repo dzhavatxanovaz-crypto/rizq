@@ -6006,7 +6006,7 @@ function viewDua(){
   h.push('<div class="cats">'+
     '<button class="cat" data-open="notes"><div class="ic">✎</div><b>Заметки</b><span>'+(notesAll().length ? plural(notesAll().length, "заметка", "заметки", "заметок") : "конспекты, списки, дуа")+'</span></button>'+
     '<button class="cat" data-open="calendar"><div class="ic">☾</div><b>Календарь</b><span>хиджра и посты</span></button>'+
-    '<button class="cat" data-open="tajwid"><div class="ic">◌ّ</div><b>Правила таджвида</b><span>буквы, паузы, удлинения</span></button>'+
+    /* таджвид убран отсюда по просьбе Заиры: он живёт в разделе Корана, в «Как читать» */
     '<button class="cat" data-open="suras"><div class="ic">✶</div><b>Короткие суры</b><span>'+SURAS.length+' сур для намаза</span></button>'+
     '<button class="cat" data-open="qduas"><div class="ic">❖</div><b>Дуа из Корана</b><span>'+QURAN.length+' мольб из аятов</span></button>'+
     '<button class="cat" data-open="sadaqa"><div class="ic">❁</div><b>Куда помочь</b><span>сборы и поддержка проекта</span></button>'+
@@ -13435,7 +13435,7 @@ function viewBook1(){
   var d = b1Data(), own = b1Owned(), b = b1S(), pct = b1Done(), h = ['<div class="stack">'];
   h.push('<section class="b2-hero"><img src="'+BOOK1.cover+'" alt="Обложка книги «'+esc(BOOK1.n)+'»">'+
     '<div class="b2-hero-t"><div class="eyebrow">Роман · 99 Имён Аллаха</div><b>'+esc(BOOK1.n)+'</b><span>'+esc(BOOK1.a)+'</span>'+
-      '<div class="b2-hero-p"><i style="width:'+pct+'%"></i></div><em>'+(pct ? 'прочитано '+pct+'%' : '99 глав · около '+b1Min(BOOK1_TOC.reduce(function(n, c){ return n + c[1]; }, 0))+' минут чтения')+'</em></div></section>');
+      '<div class="b2-hero-p"><i style="width:'+pct+'%"></i></div><em>'+(pct ? 'прочитано '+pct+'%' : '99 глав - по одной на каждое Имя Аллаха')+'</em></div></section>');
 
   var li = Math.min(b.last || 0, b1Count() - 1), lc = b1Split(b1Ch(li).t), lpos = b.pos[li] || 0;
   if(b1Open(li)){
