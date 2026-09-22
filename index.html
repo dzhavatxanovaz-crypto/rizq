@@ -691,6 +691,15 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .cal-h b{display:block;font-family:var(--f-display);font-size:16.5px}
 .cal-h em{display:block;font-style:normal;font-size:12.5px;color:var(--ink-3);margin-top:2px}
 .cal-c.on{border-color:rgba(62,155,114,.45)}
+/* азкары на главной: одна тонкая строка */
+.azkar-line{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding-top:12px;padding-bottom:12px}
+.azkar-ic{font-size:19px;flex:none;color:var(--accent-ink)}
+.azkar-t{flex:1;min-width:0}
+.azkar-t b{font-family:var(--f-display);font-size:14.5px;display:block}
+.azkar-t span{font-size:12.5px;color:var(--ink-3)}
+.azkar-bar{flex:none;width:54px;height:4px;border-radius:2px;background:var(--surface-2);overflow:hidden}
+.azkar-bar i{display:block;height:100%;background:var(--accent-ink)}
+.azkar-go{color:var(--ink-3);flex:none}
 .hs{position:relative}
 .hs .search{padding-left:40px;padding-right:40px}
 .hs-ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:19px;color:var(--ink-3);pointer-events:none}
@@ -5188,6 +5197,24 @@ function viewHomeMain(){
       '<span style="color:var(--ink-3)">›</span></button>');
   })();
 
+  /* азкары: тонкая плашка со «своим» набором по времени суток (просьба Заиры 22.09).
+     До полудня - утренние, днём - вечерние, поздним вечером - перед сном. */
+  (function(){
+    var hh = new Date().getHours();
+    var cid = hh < 12 ? "morning" : hh < 20 ? "evening" : "sleep";
+    var cat = CATS.filter(function(c){ return c.id === cid; })[0];
+    if(!cat) return;
+    var list = DUAS.filter(function(d){ return d.c === cid; });
+    if(!list.length) return;
+    var done = list.filter(function(d){ return !!S.read[d.id]; }).length;
+    var pct = Math.round(done / list.length * 100);
+    h.push('<button class="card azkar-line" data-cat="'+cid+'">'+
+      '<span class="azkar-ic">'+cat.ic+'</span>'+
+      '<span class="azkar-t"><b>'+esc(cat.n)+'</b>'+
+        '<span>'+(done >= list.length ? 'прочитаны сегодня' : done ? 'прочитано '+done+' из '+list.length : list.length+' текстов · '+esc(cat.s))+'</span></span>'+
+      (done ? '<span class="azkar-bar" aria-hidden="true"><i style="width:'+pct+'%"></i></span>' : '')+
+      '<span class="azkar-go">'+(done >= list.length ? '✓' : '›')+'</span></button>');
+  })();
 
   /* трекер дня - пять направлений */
   syncSalahFlag();
