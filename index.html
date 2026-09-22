@@ -1381,6 +1381,48 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--emerald),#4E9C77);border-radius:6px;transition:width .3s ease}
 
 /* profile */
+/* Ризкъ: сводка дня и строки книг */
+.rz-today{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rz-today button{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md,14px);padding:13px 8px;text-align:center;min-width:0}
+.rz-today b{display:block;font-family:var(--f-display);font-size:18px;font-weight:700;color:var(--accent-ink);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rz-today span{display:block;font-size:11.5px;color:var(--ink-3);line-height:1.3;margin-top:3px}
+.bk-row{display:flex;align-items:center;gap:13px;width:100%;text-align:left;padding:12px 14px}
+.bk-row img{width:40px;height:58px;object-fit:cover;border-radius:5px;flex:none}
+.bk-t{flex:1;min-width:0}
+.bk-t b{font-family:var(--f-display);font-size:15px;display:block;line-height:1.3}
+.bk-t span{display:block;font-size:12.5px;color:var(--ink-3);margin-top:3px}
+.bk-go{color:var(--ink-3);flex:none}
+/* профиль: личная карточка, покупки, настройки группами */
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px}
+.pcard-top{display:flex;align-items:center;gap:13px}
+.pcard-who{flex:1;min-width:0}
+.pcard-who b{font-family:var(--f-display);font-size:18px;display:block;line-height:1.25}
+.pcard-who span{display:block;font-size:13.5px;color:var(--ink-3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pcard-edit{flex:none}
+.pstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.pstats div{text-align:center;min-width:0}
+.pstats b{display:block;font-family:var(--f-display);font-size:19px;font-weight:700;color:var(--accent-ink);font-variant-numeric:tabular-nums}
+.pstats span{display:block;font-size:11.5px;color:var(--ink-3);line-height:1.3;margin-top:2px}
+.ord-wait{border-color:rgba(212,175,55,.45)}
+.ord-h{display:flex;align-items:center;gap:8px}
+.ord-h b{font-family:var(--f-display);font-size:15px;flex:1;min-width:0}
+.ord-sum{font-size:13px;color:var(--ink-3);margin-top:5px}
+.ord-btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.ord-btns .btn{text-decoration:none}
+.course-row{width:100%;text-align:left}
+.course-h{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.course-h b{font-family:var(--f-display);font-size:15px;line-height:1.3;flex:1;min-width:0}
+.course-h span{font-size:14px;color:var(--ink-2);font-variant-numeric:tabular-nums;flex:none}
+.course-sub{font-size:13px;color:var(--ink-3);margin-top:7px}
+.row-link{text-decoration:none}
+.empty{text-align:center;padding:20px;font-size:14.5px;color:var(--ink-2);line-height:1.55}
+.empty-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+details.more{margin-top:10px}
+details.more>summary{cursor:pointer;list-style:none;padding:13px 15px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md,14px);font-size:14.5px;color:var(--ink-2)}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary:after{content:"›";float:right;color:var(--ink-3)}
+details.more[open]>summary{margin-bottom:8px}
+details.more[open]>summary:after{content:"⌄"}
 .prof{display:flex;align-items:center;gap:14px}
 .ava{width:62px;height:62px;flex:none;border-radius:20px;background:linear-gradient(150deg,var(--gold),#B8912A);display:grid;place-items:center;font-family:var(--f-display);font-size:24px;font-weight:700;color:var(--sapphire)}
 .row{display:flex;align-items:center;gap:12px;padding:14px 15px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);width:100%;text-align:left;font-size:15px}
@@ -18599,56 +18641,57 @@ function incomeCard(ic, title, desc, tag, open){
 }
 function viewIncome(){
   var h = ['<div class="stack">'];
+  var td = todayKey();
+  var act = (S.todos || []).filter(function(x){ return !x.done; });
+  var soon = act.filter(function(x){ return x.due && x.due <= td; });
+  var mk = finMonthKey(new Date()), ft = finTotals(mk), fcnt = finOf(mk).length;
+  shukrMigrate();
+  var shTd = shukrOf(td), shAll = shukrList().length;
 
+  /* 1. ради чего этот раздел */
   h.push('<section class="mihrab"><div class="eyebrow">Обещание Всевышнего</div>'+
     '<div class="ru">Тому, кто боится Аллаха, Он создает выход из положения и наделяет его уделом оттуда, откуда он даже не предполагает.</div>'+
     '<div class="src">Сура «Ат-Талак», 65:2-3</div></section>');
 
-  h.push('<div class="card flat" style="padding:13px 15px;font-size:14px;color:var(--ink-2);line-height:1.55">'+
-    'Намаз и азкары держатся на главной, знания - в своём разделе, а здесь дела и деньги. '+
-    'Порядок в поклонении и порядок в деле идут вместе: одно питает другое.</div>');
+  /* 2. сегодня: три числа, каждое ведёт в свой раздел */
+  h.push('<div class="rz-today">'+
+    '<button data-open="planner"><b>'+(soon.length || act.length)+'</b><span>'+(soon.length ? "задач на сегодня" : "задач в работе")+'</span></button>'+
+    '<button data-open="finance"><b>'+(fcnt ? money(ft.bal) : "0 ₽")+'</b><span>остаток за месяц</span></button>'+
+    '<button data-open="shukr"><b>'+shTd.length+'</b><span>благодарностей</span></button>'+
+    '</div>');
 
-  var td = todayKey();
-  var act = (S.todos||[]).filter(function(x){ return !x.done; });
-  var soon = act.filter(function(x){ return x.due && x.due <= td; });
-  h.push('<button class="course" data-open="planner">'+
-    '<div class="course-ic">✓</div><div style="flex:1;min-width:0">'+
-    '<h4>Цели и планы</h4>'+
-    '<p>'+(act.length
-      ? ('Активных задач: '+act.length+(soon.length ? (', к сегодняшнему дню: '+soon.length) : ''))
-      : 'Задачи, цели и намерения: сроки, повторы и перенос в календарь телефона')+'</p>'+
-    '<div class="meta"><span class="chip">'+(soon.length ? 'Есть срочные' : 'Список дел')+'</span></div>'+
-    '</div></button>');
-  h.push('<button class="nt-thin" data-open="notes"><span>✎</span>Заметки'+(notesAll().length ? '<em>'+notesAll().length+'</em>' : '')+'<i>›</i></button>');
+  /* 3. инструменты дела */
+  h.push('<div class="sec-h"><h3>Дело и деньги</h3></div>');
+  h.push('<div class="cats">'+
+    '<button class="cat" data-open="planner"><div class="ic">✓</div><b>Цели и планы</b>'+
+      '<span>'+(act.length ? (soon.length ? "срочных: "+soon.length : "активных: "+act.length) : "задачи, цели, сроки")+'</span></button>'+
+    '<button class="cat" data-open="finance"><div class="ic">₽</div><b>Доходы и расходы</b>'+
+      '<span>'+(fcnt ? "доход "+money(ft.inc)+" · расход "+money(ft.out) : "простой учёт по месяцам")+'</span></button>'+
+    '<button class="cat" data-open="shukr"><div class="ic">✦</div><b>Дневник благодарности</b>'+
+      '<span>'+(shAll ? plural(shAll, "запись", "записи", "записей")+(shukrStreak() ? " · "+daysWord(shukrStreak())+" подряд" : "") : "будете благодарны - Он одарит ещё")+'</span></button>'+
+    '<button class="cat" data-open="notes"><div class="ic">✎</div><b>Заметки</b>'+
+      '<span>'+(notesAll().length ? plural(notesAll().length, "заметка", "заметки", "заметок") : "конспекты, списки, дуа")+'</span></button>'+
+    '</div>');
   h.push(rzCalCard());
 
-  var mk = finMonthKey(new Date()), ft = finTotals(mk), fcnt = finOf(mk).length;
-  h.push('<button class="course" data-open="finance">'+
-    '<div class="course-ic">₽</div><div style="flex:1;min-width:0">'+
-    '<h4>Доходы и расходы</h4>'+
-    '<p>'+(fcnt ? ('Остаток за месяц: '+money(ft.bal)) : 'Простой учёт денег по месяцам, бесплатно')+'</p>'+
-    '<div class="meta">'+(fcnt
-      ? '<span class="chip">Доход '+money(ft.inc)+'</span><span class="chip">Расход '+money(ft.out)+'</span>'
-      : '<span class="chip">Начать вести</span>')+'</div>'+
-    '</div></button>');
+  /* 4. книги и обучение: то, что продаётся, стоит отдельным блоком и с понятным следующим шагом */
+  h.push('<div class="sec-h"><h3>Книги и обучение</h3></div>');
+  var b1 = b1S(), b1last = b1 && b1.last ? b1.last : 0, b1pct = b1Done();
+  h.push('<button class="card bk-row" data-open="book1">'+
+    '<img src="'+BOOK1.cover+'" alt="">'+
+    '<span class="bk-t"><b>'+esc(BOOK1.n)+'</b>'+
+      '<span>'+(b1Owned()
+        ? (b1pct ? "прочитано "+b1pct+"% · продолжить" : "книга ваша · начать читать")
+        : "роман о 99 Именах · первые главы бесплатно")+'</span></span>'+
+    '<span class="bk-go">›</span></button>');
+  h.push('<button class="card bk-row" data-open="book2">'+
+    '<img src="'+BOOK2.cover+'" alt="">'+
+    '<span class="bk-t"><b>'+esc(BOOK2.n)+'</b>'+
+      '<span>'+(b2Owned() ? "книга ваша · продолжить" : "бизнес-роман · начало бесплатно")+'</span></span>'+
+    '<span class="bk-go">›</span></button>');
+  h.push(incomeCard("🎓", "Обучение по нормам ислама", "Курсы для дела и личного развития. Консалтинг - внутри программы по Сунне", "Программы", "courses"));
 
-  shukrMigrate();
-  var shTd = shukrOf(todayKey()), shAll = shukrList().length;
-  h.push('<button class="course" data-open="shukr">'+
-    '<div class="course-ic">✦</div><div style="flex:1;min-width:0">'+
-    '<h4>Дневник благодарности</h4>'+
-    '<p>'+(shAll
-      ? (shTd.length ? 'Сегодня записано: '+shTd.length : 'Сегодня записей ещё нет')
-      : 'Аллах обещал: будете благодарны - Он одарит ещё большим')+'</p>'+
-    '<div class="meta">'+(shAll
-      ? '<span class="chip">'+plural(shAll,"запись","записи","записей")+'</span>'+
-        (shukrStreak() ? '<span class="chip">'+shukrStreak()+' '+plural(shukrStreak(),"день","дня","дней")+' подряд</span>' : '')
-      : '<span class="chip">Начать вести</span>')+'</div>'+
-    '</div></button>');
-
-  h.push('<div class="sec-h" style="margin-top:6px"><h3>Обучение</h3></div>');
-  h.push(incomeCard("🎓","Обучение по нормам ислама","Курсы для дела и личного развития. Консалтинг - внутри программы по Сунне","Программы","courses"));
-
+  h.push('<p class="disclaimer" style="text-align:left">Намаз и азкары держатся на главной, знания - в своём разделе, а здесь дела и деньги. Порядок в поклонении и порядок в деле идут вместе: одно питает другое.</p>');
   h.push('</div>');
   return h.join("");
 }
@@ -20546,142 +20589,115 @@ function initials(){
 }
 function viewProf(){
   var h = ['<div class="stack">'];
+  var reg = signupState(), scp = scoreState(), scme = S.scoreMe;
+  var mine = COURSES.filter(function(c){ return bought(c.id); });
+  var pend = ordersPending();
 
-  /* 1. о проекте - в самом верху, крупной карточкой, чтобы прочитали первым делом */
-  h.push('<button class="card" style="width:100%;text-align:left;border-color:rgba(212,175,55,.45);'+
-      'background:linear-gradient(140deg, rgba(212,175,55,.12), rgba(212,175,55,.03))" data-why="1">'+
-    '<div style="display:flex;align-items:center;gap:14px">'+
-      '<div style="width:54px;height:54px;flex:none;display:grid;place-items:center;filter:drop-shadow(0 4px 14px rgba(212,175,55,.3))">'+RA_SVG.replace(/38px/g,"52px")+'</div>'+
-      '<div style="flex:1;min-width:0">'+
-        '<b style="font-family:var(--f-display);font-size:16px;font-weight:600;display:block">О проекте «RIZQ»</b>'+
-        '<span style="font-size:13.5px;color:var(--ink-2);display:block;margin-top:3px;line-height:1.45">'+
-          'Что значит имя, зачем мы это делаем и как помочь стать лучше</span>'+
+  /* 1. кто вы: имя, статус и три числа, ради которых сюда заходят */
+  h.push('<section class="pcard">'+
+    '<div class="pcard-top">'+
+      '<div class="ava">'+esc(initials())+'</div>'+
+      '<div class="pcard-who">'+
+        '<b>'+esc(S.name || "Гость")+'</b>'+
+        '<span>'+esc(S.phone || S.email || (reg.registered ? "" : "без регистрации")) +'</span>'+
       '</div>'+
-      '<span style="flex:none;color:var(--accent-ink);font-size:20px">›</span>'+
-    '</div></button>');
+      '<button class="btn sec sm pcard-edit" data-open="account">'+(reg.registered ? "Мои данные" : "Регистрация")+'</button>'+
+    '</div>'+
+    (reg.registered ? '<div class="meta"><span class="chip own">Зарегистрирована в школе</span>'+
+      (reg.queued ? '<span class="chip">данные ждут отправки</span>' : '')+'</div>' : '')+
+    '<div class="pstats">'+
+      '<div><b>'+(dailyStreak() || 0)+'</b><span>'+plural(dailyStreak() || 0, "день подряд", "дня подряд", "дней подряд").replace(/^\d+\s/, "")+'</span></div>'+
+      '<div><b>'+readCount()+'</b><span>азкаров сегодня</span></div>'+
+      '<div><b>'+namedCount()+' / 99</b><span>имён названо</span></div>'+
+    '</div>'+
+  '</section>');
 
-  /* 1б. поделиться - сразу под «О проекте» */
-  h.push('<button class="cat-wide gold" data-open="share">'+
-    '<span class="cw-ic">❁</span>'+
-    '<span class="cw-t"><b>Рассказать о приложении</b>'+
-    '<span>ссылка, как поделиться и как поставить иконку на экран</span></span>'+
-    '<span class="cw-go">›</span></button>');
-
-  /* 2. кто вы */
-  h.push('<section class="card"><div class="prof">'+
-    '<div class="ava">'+esc(initials())+'</div>'+
-    '<div style="min-width:0"><b style="font-family:var(--f-display);font-size:18px;display:block">'+
-      esc(S.name||"Гость")+'</b>'+
-    '<div style="font-size:14px;color:var(--ink-3);margin-top:2px">'+
-      esc(S.phone || S.email || (signupState().registered ? "" : "Зарегистрируйтесь, чтобы открывать программы"))+'</div></div></div>'+
-    (signupState().registered
-      ? '<div class="meta" style="margin-top:11px"><span class="chip own">Зарегистрирована в школе</span>'+
-        (signupState().queued ? '<span class="chip">данные ждут отправки</span>' : '')+'</div>'
-      : '')+
-    '<button class="btn sec sm" style="width:100%;margin-top:13px" data-open="account">'+
-      (signupState().registered ? "Мои данные" : "Зарегистрироваться в школе")+'</button></section>');
-
-  /* 3. обучение */
-  h.push('<div class="sec-h"><h3>Моё обучение</h3></div>');
-  var mine = COURSES.filter(function(c){return bought(c.id);});
-  ordersPending().forEach(function(o){
-    h.push('<section class="card" style="border-color:rgba(212,175,55,.45)">'+
-      '<b style="font-family:var(--f-display);font-size:15px">'+esc(o.title)+'</b>'+
-      '<div style="font-size:13px;color:var(--ink-3);margin-top:4px">Ждём оплату'+(o.tariff ? ' · тариф «'+esc(o.tariff)+'»' : '')+' · '+(o.plan ? 'первый взнос из '+o.plan+' - ' : '')+money(o.amount)+'</div>'+
-      '<div style="display:flex;gap:8px;margin-top:11px;flex-wrap:wrap">'+
-        (o.payUrl ? '<a class="btn sm" style="text-decoration:none" href="'+esc(o.payUrl)+'" target="_blank" rel="noopener">Оплатить</a>' : '')+
-        '<button class="btn sec sm" data-ordcheck="1">Я оплатила - проверить</button>'+
-        /* заказ мог быть брошен: без этой кнопки карточка висела в профиле вечно */
+  /* 2. покупки: сначала то, что ждёт оплаты, потом то, что уже открыто */
+  h.push('<div class="sec-h"><h3>Мои покупки</h3></div>');
+  pend.forEach(function(o){
+    h.push('<section class="card ord-wait">'+
+      '<div class="ord-h"><b>'+esc(o.title)+'</b><span class="chip">ждём оплату</span></div>'+
+      '<div class="ord-sum">'+(o.tariff ? 'тариф «'+esc(o.tariff)+'» · ' : '')+(o.plan ? 'первый взнос из '+o.plan+' · ' : '')+money(o.amount)+'</div>'+
+      '<div class="ord-btns">'+
+        (o.payUrl ? '<a class="btn sm" href="'+esc(o.payUrl)+'" target="_blank" rel="noopener">Оплатить</a>' : '')+
+        '<button class="btn sec sm" data-ordcheck="1">Я оплатила</button>'+
         '<button class="btn ghost sm" data-orddel="'+esc(o.token || "")+'">Убрать</button>'+
       '</div></section>');
   });
   finOrdersRefresh();
   h.push(finOrderCards());
-  if((S.orders||[]).some(function(o){ return o.status === "paid"; }) || mine.length){
-    h.push('<a class="btn" style="text-decoration:none;display:block;text-align:center" href="'+esc(cabinetUrl())+'" target="_blank" rel="noopener">Открыть обучение на платформе</a>'+
-      '<p class="note" style="margin:6px 0 12px">Вход по почте или телефону, которые вы указали при оплате.</p>');
-  }
+  if(b1Owned()) h.push(book1Card());
   if(b2Owned()) h.push(book2Card());
-  if(b1Owned()) h.push(book1Card()); /* «Женщина, которая верит» тоже покупка: без этого её не было в списке */
-  if(!mine.length && !b2Owned() && !b1Owned()){
-    h.push('<div class="card flat" style="text-align:center;padding:20px">'+
-      '<div style="font-size:14.5px;color:var(--ink-2);line-height:1.55">Пока нет купленных программ.</div>'+
-      '<button class="btn sm sec" style="margin-top:12px" data-open="courses">Посмотреть программы</button></div>');
-  } else {
-    mine.forEach(function(c){
-      var pr = courseProgress(c);
-      h.push('<button class="card" style="width:100%;text-align:left" data-course="'+c.id+'">'+
-        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'+
-        '<b style="font-family:var(--f-display);font-size:15px;line-height:1.3">'+esc(c.n)+'</b>'+
-        '<span style="margin-left:auto;font-size:14px;color:var(--ink-2);font-variant-numeric:tabular-nums;flex:none">'+pr.pct+'%</span></div>'+
-        '<div class="bar"><i style="width:'+pr.pct+'%"></i></div>'+
-        '<div style="font-size:13px;color:var(--ink-3);margin-top:7px">'+pr.done+' из '+pr.total+' уроков пройдено</div></button>');
-    });
+  mine.forEach(function(c){
+    var pr = courseProgress(c);
+    h.push('<button class="card course-row" data-course="'+c.id+'">'+
+      '<div class="course-h"><b>'+esc(c.n)+'</b><span>'+pr.pct+'%</span></div>'+
+      '<div class="bar"><i style="width:'+pr.pct+'%"></i></div>'+
+      '<div class="course-sub">'+pr.done+' из '+pr.total+' уроков пройдено</div></button>');
+  });
+  if((S.orders || []).some(function(o){ return o.status === "paid"; }) || mine.length){
+    h.push('<a class="row row-link" href="'+esc(cabinetUrl())+'" target="_blank" rel="noopener"><span class="ic">↗</span>Обучение на платформе<span class="val">вход по вашей почте</span><span class="go">›</span></a>');
+  }
+  if(!mine.length && !b2Owned() && !b1Owned() && !pend.length){
+    h.push('<div class="card flat empty">'+
+      '<div>Здесь появятся ваши книги и курсы.</div>'+
+      '<div class="empty-btns">'+
+        '<button class="btn sm" data-open="book1">Книга о 99 Именах</button>'+
+        '<button class="btn sm sec" data-open="courses">Все программы</button>'+
+      '</div></div>');
   }
 
-  /* 3б. рейтинг участников */
-  var scp = scoreState(), scme = S.scoreMe;
-  h.push('<button class="cat-wide'+(scp.on?"":" gold")+'" data-open="top">'+
-    '<span class="cw-ic">◈</span>'+
-    '<span class="cw-t"><b>Рейтинг участников</b><span>'+
-      (scp.on ? (scme && scme.week ? "ваше место за неделю: "+scme.week : "считаем ваше место")
-              : "добровольно, видно только числа")+'</span></span>'+
-    '<span class="cw-go">›</span></button>');
-
-  /* 4. моё: всё личное собрано здесь */
+  /* 3. моё */
   h.push('<div class="sec-h"><h3>Моё</h3></div>');
   h.push('<div class="cats">'+
     '<button class="cat" data-open="fav"><div class="ic">☆</div><b>Избранное</b>'+
-      '<span>'+(S.fav.length? plural(S.fav.length,"запись","записи","записей") : "пока пусто")+'</span></button>'+
+      '<span>'+(S.fav.length ? plural(S.fav.length, "запись", "записи", "записей") : "пока пусто")+'</span></button>'+
     '<button class="cat" data-open="report"><div class="ic">◷</div><b>Отчёт за месяц</b>'+
-      '<span>'+(dailyStreak()? "серия: "+daysWord(dailyStreak()) : "что получилось")+'</span></button>'+
+      '<span>'+(dailyStreak() ? "серия: "+daysWord(dailyStreak()) : "что получилось")+'</span></button>'+
+    '<button class="cat" data-open="top"><div class="ic">◈</div><b>Рейтинг</b>'+
+      '<span>'+(scp.on ? (scme && scme.week ? "ваше место: "+scme.week : "считаем место") : "добровольно")+'</span></button>'+
+    '<button class="cat" data-open="backup"><div class="ic">⛁</div><b>Копия данных</b><span>перенос на другой телефон</span></button>'+
     '</div>');
 
-  /* 5. настройки */
+  /* 4. настройки: сначала то, что меняют чаще всего */
   h.push('<div class="sec-h"><h3>Настройки</h3></div>');
   h.push('<div class="rows">'+
-    '<button class="row" data-open="settings"><span class="ic">⚙</span>Город и расчёт намаза<span class="val">'+esc(currentCity().n)+'</span></button>'+
-    '<button class="row" data-fsopen="1"><span class="ic" style="font-family:var(--f-display);font-size:14px">Aa</span>Размер текста<span class="val">'+esc(fsName())+'</span></button>'+
-    swRow("notifPrayer","🕌","Напоминания о намазе") +
-    swRow("notifAzan","🔊","Звук азана") +
-    /* проверка звука: заодно разблокирует автозапуск азана в час намаза */
-    '<button class="row" data-azantest="1"><span class="ic">▶</span>Проверить звук азана<span class="val">'+(S.notifAzan===false?"выключен":"послушать")+'</span><span class="go">›</span></button>' +
-    swRow("notifDua","✦","Дуа дня утром") +
-    swRow("notifAzkar","☀","Утренние и вечерние азкары") +
-    swRow("notifScore","◈","Итоги недели в рейтинге") +
-    swRow("statOn","◔","Обезличенная статистика") +
-    swRow("notifTasks","✓","Напоминания о задачах со временем") +
-    '<button class="row" data-pushtoggle="1"><span class="ic">🔔</span>При закрытом приложении'+
-      '<span class="sw'+(pushOn()?" on":"")+'"></span></button>'+
+    '<button class="row" data-open="settings"><span class="ic">⚙</span>Город и расчёт намаза<span class="val">'+esc(currentCity().n)+'</span><span class="go">›</span></button>'+
+    '<button class="row" data-fsopen="1"><span class="ic" style="font-family:var(--f-display);font-size:14px">Aa</span>Размер текста<span class="val">'+esc(fsName())+'</span><span class="go">›</span></button>'+
+    swRow("notifPrayer", "🕌", "Напоминания о намазе") +
+    swRow("notifAzan", "🔊", "Звук азана") +
+    '<button class="row" data-azantest="1"><span class="ic">▶</span>Проверить звук азана<span class="val">'+(S.notifAzan === false ? "выключен" : "послушать")+'</span><span class="go">›</span></button>'+
+    '<button class="row" data-pushtoggle="1"><span class="ic">🔔</span>При закрытом приложении<span class="sw'+(pushOn() ? " on" : "")+'"></span></button>'+
     '</div>');
   h.push('<p class="disclaimer" style="text-align:left;padding:2px 4px 0">'+
     (pushOn()
-      ? 'Напоминания о намазе и дуа дня приходят и при закрытом приложении. Сервер знает только расписание - без имени и города. '+
-        'Расписание обновляется, когда вы открываете RIZQ: откройте его хотя бы раз в неделю.'
+      ? 'Напоминания о намазе и дуа дня приходят и при закрытом приложении. Сервер знает только расписание, без имени и города. Расписание обновляется, когда вы открываете RIZQ: заходите хотя бы раз в неделю.'
       : 'Сейчас напоминания приходят, пока приложение открыто или свёрнуто. Включите «При закрытом приложении» '+
-        (pushIosBrowser() ? '(на iPhone - после установки иконки на экран «Домой») ' : '')+
-        'или добавьте времена намаза в календарь телефона.')+
+        (pushIosBrowser() ? '(на iPhone - после установки иконки на экран «Домой») ' : '')+'или добавьте намаз в календарь телефона.')+
     '</p>');
-  h.push('<button class="cat-wide" data-ics="1" style="margin-top:8px">'+
+  h.push('<details class="more"><summary>Остальные напоминания и приватность</summary><div class="rows">'+
+    swRow("notifDua", "✦", "Дуа дня утром") +
+    swRow("notifAzkar", "☀", "Утренние и вечерние азкары") +
+    swRow("notifTasks", "✓", "Задачи со временем") +
+    swRow("notifScore", "◈", "Итоги недели в рейтинге") +
+    swRow("statOn", "◔", "Обезличенная статистика") +
+    '</div></details>');
+  h.push('<button class="cat-wide" data-ics="1" style="margin-top:10px">'+
     '<span class="cw-ic">☷</span>'+
     '<span class="cw-t"><b>Намаз в календарь телефона</b>'+
     '<span>60 дней для города '+esc(currentCity().n)+' · будильник за 10 минут</span></span>'+
     '<span class="cw-go">›</span></button>');
 
-  /* 6. связь */
-  h.push('<div class="sec-h"><h3>Связь и поддержка</h3></div>');
+  /* 5. помощь и о проекте - внизу: сюда заходят реже всего */
+  h.push('<div class="sec-h"><h3>Помощь и о проекте</h3></div>');
   h.push('<div class="rows">'+
-    '<button class="row" data-open="support"><span class="ic">☎</span>Написать нам<span class="val">'+esc(SUPPORT.phone)+'</span></button>'+
-    '<button class="row" data-open="sadaqa"><span class="ic">❁</span>Куда помочь<span class="val">сборы</span></button>'+
-    '<button class="row" data-open="installment"><span class="ic">◈</span>Исламская рассрочка<span class="val">без процентов</span></button>'+
-    (S.email? '<button class="row" data-logout="1" style="color:#C0392B"><span class="ic">→</span>Выйти</button>':'')+
+    '<button class="row" data-open="support"><span class="ic">☎</span>Написать нам<span class="val">'+esc(SUPPORT.phone)+'</span><span class="go">›</span></button>'+
+    '<button class="row" data-why="1"><span class="ic">✦</span>О проекте RIZQ<span class="val">зачем мы это делаем</span><span class="go">›</span></button>'+
+    '<button class="row" data-open="share"><span class="ic">❁</span>Рассказать о приложении<span class="val">ссылка и иконка</span><span class="go">›</span></button>'+
+    '<button class="row" data-open="sadaqa"><span class="ic">♥</span>Куда помочь<span class="val">сборы</span><span class="go">›</span></button>'+
+    '<button class="row" data-open="installment"><span class="ic">◈</span>Исламская рассрочка<span class="val">без процентов</span><span class="go">›</span></button>'+
+    (S.email ? '<button class="row" data-logout="1" style="color:#C0392B"><span class="ic">→</span>Выйти</button>' : '')+
     '</div>');
-
-  h.push('<button class="cat-wide" data-open="backup" style="margin-top:10px">'+
-    '<span class="cw-ic">⛁</span>'+
-    '<span class="cw-t"><b>Копия данных</b>'+
-    '<span>сохранить записи и перенести на другой телефон</span></span>'+
-    '<span class="cw-go">›</span></button>');
   h.push('<p class="disclaimer">Данные хранятся только на этом устройстве, поэтому копию стоит делать раз в месяц.</p>');
   h.push('</div>');
   return h.join("");
