@@ -5001,7 +5001,7 @@ function renderTabs(){
       (un? '<span style="position:absolute;top:2px;left:calc(50% + 7px);min-width:15px;height:15px;padding:0 4px;border-radius:8px;background:var(--gold);color:#1E2A5A;font-size:10px;font-weight:700;line-height:15px;text-align:center">'+un+'</span>' : '')+
       '</button>';
   }).join("");
-  tabbarShow();
+  if(!V.quiet) tabbarShow(); /* при тихом обновлении панели не выезжают: экран не дёргается */
 }
 
 /* ---------- шапка ---------- */
@@ -20496,7 +20496,8 @@ function viewProf(){
       '<p class="note" style="margin:6px 0 12px">Вход по почте или телефону, которые вы указали при оплате.</p>');
   }
   if(b2Owned()) h.push(book2Card());
-  if(!mine.length && !b2Owned()){
+  if(b1Owned()) h.push(book1Card()); /* «Женщина, которая верит» тоже покупка: без этого её не было в списке */
+  if(!mine.length && !b2Owned() && !b1Owned()){
     h.push('<div class="card flat" style="text-align:center;padding:20px">'+
       '<div style="font-size:14.5px;color:var(--ink-2);line-height:1.55">Пока нет купленных программ.</div>'+
       '<button class="btn sm sec" style="margin-top:12px" data-open="courses">Посмотреть программы</button></div>');
@@ -21635,6 +21636,15 @@ function sheetWhy(){
 /* ============================================================
    РЕНДЕР
    ============================================================ */
+/* обновить экран на месте: без «прыжка» анимации и с той же прокруткой */
+function renderInPlace(){
+  var top = $screen.scrollTop;
+  /* замена содержимого на миг сдвигает прокрутку - не принимаем это за жест, иначе шапка и панель выезжают */
+  TB_LOCK = Date.now() + 400;
+  V.quiet = true;
+  try { render(); } finally { V.quiet = false; }
+  $screen.scrollTop = top; TB_Y = top;
+}
 function render(){
   if(pushOn()) pushSoon();
   if(KS.on && V.view!=="kidstory"){ kidStop(); }
@@ -21710,7 +21720,9 @@ function render(){
   else if(V.tab==="income") html = viewIncome();
   else html = viewProf();
   $screen.innerHTML = html;
-  $screen.classList.remove("in"); void $screen.offsetWidth; $screen.classList.add("in");
+  /* тихая перерисовка (отметка «Прочитал» и т.п.): экран тот же, анимацию появления не повторяем */
+  if(V.quiet) $screen.classList.remove("in");
+  else { $screen.classList.remove("in"); void $screen.offsetWidth; $screen.classList.add("in"); }
   var s = document.getElementById("nameSearch") || document.getElementById("hadSearch") || document.getElementById("qSearchInput") || document.getElementById("knowSearch") || document.getElementById("homeSearch");
   if(s && V.q){ s.focus(); s.setSelectionRange(s.value.length, s.value.length); }
   var hq = document.getElementById("hlQ");
@@ -21873,7 +21885,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   /* дуа из Корана: отметка «прочитала» даёт балл, раз в день за каждую */
   if(d.qdread!==undefined){
     var qk = "quran:" + d.qdread, qwas = !!S.read[qk];
-    markRead(qk); render(); toast(qwas ? "Уже отмечено сегодня ✓" : "Отмечено ✓ +" + POINTS.azkar + " балл");
+    markRead(qk); renderInPlace(); toast(qwas ? "Уже отмечено сегодня ✓" : "Отмечено ✓ +" + POINTS.azkar + " балл");
     return;
   }
   if(d.count){
@@ -21890,8 +21902,7 @@ document.getElementById("app").addEventListener("click", function(ev){
       bumpTasbih();
       if(S.dcnt[dua.id]===dua.rep) toast("Машаа Аллах - "+dua.rep+" "+timesWord(dua.rep)+" завершено");
     }
-    save(); render();
-    var elx = document.getElementById("dua-"+dua.id); if(elx) elx.scrollIntoView({block:"center"});
+    save(); renderInPlace();
     return;
   }
   if(d.tick!==undefined){
@@ -21900,12 +21911,12 @@ document.getElementById("app").addEventListener("click", function(ev){
     bumpTasbih();
     var z = ZIKRS[V.zikr];
     if(S.tasbih[key] % z.goal === 0) toast("Круг завершён: "+z.goal);
-    save(); render();
+    save(); renderInPlace();
     if(navigator.vibrate) { try{ navigator.vibrate(12); }catch(e){} }
     return;
   }
-  if(d.reset!==undefined){ S.tasbih["z"+V.zikr]=0; save(); render(); toast("Счётчик сброшен"); return; }
-  if(d.zikr!==undefined){ V.zikr = parseInt(d.zikr,10); render(); return; }
+  if(d.reset!==undefined){ S.tasbih["z"+V.zikr]=0; save(); renderInPlace(); toast("Счётчик сброшен"); return; }
+  if(d.zikr!==undefined){ V.zikr = parseInt(d.zikr,10); renderInPlace(); return; }
   if(d.name!==undefined){ V.tab="dua"; open("name", parseInt(d.name,10)); return; }
   if(d.hadith!==undefined){ V.tab="dua"; open("hadithOne", parseInt(d.hadith,10)); return; }
   if(d.sira!==undefined){ V.tab="dua"; open("siraOne", parseInt(d.sira,10)); return; }
@@ -22694,7 +22705,7 @@ function hdrHide(){
    и так по кругу. Теперь пока панели едут (0,3 с), прокрутку не слушаем, а
    «пружину» айфона у верхнего и нижнего края не принимаем за движение пальцем. */
 var TB_LOCK = 0;
-function tbLock(){ TB_LOCK = Date.now() + 320; }
+function tbLock(){ TB_LOCK = Date.now() + 520; }
 $screen.addEventListener("scroll", function(){
   var max = Math.max(0, $screen.scrollHeight - $screen.clientHeight);
   var y = Math.min(Math.max(0, $screen.scrollTop), max);
@@ -22703,12 +22714,13 @@ $screen.addEventListener("scroll", function(){
   var d = y - TB_Y;
   /* у самого низа - только уезжаем: отскок от края не должен возвращать панели */
   var atEnd = max - y < 40;
-  if(d > 12){
+  /* пороги больше прежних: при мелком дрожании пальца панели не мигают */
+  if(d > 28){
     TB_Y = y;
     if(!TB_HID || !HD_HID){ $tabbar.classList.add("hide"); TB_HID = true; hdrHide(); tbLock(); }
-  } else if(d < -24 && !atEnd){
+  } else if(d < -64 && !atEnd){
     if(TB_HID || HD_HID){ tabbarShow(); tbLock(); } else TB_Y = y;
-  } else if(d < -24){ TB_Y = y; }
+  } else if(d < -64){ TB_Y = y; }
 }, {passive:true});
 
 $screen.addEventListener("scroll", function(){
