@@ -162,7 +162,8 @@
   --f-display:"Montserrat",system-ui,"Segoe UI",sans-serif;
   --f-mark:"Marcellus",Georgia,"Times New Roman",serif;
   --f-body:"Inter",system-ui,"Segoe UI",sans-serif;
-  --f-ar:"Noto Naskh Arabic","Segoe UI",serif;
+  /* арабский везде - начертанием как в мусхафе (Amiri Quran); Noto Naskh остаётся запасным (просьба Заиры 23.09) */
+  --f-ar:"Amiri Quran","Noto Naskh Arabic","Segoe UI",serif;
   /* шрифт чтения Корана - выбирается в настройках чтения */
   --f-quran:"Amiri Quran","Noto Naskh Arabic",serif;
 }
@@ -1171,6 +1172,13 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .qlist .qrow + .qrow{border-top:1px solid var(--line-soft)}
 .qrow-t{min-width:0;flex:1}
 .qrow-t span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a2hs{border:1.5px solid rgba(212,175,55,.55);background:linear-gradient(150deg, rgba(212,175,55,.14), rgba(212,175,55,.03))}
+.a2hs-h{display:flex;gap:12px;align-items:flex-start}
+.a2hs-h>span{width:40px;height:40px;flex:none;border-radius:12px;display:grid;place-items:center;background:#D4AF37;color:#1E2A5A;font-size:19px}
+.a2hs-h b{display:block;font-family:var(--f-display);font-size:15.5px}
+.a2hs-h>div>span{display:block;font-size:13px;color:var(--ink-2);line-height:1.45;margin-top:3px}
+.a2hs-l{margin:10px 0 0;padding-left:20px;font-size:14px;line-height:1.7;color:var(--ink)}
+.a2hs-n{font-size:12.5px;color:var(--ink-3);line-height:1.5;margin:8px 0 10px}
 .qd-read{margin-left:auto;font-size:13px;font-weight:600;padding:7px 12px;border-radius:11px;border:1px solid rgba(212,175,55,.5);color:var(--accent-ink);background:rgba(212,175,55,.08)}
 .qd-read.on{background:rgba(62,155,114,.16);border-color:rgba(62,155,114,.5);color:#3E9B72}
 .qrmd{border:1px solid rgba(62,155,114,.5);background:linear-gradient(150deg, rgba(62,155,114,.16), rgba(62,155,114,.03))}
@@ -2300,12 +2308,105 @@ var S = (function(){
   return JSON.parse(JSON.stringify(DEF));
 })();
 var SAVE_FAIL = false;
+/* ============================================================
+   НАДЁЖНОЕ ХРАНЕНИЕ
+   Данные живут в localStorage. Он может очиститься: браузер освобождает место,
+   iPhone стирает данные сайта, которым не пользовались неделю, или человек чистит
+   историю. Поэтому: 1) просим у браузера «постоянное хранилище» - тогда данные не
+   стирают при нехватке места; 2) зеркалим всё во второе хранилище телефона
+   (IndexedDB) и при запуске, если localStorage пуст, восстанавливаемся оттуда.
+   Ничего никуда не отправляется: обе копии лежат в самом телефоне.
+   ============================================================ */
+var IDB_NAME = "rizq-backup", IDB_STORE = "state", IDB_KEY = "rizq.v1";
+var IDB_TIMER = 0, IDB_LAST = 0;
+function idbOpen(){
+  return new Promise(function(res, rej){
+    if(!window.indexedDB) return rej();
+    var r;
+    try{ r = indexedDB.open(IDB_NAME, 1); }catch(e){ return rej(); }
+    r.onupgradeneeded = function(){ try{ r.result.createObjectStore(IDB_STORE); }catch(e){} };
+    r.onsuccess = function(){ res(r.result); };
+    r.onerror = function(){ rej(); };
+  });
+}
+function idbPut(val){
+  return idbOpen().then(function(db){
+    return new Promise(function(res, rej){
+      var tx = db.transaction(IDB_STORE, "readwrite");
+      tx.objectStore(IDB_STORE).put(val, IDB_KEY);
+      tx.oncomplete = function(){ IDB_LAST = Date.now(); db.close(); res(true); };
+      tx.onerror = function(){ db.close(); rej(); };
+    });
+  });
+}
+function idbGet(){
+  return idbOpen().then(function(db){
+    return new Promise(function(res){
+      var tx = db.transaction(IDB_STORE, "readonly"), q = tx.objectStore(IDB_STORE).get(IDB_KEY);
+      q.onsuccess = function(){ db.close(); res(q.result || null); };
+      q.onerror = function(){ db.close(); res(null); };
+    });
+  });
+}
+/* копия делается не чаще раза в 20 секунд: запись в IndexedDB не должна мешать счётчику */
+function idbSoon(){
+  clearTimeout(IDB_TIMER);
+  IDB_TIMER = setTimeout(function(){
+    try{ idbPut({ at:Date.now(), v:JSON.stringify(S) }).catch(function(){}); }catch(e){}
+  }, Date.now() - IDB_LAST > 60000 ? 800 : 20000);
+}
+/* «постоянное хранилище»: с ним браузер не стирает данные при нехватке места */
+/* Люди пишут в директ: «не могу вытащить на главный экран», «Сафари не открывает»,
+   «нет в App Store». Приложение открывается в браузере, а на экран ставится вручную.
+   Показываем подсказку прямо на главной, пока это не сделано: так оно и открывается
+   как обычное приложение, и телефон перестаёт удалять отметки через неделю простоя. */
+function isStandalone(){
+  try{ return window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true; }catch(e){ return false; }
+}
+function isIOS(){ return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1); }
+function a2hsCard(){
+  if(isStandalone()) return "";
+  if(S.a2hsHide && Date.now() - S.a2hsHide < 14 * 86400000) return "";
+  var ios = isIOS();
+  return '<section class="card a2hs"><div class="a2hs-h"><span>⤓</span><div><b>Добавьте RIZQ на экран «Домой»</b>'+
+    '<span>В магазинах приложений его нет: оно открывается из браузера, а на экран ставится за три касания.</span></div></div>'+
+    '<ol class="a2hs-l">'+(ios
+      ? '<li>Откройте эту страницу в Safari</li><li>Нажмите «Поделиться» - квадрат со стрелкой вверх</li><li>Выберите «На экран «Домой»» и нажмите «Добавить»</li>'
+      : '<li>Откройте меню браузера - три точки</li><li>Выберите «Установить приложение» или «Добавить на главный экран»</li><li>Подтвердите</li>')+'</ol>'+
+    '<p class="a2hs-n">Так приложение открывается на весь экран и работает без интернета. И главное: пока оно только в браузере, телефон может стереть ваши отметки, если вы не заходили неделю.</p>'+
+    '<button class="btn sm sec" data-a2hs="1">Уже добавила, скрыть</button></section>';
+}
+function storagePersist(){
+  try{
+    if(navigator.storage && navigator.storage.persisted) navigator.storage.persisted().then(function(ok){
+      if(!ok && navigator.storage.persist) navigator.storage.persist().catch(function(){});
+    }).catch(function(){});
+  }catch(e){}
+}
+/* восстановление: localStorage пуст, а во втором хранилище что-то есть */
+function idbRestore(){
+  var raw = "";
+  try{ raw = localStorage.getItem("rizq.v1") || ""; }catch(e){}
+  if(raw && raw.length > 40) return;
+  idbGet().then(function(rec){
+    if(!rec || !rec.v) return;
+    var p = null;
+    try{ p = JSON.parse(rec.v); }catch(e){ return; }
+    if(!p || typeof p !== "object") return;
+    for(var k in DEF) if(!(k in p)) p[k] = DEF[k];
+    for(var k2 in p) S[k2] = p[k2];
+    try{ localStorage.setItem("rizq.v1", JSON.stringify(S)); }catch(e){}
+    render();
+    toast("Данные восстановлены из копии на телефоне");
+  }).catch(function(){});
+}
 function save(){
   try{ localStorage.setItem("rizq.v1", JSON.stringify(S)); SAVE_FAIL = false; }
   catch(e){
     /* Причины ровно две: кончилось место или запись запрещена (приватный режим). */
     if(!SAVE_FAIL){ SAVE_FAIL = true; setTimeout(function(){ if(typeof sheetSaveFail === "function") sheetSaveFail(); }, 400); }
   }
+  if(typeof idbSoon === "function") idbSoon();
   if(typeof VT !== "undefined" && VT && VT.code) vaultSoon();
   if(S.cal && S.cal.on && typeof calSoon === "function") calSoon();
 }
@@ -5218,6 +5319,7 @@ function viewHome(){
 }
 function viewHomeMain(){
   var h = ['<div class="stack">'];
+  h.push(a2hsCard());
   var d = duaOfDay(), a = ayatOfDay();
   var tn = timesNow(), np = nextPrayer();
   var own = (S.myduas||[]).length + (S.todos||[]).length + (S.goals||[]).length + Object.keys(S.shukrNotes||{}).length;
@@ -6316,6 +6418,22 @@ function viewCat(){
 /* ============================================================
    ЭКРАН: ТАСБИХ
    ============================================================ */
+/* Счётчик тасбиха обновляем прямо в готовой разметке: цифра, кольцо и общий счёт.
+   Раньше экран перерисовывался целиком, и при каждом нажатии он подпрыгивал. */
+function tasbihPaint(){
+  if(V.view !== "tasbih") return false;
+  var z = ZIKRS[V.zikr], cnt = S.tasbih["z" + V.zikr] || 0;
+  var inRound = (cnt > 0 && cnt % z.goal === 0) ? z.goal : cnt % z.goal;
+  var box = document.querySelector(".ring-in"), fg = document.querySelector(".ring .fg"), tot = document.getElementById("tasbihTotal");
+  if(!box || !fg) return false;
+  var b = box.querySelector("b"), sp = box.querySelector("span");
+  if(b) b.textContent = inRound;
+  if(sp) sp.textContent = "из " + z.goal + " · всего " + cnt;
+  var C = 2 * Math.PI * 94;
+  fg.setAttribute("stroke-dashoffset", (C * (1 - inRound / z.goal)).toFixed(1));
+  if(tot) tot.textContent = S.tasbihTotal || 0;
+  return true;
+}
 function viewTasbih(){
   var z = ZIKRS[V.zikr], key = "z"+V.zikr, cnt = S.tasbih[key]||0;
   var inRound = (cnt>0 && cnt % z.goal === 0) ? z.goal : cnt % z.goal;
@@ -6346,7 +6464,7 @@ function viewTasbih(){
     '</section>'+
     '<div class="card flat" style="text-align:center;padding:14px">'+
       '<div class="eyebrow">Всего произнесено</div>'+
-      '<div style="font-family:var(--f-display);font-size:28px;font-weight:700;margin-top:4px">'+(S.tasbihTotal||0)+'</div>'+
+      '<div id="tasbihTotal" style="font-family:var(--f-display);font-size:28px;font-weight:700;margin-top:4px">'+(S.tasbihTotal||0)+'</div>'+
     '</div></div>';
 }
 
@@ -21921,7 +22039,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -22069,11 +22187,12 @@ document.getElementById("app").addEventListener("click", function(ev){
     bumpTasbih();
     var z = ZIKRS[V.zikr];
     if(S.tasbih[key] % z.goal === 0) toast("Круг завершён: "+z.goal);
-    save(); renderInPlace();
+    save();
+    if(!tasbihPaint()) renderInPlace();
     if(navigator.vibrate) { try{ navigator.vibrate(12); }catch(e){} }
     return;
   }
-  if(d.reset!==undefined){ S.tasbih["z"+V.zikr]=0; save(); renderInPlace(); toast("Счётчик сброшен"); return; }
+  if(d.reset!==undefined){ S.tasbih["z"+V.zikr]=0; save(); if(!tasbihPaint()) renderInPlace(); toast("Счётчик сброшен"); return; }
   if(d.zikr!==undefined){ V.zikr = parseInt(d.zikr,10); renderInPlace(); return; }
   if(d.name!==undefined){ V.tab="dua"; open("name", parseInt(d.name,10)); return; }
   if(d.hadith!==undefined){ V.tab="dua"; open("hadithOne", parseInt(d.hadith,10)); return; }
@@ -22095,6 +22214,7 @@ document.getElementById("app").addEventListener("click", function(ev){
     return;
   }
   if(notesClick(d)) return;
+  if(d.a2hs!==undefined){ S.a2hsHide = Date.now(); save(); render(); toast("Подсказка скрыта на две недели"); return; }
   if(d.qblog){ qBookLog(); return; }
   if(d.qrmd){ S.qrmdOff = Math.max(0, Math.min(15, (S.qrmdOff || 0) + parseInt(d.qrmd, 10))); save(); render(); return; }
   if(d.qplanoff!==undefined){ qPlanStop(); render(); toast("План убран"); return; }
@@ -22968,6 +23088,9 @@ setTimeout(stSend, 4000); /* что осталось с прошлого раз�
 document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "hidden") stSend(); });
 quizLoad();
 navRestore();
+/* хранение: просим постоянное хранилище и, если данные пропали, поднимаем копию из второго хранилища */
+storagePersist();
+setTimeout(idbRestore, 800);
 scoreSync();
 /* Время с Кораном: считаем, пока человек действительно читает - экран чтения открыт
    и приложение на виду. Свернул или ушёл на другой экран - счёт останавливается. */
