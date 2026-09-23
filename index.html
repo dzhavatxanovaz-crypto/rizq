@@ -5475,10 +5475,6 @@ function viewHomeMain(){
                               : "считаем ваше место")
         : "неделя начинается заново каждый понедельник")+'</span></span>'+
     '<span class="cw-go">›</span></button>');
-  h.push('<button class="cat-wide gold" data-open="halal" style="margin-top:10px">'+
-    '<span class="cw-ic">☪</span>'+
-    '<span class="cw-t"><b>Халяль рядом</b><span>еда, магазины и ближайшая мечеть</span></span>'+
-    '<span class="cw-go">›</span></button>');
   /* хадис дня - короткое чтение, когда день уже отмечен */
   /* хадис дня */
   var hd = HADITHS.length ? HADITHS[dayIndex() % HADITHS.length] : null;
@@ -5490,6 +5486,10 @@ function viewHomeMain(){
       '<div style="font-size:14px;line-height:1.6;color:var(--ink-2)">'+esc(hd.text.slice(0,150))+'...</div>'+
       '<div style="font-size:13px;color:var(--accent-ink);margin-top:9px;font-weight:600">Читать целиком →</div></button>');
   }
+  h.push('<button class="cat-wide gold" data-open="halal" style="margin-top:10px">'+
+    '<span class="cw-ic">☪</span>'+
+    '<span class="cw-t"><b>Халяль рядом</b><span>еда, магазины и ближайшая мечеть</span></span>'+
+    '<span class="cw-go">›</span></button>');
   /* обучение - в самом низу */
   h.push('<div class="sec-h" style="margin-top:6px"><h3>Обучение</h3><button class="more" data-open="courses">Все программы →</button></div>');
   var flagship = COURSES.filter(function(c){ return c.id === "sunnah"; })[0] || COURSES[0];
