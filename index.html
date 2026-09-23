@@ -13518,7 +13518,7 @@ function b1S(){
   if(typeof b.last !== "number") b.last = typeof S.b1last === "number" ? S.b1last : 0;
   return b;
 }
-var BOOK1_REV = 11;  /* 5 - новая редакция (22.09), 6 - хадисы гл. 24 и 65, 7 - редакторский проход, 8 - второй проход, 9 - аяты по смыслу и эпиграф, 10 - без повторов аятов, 11 - богословская проверка всех глав (23.09) */
+var BOOK1_REV = 12;  /* 5 - новая редакция (22.09), 6 - хадисы гл. 24 и 65, 7 - редакторский проход, 8 - второй проход, 9 - аяты по смыслу и эпиграф, 10 - без повторов аятов, 11 - богословская проверка всех глав (23.09), 12 - сплошная экспертиза: факты, вычитка, знак 16+ */
 function b1Data(){ try{ var j = JSON.parse(localStorage.getItem("rizq.book1") || "null");
   if(j && j.chapters && j.chapters.length && (j.rev || 1) < BOOK1_REV && b1Order() && !B1.busy && !B1.revTried){ B1.revTried = 1; setTimeout(function(){ b1Load(); }, 0); }
   return j && j.chapters && j.chapters.length ? j : null; }catch(e){ return null; } }
