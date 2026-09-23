@@ -90,8 +90,8 @@ footer{border-top:1px solid var(--line);padding-block:30px 46px;color:var(--ink3
         <h1>Я звала Его,<br>когда горело</h1>
         <p class="lead" style="margin-top:18px">Как будто Он служба спасения, которой не звонят, пока всё хорошо. Роман о женщине, которая построила дело, выстояла одна и вдруг поняла: рядом всё это время был Тот, Кого она звала только в беде.</p>
         <div class="cta">
-          <a class="btn btn-main" href="https://rizq.javattigroup.ru/?open=book1">Читать первые главы бесплатно</a>
-          <a class="btn btn-ghost" href="https://rizq.javattigroup.ru/?open=book1">Купить за 550 ₽</a>
+          <a class="btn btn-main" href="https://rizq.javattigroup.ru/?open=book1&utm_source=kniga&utm_medium=landing&utm_campaign=verit&utm_content=hero">Читать первые главы бесплатно</a>
+          <a class="btn btn-ghost" href="https://rizq.javattigroup.ru/?open=book1&utm_source=kniga&utm_medium=landing&utm_campaign=verit&utm_content=hero_buy">Купить за 550 ₽</a>
         </div>
         <p class="note">99 глав - 99 Имён Аллаха. Открывается сразу после оплаты, читается без интернета.</p>
       </div>
@@ -161,7 +161,7 @@ footer{border-top:1px solid var(--line);padding-block:30px 46px;color:var(--ink3
     <div class="price"><b>550 ₽</b><span>навсегда, без подписки</span></div>
     <p class="lead">Девяносто девять глав. Это меньше шести рублей за главу и дешевле одной книги в магазине.</p>
     <div class="cta">
-      <a class="btn btn-main" href="https://rizq.javattigroup.ru/?open=book1">Начать читать бесплатно</a>
+      <a class="btn btn-main" href="https://rizq.javattigroup.ru/?open=book1&utm_source=kniga&utm_medium=landing&utm_campaign=verit&utm_content=price">Начать читать бесплатно</a>
     </div>
     <p class="note">Книга остаётся у вас навсегда и читается без интернета. Оплата картой, чек приходит на вашу почту.</p>
   </div>
@@ -194,7 +194,22 @@ footer{border-top:1px solid var(--line);padding-block:30px 46px;color:var(--ink3
   </div>
 </footer>
 
-<div class="sticky"><a class="btn btn-main" href="https://rizq.javattigroup.ru/?open=book1">Читать первые главы бесплатно</a></div>
+<div class="sticky"><a class="btn btn-main" href="https://rizq.javattigroup.ru/?open=book1&utm_source=kniga&utm_medium=landing&utm_campaign=verit&utm_content=sticky">Читать первые главы бесплатно</a></div>
 
+
+<script>
+/* метка источника из рекламы или шапки профиля доезжает до приложения и попадает в заказ */
+(function(){
+  var q = new URLSearchParams(location.search);
+  if(!q.get("utm_source")) return;
+  document.querySelectorAll('a[href*="rizq.javattigroup.ru/?open=book1"]').forEach(function(a){
+    var u = new URL(a.href);
+    ["utm_source","utm_medium","utm_campaign","utm_content","utm_term"].forEach(function(k){
+      if(q.get(k)) u.searchParams.set(k, q.get(k));
+    });
+    a.href = u.toString();
+  });
+})();
+</script>
 </body>
 </html>
