@@ -1521,6 +1521,7 @@ details.more[open]>summary:after{content:"⌄"}
 .mdn-page .mus-foot{border-top-color:rgba(160,128,50,.3)}
 .mdn-page .mus-foot span{color:#8A7A55}
 .mdn-page .mus-nav{color:#5A4A2A;border-color:rgba(160,128,50,.4)}
+.mdn-fb{margin:0 0 10px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--surface-2,var(--surface));font-size:13px;line-height:1.55;color:var(--ink-2)}
 .mdn-wait{padding:60px 16px;text-align:center;font-size:14px;line-height:1.6;color:#6B5E45}
 .mdn-spin{display:block;width:26px;height:26px;margin:0 auto 12px;border-radius:50%;border:3px solid rgba(160,128,50,.25);border-top-color:#A0802F;animation:mdnspin 1s linear infinite}
 @keyframes mdnspin{to{transform:rotate(360deg)}}
@@ -5085,13 +5086,28 @@ function applyQSize(){
    с полной огласовкой. «Крупный насх» - Scheherazade New, у него шире буквы и выше строка.
    Оба свободные (OFL) и лежат рядом с приложением, интернет для них не нужен. */
 var QFONTS = [
-  {id:"madina", n:"Мединский мусхаф", d:"страница в страницу как в печатном, шрифт Комплекса короля Фахда", css:'"Amiri Quran","Noto Naskh Arabic",serif', lh:2.55},
+  {id:"madina", n:"Мединский мусхаф", d:"страница в страницу как в печатном. Каждая страница со своим шрифтом: первый раз её нужно открыть с интернетом, на слабых телефонах бывает долго", css:'"Amiri Quran","Noto Naskh Arabic",serif', lh:2.55},
   {id:"naskh",  n:"Обычный насх",   d:"Noto Naskh Arabic, как было",         css:'"Noto Naskh Arabic","Segoe UI",serif', lh:2.35},
-  {id:"mushaf", n:"Как в мусхафе",  d:"Amiri Quran, печатное начертание",    css:'"Amiri Quran","Noto Naskh Arabic",serif', lh:2.55},
+  {id:"mushaf", n:"Как в мусхафе",  d:"Amiri Quran, печатное начертание мусхафа. Лежит внутри приложения: открывается всегда, и без интернета", css:'"Amiri Quran","Noto Naskh Arabic",serif', lh:2.55},
   {id:"large",  n:"Крупный насх",   d:"Scheherazade New, шире и разборчивее", css:'"Scheherazade New","Noto Naskh Arabic",serif', lh:2.3}
 ];
 function qFont(){ return QFONTS.filter(function(f){ return f.id === (S.qFont || "mushaf"); })[0] || QFONTS[2]; }
 function qMadina(){ return S.qFont === "madina"; }
+/* Мединский мусхаф красивее всех, но у него на каждую из 604 страниц свой шрифт: он
+   качается из сети и занимает память. Люди жаловались, что раздел «Коран» не
+   открывается. Поэтому по умолчанию стоит «Как в мусхафе» - Amiri Quran лежит внутри
+   приложения и работает всегда. Тем, у кого уже был выбран мединский, разово
+   возвращаем надёжное начертание; выбрать мединский снова можно кнопкой «Аа». */
+function qFontSafe(){
+  if(S.qFontSafe) return;
+  S.qFontSafe = 1;
+  if(S.qFont === "madina"){
+    S.qFont = "mushaf";
+    try{ applyQFont(); }catch(e){}
+    setTimeout(function(){ try{ toast("Коран открывается шрифтом, который работает без интернета. Мединский мусхаф - кнопка «Аа»"); }catch(e){} }, 1500);
+  }
+  try{ save(); }catch(e){}
+}
 function applyQFont(){
   var f = qFont();
   document.documentElement.style.setProperty("--f-quran", f.css);
@@ -10250,8 +10266,18 @@ function mdnTrim(cur){
     delete MDN.err[k];
   });
 }
+/* Ждать страницу вечно нельзя: на плохой связи человек видит только крутилку и решает,
+   что «Коран не открывается». Через 9 секунд показываем ту же страницу надёжным шрифтом. */
+var MDN_WAIT = 9000;
+function mdnTimeout(p){
+  setTimeout(function(){
+    if(mdnReady(p) || MDN.err[p]) return;
+    MDN.err[p] = 1; mdnDone(p);
+  }, MDN_WAIT);
+}
 function mdnLoad(p){
   if(!(p >= 1 && p <= 604)) return;
+  if(!mdnReady(p) && !MDN.err[p]) mdnTimeout(p);
   if(!MDN.pages[p] && !MDN.busy[p] && window.fetch){
     MDN.busy[p] = 1;
     fetch("mushaf/v1/p" + mdnPad(p) + ".json?d=2") /* d - версия данных страницы: 2 - с подсказками таджвида */.then(function(r){ if(!r.ok) throw 0; return r.json(); })
@@ -10322,10 +10348,13 @@ function viewMadina(){
     '<button class="qbtn on" data-qbook="0" title="Список аятов">☰</button>'+
     '<button class="qbtn" data-open="qsettings" title="Настройки">⚙</button>'+
   '</div>');
+  /* Страница мединского мусхафа не пришла - не оставляем человека с пустым экраном:
+     показываем ту же страницу шрифтом, который лежит в телефоне. */
+  if(MDN.err[p]) return '<div class="mdn-fb">Страница '+p+' мединского мусхафа не открылась: нужен интернет, чтобы загрузить её в первый раз. '+
+    'Показываю её обычным печатным начертанием - оно работает всегда.'+
+    '<button class="btn sec sm" style="margin-top:10px" data-mdnretry="'+p+'">Попробовать мединский ещё раз</button></div>' + viewMushaf(1);
   var inner;
   if(mdnReady(p)) inner = mdnPageHtml(p);
-  else if(MDN.err[p]) inner = '<div class="mdn-wait">Не получилось загрузить страницу. Нужен интернет, чтобы открыть её в первый раз: потом она будет открываться и без него.'+
-    '<button class="btn sec sm" style="margin-top:12px" data-mdnretry="'+p+'">Попробовать ещё раз</button></div>';
   else inner = '<div class="mdn-wait"><span class="mdn-spin"></span>Открываем страницу '+p+'</div>';
   h.push('<div class="mdn-wrap"><div class="mdn-page'+(MDN.pages[p] && MDN.pages[p].c ? ' mdn-first' : '')+(mdnSize() ? ' mdn-big' : '')+'" style="--mdn-k:'+MDN_K[mdnSize()]+'">'+inner+
     '<div class="mus-foot"><button class="mus-nav" data-mpage="'+(p+1)+'"'+(p>=QPAGE.length?' disabled':'')+'>‹ дальше</button>'+
@@ -10362,8 +10391,8 @@ function sheetQView(){
     }).join("")+'</div>'+
     '<button class="btn ghost" style="margin-top:12px" data-scrim="1">Готово</button>');
 }
-function viewMushaf(){
-  if(qMadina()) return viewMadina();
+function viewMushaf(plain){
+  if(!plain && qMadina()) return viewMadina();
   var p = mushafPage(), a = pageFirst(p), b = pageLast(p), h = [];
   h.push('<div class="qbar">'+
     '<button class="qbtn" id="qPlayAll" data-qplayall="1" title="Слушать">▶</button>'+
@@ -20919,7 +20948,7 @@ function viewSettings(){
    ============================================================ */
 var BK_KEYS = ["fav","tasbih","tasbihTotal","read","dcnt","practice","orders","readDay","done","salah","myduas","goals",
   "namesRead","daily","shukrNotes","shukr","checks","sunnah","health","pauses","qada","points","pointsDay",
-  "fin","finLimits","debts","finRepeat","fontSize","todos","quiz","azkarLifetime","qLast","qMax","qRead","notes","noteFolders","qMarks","qplan","hifz","ar","zakat","trip","umrah","b2","b1","kids","finReqs",
+  "fin","finLimits","debts","finRepeat","fontSize","todos","quiz","azkarLifetime","qLast","qMax","qRead","qFontSafe","notes","noteFolders","qMarks","qplan","hifz","ar","zakat","trip","umrah","b2","b1","kids","finReqs",
   "name","city","method","madhab","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll"];
 
 /* Что человек потеряет, если копии не будет. Считаем по тем же данным,
@@ -23136,6 +23165,7 @@ navRestore();
 /* хранение: просим постоянное хранилище и, если данные пропали, поднимаем копию из второго хранилища */
 storagePersist();
 setTimeout(idbRestore, 800);
+qFontSafe();
 scoreSync();
 /* Время с Кораном: считаем, пока человек действительно читает - экран чтения открыт
    и приложение на виду. Свернул или ушёл на другой экран - счёт останавливается. */
