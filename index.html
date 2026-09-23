@@ -693,6 +693,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .cal-c.on{border-color:rgba(62,155,114,.45)}
 /* азкары на главной: одна тонкая строка */
 .b1-quote blockquote{margin:10px 0 14px;padding-left:14px;border-left:3px solid var(--gold,#C3AD70);font-family:var(--f-display);font-size:16px;line-height:1.5;color:var(--ink)}
+.day-toggle{width:100%;margin-top:13px}
 .azkar-line{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding-top:12px;padding-bottom:12px}
 .azkar-ic{font-size:19px;flex:none;color:var(--accent-ink)}
 .azkar-t{flex:1;min-width:0}
@@ -5320,6 +5321,9 @@ function viewHomeMain(){
         '<span class="dlbl" style="font-size:11.5px;text-align:center;line-height:1.25;color:'+(on?"var(--ink-2)":"var(--ink-3)")+'">'+x.n+'</span></button>';
     }).join("") +'</div>'+
 
+    /* «Мой день» сворачивается: подробности открываются кнопкой */
+    '<button class="btn sec sm day-toggle" data-dayopen="1">'+(S.dayOpen ? 'Свернуть подробности ▴' : 'Развернуть день ▾')+'</button>'+
+    (S.dayOpen ? (
     '<button style="display:flex;align-items:center;gap:6px;width:100%;margin-top:12px;font-size:13px;color:var(--ink-3)" data-salahopen="1">'+
       '<span>Намазы по отдельности: '+salahDone(tk)+' из 5</span>'+
       '<span style="margin-left:auto">'+(S.salahOpen?"▲":"▼")+'</span></button>'+
@@ -5376,7 +5380,7 @@ function viewHomeMain(){
         return x[2] ? '<button data-open="'+x[2]+'" style="text-align:center">'+inner+'</button>'
                     : '<div style="text-align:center">'+inner+'</div>';
       }).join("")+
-    '</div>'+
+    '</div>') : "")+
     '<div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;margin-top:13px;padding-top:12px;border-top:1px solid var(--line-soft)">'+
       '<span style="font-size:13px;color:'+(st?"var(--accent-ink)":"var(--ink-3)")+';font-weight:600;line-height:1.4">'+
         (st ? "◈ серия: "+daysWord(st) : "серия начнётся с первого полного дня")+
@@ -5412,17 +5416,6 @@ function viewHomeMain(){
           : '<div style="margin-top:7px;font-size:13.5px;color:var(--ink-3)">Одна строка - чтобы вспомнить через месяц</div>'))+
   '</section>');
 
-  /* хадис дня - короткое чтение, когда день уже отмечен */
-  /* хадис дня */
-  var hd = HADITHS.length ? HADITHS[dayIndex() % HADITHS.length] : null;
-  if(hd){
-    h.push('<div class="sec-h" style="margin-top:6px"><h3>Хадис дня</h3>'+
-      '<span class="more" style="color:var(--ink-3)">№ '+hd.num+'</span></div>');
-    h.push('<button class="card" style="width:100%;text-align:left" data-hadith="'+HADITHS.indexOf(hd)+'">'+
-      '<div style="font-family:var(--f-display);font-size:16px;font-weight:600;margin-bottom:6px;line-height:1.35">'+esc(hd.n)+'</div>'+
-      '<div style="font-size:14px;line-height:1.6;color:var(--ink-2)">'+esc(hd.text.slice(0,150))+'...</div>'+
-      '<div style="font-size:13px;color:var(--accent-ink);margin-top:9px;font-weight:600">Читать целиком →</div></button>');
-  }
 
   h.push('<div class="sec-h"><h3>Моё</h3></div>');
   /* цели и намерения - личный список, растёт со временем, как «Мои дуа» */
@@ -5459,21 +5452,19 @@ function viewHomeMain(){
     '</div>');
 
   h.push('<div class="sec-h"><h3>Читать и учиться</h3></div>');
-  /* книга на главной: одна строка для тех, кто ещё не купил. Начало бесплатное, поэтому зовём читать, а не покупать */
-  if(!b1Owned()){
-    var b1p = b1S(), b1read = b1p && b1p.pos ? Object.keys(b1p.pos).length : 0;
+  /* книга на главной - всегда: купившим «продолжить», остальным «первые главы бесплатно» */
+  (function(){
+    var b1pct = b1Done(), b1p = b1S(), b1read = b1p && b1p.pos ? Object.keys(b1p.pos).length : 0;
+    var sub = b1Owned()
+      ? (b1pct ? 'прочитано '+b1pct+'% · продолжить чтение' : 'книга ваша · начать читать')
+      : (b1read ? 'вы начали читать · продолжить' : 'роман о 99 Именах · первые главы бесплатно');
     h.push('<button class="card azkar-line" data-open="book1">'+
       '<img src="'+BOOK1.cover+'" alt="" style="width:34px;height:50px;object-fit:cover;border-radius:4px;flex:none">'+
-      '<span class="azkar-t"><b>'+esc(BOOK1.n)+'</b>'+
-        '<span>'+(b1read ? 'вы начали читать · продолжить' : 'роман о 99 Именах · первые главы бесплатно')+'</span></span>'+
+      '<span class="azkar-t"><b>'+esc(BOOK1.n)+'</b><span>'+sub+'</span></span>'+
       '<span class="azkar-go">›</span></button>');
-  }
+  })();
   /* изучаем арабский с JAVATTI - под рейтингом */
   h.push(arHero(false).replace('<div class="ar-hero">', '<button class="ar-hero" data-ar="home">').replace(/<\/div>$/, '</button>'));
-  h.push('<button class="cat-wide gold" data-open="halal" style="margin-top:10px">'+
-    '<span class="cw-ic">☪</span>'+
-    '<span class="cw-t"><b>Халяль рядом</b><span>еда, магазины и ближайшая мечеть</span></span>'+
-    '<span class="cw-go">›</span></button>');
   /* рейтинг участников - над курсом арабского (просьба Заиры 21.09) */
   var scH = scoreState(), scMe = S.scoreMe;
   h.push('<button class="cat-wide" data-open="top">'+
@@ -5484,6 +5475,21 @@ function viewHomeMain(){
                               : "считаем ваше место")
         : "неделя начинается заново каждый понедельник")+'</span></span>'+
     '<span class="cw-go">›</span></button>');
+  h.push('<button class="cat-wide gold" data-open="halal" style="margin-top:10px">'+
+    '<span class="cw-ic">☪</span>'+
+    '<span class="cw-t"><b>Халяль рядом</b><span>еда, магазины и ближайшая мечеть</span></span>'+
+    '<span class="cw-go">›</span></button>');
+  /* хадис дня - короткое чтение, когда день уже отмечен */
+  /* хадис дня */
+  var hd = HADITHS.length ? HADITHS[dayIndex() % HADITHS.length] : null;
+  if(hd){
+    h.push('<div class="sec-h" style="margin-top:6px"><h3>Хадис дня</h3>'+
+      '<span class="more" style="color:var(--ink-3)">№ '+hd.num+'</span></div>');
+    h.push('<button class="card" style="width:100%;text-align:left" data-hadith="'+HADITHS.indexOf(hd)+'">'+
+      '<div style="font-family:var(--f-display);font-size:16px;font-weight:600;margin-bottom:6px;line-height:1.35">'+esc(hd.n)+'</div>'+
+      '<div style="font-size:14px;line-height:1.6;color:var(--ink-2)">'+esc(hd.text.slice(0,150))+'...</div>'+
+      '<div style="font-size:13px;color:var(--accent-ink);margin-top:9px;font-weight:600">Читать целиком →</div></button>');
+  }
   /* обучение - в самом низу */
   h.push('<div class="sec-h" style="margin-top:6px"><h3>Обучение</h3><button class="more" data-open="courses">Все программы →</button></div>');
   var flagship = COURSES.filter(function(c){ return c.id === "sunnah"; })[0] || COURSES[0];
@@ -21909,7 +21915,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -22204,6 +22210,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.pauseend!==undefined){ pauseEnd(); return; }
   if(d.pausedel){ pauseDel(d.pausedel); return; }
   if(d.salahopen!==undefined){ S.salahOpen = !S.salahOpen; save(); renderInPlace(); return; }
+  if(d.dayopen!==undefined){ S.dayOpen = !S.dayOpen; save(); renderInPlace(); return; }
   if(d.repperiod){ V.repPeriod = d.repperiod; render(); return; }
   if(d.repmonth){ V.repMonth = d.repmonth; V.repDay = null; render(); return; }
   if(d.repday){ V.repDay = (V.repDay === d.repday) ? null : d.repday; render(); return; }
