@@ -10232,6 +10232,24 @@ function mdnPad(n){ return (n < 10 ? "00" : n < 100 ? "0" : "") + n; }
 function mdnFam(p){ return "QCF_P" + mdnPad(p); }
 function mdnReady(p){ return !!(MDN.pages[p] && MDN.fonts[p]); }
 function mdnDone(p){ if(V.view === "reader" && qBookOn() && qMadina() && mushafPage() === p) render(); }
+/* У каждой страницы мединского мусхафа свой шрифт. Если их копить, на телефонах со
+   слабой памятью вкладка падает и раздел «Коран» перестаёт открываться. Держим только
+   страницы рядом с открытой, остальные выгружаем. */
+var MDN_KEEP = 6;
+function mdnTrim(cur){
+  var keep = {}, i;
+  for(i = cur - MDN_KEEP; i <= cur + MDN_KEEP; i++) keep[i] = 1;
+  Object.keys(MDN.fonts).forEach(function(k){
+    if(keep[k]) return;
+    try{
+      var fam = mdnFam(+k);
+      document.fonts.forEach(function(f){ if(f.family === fam) document.fonts.delete(f); });
+    }catch(e){}
+    delete MDN.fonts[k];
+    delete MDN.pages[k];
+    delete MDN.err[k];
+  });
+}
 function mdnLoad(p){
   if(!(p >= 1 && p <= 604)) return;
   if(!MDN.pages[p] && !MDN.busy[p] && window.fetch){
@@ -10245,7 +10263,7 @@ function mdnLoad(p){
     MDN.fbusy[p] = 1;
     try{
       var ff = new FontFace(mdnFam(p), "url(mushaf/v1/f/p" + mdnPad(p) + ".woff2)");
-      ff.load().then(function(f){ document.fonts.add(f); MDN.fonts[p] = 1; MDN.fbusy[p] = 0; mdnDone(p); })
+      ff.load().then(function(f){ document.fonts.add(f); MDN.fonts[p] = 1; MDN.fbusy[p] = 0; mdnTrim(p); mdnDone(p); })
         .catch(function(){ MDN.fbusy[p] = 0; MDN.err[p] = 1; mdnDone(p); });
     }catch(e){ MDN.fbusy[p] = 0; MDN.err[p] = 1; }
   }
@@ -21913,6 +21931,24 @@ function sheetWhy(){
    РЕНДЕР
    ============================================================ */
 /* обновить экран на месте: без «прыжка» анимации и с той же прокруткой */
+/* Если что-то сломалось при отрисовке, раньше экран оставался пустым и человек думал,
+   что раздел «не открывается». Теперь показываем понятное сообщение и, если дело было
+   в мединском мусхафе, сами переключаем на обычное начертание. */
+var RENDER_FAIL = 0;
+function renderFallback(e){
+  try{
+    var madina = (typeof qMadina === "function") && qMadina();
+    if(madina && RENDER_FAIL < 2){
+      RENDER_FAIL++;
+      S.qFont = "mushaf"; try{ save(); }catch(x){}
+      try{ applyQFont(); }catch(x){}
+      try{ renderCore(); toast("Мединский мусхаф не открылся на этом телефоне - включила обычное начертание"); return; }catch(x){}
+    }
+    $screen.innerHTML = '<div class="stack"><div class="empty"><div class="ic">!</div><b>Этот экран не открылся</b>'+
+      '<p>Похоже, телефону не хватило памяти или не догрузились данные. Откройте раздел ещё раз или вернитесь на главную.</p>'+
+      '<button class="btn sm" style="margin-top:14px" data-go="home">На главную</button></div></div>';
+  }catch(x){}
+}
 function renderInPlace(){
   var top = $screen.scrollTop;
   /* замена содержимого на миг сдвигает прокрутку - не принимаем это за жест, иначе шапка и панель выезжают */
@@ -21921,7 +21957,16 @@ function renderInPlace(){
   try { render(); } finally { V.quiet = false; }
   $screen.scrollTop = top; TB_Y = top;
 }
+/* Отрисовка обёрнута: сбой на одном экране не оставляет пустую страницу */
+var RENDER_BUSY = 0;
 function render(){
+  if(RENDER_BUSY) return;
+  RENDER_BUSY = 1;
+  try{ renderCore(); RENDER_FAIL = 0; }
+  catch(e){ renderFallback(e); }
+  finally{ RENDER_BUSY = 0; }
+}
+function renderCore(){
   if(pushOn()) pushSoon();
   if(KS.on && V.view!=="kidstory"){ kidStop(); }
   if(SP.key && V.view!=="salahpics"){ spStop(); }
