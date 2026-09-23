@@ -13286,7 +13286,10 @@ var BOOK2 = {
   id:"book2", n:"Девушка, которая смогла", a:"Заира Джаватханова", price:550, cover:"icons/book-devushka.jpg",
   about:"Бизнес-роман. Героиня из провинциального городка уезжает с ребёнком от мужа-тирана в столицу, встречает наставника и с нуля строит бизнес по производству одежды. История собрана из реальных событий в жизни клиенток автора. В конце глав - задания, которые помогут найти слабые места в вашем деле."
 };
-var B2 = { busy:false, err:"", saveT:0 };
+var B2 = { busy:false, err:"", saveT:0, revTried:0 };
+/* Номер редакции книги. Поднимаем его при каждой правке текста на сервере:
+   у кого книга уже лежит в телефоне, она перекачается сама при открытии. */
+var BOOK2_REV = 2;  /* 1 - первая выкладка, 2 - правка набора: буквицы, разорванные слова, врезки (23.09) */
 var B2_FS = [15, 16.5, 18, 19.5, 21.5, 24, 27];
 function b2S(){
   if(!S.b2 || typeof S.b2 !== "object") S.b2 = {};
@@ -13297,7 +13300,9 @@ function b2S(){
   if(typeof b.last !== "number") b.last = typeof S.b2last === "number" ? S.b2last : 0;
   return b;
 }
-function b2Data(){ try{ var j = JSON.parse(localStorage.getItem("rizq.book2") || "null"); return j && j.chapters && j.chapters.length ? j : null; }catch(e){ return null; } }
+function b2Data(){ try{ var j = JSON.parse(localStorage.getItem("rizq.book2") || "null");
+  if(j && j.chapters && j.chapters.length && (j.rev || 1) < BOOK2_REV && b2Order() && !B2.busy && !B2.revTried){ B2.revTried = 1; setTimeout(function(){ b2Load(); }, 0); }
+  return j && j.chapters && j.chapters.length ? j : null; }catch(e){ return null; } }
 function b2Order(){ return (S.orders || []).filter(function(o){ return o.id === BOOK2.id && o.status === "paid"; })[0] || null; }
 function b2Owned(){ return bought(BOOK2.id) || !!b2Order() || !!b2Data(); }
 function b2Count(){ return BOOK2_TOC.length; }
@@ -13330,7 +13335,7 @@ function b2Load(then){
     .then(function(x){
       B2.busy = false;
       if(!x.ok || !x.j.chapters){ B2.err = (x.j && x.j.error) || "Не получилось загрузить книгу"; render(); return; }
-      try{ localStorage.setItem("rizq.book2", JSON.stringify({ at: Date.now(), title: x.j.title, chapters: x.j.chapters })); }
+      try{ localStorage.setItem("rizq.book2", JSON.stringify({ at: Date.now(), rev: BOOK2_REV, title: x.j.title, chapters: x.j.chapters })); }
       catch(e){ B2.err = "Не хватает памяти телефона, чтобы сохранить книгу"; render(); return; }
       if(!bought(BOOK2.id)){ S.bought.push(BOOK2.id); save(); }
       if(then) then(); else render();
@@ -13513,7 +13518,7 @@ function b1S(){
   if(typeof b.last !== "number") b.last = typeof S.b1last === "number" ? S.b1last : 0;
   return b;
 }
-var BOOK1_REV = 10;  /* 5 - новая редакция (22.09), 6 - хадисы гл. 24 и 65, 7 - редакторский проход, 8 - второй проход, 9 - аяты по смыслу и эпиграф, 10 - без повторов аятов */
+var BOOK1_REV = 11;  /* 5 - новая редакция (22.09), 6 - хадисы гл. 24 и 65, 7 - редакторский проход, 8 - второй проход, 9 - аяты по смыслу и эпиграф, 10 - без повторов аятов, 11 - богословская проверка всех глав (23.09) */
 function b1Data(){ try{ var j = JSON.parse(localStorage.getItem("rizq.book1") || "null");
   if(j && j.chapters && j.chapters.length && (j.rev || 1) < BOOK1_REV && b1Order() && !B1.busy && !B1.revTried){ B1.revTried = 1; setTimeout(function(){ b1Load(); }, 0); }
   return j && j.chapters && j.chapters.length ? j : null; }catch(e){ return null; } }
