@@ -12,9 +12,7 @@
 <meta property="og:url" content="https://rizq.javattigroup.ru/kniga/">
 <meta name="theme-color" content="#231B19">
 <link rel="icon" href="../icons/icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geologica:wght@200;300;400;600&family=PT+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../fonts.css">
 <style>
 :root{
   --ink:#EDEEE1; --ink2:#D7CBBA; --ink3:#A5988A;
@@ -24,7 +22,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
-body{background:var(--bg);color:var(--ink);font:300 17px/1.6 Geologica,"Segoe UI",system-ui,sans-serif;
+body{background:var(--bg);color:var(--ink);font:300 17px/1.6 Inter,"Segoe UI",system-ui,sans-serif;
   padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
 .wrap{max-width:760px;margin:0 auto;padding-inline:20px}
 section{padding-block:clamp(34px,7vw,64px)}
@@ -44,27 +42,27 @@ a{color:inherit}
 .brand i{width:34px;height:1px;background:var(--gold);display:block}
 .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 24px;border-radius:12px;
-  font:600 16px/1 Geologica,sans-serif;text-decoration:none;border:1px solid transparent;transition:transform .12s ease,filter .2s ease}
+  font:600 16px/1 Inter,sans-serif;text-decoration:none;border:1px solid transparent;transition:transform .12s ease,filter .2s ease}
 .btn:active{transform:translateY(1px)}
 .btn-main{background:var(--gold);color:#2B211D}
 .btn-ghost{border-color:var(--line);color:var(--ink)}
 .note{font-size:13.5px;color:var(--ink3);margin-top:12px}
 .quote{font-family:"PT Serif",Georgia,serif;font-size:clamp(19px,4.2vw,25px);line-height:1.45;font-style:italic;
   border-left:3px solid var(--gold);padding-left:18px;color:var(--ink)}
-.quote span{display:block;font:400 13px/1.4 Geologica,sans-serif;font-style:normal;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-top:12px}
+.quote span{display:block;font:400 13px/1.4 Inter,sans-serif;font-style:normal;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-top:12px}
 .cards{display:grid;gap:14px;grid-template-columns:1fr}
 @media(min-width:620px){.cards{grid-template-columns:1fr 1fr}}
 .card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:20px}
 .card p{font-size:15.5px;color:var(--ink2)}
 ol.steps{list-style:none;counter-reset:s;display:grid;gap:14px}
 ol.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:14px;align-items:start}
-ol.steps li:before{content:counter(s);font:600 15px/34px Geologica,sans-serif;text-align:center;width:34px;height:34px;
+ol.steps li:before{content:counter(s);font:600 15px/34px Inter,sans-serif;text-align:center;width:34px;height:34px;
   border-radius:50%;border:1px solid var(--gold);color:var(--gold)}
 ul.ticks{list-style:none;display:grid;gap:12px}
 ul.ticks li{display:grid;grid-template-columns:20px 1fr;gap:12px;color:var(--ink2);font-size:16px}
 ul.ticks li:before{content:"✦";color:var(--gold)}
 .price{display:flex;flex-wrap:wrap;align-items:baseline;gap:12px;margin-bottom:8px}
-.price b{font:600 44px/1 Geologica,sans-serif;color:var(--straw)}
+.price b{font:600 44px/1 Inter,sans-serif;color:var(--straw)}
 .price span{font-size:14px;color:var(--ink3)}
 .faq{display:grid;gap:10px}
 details{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}

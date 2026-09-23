@@ -1,5 +1,5 @@
 /* Ризк - офлайн-кэш. Меняйте номер версии при каждом обновлении приложения. */
-var CACHE = "rizq-v203";
+var CACHE = "rizq-v204";
 var ASSETS = [
   "./",
   "./index.html",
@@ -14,6 +14,10 @@ var ASSETS = [
   "./fonts/amiri-quran-arabic.woff2",
   "./fonts/scheherazade-new-arabic.woff2",
   "./fonts/noto-naskh-arabic-latin.woff2",
+  /* книги читаются офлайн: их набор - PT Serif */
+  "./fonts/pt-serif-400-normal-cyrillic.woff2",
+  "./fonts/pt-serif-700-normal-cyrillic.woff2",
+  "./fonts/pt-serif-400-italic-cyrillic.woff2",
   "./privacy.html",
   "./manifest.webmanifest",
   "./posts.json",
