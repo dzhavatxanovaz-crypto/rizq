@@ -3978,15 +3978,15 @@ COURSES.sort(function(a,b){ return COURSE_ORDER.indexOf(a.id) - COURSE_ORDER.ind
 /* Разговорный клуб арабского: платное участие, оплата через CRM школы и Prodamus.
    Занятия идут в приложении, встречи - с преподавателем по видеосвязи. */
 COURSES.push({
-  id:"arabclub", ic:"◈", start:"Старт 1 октября", price:2500, lvl:"С любого уровня",
-  dur:"12 встреч в месяц · вторник, четверг, воскресенье, 20:00 МСК",
+  id:"arabclub", ic:"◈", start:"Первая встреча 2 октября", price:2900, lvl:"С любого уровня",
+  dur:"8 встреч в месяц · среда и пятница, 13:00 МСК",
   n:"Разговорный клуб арабского",
-  short:"Три живые встречи в неделю с преподавателем. Между встречами говорите с приложением: оно спрашивает, вы отвечаете вслух.",
-  full:"Двенадцать встреч в месяц по сорок минут, группа до восьми человек. Правило одно: на встрече говорим по-арабски. " +
+  short:"Две живые встречи в неделю с преподавателем, по часу. Между встречами говорите с приложением: оно спрашивает, вы отвечаете вслух.",
+  full:"Восемь встреч в месяц по часу, среда и пятница в 13:00 по Москве, группа до десяти человек. Правило одно: на встрече говорим по-арабски. " +
     "Перед началом - проверка уровня прямо в приложении, чтобы попасть в группу по силам. За день до каждой встречи открывается словарь встречи: " +
     "фразы с озвучкой и тренажёр, где приложение задаёт вопрос, а вы отвечаете вслух и видите, насколько попали. " +
-    "После встречи - короткое задание на пять минут и отметка о посещении. Тем, кто был минимум на восьми встречах, в конце месяца выдаётся свидетельство об участии. " +
-    "Оплата помесячная, без автосписаний.",
+    "После встречи - короткое задание на пять минут и отметка о посещении. Тем, кто был минимум на шести встречах, в конце месяца выдаётся свидетельство об участии. " +
+    "Оплата помесячная, без автосписаний: 2 900 ₽ за месяц или 7 900 ₽ сразу за три месяца (выгода 800 ₽).",
   for:["Тем, кто учит арабский, но молчит","Кто прошёл уроки в приложении и хочет заговорить","Кто читает Коран и хочет понимать речь","Кто стесняется говорить при людях"],
   mods:[{n:"Месяц клуба", ls:[]}],   /* программа подставляется ниже, когда объявлен CLUB_MEETS */
   rev:[]
@@ -5865,18 +5865,30 @@ function payReturn(id, token){
     S.orders.push(o); save();
   }
   var isBook = id === BOOK2.id || id === BOOK1.id, t = payReturnTitle(id);
+  if(o && o.gift){
+    sheet('<div class="payr"><div class="payr-ic">❁</div><h3>Оплата прошла</h3>'+
+      '<p>Спасибо! Сейчас отправим подарок'+(o.gift.to ? ' для '+esc(o.gift.to) : '')+'.</p>'+
+      '<div class="payr-sp" id="payrSp"><i></i>Получаем подтверждение от банка...</div></div>');
+    PAYR.id = id; PAYR.token = token || ""; PAYR.until = Date.now() + 3 * 60000;
+    payReturnTick();
+    return;
+  }
   sheet('<div class="payr"><div class="payr-ic">✓</div><h3>Оплата прошла</h3>'+
     '<p>'+(isBook ? 'Спасибо! Сейчас откроется книга «'+esc(t)+'».' : 'Спасибо! Сейчас откроем доступ к «'+esc(t)+'».')+'</p>'+
     '<div class="payr-sp" id="payrSp"><i></i>Получаем подтверждение от банка...</div></div>');
-  PAYR.id = id; PAYR.until = Date.now() + 3 * 60000;
+  PAYR.id = id; PAYR.token = token || ""; PAYR.until = Date.now() + 3 * 60000;
   payReturnTick();
 }
 function payReturnTick(){
   clearTimeout(PAYR.timer);
-  var o = (S.orders || []).filter(function(x){ return x.id === PAYR.id; }).sort(function(a, b){ return b.at - a.at; })[0];
+  /* Ищем именно тот заказ, по которому вернулись: у человека может быть и своя
+     книга, и подарок для другого - путать их нельзя. */
+  var o = PAYR.token ? (S.orders || []).filter(function(x){ return x.token === PAYR.token; })[0] : null;
+  if(!o) o = (S.orders || []).filter(function(x){ return x.id === PAYR.id && !x.gift; }).sort(function(a, b){ return b.at - a.at; })[0];
   if(!o) return;
   /* уже оплачено раньше - просто открываем */
   if(o.status === "paid"){
+    if(o.gift){ closeSheet(); sheetGiftSent(o); return; }
     if(PAYR.id === BOOK2.id){ if(b2Data()){ closeSheet(); V.tab = "income"; open("book2ch", b2AfterPay()); setTimeout(b2Restore, 60); toast("Книга открыта. Приятного чтения!"); } else b2Load(function(){ closeSheet(); V.tab = "income"; open("book2ch", b2AfterPay()); setTimeout(b2Restore, 60); toast("Книга открыта. Приятного чтения!"); }); }
     else if(PAYR.id === BOOK1.id){ if(b1Data()){ closeSheet(); V.tab = "income"; open("book1ch", b1AfterPay()); setTimeout(b1Restore, 60); toast("Книга открыта. Приятного чтения!"); } else b1Load(function(){ closeSheet(); V.tab = "income"; open("book1ch", b1AfterPay()); setTimeout(b1Restore, 60); toast("Книга открыта. Приятного чтения!"); }); }
     return;
@@ -5911,6 +5923,15 @@ function deepOpen(){
     }
     /* Ссылка на конкретный курс: ?course=ai. Нужна, чтобы из других наших
        приложений вести прямо на программу, а не на общий список. */
+    /* Ссылка из сообщения получателю: ?gift=КОД. Открывает подарок сразу,
+       без ввода кода руками. */
+    var mgift = q.match(/[?&]gift=([A-Za-z0-9]{8})/);
+    if(mgift){
+      try{ history.replaceState(null, "", location.pathname); }catch(e){}
+      V.tab = "income"; open("book1", null);
+      setTimeout(function(){ giftClaim(mgift[1]); }, 300);
+      return true;
+    }
     var mc = q.match(/[?&]course=([a-zA-Z0-9_]+)/);
     if(mc && COURSES.filter(function(c){ return c.id === mc[1]; }).length){
       V.tab = "income";
@@ -8264,9 +8285,9 @@ function qtBars(){
 /* Потоки: чтобы клуб мог расти, группы набираются на разное время.
    Человек выбирает поток после оплаты, выбор уходит в CRM вместе с уровнем. */
 var CLUB_SLOTS = [
- {id:"ev", n:"Вечерний поток", t:"20:00 МСК", d:"вторник, четверг, воскресенье"},
- {id:"dy", n:"Дневной поток", t:"13:00 МСК", d:"вторник, четверг, воскресенье"},
- {id:"mo", n:"Утренний поток", t:"09:00 МСК", d:"вторник, четверг, воскресенье"}
+ {id:"dy", n:"Дневной поток", t:"13:00 МСК", d:"среда, пятница"},
+ {id:"ev", n:"Вечерний поток", t:"20:00 МСК", d:"среда, пятница"},
+ {id:"mo", n:"Утренний поток", t:"09:00 МСК", d:"среда, пятница"}
 ];
 /* Очные встречи по городам: раз в месяц, начали с Махачкалы. */
 var CLUB_CITY = { city:"Махачкала", when:"последняя суббота месяца", t:"16:00" };
@@ -8375,13 +8396,16 @@ function qwGloss(i){
   return out;
 }
 /* ---------- Разговорный клуб арабского ----------
-   Платное участие: 2500 ₽ в месяц, старт 2026-10-01, три встречи в неделю
-   (вторник, четверг, воскресенье, 20:00 по Москве), двенадцать встреч за месяц.
+   Платное участие: 2 900 ₽ в месяц или 7 900 ₽ за три месяца (решение 24.09.2026),
+   две встречи в неделю по часу (среда и пятница, 13:00 по Москве), восемь встреч за месяц,
+   группа до десяти человек. Первая встреча - пятница, 2 октября.
    Программа и фразы те же, что в CRM: курс «Разговорный клуб арабского».
    Между встречами человек занимается здесь: словарь встречи, разговор с приложением,
    проверка произношения, домашнее задание и отметка о посещении. */
-var CLUB_ID = "arabclub", CLUB_PRICE = 2500, CLUB_START = "2026-10-01";
-var CLUB_DAYS = [2, 4, 0], CLUB_TIME = "20:00";   /* вторник, четверг, воскресенье */
+var CLUB_ID = "arabclub", CLUB_PRICE = 2900, CLUB_START = "2026-10-01";
+var CLUB_DAYS = [3, 5], CLUB_TIME = "13:00";   /* среда, пятница */
+/* Тарифы клуба. Цену в оплату берёт CRM из своего каталога, здесь она только для показа. */
+var CLUB_TARIFFS = [{n:"Месяц",p:2900},{n:"3 месяца",p:7900}];
 var CLUB_MEETS = [
  {n:1, t:"Кто я",
   ph:[["مَا اسْمُكِ؟","ма-смуки","как тебя зовут?"],
@@ -8504,7 +8528,7 @@ var CLUB_MEETS = [
 /* программа клуба в карточке курса: заполняем здесь, когда CLUB_MEETS уже объявлен */
 (function(){
   var c = COURSES.filter(function(x){ return x.id === "arabclub"; })[0];
-  if(c && c.mods && c.mods[0]) c.mods[0].ls = CLUB_MEETS.map(function(m){ return ["Встреча " + m.n + ". " + m.t, "40 мин"]; });
+  if(c && c.mods && c.mods[0]) c.mods[0].ls = CLUB_MEETS.map(function(m){ return ["Встреча " + m.n + ". " + m.t, "60 мин"]; });
 })();
 
 var QW_TOTAL = 77878, QW_COVERED = 50216;
@@ -10146,23 +10170,24 @@ function viewArClub(){
   var h = ['<div class="stack">'];
   h.push('<section class="qw-hero"><div class="qw-hero-ar" dir="rtl">نَادِي المُحَادَثَةِ</div>'+
     '<div class="qw-hero-h">Разговорный клуб арабского</div>'+
-    '<div class="qw-hero-p">Три встречи в неделю с преподавателем, по сорок минут: вторник, четверг и воскресенье в 20:00 по Москве. На встрече говорим только по-арабски.</div>'+
+    '<div class="qw-hero-p">Две встречи в неделю с преподавателем, по часу: среда и пятница в 13:00 по Москве. Группа до десяти человек. На встрече говорим только по-арабски.</div>'+
     (has && nx ? '<div class="qw-big"><b>'+clubDateRu(nx.date).split(",")[0]+'</b><span>ближайшая встреча: '+clubDateRu(nx.date)+', '+CLUB_TIME+'<br>тема: '+esc(nx.m.t)+'</span></div>'
-      : '<div class="qw-big"><b>'+money(CLUB_PRICE)+'</b><span>в месяц · двенадцать встреч<br>старт 1 октября</span></div>')+
+      : '<div class="qw-big"><b>'+money(CLUB_PRICE)+'</b><span>в месяц · восемь встреч<br>или 7 900 ₽ за три месяца<br>первая встреча 2 октября</span></div>')+
     (has ? '<div class="qw-st"><div><b>'+cnt.att+'</b><span>встреч отмечено</span></div>'+
       '<div><b>'+cnt.hw+'</b><span>заданий сделано</span></div>'+
-      '<div><b>'+(cnt.att >= 8 ? "да" : "нет")+'</b><span>свидетельство</span></div></div>' : '')+
+      '<div><b>'+(cnt.att >= 6 ? "да" : "нет")+'</b><span>свидетельство</span></div></div>' : '')+
     '</section>');
   if(!has){
-    h.push('<div class="ar-cta"><button class="btn" data-buy="arabclub">Участвовать - '+money(CLUB_PRICE)+'</button>'+
-      '<button class="btn sec" data-ar="qwtest">Проверить свой уровень</button></div>');
+    h.push('<div class="ar-cta"><button class="btn" data-buy="arabclub" data-tariff="Месяц">Участвовать - '+money(CLUB_PRICE)+' в месяц</button>'+
+      '<button class="btn sec" data-buy="arabclub" data-tariff="3 месяца">Сразу 3 месяца - 7 900 ₽</button>'+
+      '<button class="btn ghost" data-ar="qwtest">Проверить свой уровень</button></div>');
     h.push('<section class="card"><div class="eyebrow">Что входит</div><ul class="ul">'+
-      ['двенадцать встреч с преподавателем, группа до восьми человек',
+      ['восемь встреч в месяц с преподавателем, по часу, группа до десяти человек',
        'словарь встречи в приложении: фразы приходят за день',
        'тренажёр разговора: приложение спрашивает, вы отвечаете вслух',
        'проверка произношения по одиннадцати трудным парам звуков',
        'задание после каждой встречи на пять минут',
-       'свидетельство об участии, если были минимум на восьми встречах'].map(function(x){ return '<li>'+x+'</li>'; }).join("")+'</ul>'+
+       'свидетельство об участии, если были минимум на шести встречах из восьми'].map(function(x){ return '<li>'+x+'</li>'; }).join("")+'</ul>'+
       '<p class="ar-note">Грамматика с нуля в клуб не входит: для неё есть бесплатный курс арабского в этом же приложении.</p></section>');
   }
   if(has){
@@ -10970,7 +10995,7 @@ function arClubCard(){
   }
   return '<section class="card ar-club"><div class="ar-club-ic" dir="rtl">نَتَكَلَّمُ</div>'+
     '<div class="ar-club-t"><b>Разговорный клуб арабского</b>'+
-    '<span>Три встречи в неделю с преподавателем, по сорок минут. Между встречами говорите с приложением: оно спрашивает, вы отвечаете вслух. '+CLUB_PRICE+' ₽ в месяц, старт 1 октября.</span></div>'+
+    '<span>Две встречи в неделю с преподавателем, по часу: среда и пятница в 13:00 МСК. Между встречами говорите с приложением: оно спрашивает, вы отвечаете вслух. 2 900 ₽ в месяц или 7 900 ₽ за три месяца, первая встреча 2 октября.</span></div>'+
     '<button class="btn sm" data-ar="club">Подробнее</button></section>';
 }
 function sheetArClub(){
@@ -14845,7 +14870,10 @@ var BOOK1_REV = 15;  /* 5 - новая редакция (22.09), 6 - хадис�
 function b1Data(){ try{ var j = JSON.parse(localStorage.getItem("rizq.book1") || "null");
   if(j && j.chapters && j.chapters.length && (j.rev || 1) < BOOK1_REV && b1Order() && !B1.busy && !B1.revTried){ B1.revTried = 1; setTimeout(function(){ b1Load(); }, 0); }
   return j && j.chapters && j.chapters.length ? j : null; }catch(e){ return null; } }
-function b1Order(){ return (S.orders || []).filter(function(o){ return o.id === BOOK1.id && o.status === "paid"; })[0] || null; }
+/* Заказ, по которому книга открывается здесь. Подарок другому человеку (o.gift)
+   сюда не попадает: даритель оплатил чужую книгу, а не свою. Принятый подарок
+   (o.via === "gift") - попадает: это и есть книга получателя. */
+function b1Order(){ return (S.orders || []).filter(function(o){ return o.id === BOOK1.id && o.status === "paid" && !o.gift; })[0] || null; }
 function b1Owned(){ return bought(BOOK1.id) || !!b1Order() || !!b1Data(); }
 function b1Count(){ return BOOK1_TOC.length; }
 function b1Open(i){ return i < BOOK1_FREE_N || (BOOK1_TAIL && i === BOOK1_TOC.length - 1) || !!b1Data(); }
@@ -14873,7 +14901,9 @@ function b1Load(then){
   var o = b1Order();
   if(!o || B1.busy || !window.fetch) return;
   B1.busy = true; B1.err = "";
-  fetch(crmApi() + "/api/public/checkout/" + encodeURIComponent(o.token) + "/book")
+  var bUrl = o.via === "gift" ? "/api/public/gift/" + encodeURIComponent(o.token) + "/book"
+                              : "/api/public/checkout/" + encodeURIComponent(o.token) + "/book";
+  fetch(crmApi() + bUrl)
     .then(function(r){ return r.json().then(function(j){ return { ok:r.ok, j:j }; }); })
     .then(function(x){
       B1.busy = false;
@@ -15026,7 +15056,8 @@ function viewBook1(){
   h.push('<div class="sec-h"><h3>Рассказать о книге</h3></div>');
   h.push('<div class="cats">'+
     '<button class="cat" data-b1share="1"><div class="ic">⤴</div><b>Поделиться</b><span>ссылка на книгу и первые главы</span></button>'+
-    '<a class="cat" href="'+esc(waLink("Ассаламу алейкум! Хочу подарить книгу «Женщина, которая верит». Подскажите, как это сделать."))+'" target="_blank" rel="noopener"><div class="ic">❁</div><b>Подарить</b><span>откроем книгу тому, кому дарите</span></a>'+
+    '<button class="cat" data-b1gift="1"><div class="ic">❁</div><b>Подарить</b><span>книга откроется у него сама</span></button>'+
+    '<button class="cat" data-giftcode="1"><div class="ic">✧</div><b>У меня есть код</b><span>открыть подарок, который мне сделали</span></button>'+
     '</div>');
   h.push(waCard('Вопрос по книге?', 'Напишите - ответим', 'Ассаламу алейкум! Вопрос по книге «Женщина, которая верит».', 'Написать в WhatsApp'));
   h.push('</div>');
@@ -22147,6 +22178,9 @@ function viewProf(){
   });
   finOrdersRefresh();
   h.push(finOrderCards());
+  /* Подарки другим людям: отдельными карточками, чтобы их не путали со своими книгами. */
+  (S.orders || []).filter(function(o){ return o.gift; }).sort(function(a, b){ return b.at - a.at; })
+    .forEach(function(o){ h.push(giftSentCard(o)); });
   if(b1Owned()) h.push(book1Card());
   if(b2Owned()) h.push(book2Card());
   mine.forEach(function(c){
@@ -22156,7 +22190,7 @@ function viewProf(){
       '<div class="bar"><i style="width:'+pr.pct+'%"></i></div>'+
       '<div class="course-sub">'+pr.done+' из '+pr.total+' уроков пройдено</div></button>');
   });
-  if((S.orders || []).some(function(o){ return o.status === "paid"; }) || mine.length){
+  if((S.orders || []).some(function(o){ return o.status === "paid" && !o.gift && o.via !== "gift"; }) || mine.length){
     h.push('<a class="row row-link" href="'+esc(cabinetUrl())+'" target="_blank" rel="noopener"><span class="ic">↗</span>Обучение на платформе<span class="val">вход по вашей почте</span><span class="go">›</span></a>');
   }
   if(!mine.length && !b2Owned() && !b1Owned() && !pend.length){
@@ -22672,7 +22706,7 @@ function sheetBuy(id, tariff){
   var isBook = id === BOOK1.id || isB2;
   var c = isBook ? null : (id === CLUB.id ? CLUB : COURSES.filter(function(x){ return x.id === id; })[0]);
   if(!isBook && !c) return;
-  var tars = (c && c.id === "sunnah") ? SUNNAH_TARIFFS : null;
+  var tars = (c && c.id === "sunnah") ? SUNNAH_TARIFFS : (c && c.id === CLUB_ID) ? CLUB_TARIFFS : null;
   var t = tars ? (tars.filter(function(x){ return x.n === tariff; })[0] || tars[0]) : null;
   var price = t ? t.p : isB2 ? BOOK2.price : isBook ? BOOK1.price : c.price;
   var title = isB2 ? BOOK2.n : isBook ? BOOK1.n : c.n;
@@ -22716,6 +22750,164 @@ function sheetBuy(id, tariff){
 function checkoutKeepInputs(){
   var n = document.getElementById("coName"), m = document.getElementById("coMail"), t = document.getElementById("coTel");
   if(n) S.name = n.value.trim(); if(m) S.email = m.value.trim(); if(t) S.phone = t.value.trim();
+}
+
+/* ---------- подарок книги ----------
+   Человек оплачивает книгу и оставляет телефон или почту того, кому дарит.
+   Дальше всё делает сервер: после оплаты книга открывается получателю, ему
+   уходит сообщение со ссылкой, а даритель видит, что подарок отправлен.
+   Никакой переписки в WhatsApp - это и было главным условием.
+
+   Чужой контакт мы берём только с подтверждением дарителя (галочка ниже):
+   это чужие персональные данные, и мы не имеем права записывать их молча. */
+function sheetGift(){
+  var price = BOOK1.price;
+  sheet('<h3>Подарить книгу</h3>'+
+    '<div class="card flat" style="padding:14px;display:flex;gap:10px;align-items:center">'+
+      '<div class="course-ic" style="width:42px;height:42px;font-size:21px">❁</div>'+
+      '<div style="flex:1;min-width:0"><div style="font-size:15px;font-family:var(--f-display);font-weight:600;line-height:1.3">'+esc(BOOK1.n)+'</div>'+
+      '<div style="font-size:13px;color:var(--ink-3);margin-top:3px">Откроется у получателя сама, без пароля и без оплаты с его стороны</div></div>'+
+      '<span class="price" style="font-size:20px">'+money(price)+'</span></div>'+
+    '<div class="sec-h" style="margin-top:16px"><h3>Кому дарите</h3></div>'+
+    '<label class="eyebrow" style="display:block">Имя получателя</label>'+
+    '<input class="search" id="gName" style="margin:6px 0 10px" placeholder="Как его зовут" value="'+esc(V.giftTo || "")+'">'+
+    '<label class="eyebrow">Телефон с WhatsApp</label>'+
+    '<input class="search" id="gTel" type="tel" style="margin:6px 0 10px" placeholder="+7 900 000-00-00" value="'+esc(V.giftTel || "")+'">'+
+    '<label class="eyebrow">Почта получателя</label>'+
+    '<input class="search" id="gMail" type="email" style="margin:6px 0 4px" placeholder="mail@example.com" value="'+esc(V.giftMail || "")+'">'+
+    '<p class="note" style="margin:6px 0 0">Достаточно чего-то одного. Если оставите и телефон, и почту, подарок дойдёт наверняка: сначала пробуем WhatsApp, потом почту.</p>'+
+    '<label class="eyebrow" style="display:block;margin-top:12px">Пожелание (необязательно)</label>'+
+    '<input class="search" id="gNote" style="margin:6px 0 4px" placeholder="Например: с днём рождения!" value="'+esc(V.giftNote || "")+'">'+
+    '<label style="display:flex;align-items:flex-start;gap:9px;margin-top:12px;font-size:13px;color:var(--ink-2);line-height:1.5">'+
+      '<input type="checkbox" id="gOk" style="margin-top:2px;flex:none">'+
+      '<span>Получатель не против, что я оставляю его контакт: он нужен только для того, чтобы отправить подарок. Рассылок на этот контакт не будет.</span></label>'+
+    '<div class="sec-h" style="margin-top:16px"><h3>Ваши данные</h3></div>'+
+    '<label class="eyebrow" style="display:block">Имя</label>'+
+    '<input class="search" id="coName" style="margin:6px 0 10px" placeholder="Как к вам обращаться" value="'+esc(S.name || "")+'">'+
+    '<label class="eyebrow">Ваша почта - на неё придут чек и ссылка на подарок</label>'+
+    '<input class="search" id="coMail" type="email" style="margin:6px 0 10px" placeholder="mail@example.com" value="'+esc(S.email || "")+'">'+
+    '<label class="eyebrow">Ваш телефон</label>'+
+    '<input class="search" id="coTel" type="tel" style="margin:6px 0 4px" placeholder="+7 900 000-00-00" value="'+esc(S.phone || "")+'">'+
+    '<label style="display:flex;align-items:flex-start;gap:9px;margin-top:12px;font-size:13px;color:var(--ink-2);line-height:1.5">'+
+      '<input type="checkbox" id="coOk" style="margin-top:2px;flex:none">'+
+      '<span>Согласна на обработку персональных данных школой бизнеса JAVATTI (ИП Джаватханова З. А.) для оформления подарка. <a href="privacy.html" target="_blank" rel="noopener" style="color:var(--accent-ink)">Политика</a></span></label>'+
+    '<label style="display:flex;align-items:flex-start;gap:9px;margin-top:10px;font-size:13px;color:var(--ink-2);line-height:1.5">'+
+      '<input type="checkbox" id="coAds" style="margin-top:2px;flex:none">'+
+      '<span>Хочу получать новости о книгах и программах. Не обязательно</span></label>'+
+    '<button class="btn" id="giftGo" style="margin-top:14px" data-giftgo="1">Оплатить '+money(price)+' и отправить подарок</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>'+
+    '<p class="note" style="margin-top:12px">Оплата картой или по СБП на защищённой странице Prodamus. Сразу после оплаты книга откроется у получателя, а ему придёт сообщение со ссылкой. Вам ничего отправлять не нужно.</p>');
+}
+
+/* То, что человек уже ввёл, не теряется при перерисовке окна. */
+function giftKeepInputs(){
+  var n = document.getElementById("gName"), t = document.getElementById("gTel"),
+      m = document.getElementById("gMail"), z = document.getElementById("gNote");
+  if(n) V.giftTo = n.value.trim();
+  if(t) V.giftTel = t.value.trim();
+  if(m) V.giftMail = m.value.trim();
+  if(z) V.giftNote = z.value.trim();
+}
+
+function giftStart(){
+  checkoutKeepInputs(); giftKeepInputs();
+  var gok = document.getElementById("gOk"), ok = document.getElementById("coOk"),
+      ads = document.getElementById("coAds"), btn = document.getElementById("giftGo");
+  var toTel = V.giftTel || "", toMail = V.giftMail || "";
+  if(!toTel && !toMail){ toast("Укажите телефон или почту того, кому дарите"); return; }
+  if(toTel && digitsOf(toTel).length < 10){ toast("Проверьте номер получателя"); return; }
+  if(toMail && !emailOk(toMail)){ toast("Проверьте почту получателя"); return; }
+  if(!gok || !gok.checked){ toast("Отметьте, что получатель не против"); return; }
+  if(!S.name){ toast("Напишите, как к вам обращаться"); return; }
+  if(!emailOk(S.email || "")){ toast("Нужна ваша почта: на неё придут чек и ссылка"); return; }
+  if(S.phone && digitsOf(S.phone).length < 10){ toast("Проверьте свой номер телефона"); return; }
+  if(!ok || !ok.checked){ toast("Отметьте согласие на обработку данных"); return; }
+  save();
+  var label = btn ? btn.textContent : "";
+  if(btn){ btn.disabled = true; btn.textContent = "Готовим оплату..."; }
+  var fail = function(msg){ if(btn){ btn.disabled = false; btn.textContent = label; } toast(msg); };
+  fetch(crmApi() + "/api/public/checkout", {
+    method:"POST", headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ app:"rizq", visitor: rizqVisitor(), product: BOOK1.id, name:S.name, email:S.email, phone:S.phone || "",
+      consent:true, adsConsent:!!(ads && ads.checked), source:"rizq", utm: utmPayload(),
+      gift: { name: V.giftTo || "", phone: toTel, email: toMail, note: V.giftNote || "", consent:true } })
+  }).then(function(r){ return r.json().then(function(j){ return { ok:r.ok, j:j }; }); })
+    .then(function(x){
+      if(!x.ok || !x.j.payUrl){ fail(x.j && x.j.error ? x.j.error : "Не получилось оформить подарок, попробуйте ещё раз"); return; }
+      if(!S.orders) S.orders = [];
+      S.orders.push({ token:x.j.token, id:BOOK1.id, title:x.j.title || BOOK1.n, amount:x.j.amount, total:x.j.total || x.j.amount,
+        payUrl:x.j.payUrl, at:Date.now(), status:"pending", gift:{ to: V.giftTo || "", tel: toTel, mail: toMail } });
+      save(); closeSheet(); render();
+      var w = window.open(x.j.payUrl, "_blank");
+      if(!w) location.href = x.j.payUrl;
+      ordersWatch();
+    })
+    .catch(function(){ fail("Нет связи с сервером школы - проверьте интернет"); });
+}
+
+/* Подарок оплачен: показываем дарителю, что он ушёл, и даём ту же ссылку -
+   на случай, если он захочет передать её сам. */
+function sheetGiftSent(o){
+  var g = o.gift || {}, where = g.tel ? "в WhatsApp на " + g.tel : g.mail ? "на почту " + g.mail : "получателю";
+  sheet('<div class="payr"><div class="payr-ic">❁</div><h3>Подарок отправлен</h3>'+
+    '<p>Книга «'+esc(o.title || BOOK1.n)+'»'+(g.to ? ' для '+esc(g.to) : '')+' уже открыта. Сообщение со ссылкой ушло '+esc(where)+'.</p></div>'+
+    (g.link ? '<button class="btn sec" style="margin-top:12px" data-giftcopy="'+esc(g.link)+'">Скопировать ссылку на подарок</button>' : '')+
+    '<p class="note" style="margin-top:12px">Ссылка и код подарка есть в разделе «Профиль» - «Мои покупки». Если получатель не найдёт сообщение, отправьте ссылку сами.</p>'+
+    '<button class="btn ghost" style="margin-top:10px" data-scrim="1">Хорошо</button>');
+}
+
+/* Получатель пришёл по ссылке из сообщения или ввёл код руками. */
+function sheetGiftCode(){
+  sheet('<h3>Открыть подарок</h3>'+
+    '<p class="note" style="margin:0 0 12px">Введите код из сообщения - восемь букв и цифр. Книга откроется здесь и останется у вас.</p>'+
+    '<input class="search" id="gCode" style="margin:0 0 10px;text-transform:uppercase;letter-spacing:2px" placeholder="ABCD2345" maxlength="8">'+
+    '<button class="btn" data-giftcodego="1">Открыть книгу</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
+}
+
+function giftClaim(code){
+  code = String(code || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+  if(code.length !== 8){ toast("Код состоит из восьми знаков"); return; }
+  if(!window.fetch){ toast("Нужен интернет, чтобы открыть подарок"); return; }
+  sheet('<div class="payr"><div class="payr-ic">❁</div><h3>Открываем подарок</h3>'+
+    '<div class="payr-sp"><i></i>Проверяем код...</div></div>');
+  fetch(crmApi() + "/api/public/gift/" + encodeURIComponent(code))
+    .then(function(r){ return r.json().then(function(j){ return { ok:r.ok, j:j }; }); })
+    .then(function(x){
+      if(!x.ok){
+        sheet('<h3>Подарок не открылся</h3><p class="note" style="margin:0 0 12px">'+esc((x.j && x.j.error) || "Проверьте код")+'</p>'+
+          '<button class="btn sec" data-giftcode="1">Ввести код ещё раз</button>'+
+          '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Закрыть</button>');
+        return;
+      }
+      S.orders = S.orders || [];
+      if(!S.orders.filter(function(o){ return o.via === "gift" && o.token === code; }).length){
+        S.orders.push({ token:code, via:"gift", id:BOOK1.id, title:x.j.title || BOOK1.n, amount:0, at:Date.now(), status:"paid",
+          from:x.j.from || "", note:x.j.note || "" });
+      }
+      if(!bought(BOOK1.id)) S.bought.push(BOOK1.id);
+      save();
+      sheet('<div class="payr"><div class="payr-ic">❁</div><h3>Вам подарок</h3>'+
+        '<p>Книга «'+esc(x.j.title || BOOK1.n)+'»'+(x.j.from ? ' от '+esc(x.j.from) : '')+'. Она уже ваша: откроется целиком и будет читаться без интернета.</p>'+
+        (x.j.note ? '<p style="margin-top:8px;font-style:italic">«'+esc(x.j.note)+'»</p>' : '')+'</div>'+
+        '<button class="btn" style="margin-top:12px" data-giftopen="'+esc(code)+'">Начать читать</button>'+
+        '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Позже</button>');
+      render();
+    })
+    .catch(function(){ toast("Нет связи - попробуйте ещё раз"); });
+}
+
+/* Карточка отправленного подарка в «Моих покупках». */
+function giftSentCard(o){
+  var g = o.gift || {};
+  return '<section class="card ord-wait">'+
+    '<div class="ord-h"><b>Подарок: '+esc(o.title || BOOK1.n)+'</b><span class="chip own">'+(o.status === "paid" ? "отправлен" : "ждём оплату")+'</span></div>'+
+    '<div class="ord-sum">'+(g.to ? esc(g.to)+' · ' : '')+esc(g.tel || g.mail || "")+'</div>'+
+    '<div class="ord-btns">'+
+      (o.status !== "paid" && o.payUrl ? '<a class="btn sm" href="'+esc(o.payUrl)+'" target="_blank" rel="noopener">Оплатить</a>' : '')+
+      (g.link ? '<button class="btn sec sm" data-giftcopy="'+esc(g.link)+'">Скопировать ссылку</button>' : '')+
+      '<button class="btn ghost sm" data-orddel="'+esc(o.token || "")+'">Убрать</button>'+
+    '</div></section>';
 }
 
 function checkoutStart(id, tariff, plan){
@@ -22774,6 +22966,12 @@ function ordersCheck(manual){
       .then(function(j){
         if(!j || j.status !== "paid" || o.status === "paid") return;
         o.status = "paid"; o.cabinetUrl = j.cabinetUrl; if(j.plan) o.planInfo = j.plan;
+        /* Подарок: книгу получает другой человек, поэтому у дарителя она не
+           открывается и в «купленное» не попадает. Ему показываем, что подарок ушёл. */
+        if(o.gift){
+          if(j.gift){ o.gift.code = j.gift.code; o.gift.link = j.gift.link; o.gift.sent = j.gift.sent; }
+          save(); closeSheet(); clearTimeout(PAYR.timer); render(); sheetGiftSent(o); return;
+        }
         if(!bought(o.id)) S.bought.push(o.id);
         save();
         if(o.id === BOOK2.id){
@@ -23452,7 +23650,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -24256,6 +24454,16 @@ document.getElementById("app").addEventListener("click", function(ev){
     if(V.view === "book1ch"){ b1Scroll(); save(); V.b1ret = {tab: V.tab, p: V.p | 0, top: $screen.scrollTop}; }
     var gA = ayahGlobal(+ay[0], +ay[1]); openReader(QSUR[sI][6], QSUR[sI][6] + QSUR[sI][4] - 1, "surah", gA); } return; }
   if(d.b1ret !== undefined){ b1Return(); return; }
+  if(d.b1gift !== undefined){ sheetGift(); return; }
+  if(d.giftgo !== undefined){ giftStart(); return; }
+  if(d.giftcode !== undefined){ sheetGiftCode(); return; }
+  if(d.giftcodego !== undefined){ var gc = document.getElementById("gCode"); giftClaim(gc ? gc.value : ""); return; }
+  if(d.giftopen !== undefined){
+    closeSheet();
+    b1Load(function(){ V.tab = "income"; open("book1ch", 0); setTimeout(b1Restore, 60); toast("Книга открыта. Приятного чтения!"); });
+    return;
+  }
+  if(d.giftcopy !== undefined){ copyText(d.giftcopy); toast("Ссылка скопирована"); return; }
   if(d.b1share){
     var bLink = "https://rizq.javattigroup.ru/kniga/?utm_source=share&utm_medium=app";
     var bText = "«Женщина, которая верит» - роман о 99 Именах Аллаха. Первые главы можно прочитать бесплатно: " + bLink;
