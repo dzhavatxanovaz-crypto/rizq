@@ -1333,6 +1333,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .fav{width:34px;height:34px;flex:none;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;font-size:16.5px;color:var(--ink-3);background:var(--surface-2)}
 .fav.on{color:var(--gold);border-color:rgba(212,175,55,.50);background:rgba(212,175,55,.14)}
 .rep{font-size:13px;color:var(--ink-3);margin-left:auto}
+.dua-f{flex-wrap:wrap}
+.dua-f .btn{white-space:nowrap}
+.dua-f .rep{text-align:right;line-height:1.3}
+@media (max-width:360px){ .dua-f{gap:6px} .dua-f .fav{width:32px;height:32px} .dua-f .btn.sm{padding:9px 10px;font-size:13px} }
+@media (max-width:360px){ .dua-f{gap:6px} .dua-f .fav{width:32px;height:32px} .dua-f .btn.sm{padding:9px 10px;font-size:13px} }
 
 /* buttons */
 .btn{
@@ -1359,7 +1364,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .ring-btn{position:absolute;inset:0;border-radius:50%}
 .tasbih .zikr{font-family:var(--f-ar);direction:rtl;font-size:24px;color:var(--accent-ink);margin-bottom:2px}
 .tasbih .zikr-ru{font-size:14px;color:var(--ink-2);margin-bottom:12px}
-.tasbih-ctl{display:flex;gap:8px;justify-content:center;margin-top:16px}
+.tasbih-ctl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
 .pill-row{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 .pill{font-size:13.5px;padding:7px 12px;border-radius:99px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink-2)}
 .pill.on{background:var(--sapphire);color:#fff;border-color:var(--sapphire)}
@@ -2345,11 +2350,15 @@ var DEF = {
   zakat:{cash:"", bank:"", goods:"", debtsIn:"", debtsOut:"", goldG:"", silverG:"",
          goldPrice:"6500", silverPrice:"75", nisab:"gold"}
 };
+/* LS_EMPTY - при запуске данных в localStorage не было (новый человек или телефон их стёр).
+   LS_LAST - последняя строка, которую это окно прочитало или записало: по ней видно,
+   что другое окно RIZQ (вкладка, значок на экране) успело записать своё. */
+var LS_EMPTY = true, LS_LAST = "";
 var S = (function(){
   try{
     var raw = localStorage.getItem("rizq.v1");
     if(raw){ var p = JSON.parse(raw); for(var k in DEF){ if(!(k in p)) p[k]=DEF[k]; }
-      if(!p.methodV2){ if(p.method === "mwl") p.method = "auto"; p.methodV2 = 1; }
+      if(!p.methodV2){ if(p.method === "mwl") p.method = "auto"; p.methodV2 = 1; } LS_EMPTY = raw.length <= 40; LS_LAST = raw;
       return p; }
   }catch(e){}
   return JSON.parse(JSON.stringify(DEF));
@@ -2366,6 +2375,12 @@ var SAVE_FAIL = false;
    ============================================================ */
 var IDB_NAME = "rizq-backup", IDB_STORE = "state", IDB_KEY = "rizq.v1";
 var IDB_TIMER = 0, IDB_LAST = 0;
+/* Раньше при пустом localStorage приложение сразу записывало чистые данные, и через
+   секунду они же уходили во второе хранилище поверх настоящей копии. Восстановление
+   видело «данные есть» и ничего не делало - копия пропадала. Теперь, пока копию не
+   проверили, во второе хранилище не пишем (не дольше 8 секунд). */
+var IDB_HOLD = LS_EMPTY;
+setTimeout(function(){ IDB_HOLD = false; }, 8000);
 function idbOpen(){
   return new Promise(function(res, rej){
     if(!window.indexedDB) return rej();
@@ -2397,6 +2412,7 @@ function idbGet(){
 }
 /* копия делается не чаще раза в 20 секунд: запись в IndexedDB не должна мешать счётчику */
 function idbSoon(){
+  if(IDB_HOLD) return;
   clearTimeout(IDB_TIMER);
   IDB_TIMER = setTimeout(function(){
     try{ idbPut({ at:Date.now(), v:JSON.stringify(S) }).catch(function(){}); }catch(e){}
@@ -2432,23 +2448,81 @@ function storagePersist(){
 }
 /* восстановление: localStorage пуст, а во втором хранилище что-то есть */
 function idbRestore(){
-  var raw = "";
-  try{ raw = localStorage.getItem("rizq.v1") || ""; }catch(e){}
-  if(raw && raw.length > 40) return;
+  if(!LS_EMPTY){ IDB_HOLD = false; return; }
   idbGet().then(function(rec){
-    if(!rec || !rec.v) return;
+    IDB_HOLD = false;
     var p = null;
-    try{ p = JSON.parse(rec.v); }catch(e){ return; }
-    if(!p || typeof p !== "object") return;
-    for(var k in DEF) if(!(k in p)) p[k] = DEF[k];
-    for(var k2 in p) S[k2] = p[k2];
-    try{ localStorage.setItem("rizq.v1", JSON.stringify(S)); }catch(e){}
+    if(rec && rec.v){ try{ p = JSON.parse(rec.v); }catch(e){ p = null; } }
+    /* копия пустая - восстанавливать нечего, просто начинаем её вести */
+    if(!p || typeof p !== "object" || !(p.points || p.tasbihTotal || p.azkarLifetime || p.welcomed ||
+       Object.keys(p.salah || {}).length || (p.myduas || []).length || (p.notes || []).length || Object.keys(p.qRead || {}).length)){ idbSoon(); return; }
+    for(var k in DEF) if(!(k in p)) p[k] = JSON.parse(JSON.stringify(DEF[k]));
+    var mine = {}, k1;
+    for(k1 in S) mine[k1] = S[k1];
+    for(k1 in p) S[k1] = p[k1];
+    if(S.readDay !== todayKey()){ S.readDay = todayKey(); S.read = {}; S.dcnt = {}; }
+    /* что человек успел отметить в первые секунды, пока шло восстановление, не теряем */
+    lsMerge(mine);
+    if(S.zikrSel > 0 && S.zikrSel < ZIKRS.length) V.zikr = S.zikrSel;
+    save();
+    if(S.welcomed) closeSheet();
     render();
     toast("Данные восстановлены из копии на телефоне");
-  }).catch(function(){});
+  }).catch(function(){ IDB_HOLD = false; idbSoon(); });
+}
+/* Счётчики из другой копии данных: берём большее, чтобы прогресс не уменьшился.
+   Отметки азкаров складываем, только если обе копии за один и тот же день. */
+function lsMerge(o){
+  if(!o || typeof o !== "object") return;
+  ["tasbih", "namesRead", "pointsDay"].forEach(function(k){
+    var m = o[k];
+    if(!m || typeof m !== "object") return;
+    if(!S[k] || typeof S[k] !== "object") S[k] = {};
+    for(var x in m) if(typeof m[x] === "number" && m[x] > (S[k][x] || 0)) S[k][x] = m[x];
+  });
+  ["tasbihTotal", "azkarLifetime", "points"].forEach(function(k){
+    if(typeof o[k] === "number" && o[k] > (S[k] || 0)) S[k] = o[k];
+  });
+  if(o.readDay && o.readDay === S.readDay){
+    if(!S.read) S.read = {};
+    if(!S.dcnt) S.dcnt = {};
+    var r, c;
+    for(r in (o.read || {})) if(o.read[r] && !S.read[r]) S.read[r] = o.read[r];
+    for(c in (o.dcnt || {})) if(o.dcnt[c] > (S.dcnt[c] || 0)) S.dcnt[c] = o.dcnt[c];
+  }
+}
+/* Окно снова на экране или другое окно RIZQ что-то записало: подтягиваем свежие данные.
+   Раньше окно, долго висевшее в фоне, при первом же нажатии записывало свою старую
+   копию поверх и стирало то, что человек насчитал в другом окне. */
+function lsFresh(){
+  if(SAVE_FAIL || !LS_LAST) return;
+  var cur = "";
+  try{ cur = localStorage.getItem("rizq.v1") || ""; }catch(e){ return; }
+  if(!cur || cur === LS_LAST) return;
+  var p = null;
+  try{ p = JSON.parse(cur); }catch(e){ return; }
+  if(!p || typeof p !== "object") return;
+  var mine = {}, k;
+  for(k in S) mine[k] = S[k];
+  for(k in p) S[k] = p[k];
+  for(k in DEF) if(!(k in S)) S[k] = JSON.parse(JSON.stringify(DEF[k]));
+  LS_LAST = cur;
+  lsMerge(mine);
+  if(S.zikrSel > 0 && S.zikrSel < ZIKRS.length) V.zikr = S.zikrSel;
+  var ae = document.activeElement;
+  if(ae && (ae.tagName === "INPUT" || ae.tagName === "TEXTAREA")) return;
+  try{ renderInPlace(); }catch(e){}
 }
 function save(){
-  try{ localStorage.setItem("rizq.v1", JSON.stringify(S)); SAVE_FAIL = false; }
+  try{
+    var js = JSON.stringify(S);
+    /* другое окно RIZQ записало своё после нас - сначала забираем его счётчики */
+    if(LS_LAST && !SAVE_FAIL){
+      var cur = localStorage.getItem("rizq.v1");
+      if(cur && cur !== LS_LAST){ try{ lsMerge(JSON.parse(cur)); js = JSON.stringify(S); }catch(x){} }
+    }
+    localStorage.setItem("rizq.v1", js); LS_LAST = js; SAVE_FAIL = false;
+  }
   catch(e){
     /* Причины ровно две: кончилось место или запись запрещена (приватный режим). */
     if(!SAVE_FAIL){ SAVE_FAIL = true; setTimeout(function(){ if(typeof sheetSaveFail === "function") sheetSaveFail(); }, 400); }
@@ -2983,7 +3057,7 @@ function calPush(force){
   if(!force && txt === CAL.last) return;
   CAL.busy = true;
   fetch(crmApi() + "/api/public/calfeed/" + c.token, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ ics: txt }) })
-    .then(function(r){ CAL.busy = false; if(!r.ok) throw 0; CAL.last = txt; c.at = Date.now(); c.err = ""; try{ localStorage.setItem("rizq.v1", JSON.stringify(S)); }catch(e){} })
+    .then(function(r){ CAL.busy = false; if(!r.ok) throw 0; CAL.last = txt; c.at = Date.now(); c.err = ""; try{ var cj = JSON.stringify(S); localStorage.setItem("rizq.v1", cj); LS_LAST = cj; }catch(e){} })
     .catch(function(){ CAL.busy = false; c.err = "Нет связи - календарь обновится, когда появится интернет"; });
 }
 function calSoon(){ clearTimeout(CAL.timer); CAL.timer = setTimeout(calPush, 4000); }
@@ -3919,7 +3993,7 @@ var VOLT_URL = "https://app.javattigroup.ru/";
 
 var COURSES = [
 {
-  id:"ai", ic:"◆", start:"Старт 4 октября", price:14900, old:45000, lvl:"С нуля", dur:"6 модулей · 39 уроков · доступ 4 месяца", site:"https://lavry-emba.ru/mini",
+  id:"ai", ic:"◆", start:"Старт 6 октября", price:14900, old:45000, lvl:"С нуля", dur:"6 модулей · 39 уроков · доступ 4 месяца", site:"https://lavry-emba.ru/mini",
   n:"Нейросети для жизни и бизнеса",
   short:"Контент, который продаёт: ИИ-видео, рилсы, тексты, Телеграм и автоматизация бизнеса.",
   full:"Погружение из шести модулей для всех, кто ведёт соцсети и продвигает через них услуги или товары. Разбираем нейросети для генерации контента - от промтов и озвучки до ИИ-аватаров и рилсов, - а затем переводим это в деньги: продающие сценарии, упаковка Телеграм-канала, автоматизация процессов и работа с заказчиком. Шесть эфиров с автором и общий чат участников. Доступ открывается сразу после оплаты.",
@@ -5221,7 +5295,7 @@ function autoScrollOff(){
   var b = document.getElementById("qScrollBtn"); if(b) b.classList.remove("on");
 }
 
-var V = { tab:"home", view:null, p:null, q:"", rub:"", zikr:0, qmode:"surah", qFrom:0, qTo:0, repPeriod:"week" };
+var V = { tab:"home", view:null, p:null, q:"", rub:"", zikr:(S.zikrSel > 0 && S.zikrSel < ZIKRS.length ? S.zikrSel : 0), qmode:"surah", qFrom:0, qTo:0, repPeriod:"week" };
 var $screen = document.getElementById("screen");
 var $hdr = document.getElementById("hdr");
 var $tabbar = document.getElementById("tabbar");
@@ -5338,6 +5412,83 @@ function bumpTasbih(){
   var before = S.tasbihTotal||0;
   S.tasbihTotal = before + 1;
   if(Math.floor(S.tasbihTotal/33) > Math.floor(before/33)) addPoints(POINTS.tasbih, "zikr");
+}
+/* то же самое для n нажатий сразу: баллы за каждые пройденные 33, как при обычном счёте */
+function bumpTasbihBy(n){
+  var before = S.tasbihTotal || 0;
+  S.tasbihTotal = before + n;
+  var p = Math.floor(S.tasbihTotal / 33) - Math.floor(before / 33);
+  if(p > 0) addPoints(POINTS.tasbih * p, "zikr");
+}
+/* Ручной ввод количества: человек считал на чётках и вписывает число одним действием.
+   Засчитывается как обычные нажатия, в том числе в рейтинг (суточный предел сервера
+   остаётся в силе). Больше 10 000 - переспрашиваем, больше 100 000 за раз не берём. */
+var MAN = null, MAN_WARN = 10000, MAN_MAX = 100000;
+function manSheet(kind, id){
+  var title = "", now = "", chips = [];
+  if(kind === "t"){
+    var z = ZIKRS[id]; if(!z) return;
+    title = z.pl || z.ru.split(" -")[0];
+    now = "Сейчас на счётчике: " + (S.tasbih["z" + id] || 0) + ".";
+    chips = [z.goal];
+  } else {
+    var dua = DUAS.filter(function(x){ return x.id === id; })[0]; if(!dua) return;
+    var cnt = (S.dcnt || {})[dua.id] || 0, left = dua.rep - cnt;
+    title = dua.n;
+    now = "Сейчас: " + cnt + " из " + dua.rep + ".";
+    if(left > 0) chips = [left];
+  }
+  [33, 100, 1000].forEach(function(c){ if(chips.indexOf(c) < 0) chips.push(c); });
+  MAN = { k: kind, id: id };
+  sheet('<h3>Вписать число</h3>'+
+    '<p class="note" style="margin:0 0 12px">Посчитали на чётках или на пальцах? Впишите, сколько раз произнесли «'+esc(title)+'». '+
+      'Число прибавится к счётчику и засчитается так же, как нажатия. '+esc(now)+'</p>'+
+    '<input class="search" id="manN" type="number" inputmode="numeric" pattern="[0-9]*" min="1" max="'+MAN_MAX+'" step="1" '+
+      'placeholder="Например, 100" autocomplete="off" enterkeyhint="done">'+
+    '<div class="pill-row" style="justify-content:flex-start;margin-top:10px">'+chips.map(function(c){
+      return '<button class="pill" data-manq="'+c+'">'+c.toLocaleString("ru-RU")+'</button>';
+    }).join("")+'</div>'+
+    '<button class="btn" style="margin-top:14px" data-manok="1">Прибавить</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
+  var inp = document.getElementById("manN");
+  if(inp){
+    inp.addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); manApply(); } });
+    setTimeout(function(){ try{ inp.focus(); }catch(e){} }, 80);
+  }
+}
+function manApply(){
+  if(!MAN) return;
+  var inp = document.getElementById("manN");
+  var raw = String((inp && inp.value) || "").split(" ").join("");
+  if(!raw || digitsOf(raw) !== raw){ toast("Впишите целое число, например 100"); return; }
+  var n = parseInt(raw, 10) || 0;
+  if(n < 1){ toast("Впишите число больше нуля"); return; }
+  if(n > MAN_MAX){ toast("За один раз можно вписать не больше " + MAN_MAX.toLocaleString("ru-RU")); return; }
+  if(n > MAN_WARN && !window.confirm("Прибавить " + n.toLocaleString("ru-RU") + "? Проверьте, нет ли лишнего нуля.")) return;
+  var m = MAN; MAN = null;
+  closeSheet();
+  if(m.k === "t"){
+    var key = "z" + m.id, z = ZIKRS[m.id], was = S.tasbih[key] || 0;
+    S.tasbih[key] = was + n;
+    bumpTasbihBy(n);
+    var rounds = Math.floor((was + n) / z.goal) - Math.floor(was / z.goal);
+    save();
+    if(!tasbihPaint()) renderInPlace();
+    toast("Прибавлено " + n.toLocaleString("ru-RU") + (rounds > 0 ? ", кругов: " + rounds : ""));
+  } else {
+    var dua = DUAS.filter(function(x){ return x.id === m.id; })[0]; if(!dua) return;
+    LAST_COUNT = Date.now();
+    markRead(dua.id);
+    if(!S.dcnt) S.dcnt = {};
+    S.dcnt[dua.id] = Math.min(dua.rep, (S.dcnt[dua.id] || 0) + n);
+    bumpTasbihBy(n);
+    save();
+    renderInPlace();
+    toast(S.dcnt[dua.id] >= dua.rep ? "Машаа Аллах - " + dua.rep + " " + timesWord(dua.rep) + " завершено"
+      : "Прибавлено " + n.toLocaleString("ru-RU") + ", осталось " + (dua.rep - S.dcnt[dua.id]));
+  }
+  if(navigator.vibrate){ try{ navigator.vibrate(12); }catch(e){} }
+  scoreSync();
 }
 function bought(id){ return S.bought.indexOf(id)>-1; }
 function lessonKey(cid,mi,li){ return cid+"."+mi+"."+li; }
@@ -6521,6 +6672,7 @@ function duaCard(d){
       '<button class="fav'+(isFav(k)?" on":"")+'" data-fav="'+k+'" aria-label="В избранное">'+(isFav(k)?"★":"☆")+'</button>'+
       '<button class="fav" data-dshare="'+d.id+'" aria-label="Поделиться" title="Поделиться">⤴</button>'+
       '<button class="btn sec sm" data-count="'+d.id+'"'+(fin?' style="border-color:var(--emerald);color:var(--emerald)"':'')+'>Прочитал · '+cnt+'/'+need+'</button>'+
+      (need>1 ? '<button class="fav" data-dset="'+d.id+'" aria-label="Вписать число" title="Вписать число">✎</button>' : '')+
       '<span class="rep">'+(fin ? "✓ сегодня" : d.rep>1 ? (cnt ? "осталось "+(d.rep-cnt) : "повторить "+d.rep+" "+timesWord(d.rep)) : "")+'</span>'+
     '</div></article>';
 }
@@ -6693,6 +6845,7 @@ function viewTasbih(){
       '</div>'+
       '<div class="tasbih-ctl">'+
         '<button class="btn sm ghost" data-reset="1">Сбросить</button>'+
+        '<button class="btn sm ghost" data-tset="1" aria-label="Вписать число, посчитанное на чётках">✎ Вписать</button>'+
         '<button class="btn sm" data-tick="1">+ 1</button>'+
       '</div>'+
       '<div class="pill-row">'+ ZIKRS.map(function(zz,i){
@@ -23650,7 +23803,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -23776,6 +23929,7 @@ document.getElementById("app").addEventListener("click", function(ev){
     return;
   }
   if(d.count){
+    LAST_COUNT = Date.now();
     var dua = DUAS.filter(function(x){return x.id===d.count;})[0];
     var was = !!S.read[dua.id];
     markRead(dua.id);
@@ -23792,6 +23946,10 @@ document.getElementById("app").addEventListener("click", function(ev){
     save(); renderInPlace();
     return;
   }
+  if(d.tset!==undefined){ manSheet("t", V.zikr); return; }
+  if(d.dset){ manSheet("d", d.dset); return; }
+  if(d.manq){ var mq = document.getElementById("manN"); if(mq){ mq.value = d.manq; mq.focus(); } return; }
+  if(d.manok!==undefined){ manApply(); return; }
   if(d.tick!==undefined){
     var key = "z"+V.zikr;
     S.tasbih[key] = (S.tasbih[key]||0)+1;
@@ -23803,8 +23961,13 @@ document.getElementById("app").addEventListener("click", function(ev){
     if(navigator.vibrate) { try{ navigator.vibrate(12); }catch(e){} }
     return;
   }
-  if(d.reset!==undefined){ S.tasbih["z"+V.zikr]=0; save(); if(!tasbihPaint()) renderInPlace(); toast("Счётчик сброшен"); return; }
-  if(d.zikr!==undefined){ V.zikr = parseInt(d.zikr,10); renderInPlace(); return; }
+  if(d.reset!==undefined){
+    /* «Сбросить» стоит рядом с «+ 1»: случайное касание обнуляло счёт без вопроса */
+    var rc = S.tasbih["z"+V.zikr] || 0;
+    if(rc > 0 && !window.confirm("Обнулить счётчик? Сейчас на нём " + rc + ".")) return;
+    S.tasbih["z"+V.zikr]=0; save(); if(!tasbihPaint()) renderInPlace(); toast("Счётчик сброшен"); return;
+  }
+  if(d.zikr!==undefined){ V.zikr = parseInt(d.zikr,10); S.zikrSel = V.zikr; save(); renderInPlace(); return; }
   if(d.name!==undefined){ V.tab="dua"; open("name", parseInt(d.name,10)); return; }
   if(d.hadith!==undefined){ V.tab="dua"; open("hadithOne", parseInt(d.hadith,10)); return; }
   if(d.sira!==undefined){ V.tab="dua"; open("siraOne", parseInt(d.sira,10)); return; }
@@ -24590,9 +24753,13 @@ setInterval(function(){
   cd.textContent = m<60 ? m+" мин" : leftStr(np.left);
 }, 30000);
 
-/* смена дня */
+/* смена дня. Если человек прямо сейчас читает азкары (отмечал последние 15 минут),
+   не обнуляем счёт у него на глазах в полночь - подождём, пока он закончит */
+var LAST_COUNT = 0;
 setInterval(function(){
-  if(S.readDay!==todayKey()){ S.readDay=todayKey(); S.read={}; S.dcnt={}; save(); render(); }
+  if(S.readDay === todayKey()) return;
+  if(Date.now() - LAST_COUNT < 15 * 60000) return;
+  S.readDay = todayKey(); S.read = {}; S.dcnt = {}; save(); renderInPlace();
 }, 60000);
 
 /* запоминаем, до какого аята дочитали при прокрутке */
@@ -24711,7 +24878,10 @@ quizLoad();
 navRestore();
 /* хранение: просим постоянное хранилище и, если данные пропали, поднимаем копию из второго хранилища */
 storagePersist();
-setTimeout(idbRestore, 800);
+idbRestore();
+window.addEventListener("storage", function(e){ if(e.key === "rizq.v1") lsFresh(); });
+document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible") lsFresh(); });
+window.addEventListener("pageshow", function(e){ if(e.persisted) lsFresh(); });
 qFontSafe();
 scoreSync();
 /* Время с Кораном: считаем, пока человек действительно читает - экран чтения открыт
@@ -24754,7 +24924,7 @@ if(MOVE_IN){
 }
 
 /* первый запуск: пока город не выбран, время намаза чужое */
-if(!S.welcomed && !OLD_HOST) setTimeout(sheetWelcome, 700);
+if(!S.welcomed && !OLD_HOST) setTimeout(function(){ if(!S.welcomed) sheetWelcome(); }, 700);
 
 </script>
 
