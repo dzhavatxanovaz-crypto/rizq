@@ -149,7 +149,7 @@
   --surface-2:#F3EFE6;
   --ink:#1E2A5A;
   --ink-2:#5A6183;
-  --ink-3:#8B90A8;
+  --ink-3:#736858; /* подписи: контраст от 4,75 (AA), тёплый серо-коричневый */
   --line:#E3DDCE;
   --line-soft:#EFEADE;
   --accent-ink:var(--gold-ink);
@@ -175,7 +175,7 @@
     --surface-2:#26325F;
     --ink:#FFFFFF;
     --ink-2:#BCC5E4;
-    --ink-3:#8790B4;
+    --ink-3:#ACA28F;
     --line:#31406F;
     --line-soft:#293765;
     --accent-ink:#E6C868;
@@ -192,7 +192,7 @@
   --surface-2:#26325F;
   --ink:#FFFFFF;
   --ink-2:#BCC5E4;
-  --ink-3:#8790B4;
+  --ink-3:#ACA28F; /* подписи в тёмной теме: от 4,88 (AA) */
   --line:#31406F;
   --line-soft:#293765;
   --accent-ink:#E6C868;
@@ -2721,6 +2721,7 @@ function save(){
   }
   if(typeof idbSoon === "function") idbSoon();
   if(typeof VT !== "undefined" && VT && VT.code) vaultSoon();
+  if(typeof AC !== "undefined" && AC && AC.tok) accSoon();
   if(S.cal && S.cal.on && typeof calSoon === "function") calSoon();
 }
 
@@ -12369,7 +12370,7 @@ var SUPPORT_PAY = null;
    считает само, кроме подсказки о размере взносов - сумму к оплате всё
    равно называет CRM.
    ============================================================ */
-function crmApi(){ return location.hostname === "localhost" ? "http://localhost:3210" : CRM_URL; }
+function crmApi(){ return (location.hostname === "localhost" || location.hostname === "127.0.0.1") ? "http://" + location.hostname + ":3210" : CRM_URL; }
 var FIN = null, FIN_LOADING = false;
 function finData(){
   if(!FIN){
@@ -18785,9 +18786,9 @@ function scoreSync(force){
   if(!force && Date.now() - SC_SENT < 3600e3) return;
   SC_SENT = Date.now();
   var st = scoreStats();
-  fetch("api/score", { method:"POST", headers:{ "Content-Type":"application/json" },
+  fetch("api/score", { method:"POST", headers:scHdr(),
     body: JSON.stringify(Object.assign({ device:hlDevice(), name:sc.name, city:(S.city !== "gps" ? S.city : ""), shown:!!sc.shown }, st)) })
-    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(r){ if(r.status === 401 && accOn()){ accLost(); return null; } return r.ok ? r.json() : null; })
     .then(function(j){
       if(!j) return;
       S.scoreMe = { week:j.week, all:j.all, place:j.place, of:j.of, gap:j.gap, league:j.league, leagueName:j.leagueName,
@@ -18804,7 +18805,7 @@ function scoreSync(force){
     .catch(function(){});
 }
 function scoreSeen(){
-  fetch("api/score/seen", { method:"POST", headers:{ "Content-Type":"application/json" },
+  fetch("api/score/seen", { method:"POST", headers:scHdr(),
     body: JSON.stringify({ device:hlDevice() }) }).catch(function(){});
   if(S.scoreMe && S.scoreMe.awards) S.scoreMe.awards.forEach(function(a){ a.seen = 1; });
   save();
@@ -18832,7 +18833,7 @@ function scoreOn(){
 function scoreOff(){
   var sc = scoreState();
   sc.on = 0; S.scoreMe = null; save();
-  fetch("api/score", { method:"POST", headers:{ "Content-Type":"application/json" },
+  fetch("api/score", { method:"POST", headers:scHdr(),
     body: JSON.stringify({ device:hlDevice(), off:1 }) }).catch(function(){});
   closeSheet(); render(); toast("Вы вышли из рейтинга, данные удалены");
 }
@@ -18858,7 +18859,7 @@ function topLoad(force){
   if(TOP.tried === TOP.period && !force) return; /* не дёргаем сервер без конца, если он не ответил */
   TOP.tried = TOP.period;
   TOP.loading = true; TOP.err = "";
-  fetch(TOP.period === "months" ? "api/score/months" : "api/score/top?period="+TOP.period+"&device="+hlDevice())
+  fetch(TOP.period === "months" ? "api/score/months" : "api/score/top?period="+TOP.period+"&device="+hlDevice(), { headers:scHdr() })
     .then(function(r){ if(!r.ok) throw 0; return r.json(); })
     .then(function(j){ TOP.data = j; TOP.loading = false; if(V.view==="top") render(); })
     .catch(function(){ TOP.loading = false; TOP.err = "Список не загрузился - проверьте интернет"; if(V.view==="top") render(); });
@@ -22573,12 +22574,14 @@ function viewProf(){
     '<div class="pcard-top">'+
       '<div class="ava">'+esc(initials())+'</div>'+
       '<div class="pcard-who">'+
-        '<b>'+esc(S.name || "Гость")+'</b>'+
-        '<span>'+esc(S.phone || S.email || (reg.registered ? "" : "без регистрации")) +'</span>'+
+        '<b>'+esc(S.name || (accOn() && AC.name) || "Гость")+'</b>'+
+        '<span>'+esc(accOn() ? (AC.contact || AC.email || S.phone || S.email) : (S.phone || S.email || (reg.registered ? "" : "без регистрации"))) +'</span>'+
       '</div>'+
-      '<button class="btn sec sm pcard-edit" data-open="account">'+(reg.registered ? "Мои данные" : "Регистрация")+'</button>'+
+      (accOn() ? '<button class="btn sec sm pcard-edit" data-acc="menu">Аккаунт</button>'
+        : '<button class="btn sec sm pcard-edit" data-open="account">'+(reg.registered ? "Мои данные" : "Регистрация")+'</button>')+
     '</div>'+
-    (reg.registered ? '<div class="meta"><span class="chip own">Зарегистрирована в школе</span>'+
+    (accOn() ? '<div class="meta"><span class="chip own">Вы вошли в аккаунт</span><span class="chip">'+esc(accSyncShort())+'</span></div>' : '')+
+    (!accOn() && reg.registered ? '<div class="meta"><span class="chip own">Зарегистрирована в школе</span>'+
       (reg.queued ? '<span class="chip">данные ждут отправки</span>' : '')+'</div>' : '')+
     '<div class="pstats">'+
       '<div><b>'+(dailyStreak() || 0)+'</b><span>'+plural(dailyStreak() || 0, "день подряд", "дня подряд", "дней подряд").replace(/^\d+\s/, "")+'</span></div>'+
@@ -22586,6 +22589,9 @@ function viewProf(){
       '<div><b>'+namedCount()+' / 99</b><span>имён названо</span></div>'+
     '</div>'+
   '</section>');
+
+  /* 1б. вход в аккаунт: записи, покупки и рейтинг - на всех устройствах */
+  if(!accOn()) h.push(accLoginCard());
 
   /* 2. покупки: сначала то, что ждёт оплаты, потом то, что уже открыто */
   h.push('<div class="sec-h"><h3>Мои покупки</h3></div>');
@@ -22674,9 +22680,10 @@ function viewProf(){
     '<button class="row" data-open="share"><span class="ic">❁</span>Рассказать о приложении<span class="val">ссылка и иконка</span><span class="go">›</span></button>'+
     '<button class="row" data-open="sadaqa"><span class="ic">♥</span>Куда помочь<span class="val">сборы</span><span class="go">›</span></button>'+
     '<button class="row" data-open="installment"><span class="ic">◈</span>Исламская рассрочка<span class="val">без процентов</span><span class="go">›</span></button>'+
-    (S.email ? '<button class="row" data-logout="1" style="color:#C0392B"><span class="ic">→</span>Выйти</button>' : '')+
+    (S.email && !accOn() ? '<button class="row" data-logout="1" style="color:#C0392B"><span class="ic">→</span>Выйти</button>' : '')+
     '</div>');
-  h.push('<p class="disclaimer">Данные хранятся только на этом устройстве, поэтому копию стоит делать раз в месяц.</p>');
+  h.push('<p class="disclaimer">'+(accOn() ? 'Данные хранятся на этом устройстве и в вашем аккаунте на сервере школы в России.'
+    : 'Данные хранятся только на этом устройстве, поэтому копию стоит делать раз в месяц - или войдите в аккаунт.')+'</p>');
   h.push('</div>');
   return h.join("");
 }
@@ -22963,6 +22970,502 @@ function qShareAyah(i){
   var text = QA[i] + nl + nl + ((HAS_TR && QR[i]) ? QR[i] + nl + nl : "") + qRef(i) + nl + nl + "Коран в приложении Rizq: " + APP_URL;
   if(navigator.share){ navigator.share({ text: text }).catch(function(){}); return; }
   copyText(text);
+}
+
+/* ============================================================
+   АККАУНТ: ВХОД С ЛЮБОГО УСТРОЙСТВА И СИНХРОНИЗАЦИЯ (24.09.2026)
+   Задача Заиры: девушка заходила с телефона, потом с планшета - по тем же
+   телефону или почте у неё открывается её личный кабинет: записи, покупки,
+   место в рейтинге.
+   - Вход: телефон или почта, с которыми регистрировались -> одноразовый код
+     (CRM, на почту; в WhatsApp - когда подключат) -> ключ приложения. Ключ
+     лежит отдельно от записей (rizq.acct) и в копии и снимок не попадает.
+   - Снимок записей хранится на сервере школы в России (CRM, app_sync).
+     Слияние трёхстороннее: «как было при прошлой синхронизации» (база, лежит
+     на телефоне), «как сейчас здесь» и «как на сервере». Что поменяли только
+     в одном месте - берём оттуда: так удалённое и сброшенное не воскресает.
+     Что поменяли в обоих: счётчики (баллы, зикры) - сумма прибавок с обоих
+     устройств, прочие числа - большее, отметки - «да», списки -
+     объединение по id, текст и настройки - что поменяли позже. Первый вход на
+     устройстве (базы нет): ничего не теряем - объединение и максимум, а
+     настройки берём из аккаунта.
+   - Отправка через 4 секунды после изменений (как облачная копия),
+     подтягивание при открытии и при возврате в приложение. Без сети всё
+     работает как раньше и уходит, когда связь появится.
+   Проверка слияния: node scripts/sync-test.js (идёт в выпуске).
+   ============================================================ */
+var ACC_LS = "rizq.acct", ACC_BASE_LS = "rizq.acct.base";
+var AC = { tok:"", name:"", contact:"", email:"", at:0, rev:0, kt:{}, kh:{}, sent:"", syncAt:0 };
+var ACX = { busy:false, timer:null, err:"", me:null, meAt:0, pulledAt:0, again:false, bound:false };
+(function(){
+  try{ var a = JSON.parse(localStorage.getItem(ACC_LS) || "null"); if(a && a.tok){ for(var k in AC) if(k in a) AC[k] = a[k]; } }catch(e){}
+})();
+function accStore(){ try{ localStorage.setItem(ACC_LS, JSON.stringify(AC)); }catch(e){} }
+function accOn(){ return !!AC.tok; }
+function accApi(p){ return crmApi() + "/api/public/account/" + p; }
+function accHdr(){ var h = { "Content-Type":"application/json" }; if(AC.tok) h.Authorization = "Bearer " + AC.tok; return h; }
+/* заголовки для рейтинга: с ключом аккаунта рейтинг ведётся по аккаунту, а не по телефону */
+function scHdr(){ return accHdr(); }
+function accFetch(p, method, body){
+  return fetch(accApi(p), { method: method || "GET", headers: accHdr(), cache:"no-store", body: body ? JSON.stringify(body) : undefined })
+    .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return { status:r.status, ok:r.ok, j:j || {} }; }); });
+}
+
+/* ---------- что синхронизируется ----------
+   Всё, что входит в копию данных, плюс несколько настроек. Не синхронизируем
+   то, что относится к самому устройству: подписку на уведомления, номер
+   устройства, календарь по подписке, вход в «Управление», открытые вкладки. */
+var SY_KEYS = (function(){
+  var a = BK_KEYS.concat(["phone","email","qTime","qtGoal","nameMark","scoreGoal","scoreBest","score","qrmdOff","qFont",
+    "qTajweed","qBook","mdnSize","qContinue","qFollow","madhabPicked","bought","leads","hlCity",
+    "notifPrayer","notifDua","notifTasks","notifScore","notifAzkar","notifCourse","notifAzan"]), seen = {}, out = [];
+  for(var i = 0; i < a.length; i++) if(!seen[a[i]]){ seen[a[i]] = 1; out.push(a[i]); }
+  return out;
+})();
+/* настройки: если поменяли в двух местах - берём то, что поменяли позже (а не большее число) */
+/* счётчики: если прибавляли на обоих устройствах, складываем прибавки (есть база) */
+var SY_ADD = { points:1, pointsDay:1, tasbihTotal:1, azkarLifetime:1, tasbih:1 };
+var SY_SET = {};
+["name","email","phone","city","method","madhab","madhabPicked","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll",
+ "qContinue","qFollow","fontSize","qFont","qFontSafe","qTajweed","qBook","mdnSize","qtGoal","qrmdOff","scoreGoal","score",
+ "qLast","hlCity","zakat","notifPrayer","notifDua","notifTasks","notifScore","notifAzkar","notifCourse","notifAzan"]
+  .forEach(function(k){ SY_SET[k] = 1; });
+
+function syHash(s){ var h = 5381, i = s.length; while(i) h = ((h << 5) + h) ^ s.charCodeAt(--i); return (h >>> 0).toString(36) + "." + s.length; }
+function syPick(){ var o = {}; for(var i = 0; i < SY_KEYS.length; i++){ var k = SY_KEYS[i]; if(k in S && S[k] !== undefined) o[k] = S[k]; } return o; }
+/* когда какой ключ меняли на этом устройстве: первое знакомство - «давно» (0),
+   поэтому на новом устройстве настройки берутся из аккаунта */
+function syStamp(){
+  for(var i = 0; i < SY_KEYS.length; i++){
+    var k = SY_KEYS[i], h = syHash(JSON.stringify(S[k] === undefined ? null : S[k]));
+    if(AC.kh[k] === undefined){ AC.kh[k] = h; if(AC.kt[k] === undefined) AC.kt[k] = 0; }
+    else if(AC.kh[k] !== h){ AC.kh[k] = h; AC.kt[k] = Date.now(); }
+  }
+}
+function syBaseGet(){ try{ return JSON.parse(localStorage.getItem(ACC_BASE_LS) || "null"); }catch(e){ return null; } }
+function syBaseSetText(t){ try{ localStorage.setItem(ACC_BASE_LS, t); }catch(e){ try{ localStorage.removeItem(ACC_BASE_LS); }catch(x){} } }
+function syBaseClear(){ try{ localStorage.removeItem(ACC_BASE_LS); }catch(e){} }
+
+/*__SYNC_MERGE__*/
+function syEq(a, b){
+  if(a === b) return true;
+  if(!a || !b || typeof a !== "object" || typeof b !== "object") return false;
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+function syObj(x){ return !!x && typeof x === "object" && !Array.isArray(x); }
+/* как узнать один и тот же элемент списка на двух устройствах: по номеру заказа (у заказа
+   id - это товар, и два заказа одной книги иначе склеились бы), по id, иначе по содержимому */
+function syKey(x){
+  if(x && typeof x === "object"){
+    if(x.token) return "t:" + x.token;
+    if(x.id !== undefined && x.id !== null && x.id !== "") return "i:" + x.id;
+  }
+  return "j:" + JSON.stringify(x);
+}
+/* b - база (как было при прошлой синхронизации, может не быть), l - здесь, r - на сервере */
+function syMerge(b, l, r, remNewer, add){
+  if(l === undefined) return (b !== undefined && syEq(b, r)) ? undefined : r;
+  if(r === undefined) return (b !== undefined && syEq(b, l)) ? undefined : l;
+  /* счётчик: база + прибавка здесь + прибавка там - даже если числа совпали (обе прибавки по 33) */
+  if(add && typeof l === "number" && typeof r === "number" && typeof b === "number") return Math.max(0, l + r - b);
+  /* одинаковые счётчики, которые оба ушли от базы, - это две прибавки, их разбираем ниже */
+  if(syEq(l, r) && (!add || b === undefined || syEq(b, l))) return l;
+  if(b !== undefined){ if(syEq(b, l)) return r; if(syEq(b, r)) return l; }
+  if(Array.isArray(l) && Array.isArray(r)) return syArr(Array.isArray(b) ? b : null, l, r, remNewer);
+  if(syObj(l) && syObj(r)){
+    var o = {}, k, v, bb = syObj(b) ? b : {};
+    for(k in l){ v = syMerge(bb[k], l[k], r[k], remNewer, add); if(v !== undefined) o[k] = v; }
+    for(k in r){ if(k in l) continue; v = syMerge(bb[k], undefined, r[k], remNewer); if(v !== undefined) o[k] = v; }
+    return o;
+  }
+  /* числа без базы (первый вход на устройстве) и не счётчики - большее, чтобы не задвоить */
+  if(typeof l === "number" && typeof r === "number") return Math.max(l, r);
+  if(typeof l === "boolean" && typeof r === "boolean") return l || r;
+  return remNewer ? r : l;
+}
+function syArr(b, l, r, remNewer){
+  var B = {}, L = {}, R = {}, i, k;
+  if(b) for(i = 0; i < b.length; i++) B[syKey(b[i])] = b[i];
+  for(i = 0; i < l.length; i++) L[syKey(l[i])] = l[i];
+  for(i = 0; i < r.length; i++) R[syKey(r[i])] = r[i];
+  function pick(k){
+    var inB = !!b && (k in B);
+    if((k in L) && (k in R)) return syMerge(inB ? B[k] : undefined, L[k], R[k], remNewer);
+    if(k in L) return inB && syEq(B[k], L[k]) ? undefined : L[k];   /* удалили на другом устройстве */
+    return inB && syEq(B[k], R[k]) ? undefined : R[k];              /* удалили здесь */
+  }
+  /* порядок - как здесь, а новое с другого устройства встаёт на своё место между соседями */
+  var out = [], seen = {}, v;
+  for(i = 0; i < l.length; i++){ k = syKey(l[i]); if(seen[k]) continue; seen[k] = 1; v = pick(k); if(v !== undefined) out.push({ k:k, v:v }); }
+  for(i = 0; i < r.length; i++){
+    k = syKey(r[i]); if(seen[k]) continue; seen[k] = 1;
+    v = pick(k); if(v === undefined) continue;
+    var at = out.length;
+    for(var j = i + 1; j < r.length && at === out.length; j++){
+      var nk = syKey(r[j]);
+      for(var q = 0; q < out.length; q++) if(out[q].k === nk){ at = q; break; }
+    }
+    out.splice(at, 0, { k:k, v:v });
+  }
+  return out.map(function(x){ return x.v; });
+}
+/* Слить снимок с сервера в S. st - текущие данные (S), base - база или null,
+   lkt/rkt - когда меняли ключи здесь и там. Возвращает { changed, kt }. */
+function syMergeAll(st, rem, base, lkt, rkt, keys, sets, def, adds){
+  var changed = false, kt = {}, hasBase = !!base;
+  /* отметки «прочитано сегодня» относятся к своему дню: чужой день не смешиваем */
+  var sameDay = (rem.readDay || "") === (st.readDay || "");
+  if(!sameDay && String(rem.readDay || "") > String(st.readDay || "")){
+    st.readDay = rem.readDay; st.read = rem.read || {}; st.dcnt = rem.dcnt || {}; changed = true;
+  }
+  var dayKeys = { readDay:1, read:1, dcnt:1 };
+  for(var i = 0; i < keys.length; i++){
+    var k = keys[i];
+    var lk = lkt[k] || 0, rk = rkt[k] || 0;
+    kt[k] = Math.max(lk, rk);
+    if(!(k in rem)) continue;           /* ключа нет на сервере (другая версия приложения) - своё не трогаем */
+    if(dayKeys[k] && !sameDay) continue;
+    var l = st[k], r = rem[k], b = hasBase ? base[k] : undefined;
+    if(dayKeys[k] && hasBase && base.readDay !== st.readDay) b = undefined;
+    var remNewer = rk >= lk, v;
+    if(sets[k]){
+      if(l === undefined || syEq(l, r)) v = r;
+      else if(b !== undefined && syEq(b, l)) v = r;
+      else if(b !== undefined && syEq(b, r)) v = l;
+      else v = remNewer ? r : l;
+    } else v = syMerge(b, l, r, remNewer, !!(adds && adds[k]));
+    if(v === undefined){
+      if(k in st){ if(def && (k in def)) st[k] = JSON.parse(JSON.stringify(def[k])); else delete st[k]; changed = true; }
+    } else if(!syEq(v, l)){ st[k] = v; changed = true; }
+  }
+  return { changed: changed, kt: kt };
+}
+/*__SYNC_MERGE_END__*/
+
+function syApply(rem, rkt){
+  if(!rem || typeof rem !== "object" || Array.isArray(rem)) return false;
+  syStamp();
+  var out = syMergeAll(S, rem, syBaseGet(), AC.kt, rkt || {}, SY_KEYS, SY_SET, DEF, SY_ADD);
+  for(var k in out.kt) AC.kt[k] = out.kt[k];
+  for(var d in DEF) if(!(d in S)) S[d] = JSON.parse(JSON.stringify(DEF[d]));
+  for(var i = 0; i < SY_KEYS.length; i++){ var key = SY_KEYS[i]; AC.kh[key] = syHash(JSON.stringify(S[key] === undefined ? null : S[key])); }
+  return out.changed;
+}
+/* после слияния: записать, применить тему и размеры, перерисовать (если человек не печатает) */
+function syAfterMerge(){
+  save();
+  try{ applyTheme(); applyFontSize(); applyQSize(); }catch(e){}
+  if(S.zikrSel > 0 && typeof ZIKRS !== "undefined" && S.zikrSel < ZIKRS.length) V.zikr = S.zikrSel;
+  if(scoreState().on) scoreSync(true);
+  var ae = document.activeElement;
+  if(ae && (ae.tagName === "INPUT" || ae.tagName === "TEXTAREA")) return;
+  try{ renderInPlace(); }catch(e){ try{ render(); }catch(x){} }
+}
+function accSoon(){ if(!AC.tok) return; clearTimeout(ACX.timer); ACX.timer = setTimeout(function(){ syPush(0); }, 4000); }
+function syPush(n){
+  if(!AC.tok || !window.fetch) return;
+  if(ACX.busy){ ACX.again = true; return; }
+  if(!AC.rev && !ACX.pulledAt){ syPull(true); return; } /* сначала забрать то, что уже лежит в аккаунте */
+  syStamp();
+  var data = syPick(), txt = JSON.stringify(data), h = syHash(txt);
+  if(h === AC.sent){ accStore(); return; }
+  ACX.busy = true;
+  accFetch("sync", "POST", { data:data, kt:AC.kt, base_rev:AC.rev }).then(function(x){
+    ACX.busy = false;
+    if(x.status === 401 && x.j.relogin){ accLost(); return; }
+    if(x.status === 409 && x.j.conflict && syMine(x.j)){ if((n || 0) < 3) syPush((n || 0) + 1); return; }
+    if(x.status === 409 && x.j.conflict){
+      /* другое устройство успело раньше: сливаем его снимок со своим и отправляем общий */
+      var ch = syApply(x.j.data, x.j.kt);
+      AC.rev = x.j.rev; syBaseSetText(JSON.stringify(x.j.data)); AC.sent = syHash(JSON.stringify(x.j.data)); accStore();
+      if(ch) syAfterMerge();
+      if((n || 0) < 3) syPush((n || 0) + 1);
+      return;
+    }
+    if(!x.ok){ ACX.err = x.j.error || "Не получилось сохранить в аккаунт, попробуем ещё раз"; return; }
+    AC.rev = x.j.rev; AC.sent = h; AC.syncAt = Date.now(); ACX.err = ""; syBaseSetText(txt); accStore();
+    if(ACX.again){ ACX.again = false; accSoon(); }
+  }).catch(function(){ ACX.busy = false; ACX.err = "Нет связи: сохраним в аккаунт, когда появится интернет"; });
+}
+/* снимок на сервере записан этим же устройством (CRM отвечает mine): ответ о записи
+   потерялся. Это наши данные - берём их за базу без слияния, иначе прибавки
+   счётчиков этого устройства сложились бы дважды. */
+function syMine(j){
+  if(!j || j.mine !== true || !j.data) return false;
+  var t = JSON.stringify(j.data);
+  AC.rev = j.rev; AC.sent = syHash(t); AC.syncAt = Date.now(); syBaseSetText(t); accStore();
+  return true;
+}
+function syPull(force){
+  if(!AC.tok || !window.fetch) return;
+  if(ACX.busy){ ACX.again = true; return; }
+  if(!force && Date.now() - ACX.pulledAt < 20000) return;
+  ACX.busy = true;
+  accFetch("sync").then(function(x){
+    ACX.busy = false;
+    if(x.status === 401 && x.j.relogin){ accLost(); return; }
+    if(!x.ok){ ACX.err = x.j.error || "Сервер не ответил, попробуем позже"; return; }
+    ACX.pulledAt = Date.now(); ACX.err = "";
+    var j = x.j, ch = false;
+    if(j.rev && j.data && j.rev !== AC.rev && syMine(j)){ /* свой снимок, ответ о записи не дошёл */ }
+    else if(j.rev && j.data && j.rev !== AC.rev){
+      ch = syApply(j.data, j.kt);
+      AC.rev = j.rev; syBaseSetText(JSON.stringify(j.data)); AC.sent = syHash(JSON.stringify(j.data));
+    } else if(!j.rev){ AC.rev = 0; AC.sent = ""; }
+    AC.syncAt = Date.now(); accStore();
+    if(ch){ syAfterMerge(); if(ACX.firstPull){ ACX.firstPull = false; toast("Записи из аккаунта добавлены на это устройство"); } }
+    ACX.firstPull = false;
+    ACX.again = false;
+    syPush(0); /* своё новое - в аккаунт */
+  }).catch(function(){ ACX.busy = false; ACX.err = "Нет связи: синхронизируем, когда появится интернет"; });
+}
+
+/* ---------- личный кабинет: кто вошёл и что куплено ---------- */
+function accMeLoad(force){
+  if(!AC.tok || !window.fetch) return;
+  if(!force && Date.now() - ACX.meAt < 600000) return;
+  ACX.meAt = Date.now();
+  accFetch("me").then(function(x){
+    if(x.status === 401 && x.j.relogin){ accLost(); return; }
+    if(!x.ok) return;
+    ACX.me = x.j;
+    var a = x.j.account || {};
+    AC.name = a.name || AC.name; AC.contact = a.contact || ""; AC.email = a.email || ""; accStore();
+    accImportOrders(x.j);
+    if(V.tab === "prof") render();
+  }).catch(function(){});
+}
+/* Оплаченные заказы из CRM: книги открываются по номеру заказа, поэтому
+   на новом устройстве покупки появляются сами, без переписки. */
+function accImportOrders(j){
+  var ch = false;
+  S.orders = S.orders || []; S.bought = S.bought || [];
+  function title(p){ return p === BOOK2.id ? BOOK2.n : p === BOOK1.id ? BOOK1.n : ""; }
+  (j.orders || []).forEach(function(o){
+    var have = S.orders.filter(function(x){ return x.token === o.token; })[0];
+    if(have){ if(have.status !== "paid"){ have.status = "paid"; ch = true; } }
+    else {
+      var at = Date.parse(String(o.created_at || "").replace(" ", "T") + "Z") || Date.now();
+      var rec = { token:o.token, id:o.product, title:o.title || title(o.product), tariff:o.tariff || "", amount:o.amount, total:o.amount,
+        plan:o.plan || 0, at:at, status:"paid", via:"account" };
+      if(o.gift) rec.gift = { to:o.gift.to || "", code:o.gift.code, link:o.gift.link || "", sent:true };
+      S.orders.push(rec); ch = true;
+    }
+    if(!o.gift && o.product && S.bought.indexOf(o.product) < 0){ S.bought.push(o.product); ch = true; }
+  });
+  (j.received || []).forEach(function(g){
+    if(!S.orders.some(function(x){ return x.via === "gift" && x.token === g.code; })){
+      S.orders.push({ token:g.code, via:"gift", id:g.product, title:title(g.product), amount:0, at:Date.now(), status:"paid", from:g.from || "" });
+      ch = true;
+    }
+    if(g.product && S.bought.indexOf(g.product) < 0){ S.bought.push(g.product); ch = true; }
+  });
+  if(!ch) return;
+  save();
+  try{ if(b2Order() && !b2Data()) b2Load(); }catch(e){}
+  try{ if(b1Order() && !b1Data()) b1Load(); }catch(e){}
+}
+
+/* ---------- вход ---------- */
+var LG = { contact:"", step:1, via:"", to:"", msg:"", miss:false, busy:false, after:"" };
+function lgIsMail(c){ return String(c || "").indexOf("@") > 0; }
+function lgClean(c){ return String(c || "").trim(); }
+function lgOk(c){ return lgIsMail(c) ? /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(c) : c.replace(/\D/g, "").length >= 10; }
+function sheetLogin(pref){
+  if(pref !== undefined){ LG.contact = pref; LG.step = 1; LG.miss = false; LG.msg = ""; LG.after = ""; }
+  if(LG.step === 2) return sheetLoginCode();
+  sheet('<h3>Войти в свой аккаунт</h3>'+
+    '<p class="note" style="margin:0 0 12px">Телефон или почта, с которыми вы регистрировались в RIZQ. Пришлём одноразовый код - и на этом устройстве откроются ваши записи, покупки и место в рейтинге.</p>'+
+    '<input class="search" id="lgContact" style="margin:0 0 10px" placeholder="+7 900 000-00-00 или mail@example.com" autocomplete="username" value="'+esc(LG.contact)+'">'+
+    (LG.miss ? '<div class="card flat" style="padding:12px 13px;margin:0 0 10px;border-color:rgba(192,57,43,.35)">'+
+        '<div style="font-size:14px;line-height:1.5;color:var(--ink-2)">'+esc(LG.msg || "Такого телефона или почты нет среди зарегистрированных.")+'</div>'+
+        '<button class="btn sec sm" style="margin-top:10px" data-acc="signup">Зарегистрироваться</button></div>'
+      : (LG.msg ? '<p class="note" style="margin:0 0 10px;color:#C0392B">'+esc(LG.msg)+'</p>' : ''))+
+    '<button class="btn" data-acc="code">'+(LG.busy ? "Отправляем..." : "Получить код")+'</button>'+
+    (LG.miss || signupState().registered ? '' : '<button class="btn ghost" style="margin-top:8px" data-acc="signup">Ещё не регистрировались? Зарегистрироваться</button>')+
+    '<p class="disclaimer" style="text-align:left;padding:0;margin-top:12px">После входа записи приложения сохраняются в вашем аккаунте на сервере школы в России и появляются на всех устройствах, где вы вошли. Выйти можно в «Профиле».</p>');
+  lgEnter("lgContact", accCode);
+}
+function sheetLoginCode(){
+  var where = LG.via === "email" ? 'Код отправлен на почту <b>'+esc(LG.to)+'</b>. Если письма нет пару минут - загляните в «Спам».'
+    : LG.via === "whatsapp" ? 'Код отправлен в WhatsApp на номер <b>'+esc(LG.to)+'</b>.'
+    : 'Вы зарегистрированы, но код сейчас некуда отправить автоматически: в регистрации нет почты, а сообщения в WhatsApp мы пока отправляем вручную. Напишите нам в WhatsApp - назовём код. Он уже создан и действует 10 минут.';
+  sheet('<h3>'+(LG.after === "signup" ? "Подтвердите вход" : "Введите код")+'</h3>'+
+    (LG.after === "signup" ? '<p class="note" style="margin:0 0 10px">Регистрация сохранена. Чтобы записи хранились в аккаунте и открывались на других устройствах, введите код.</p>' : '')+
+    '<p class="note" style="margin:0 0 12px">'+where+'</p>'+
+    (LG.via === "none" ? '<a class="btn sec" style="display:block;text-align:center;text-decoration:none;margin:0 0 10px" target="_blank" rel="noopener" href="'+
+      esc(waLink("Здравствуйте! Хочу войти в свой аккаунт RIZQ, пришлите, пожалуйста, код для входа. Мой контакт: " + LG.contact))+'">Написать в WhatsApp</a>' : '')+
+    '<input class="search" id="lgCode" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="Код из 6 цифр" style="margin:0 0 10px;font-size:20px;letter-spacing:.2em;text-align:center">'+
+    (LG.msg ? '<p class="note" style="margin:0 0 10px;color:#C0392B">'+esc(LG.msg)+'</p>' : '')+
+    '<button class="btn" data-acc="verify">'+(LG.busy ? "Проверяем..." : "Войти")+'</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-acc="resend">Отправить код ещё раз</button>'+
+    '<button class="btn ghost" style="margin-top:4px" data-acc="change">Другой телефон или почта</button>');
+  lgEnter("lgCode", accVerify);
+  setTimeout(function(){ var i = document.getElementById("lgCode"); if(i) try{ i.focus(); }catch(e){} }, 80);
+}
+function lgEnter(id, fn){
+  setTimeout(function(){
+    var i = document.getElementById(id);
+    if(i) i.addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); fn(); } });
+  }, 0);
+}
+function accCode(again){
+  if(LG.busy) return;
+  var inp = document.getElementById("lgContact");
+  var c = again ? LG.contact : lgClean(inp && inp.value);
+  if(!c){ toast("Напишите телефон или почту"); return; }
+  if(!lgOk(c)){ toast(lgIsMail(c) ? "Проверьте адрес почты" : "Проверьте номер телефона"); return; }
+  if(!window.fetch){ toast("Этот браузер слишком старый для входа"); return; }
+  LG.contact = c; LG.busy = true; LG.msg = ""; LG.miss = false;
+  if(!again) sheetLogin();
+  accFetch("code", "POST", { contact:c }).then(function(x){
+    LG.busy = false;
+    if(x.status === 404 && x.j.found === false){ LG.step = 1; LG.miss = true; LG.msg = x.j.error; sheetLogin(); return; }
+    if(!x.ok){ LG.msg = x.j.error || "Не получилось отправить код, попробуйте ещё раз"; if(LG.step === 2) sheetLoginCode(); else sheetLogin(); return; }
+    LG.step = 2; LG.via = x.j.via || "none"; LG.to = x.j.to || "";
+    sheetLoginCode();
+    if(again) toast("Новый код отправлен");
+  }).catch(function(){ LG.busy = false; LG.msg = "Нет связи с сервером школы - проверьте интернет"; if(LG.step === 2) sheetLoginCode(); else sheetLogin(); });
+}
+function accVerify(){
+  if(LG.busy) return;
+  var inp = document.getElementById("lgCode");
+  var code = String(inp && inp.value || "").replace(/\D/g, "");
+  if(code.length !== 6){ toast("В коде 6 цифр"); return; }
+  LG.busy = true; LG.msg = ""; sheetLoginCode();
+  var ua = navigator.userAgent || "", dev = /iPad/.test(ua) ? "iPad" : /iPhone/.test(ua) ? "iPhone" : /Android/.test(ua) ? "Android" : /Windows/.test(ua) ? "Windows" : /Mac/.test(ua) ? "Mac" : "браузер";
+  accFetch("verify", "POST", { contact:LG.contact, code:code, device:dev, visitor: (typeof rizqVisitor === "function" ? rizqVisitor() : "") }).then(function(x){
+    LG.busy = false;
+    if(!x.ok || !x.j.token){ LG.msg = x.j.error || "Код не подошёл"; sheetLoginCode(); return; }
+    accLoginDone(x.j);
+  }).catch(function(){ LG.busy = false; LG.msg = "Нет связи с сервером школы - проверьте интернет"; sheetLoginCode(); });
+}
+function accLoginDone(j){
+  var a = j.account || {};
+  AC.tok = j.token; AC.name = a.name || ""; AC.contact = a.contact || ""; AC.email = a.email || ""; AC.at = Date.now();
+  AC.rev = 0; AC.kt = {}; AC.kh = {}; AC.sent = ""; AC.syncAt = 0; ACX.pulledAt = 0; ACX.meAt = 0; ACX.firstPull = !!j.synced;
+  syBaseClear(); accStore();
+  LG.step = 1; LG.msg = ""; LG.miss = false; LG.after = "";
+  var reg = signupState(); reg.registered = true; reg.queued = false; if(!reg.at) reg.at = Date.now();
+  if(!S.name && AC.name) S.name = AC.name;
+  if(!S.email && AC.email) S.email = AC.email;
+  if(!S.phone && AC.contact && !lgIsMail(AC.contact)) S.phone = AC.contact;
+  if(!S.welcomed) S.welcomed = 1;
+  save(); closeSheet(); go("prof");
+  toast(j.synced ? "Вы вошли. Подтягиваем записи из аккаунта..." : "Вы вошли. Записи этого устройства сохраним в аккаунт");
+  scoreLink();
+  syPull(true);
+  accMeLoad(true);
+}
+/* После первой регистрации с почтой - сразу предлагаем подтвердить вход кодом:
+   иначе записи этого телефона не попадут в аккаунт, и на планшете их не будет. */
+function accAfterSignup(contact){
+  if(accOn() || !contact || !window.fetch) return;
+  LG.contact = contact; LG.after = "signup";
+  accFetch("code", "POST", { contact:contact }).then(function(x){
+    if(!x.ok || x.j.via !== "email") return;
+    LG.step = 2; LG.via = "email"; LG.to = x.j.to || ""; LG.msg = "";
+    if(!document.querySelector(".scrim")) sheetLoginCode();
+  }).catch(function(){});
+}
+/* рейтинг: записи этого телефона переходят к аккаунту (по дням - большее, без задвоения) */
+function scoreLink(){
+  if(!AC.tok || !S.hlDev || !window.fetch) return;
+  fetch("api/score/link", { method:"POST", headers:scHdr(), body: JSON.stringify({ device:S.hlDev }) })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){ if(j){ TOP.data = null; TOP.tried = null; if(scoreState().on) scoreSync(true); } })
+    .catch(function(){});
+}
+/* ключ больше не действует (вышли и удалили данные с другого устройства или год не заходили) */
+function accLost(){
+  if(!AC.tok) return;
+  accClear();
+  if(scoreState().on){ S.score.on = 0; S.scoreMe = null; }
+  save(); render();
+  toast("Вход в аккаунт закончился. Записи на этом устройстве остались - войдите снова, чтобы синхронизировать");
+}
+function accClear(){
+  clearTimeout(ACX.timer);
+  AC.tok = ""; AC.rev = 0; AC.kt = {}; AC.kh = {}; AC.sent = ""; AC.syncAt = 0; ACX.me = null; ACX.err = ""; ACX.pulledAt = 0;
+  syBaseClear(); accStore();
+}
+/* Выйти: последнее - в аккаунт, ключ этого устройства гасим. Записи на устройстве остаются.
+   С удалением: сначала рейтинг аккаунта, затем снимок на сервере и ключи всех устройств. */
+function accLogout(wipe){
+  if(!AC.tok) return;
+  if(wipe && !window.confirm("Удалить ваши записи из аккаунта на сервере и место в рейтинге? На этом устройстве записи останутся. На других устройствах аккаунт тоже выйдет.")) return;
+  var hdr = accHdr();
+  toast(wipe ? "Удаляем данные с сервера..." : "Выходим...");
+  var step1 = wipe
+    ? fetch("api/score", { method:"POST", headers:hdr, body: JSON.stringify({ off:1 }) }).catch(function(){})
+    : new Promise(function(ok){ if(ACX.busy){ ok(); return; } syStamp(); if(syHash(JSON.stringify(syPick())) === AC.sent || !AC.rev){ ok(); return; }
+        accFetch("sync", "POST", { data:syPick(), kt:AC.kt, base_rev:AC.rev }).then(ok, ok); });
+  step1.then(function(){
+    return fetch(accApi(wipe ? "delete" : "logout"), { method:"POST", headers:hdr, body:"{}" })
+      .then(function(r){ return r.ok || r.status === 401; }).catch(function(){ return false; });
+  }).then(function(ok){
+    if(wipe && !ok){ toast("Нет связи с сервером - данные не удалены. Попробуйте ещё раз с интернетом"); return; }
+    accClear();
+    if(scoreState().on){ S.score.on = 0; S.scoreMe = null; }
+    save(); closeSheet(); render();
+    toast(wipe ? "Данные удалены с сервера. Вы вышли, записи на устройстве остались" : "Вы вышли из аккаунта. Записи на этом устройстве остались");
+  });
+}
+function accWhen(t){ return t ? new Date(t).toLocaleString("ru-RU", { day:"numeric", month:"long", hour:"2-digit", minute:"2-digit" }) : ""; }
+function accSyncLine(){
+  if(ACX.err) return ACX.err;
+  if(ACX.busy) return "Синхронизируем...";
+  return AC.syncAt ? "Синхронизировано " + accWhen(AC.syncAt) : "Синхронизируем, когда будет интернет";
+}
+function accSyncShort(){
+  if(ACX.busy) return "синхронизируем";
+  if(ACX.err) return "ждёт связи";
+  return AC.syncAt ? "синхронизировано" : "ждёт связи";
+}
+function sheetAccMenu(){
+  var who = AC.name || S.name || "Вы";
+  var contact = [AC.contact, AC.email].filter(function(x, i, a){ return x && a.indexOf(x) === i; }).join(" · ");
+  sheet('<h3>Ваш аккаунт</h3>'+
+    '<div class="card flat" style="padding:13px">'+
+      '<b style="font-size:16px;display:block">'+esc(who)+'</b>'+
+      '<span style="font-size:13.5px;color:var(--ink-2);display:block;margin-top:3px">'+esc(contact)+'</span>'+
+      '<span style="font-size:12.5px;color:var(--ink-3);display:block;margin-top:8px">'+esc(accSyncLine())+'</span>'+
+    '</div>'+
+    '<p class="note" style="margin:12px 0">Записи (трекер, дуа, заметки, задачи, прогресс, настройки) сохраняются в аккаунте и одинаковы на всех устройствах, где вы вошли. Покупки открываются по аккаунту. В рейтинге вы участвуете аккаунтом: на любом устройстве то же место.</p>'+
+    '<button class="btn" data-acc="sync">Синхронизировать сейчас</button>'+
+    '<button class="btn sec" style="margin-top:8px" data-open="account">Мои данные</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-acc="logout">Выйти</button>'+
+    '<button class="btn ghost sm" style="margin-top:4px;width:100%;color:#C0392B" data-acc="wipe">Выйти и удалить данные с сервера</button>'+
+    '<p class="disclaimer" style="text-align:left;padding:0;margin-top:12px">Данные хранятся на сервере школы в России и на ваших устройствах. После выхода записи на этом устройстве остаются.</p>');
+}
+/* карточка в «Профиле» для тех, кто не вошёл */
+function accLoginCard(){
+  var reg = signupState().registered;
+  return '<button class="cat-wide" data-acc="login" style="margin-top:10px">'+
+    '<span class="cw-ic">⇆</span>'+
+    '<span class="cw-t"><b>Войти в свой аккаунт</b>'+
+    '<span>'+(reg ? "Подтвердите вход кодом - и записи, покупки и рейтинг будут на всех ваших устройствах"
+                  : "Уже регистрировались? Записи, покупки и рейтинг - на телефоне и планшете")+'</span></span>'+
+    '<span class="cw-go">›</span></button>';
+}
+function accCmd(c){
+  if(c === "login"){ sheetLogin(S.phone || S.email || LG.contact || ""); return; }
+  if(c === "code"){ accCode(false); return; }
+  if(c === "resend"){ accCode(true); return; }
+  if(c === "verify"){ accVerify(); return; }
+  if(c === "change"){ LG.step = 1; LG.msg = ""; LG.miss = false; sheetLogin(); return; }
+  if(c === "signup"){ LG.pre = LG.contact; sheetAccount(); return; }
+  if(c === "menu"){ accOn() ? sheetAccMenu() : sheetLogin(S.phone || S.email || ""); return; }
+  if(c === "sync"){ ACX.pulledAt = 0; syPull(true); accMeLoad(true); toast("Синхронизируем..."); setTimeout(function(){ if(document.querySelector(".scrim") && accOn()) sheetAccMenu(); }, 2500); return; }
+  if(c === "logout"){ accLogout(false); return; }
+  if(c === "wipe"){ accLogout(true); return; }
+}
+function accBoot(){
+  if(ACX.bound) return;
+  ACX.bound = true;
+  document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible" && accOn()){ syPull(); accMeLoad(); } });
+  window.addEventListener("online", function(){ if(accOn()){ syPull(true); } });
+  if(accOn()) setTimeout(function(){ syPull(true); accMeLoad(true); }, 1200);
 }
 
 /* ---------- переезд со старого адреса ---------- */
@@ -23491,12 +23994,13 @@ function sheetAccount(){
         ? 'Вы зарегистрированы в школе JAVATTI. Эти данные нужны, чтобы открыть купленные программы и написать вам по вашему обращению.'
         : 'Регистрация нужна, чтобы открывать купленные программы и восстанавливать доступ. Без неё приложение работает полностью - все духовные разделы бесплатны и ничего не требуют.')+
     '</p>'+
+    (done || accOn() ? '' : '<button class="btn ghost sm" style="width:100%;margin:0 0 12px" data-acc="login">Уже регистрировались? Войти</button>')+
     '<label class="eyebrow">Имя</label>'+
     '<input class="search" id="inName" style="margin:6px 0 12px" placeholder="Как к вам обращаться" value="'+esc(S.name||"")+'">'+
     '<label class="eyebrow">Телефон с WhatsApp</label>'+
-    '<input class="search" id="inTel" type="tel" style="margin:6px 0 12px" placeholder="+7 900 000-00-00" value="'+esc(S.phone||"")+'">'+
+    '<input class="search" id="inTel" type="tel" style="margin:6px 0 12px" placeholder="+7 900 000-00-00" value="'+esc(S.phone||(LG.pre && !lgIsMail(LG.pre) ? LG.pre : ""))+'">'+
     '<label class="eyebrow">Электронная почта</label>'+
-    '<input class="search" id="inMail" type="email" style="margin:6px 0 4px" placeholder="mail@example.com" value="'+esc(S.email||"")+'">'+
+    '<input class="search" id="inMail" type="email" style="margin:6px 0 4px" placeholder="mail@example.com" value="'+esc(S.email||(LG.pre && lgIsMail(LG.pre) ? LG.pre : ""))+'">'+
     (done ? '' :
       '<label style="display:flex;align-items:flex-start;gap:9px;margin-top:14px;font-size:13px;color:var(--ink-2);line-height:1.5">'+
         '<input type="checkbox" id="okData" style="margin-top:2px;flex:none">'+
@@ -23543,7 +24047,7 @@ function accountSave(){
   toast("Регистрация сохранена");
 
   signupSend({ name:name, phone:tel, email:mail, ads:a.ads }, function(ok){
-    if(ok){ a.queued = false; save(); }
+    if(ok){ a.queued = false; save(); if(mail) accAfterSignup(mail); }
   });
 }
 function sheetICS(){
@@ -23610,7 +24114,8 @@ function sheetWelcome(){
     '<button class="btn" data-gps="1">Определить автоматически</button>'+
     '<input class="search" id="citySearch" placeholder="Или найдите свой город" style="margin-top:10px">'+
     '<div id="cityList" style="max-height:46vh;overflow:auto;margin-top:6px">'+cityOptions("")+'</div>'+
-    '<button class="btn ghost sm" style="width:100%;margin-top:10px" data-welcskip="1">Пропустить, оставить Махачкалу</button>');
+    '<button class="btn ghost sm" style="width:100%;margin-top:10px" data-welcskip="1">Пропустить, оставить Махачкалу</button>'+
+    '<button class="btn ghost sm" style="width:100%;margin-top:4px" data-acc="login">Уже пользуетесь RIZQ на другом устройстве? Войти</button>');
 }
 function welcomeDone(){ S.welcomed = 1; save(); }
 
@@ -24073,7 +24578,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -24093,6 +24598,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.jopen!==undefined){ rTrack("open_in_javatti", d.jopen); return; }
   if(d.movego!==undefined){ moveGo(); return; }
   if(d.movesheet!==undefined){ sheetMove(); return; }
+  if(d.acc){ accCmd(d.acc); return; }
   if(d.von!==undefined){ vaultEnable(); return; }
   if(d.voff!==undefined){ vaultOff(); return; }
   if(d.vcopy!==undefined){ copyText(VT.code); return; }
@@ -25176,6 +25682,7 @@ deepOpen();
 postsLoad();
 sadaqaLoad();
 signupFlush();
+accBoot();
 pushSync(false);
 document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible") pushSoon(); });
 
