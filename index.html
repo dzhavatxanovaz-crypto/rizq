@@ -1027,6 +1027,158 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .blink-ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:rgba(212,175,55,.15);color:var(--accent-ink);font-size:16px;margin-bottom:6px;font-family:var(--f-ar)}
 .blink b{font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.25}
 .blink-s{font-size:11.5px;color:var(--ink-3);line-height:1.3}
+.hx{position:relative;padding:18px;border-radius:var(--r-lg);background:radial-gradient(120% 120% at 20% 10%,#2E3C80 0%,#1E2A5A 45%,#0E1636 100%);border:1px solid rgba(212,175,55,.4);color:#F4EBD0;box-shadow:var(--shadow);overflow:hidden;
+  --ink:#F7EFD8;--ink-2:rgba(244,235,208,.88);--ink-3:rgba(244,235,208,.76);--line:rgba(241,215,126,.28);--line-soft:rgba(241,215,126,.16);--surface:rgba(255,255,255,.06);--surface-2:rgba(255,255,255,.08);--accent-ink:#E6C868;--emerald:#62D3A0}
+.hx .eyebrow{color:#E6C868}
+.hx-big{display:block;font-family:var(--f-display);font-size:46px;font-weight:700;line-height:1;color:#F7E7B4;font-variant-numeric:tabular-nums}
+.hx-sub{font-size:13px;line-height:1.5;color:var(--ink-2)}
+.hx-bar{height:6px;border-radius:3px;background:rgba(255,255,255,.14);overflow:hidden}
+.hx-bar i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#C9A12F,#F1D77E)}
+.hx-st{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}
+.hx-st > div{padding:9px 4px;border-radius:12px;background:rgba(255,255,255,.07);border:1px solid rgba(241,215,126,.18);text-align:center;min-width:0}
+.hx-st b{display:block;font-family:var(--f-display);font-size:18px;line-height:1.2;color:#F7E7B4;font-variant-numeric:tabular-nums}
+.hx-st span{display:block;font-size:11.5px;color:var(--ink-2);margin-top:2px;line-height:1.3}
+.hx .btn.ghost,.hx .btn.sec{background:rgba(255,255,255,.06);color:#F7EFD8;border:1px solid rgba(244,235,208,.35)}
+.sh-num{display:flex;align-items:center;gap:12px}
+.sh-num > i{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-family:var(--f-display);font-weight:700;font-size:13.5px;color:#1E2A5A;background:linear-gradient(135deg,#E9C85E,#C9A12F)}
+.sh-num b{display:block;font-family:var(--f-display);font-size:16px;line-height:1.3}
+.sh-num span{display:block;font-size:12.5px;color:var(--ink-2);margin-top:1px}
+/* тасбих */
+.tb-hero{text-align:center;padding:20px 16px 18px}
+.tb-ar{font-family:var(--f-ar);direction:rtl;font-size:30px;line-height:1.6;color:#F7E7B4}
+.tb-tr{font-size:13.5px;font-style:italic;color:var(--ink-2)}
+.tb-ru{font-size:14px;line-height:1.45;color:var(--ink-2);margin-top:2px}
+.tb-ring{width:232px;height:232px;margin:12px auto 0}
+.tb-ring .bg{stroke:rgba(255,255,255,.12)}
+.tb-ring .ring-in{inset:30px;background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.10),rgba(255,255,255,.03));border-color:rgba(241,215,126,.3)}
+.tb-ring .ring-in b{font-size:54px;color:#F7E7B4}
+.tb-ring .ring-in span{color:var(--ink-2)}
+.tb-beads circle{fill:rgba(241,215,126,.45)}
+.tb-ring:active .ring-in{transform:scale(.97)}
+.tb-ring .ring-in{transition:transform .08s ease}
+.tb-hint{font-size:12.5px;color:var(--ink-3);margin-top:10px}
+.tb-hero .tasbih-ctl{margin-top:12px}
+.tb-hero .tasbih-ctl .btn{min-height:44px}
+.tb-hero .tasbih-ctl .btn[data-tick]{min-width:76px}
+.tb-sum{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tb-sum > div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 10px;text-align:center;box-shadow:var(--shadow)}
+.tb-sum b{display:block;font-family:var(--f-display);font-size:24px;font-variant-numeric:tabular-nums;color:var(--accent-ink)}
+.tb-sum span{display:block;font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.tb-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.tb-z{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-height:58px;padding:10px 11px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);text-align:left;color:var(--ink)}
+.tb-z b{font-size:13.5px;font-weight:600;line-height:1.3;padding-right:26px}
+.tb-z span{font-size:12px;color:var(--ink-2)}
+.tb-z em{position:absolute;top:8px;right:8px;font-style:normal;font-size:11px;font-weight:700;color:var(--accent-ink);font-variant-numeric:tabular-nums}
+.tb-z.on{border-color:var(--gold);background:linear-gradient(140deg,rgba(212,175,55,.2),rgba(212,175,55,.06));box-shadow:0 0 0 1px rgba(212,175,55,.4) inset}
+/* кибла */
+.qb-hero{text-align:center;padding:18px 16px 20px}
+.qb-wrap{position:relative;width:250px;height:250px;margin:22px auto 0;max-width:100%}
+.qb-wrap svg{width:100%;height:100%;overflow:visible}
+.qb-top{position:absolute;top:-12px;left:50%;margin-left:-8px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:11px solid #F7E7B4;z-index:2}
+.qb-rim{fill:rgba(255,255,255,.04);stroke:rgba(241,215,126,.35);stroke-width:1.5}
+.qb-t1{stroke:rgba(244,235,208,.85);stroke-width:2.2}
+.qb-t2{stroke:rgba(244,235,208,.5);stroke-width:1.5}
+.qb-t3{stroke:rgba(244,235,208,.26);stroke-width:1}
+.qb-l{fill:#F4EBD0;font-family:var(--f-display);font-weight:700;font-size:15px;text-anchor:middle;dominant-baseline:central}
+.qb-l.n{fill:#FF9B8A}
+.qb-dir{stroke:#E6C868;stroke-width:4;stroke-linecap:round;opacity:.9}
+.qb-c{position:absolute;left:50%;top:50%;width:104px;height:104px;margin:-52px 0 0 -52px;border-radius:50%;display:grid;place-content:center;gap:1px;background:radial-gradient(circle at 50% 35%,#2E3C80,#16204A);border:1px solid rgba(241,215,126,.4);box-shadow:0 6px 22px rgba(0,0,0,.35)}
+.qb-c b{font-family:var(--f-display);font-size:30px;line-height:1;color:#F7E7B4;font-variant-numeric:tabular-nums}
+.qb-c span{font-size:11.5px;color:var(--ink-2)}
+.qb-live{font-size:13.5px;margin-top:14px;min-height:20px}
+.qb-hero .btn{margin-top:10px;min-height:44px}
+/* восполнение */
+.kz-hero{padding:18px}
+.kz-top{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin-top:6px}
+.kz-top span{font-size:14px;color:var(--ink-2);padding-bottom:5px}
+.kz-fast{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(241,215,126,.25);font-size:12.5px;color:var(--ink-2)}
+.kz-per{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(241,215,126,.18)}
+.kz-per span{flex:1;font-size:13px;line-height:1.4;color:var(--ink-2)}
+.kz-per .btn{flex:none;width:40px;height:40px;padding:0;font-size:18px}
+.kz-list{padding:6px 14px}
+.kz-row{display:flex;align-items:center;gap:8px;padding:11px 0;border-bottom:1px solid var(--line-soft)}
+.kz-row:last-child{border-bottom:0}
+.kz-n{flex:1;min-width:0}
+.kz-n b{display:block;font-size:15px;font-weight:600}
+.kz-n small{display:block;font-size:12px;color:var(--ink-2);margin-top:2px}
+.kz-n .bar{height:5px;margin-top:6px}
+.kz-n .bar i{background:linear-gradient(90deg,#C9A12F,#E9C85E)}
+.kz-row .btn{flex:none;min-height:40px}
+.kz-row .btn.sec{width:44px;padding-left:0;padding-right:0}
+.kz-done{opacity:.45}
+.tb-hero .tasbih-ctl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tb-hero .tasbih-ctl .btn{padding-left:6px;padding-right:6px;width:100%}
+/* садака */
+.sq-t{font-family:var(--f-display);font-size:19px;font-weight:700;line-height:1.25;margin-top:6px;color:#F7EFD8}
+.sq-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:14px;list-style:none;padding:0}
+.sq-steps li{position:relative;padding:10px 6px 9px;border-radius:12px;background:rgba(255,255,255,.07);border:1px solid rgba(241,215,126,.2);text-align:center;font-size:12px;line-height:1.3;color:var(--ink-2)}
+.sq-steps i{display:grid;place-items:center;width:24px;height:24px;margin:0 auto 5px;border-radius:50%;font-style:normal;font-weight:700;font-size:12px;color:#1E2A5A;background:linear-gradient(135deg,#E9C85E,#C9A12F)}
+.sq-steps b{display:block;color:#F7EFD8;font-size:12.5px;font-weight:600}
+.sq-zero{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:6px 12px;border-radius:999px;background:rgba(98,211,160,.12);border:1px solid rgba(98,211,160,.4);font-size:12.5px;color:#BFF0D8}
+.sq-card .sq-n{font-family:var(--f-display);font-size:16px;font-weight:600;line-height:1.35}
+.sq-card p{font-size:13.5px;color:var(--ink-2);line-height:1.6;margin:7px 0 0}
+.sq-till{display:inline-block;margin-top:9px;padding:3px 10px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);font-size:12px;color:var(--ink-2)}
+.sq-card .btn,.sq-empty .btn{display:block;width:100%;margin-top:12px;text-align:center;text-decoration:none}
+.sq-empty{text-align:center;padding:20px 16px}
+.sq-empty .ic{font-size:30px;color:var(--accent-ink);line-height:1}
+.sq-empty b{display:block;font-family:var(--f-display);font-size:16px;margin-top:8px}
+.sq-empty p{font-size:13.5px;color:var(--ink-2);line-height:1.55;margin:6px 0 0}
+/* сира */
+.sr-life{padding:16px}
+.sr-bar{display:flex;gap:3px;height:14px;margin-top:12px;border-radius:7px;overflow:hidden}
+.sr-bar span{display:block;height:100%}
+.sr-e1{background:linear-gradient(90deg,#9AA3AD,#C4CAD1)}
+.sr-e2{background:linear-gradient(90deg,#C9A12F,#E9C85E)}
+.sr-e3{background:linear-gradient(90deg,#2D6A4F,#3E9B72)}
+.sr-yrs{position:relative;height:16px;font-size:11.5px;color:var(--ink-2);margin-top:5px;font-variant-numeric:tabular-nums}
+.sr-yrs span{position:absolute;top:0;transform:translateX(-50%)}
+.sr-lg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.sr-lg div{min-width:0}
+.sr-lg b{display:block;font-family:var(--f-display);font-size:20px;line-height:1.1;font-variant-numeric:tabular-nums}
+.sr-lg span{display:block;font-size:12px;line-height:1.35;color:var(--ink-2);margin-top:2px}
+.sr-lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:1px}
+.sr-era{display:flex;align-items:center;gap:10px;margin:8px 2px -2px}
+.sr-era i{flex:none;width:12px;height:12px;border-radius:4px}
+.sr-era b{font-family:var(--f-display);font-size:15px}
+.sr-era span{margin-left:auto;font-size:12.5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.sr-tl{list-style:none;margin:0;padding:6px 14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow)}
+.sr-tl li{position:relative}
+.sr-tl li:not(:last-child)::after{content:"";position:absolute;left:15px;top:44px;bottom:-8px;width:2px;background:var(--line)}
+.sr-tl button{display:flex;align-items:center;gap:12px;width:100%;padding:9px 0;text-align:left;color:var(--ink);min-height:48px}
+.sr-tl .sr-num{flex:none;position:relative;z-index:1;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-size:13px;font-weight:700;background:var(--surface-2);border:2px solid var(--line);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.sr-tl.e1 .sr-num{border-color:#9AA3AD}
+.sr-tl.e2 .sr-num{border-color:#C9A12F}
+.sr-tl.e3 .sr-num{border-color:#3E9B72}
+.sr-tl .sr-tx{flex:1;min-width:0}
+.sr-tl b{display:block;font-size:15px;font-weight:600;line-height:1.3}
+.sr-tl small{display:block;font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.sr-tl .sr-go{flex:none;color:var(--ink-3);font-size:18px}
+.sr-tl .sr-fav{flex:none;color:var(--accent-ink);font-size:14px}
+.sr-hl{display:flex;align-items:center;gap:12px;width:100%;padding:14px;border-radius:var(--r-lg);text-align:left;color:var(--ink);background:linear-gradient(140deg,rgba(212,175,55,.16),rgba(212,175,55,.04));border:1px solid rgba(212,175,55,.45)}
+.sr-hl .sr-ic{flex:none;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:20px;background:rgba(212,175,55,.18);color:var(--accent-ink)}
+.sr-hl b{display:block;font-family:var(--f-display);font-size:15.5px}
+.sr-hl span{display:block;font-size:13px;color:var(--ink-2);margin-top:2px}
+.sr-prog{height:4px;border-radius:2px;background:var(--line);margin-top:10px;overflow:hidden}
+.sr-prog i{display:block;height:100%;background:linear-gradient(90deg,#C9A12F,#E9C85E)}
+/* хадисы */
+.hd-hero{display:flex;align-items:center;gap:16px}
+.hd-hero .hx-big{font-size:52px}
+.hd-hero .hd-t{flex:1;min-width:0}
+.hd-hero .hd-t b{display:block;font-family:var(--f-display);font-size:17px;line-height:1.3;color:#F7EFD8}
+.hd-hero .hd-t span{display:block;font-size:13px;line-height:1.5;color:var(--ink-2);margin-top:4px}
+.hd-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hd-acts .btn{width:100%;min-height:44px}
+.hd-list{display:flex;flex-direction:column;gap:8px}
+.hd-row{display:flex;align-items:flex-start;gap:12px;width:100%;padding:12px 13px;text-align:left;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:var(--shadow)}
+.hd-row .hd-n{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-family:var(--f-display);font-size:14px;font-weight:700;color:var(--accent-ink);background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.35);font-variant-numeric:tabular-nums}
+.hd-row .hd-tx{flex:1;min-width:0}
+.hd-row b{display:block;font-family:var(--f-display);font-size:15px;font-weight:600;line-height:1.35}
+.hd-row span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:13px;line-height:1.45;color:var(--ink-2);margin-top:3px}
+.hd-row .hd-fav{flex:none;color:var(--accent-ink);font-size:14px;margin-top:2px}
+.hd-q{position:relative;padding:18px 18px 18px 22px}
+.hd-q::before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:4px;border-radius:0 4px 4px 0;background:linear-gradient(#E9C85E,#C9A12F)}
+.hd-q p{font-size:16px;line-height:1.75;margin:0}
+@media (max-width:359px){.kz-bl{display:none}.kz-row .btn:not(.sec){width:48px;padding-left:0;padding-right:0;font-size:17px}}
 .zk-hero{display:flex;align-items:center;gap:16px;padding:18px;border-radius:var(--r-lg);background:radial-gradient(120% 120% at 15% 10%,#2E3C80 0%,#1E2A5A 45%,#0E1636 100%);border:1px solid rgba(212,175,55,.4);color:#F4EBD0;box-shadow:var(--shadow);position:sticky;top:0;z-index:4}
 .zk-g{position:relative;flex:none;width:96px;height:96px}
 .zk-ring{width:96px;height:96px;transform:rotate(-90deg)}
@@ -6821,6 +6973,8 @@ function tasbihPaint(){
   var C = 2 * Math.PI * 94;
   fg.setAttribute("stroke-dashoffset", (C * (1 - inRound / z.goal)).toFixed(1));
   if(tot) tot.textContent = S.tasbihTotal || 0;
+  var rd = document.getElementById("tbRounds"); if(rd) rd.textContent = Math.floor(cnt / z.goal);
+  var zc = document.querySelector('[data-tzc="' + V.zikr + '"]'); if(zc) zc.textContent = cnt || "";
   return true;
 }
 function viewTasbih(){
@@ -6828,34 +6982,46 @@ function viewTasbih(){
   var inRound = (cnt>0 && cnt % z.goal === 0) ? z.goal : cnt % z.goal;
   var pct = inRound / z.goal;
   var C = 2*Math.PI*94;
+  /* бусины по кругу: сколько раз в круге, столько бусин */
+  var beads = "";
+  for(var t = 0; t < z.goal; t++){
+    var a = t / z.goal * 2 * Math.PI;
+    beads += '<circle cx="'+(108 + 105 * Math.cos(a)).toFixed(1)+'" cy="'+(108 + 105 * Math.sin(a)).toFixed(1)+'" r="'+(z.goal > 40 ? 1.2 : 2)+'"/>';
+  }
   return '<div class="stack">'+
-    '<section class="card tasbih">'+
-      '<div class="zikr">'+esc(z.ar)+'</div>'+
-      (z.tr ? '<div class="zikr-ru" style="font-style:italic;margin-bottom:4px">'+esc(z.tr)+'</div>' : '')+
-      '<div class="zikr-ru">'+esc(z.ru)+'</div>'+
-      '<div class="ring">'+
+    '<section class="hx tb-hero">'+
+      '<div class="tb-ar">'+esc(z.ar)+'</div>'+
+      (z.tr ? '<div class="tb-tr">'+esc(z.tr)+'</div>' : '')+
+      '<div class="tb-ru">'+esc(z.ru)+'</div>'+
+      '<div class="ring tb-ring">'+
         '<svg viewBox="0 0 216 216" aria-hidden="true">'+
           '<defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1">'+
-          '<stop offset="0%" stop-color="#D4AF37"/><stop offset="100%" stop-color="#E8CF83"/></linearGradient></defs>'+
+          '<stop offset="0%" stop-color="#D4AF37"/><stop offset="100%" stop-color="#F1D77E"/></linearGradient></defs>'+
+          '<g class="tb-beads">'+beads+'</g>'+
           '<circle class="bg" cx="108" cy="108" r="94"/>'+
           '<circle class="fg" cx="108" cy="108" r="94" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+(C*(1-pct)).toFixed(1)+'"/>'+
         '</svg>'+
         '<div class="ring-in"><b>'+inRound+'</b><span>из '+z.goal+' · всего '+cnt+'</span></div>'+
         '<button class="ring-btn" data-tick="1" aria-label="Прибавить"></button>'+
       '</div>'+
+      '<div class="tb-hint">Касайтесь круга: одно касание - плюс один</div>'+
       '<div class="tasbih-ctl">'+
         '<button class="btn sm ghost" data-reset="1">Сбросить</button>'+
         '<button class="btn sm ghost" data-tset="1" aria-label="Вписать число, посчитанное на чётках">✎ Вписать</button>'+
         '<button class="btn sm" data-tick="1">+ 1</button>'+
       '</div>'+
-      '<div class="pill-row">'+ ZIKRS.map(function(zz,i){
-        return '<button class="pill'+(i===V.zikr?" on":"")+'" data-zikr="'+i+'">'+esc(zz.pl || zz.ru.split(" -")[0])+'</button>';
-      }).join("") +'</div>'+
     '</section>'+
-    '<div class="card flat" style="text-align:center;padding:14px">'+
-      '<div class="eyebrow">Всего произнесено</div>'+
-      '<div id="tasbihTotal" style="font-family:var(--f-display);font-size:28px;font-weight:700;margin-top:4px">'+(S.tasbihTotal||0)+'</div>'+
-    '</div></div>';
+    '<div class="tb-sum">'+
+      '<div><b id="tasbihTotal">'+(S.tasbihTotal||0)+'</b><span>всего произнесено</span></div>'+
+      '<div><b id="tbRounds">'+Math.floor(cnt / z.goal)+'</b><span>полных кругов этого зикра</span></div>'+
+    '</div>'+
+    '<section class="card"><div class="eyebrow">Выберите зикр</div><div class="tb-grid">'+ ZIKRS.map(function(zz,i){
+      var c = S.tasbih["z"+i] || 0;
+      return '<button class="tb-z'+(i===V.zikr?" on":"")+'" data-zikr="'+i+'"'+(i===V.zikr?' aria-current="true"':'')+'>'+
+        '<b>'+esc(zz.pl || zz.ru.split(" -")[0])+'</b><span>круг - '+zz.goal+' раз</span>'+
+        '<em data-tzc="'+i+'">'+(c || "")+'</em></button>';
+    }).join("") +'</div></section>'+
+  '</div>';
 }
 
 /* ============================================================
@@ -8188,21 +8354,23 @@ function notesClick(d){
    ============================================================ */
 function viewHadith(){
   var q = V.q.toLowerCase().trim();
+  var favN = HADITHS.filter(function(x, i){ return isFav("hadith:" + i); }).length;
   var h = ['<div class="stack">'];
-  h.push('<div class="card flat" style="padding:13px 15px;font-size:14px;color:var(--ink-2);line-height:1.55">'+
-    'Сборник имама ан-Навави - основа, которую традиционно заучивают первой. '+HADITHS.length+' хадисов.</div>');
-  h.push('<button class="btn sec" data-open="hadithquiz">Проверить себя</button>');
+  h.push('<section class="hx hd-hero"><b class="hx-big">'+HADITHS.length+'</b>'+
+    '<div class="hd-t"><div class="eyebrow">Имам ан-Навави</div><b>Сорок хадисов</b>'+
+    '<span>Основа, которую традиционно заучивают первой'+(favN ? ' · в избранном '+favN : '')+'</span></div></section>');
+  h.push('<div class="hd-acts"><button class="btn sec" data-open="hadithquiz">Проверить себя</button>'+
+    '<button class="btn sec" data-hadith="'+(dayIndex() % HADITHS.length)+'">Хадис дня</button></div>');
   h.push('<input class="search" id="hadSearch" placeholder="Поиск по теме: намерение, сосед, гнев..." value="'+esc(V.q)+'">');
-  var shown = 0;
+  var rows = [];
   HADITHS.forEach(function(x,i){
     if(q && (x.n+" "+x.text).toLowerCase().indexOf(q)<0) return;
-    shown++;
-    h.push('<button class="name" data-hadith="'+i+'" style="align-items:flex-start">'+
-      '<div class="num">'+x.num+'</div>'+
-      '<div style="min-width:0;flex:1"><b style="line-height:1.35">'+esc(x.n)+'</b>'+
-      '<span style="display:block;margin-top:3px">'+esc(x.text.slice(0,72))+'...</span></div></button>');
+    rows.push('<button class="hd-row" data-hadith="'+i+'"><span class="hd-n">'+x.num+'</span>'+
+      '<span class="hd-tx"><b>'+esc(x.n)+'</b><span>'+esc(x.text.slice(0,120))+'</span></span>'+
+      (isFav("hadith:" + i) ? '<span class="hd-fav" aria-label="в избранном">★</span>' : '')+'</button>');
   });
-  if(!shown) h.push('<div class="empty"><div class="ic">☰</div><b>Ничего не найдено</b><p>Попробуйте другое слово.</p></div>');
+  if(!rows.length) h.push('<div class="empty"><div class="ic">☰</div><b>Ничего не найдено</b><p>Попробуйте другое слово.</p></div>');
+  else h.push('<div class="hd-list">'+rows.join("")+'</div>');
   h.push('</div>');
   return h.join("");
 }
@@ -8213,7 +8381,7 @@ function viewHadithOne(){
       '<div class="eyebrow">Хадис № '+x.num+' · ан-Навави</div>'+
       '<h3 style="font-family:var(--f-display);font-size:20px;font-weight:600;margin:8px 0 0;line-height:1.3">'+esc(x.n)+'</h3>'+
     '</section>'+
-    '<section class="card"><p style="font-size:15.5px;line-height:1.75;margin:0">'+esc(x.text)+'</p></section>'+
+    '<section class="card hd-q"><p>'+esc(x.text)+'</p></section>'+
     '<div style="display:flex;gap:8px">'+
       '<button class="btn '+(isFav(k)?"":"sec")+'" style="flex:1" data-fav="'+k+'">'+(isFav(k)?"★ В избранном":"☆ В избранное")+'</button>'+
       (i>0? '<button class="btn sec sm" data-hadith="'+(i-1)+'" style="flex:none">‹</button>':'')+
@@ -12450,49 +12618,49 @@ function viewInstallment(){
 }
 
 function viewSadaqa(){
-  var d = sadaqaData(), items = d.items || [];
+  var d = sadaqaData(), items = (d.items || []).filter(function(x){ return x && x.n; });
   var h = ['<div class="stack">'];
 
-  h.push('<div class="card flat" style="padding:13px 15px;font-size:14px;color:var(--ink-2);line-height:1.55">'+
-    'Здесь сборы, которые мы посмотрели сами. Приложение не собирает деньги и не берёт комиссию: '+
-    'кнопка открывает сбор в Tooba, и перевод идёт туда напрямую.</div>');
+  h.push('<section class="hx">'+
+    '<div class="eyebrow">Садака</div>'+
+    '<div class="sq-t">Помогайте через проверенные сборы</div>'+
+    '<div class="hx-sub" style="margin-top:6px">Здесь сборы, которые мы посмотрели сами. Кнопка открывает сбор в Tooba, перевод идёт туда напрямую - приложение не собирает деньги и не берёт комиссию.</div>'+
+    '<ol class="sq-steps"><li><i>1</i><b>Выберите</b>сбор</li><li><i>2</i><b>Откройте</b>в Tooba</li><li><i>3</i><b>Помогите</b>напрямую</li></ol>'+
+  '</section>');
 
   if(!items.length){
-    h.push('<div class="empty"><div class="ic">❁</div><b>Подборки пока нет</b>'+
-      '<p>Здесь появятся сборы, которые мы посмотрели. Пока откройте список проверенных сборов в Tooba - там их сотни.</p></div>');
+    h.push('<section class="card sq-empty"><div class="ic">❁</div><b>Подборка пока готовится</b>'+
+      '<p>Здесь появятся сборы, которые мы посмотрели. Пока откройте список проверенных сборов в Tooba - там их сотни.</p>'+
+      '<a class="btn" href="'+esc(SADAQA_LINK)+'" target="_blank" rel="noopener">Все сборы в Tooba ↗</a></section>');
   } else {
+    h.push('<div class="sec-h"><h3>Сборы, которые мы посмотрели</h3></div>');
     if(d.checkedAt){
-      h.push('<p class="disclaimer" style="text-align:left;padding:0 4px">Список проверяли '+esc(sadaqaDate(d.checkedAt))+
+      h.push('<p class="disclaimer" style="text-align:left;padding:0 4px;margin-top:-6px">Список проверяли '+esc(sadaqaDate(d.checkedAt))+
         '. Сбор мог закрыться после этого - актуальность видно в Tooba.</p>');
     }
-    h.push('<div class="stack" style="gap:10px">');
     items.forEach(function(x){
-      if(!x || !x.n) return;
       var url = String(x.url || SADAQA_LINK);
       /* Ссылку пускаем только на http(s): в файле может оказаться что угодно,
          а javascript: в href - это выполнение чужого кода у человека. */
-      if(!/^https?:\/\//i.test(url)) url = SADAQA_LINK;
-      h.push('<section class="card">'+
-        (x.fund? '<div class="eyebrow">'+esc(x.fund)+'</div>' : '')+
-        '<div style="font-family:var(--f-display);font-size:16px;font-weight:600;line-height:1.35;margin-top:'+(x.fund?"6px":"0")+'">'+esc(x.n)+'</div>'+
-        (x.s? '<div style="font-size:13.5px;color:var(--ink-2);line-height:1.6;margin-top:7px">'+esc(x.s)+'</div>' : '')+
-        (x.till? '<div style="font-size:12.5px;color:var(--ink-3);margin-top:7px">Срок: '+esc(x.till)+'</div>' : '')+
-        '<a class="btn sec sm" style="display:block;width:100%;margin-top:12px;text-align:center;text-decoration:none" '+
-          'href="'+esc(url)+'" target="_blank" rel="noopener">Открыть в Tooba</a>'+
+      if(!/^https?:[/][/]/i.test(url)) url = SADAQA_LINK;
+      h.push('<section class="card sq-card">'+
+        (x.fund ? '<div class="eyebrow" style="margin-bottom:6px">'+esc(x.fund)+'</div>' : '')+
+        '<div class="sq-n">'+esc(x.n)+'</div>'+
+        (x.s ? '<p>'+esc(x.s)+'</p>' : '')+
+        (x.till ? '<span class="sq-till">Срок: '+esc(x.till)+'</span>' : '')+
+        '<a class="btn sm" href="'+esc(url)+'" target="_blank" rel="noopener">Открыть в Tooba ↗</a>'+
       '</section>');
     });
-    h.push('</div>');
+    h.push('<a class="cat-wide" style="text-decoration:none;color:inherit" '+
+      'href="'+esc(SADAQA_LINK)+'" target="_blank" rel="noopener">'+
+      '<span class="cw-ic">↗</span>'+
+      '<span class="cw-t"><b>Все сборы в Tooba</b>'+
+      '<span>проверенные фонды, полный список и отчёты</span></span>'+
+      '<span class="cw-go">›</span></a>');
   }
 
-  h.push('<a class="cat-wide" style="margin-top:12px;text-decoration:none;color:inherit" '+
-    'href="'+esc(SADAQA_LINK)+'" target="_blank" rel="noopener">'+
-    '<span class="cw-ic">↗</span>'+
-    '<span class="cw-t"><b>Все сборы в Tooba</b>'+
-    '<span>проверенные фонды, полный список и отчёты</span></span>'+
-    '<span class="cw-go">›</span></a>');
-
   /* Поддержать проект - тот же блок, что был в профиле (перенесён по просьбе Заиры). */
-  h.push('<div class="sec-h" style="margin-top:14px"><h3>Поддержать проект</h3></div>');
+  h.push('<div class="sec-h" style="margin-top:8px"><h3>Поддержать проект</h3></div>');
   h.push(donateParts());
 
   h.push('<p class="disclaimer">Tooba - отдельное приложение и отдельная организация, мы к нему не относимся. '+
@@ -13923,10 +14091,6 @@ function viewQada(){
   var left = qadaLeft(), doneAll = 0;
   kinds.forEach(function(f){ doneAll += q.done[f.k] || 0; });
 
-  h.push('<div class="card flat" style="padding:13px 15px;font-size:14px;color:var(--ink-2);line-height:1.55">'+
-    'Запишите, сколько намазов и дней поста пропущено, и отмечайте каждый восполненный. '+
-    'Счёт хранится только на этом телефоне.</div>');
-
   /* сводка */
   var maxLeft = 0;
   kinds.forEach(function(f){ if((q.p[f.k]||0) > maxLeft) maxLeft = q.p[f.k]||0; });
@@ -13936,45 +14100,40 @@ function viewQada(){
     var fd = new Date(); fd.setDate(fd.getDate() + daysNeed);
     finish = fd.toLocaleDateString("ru-RU", {day:"numeric", month:"long", year:"numeric"});
   }
-  h.push('<section class="card" style="text-align:center;padding:20px 16px">'+
+  var totalAll = left + doneAll, pctAll = totalAll ? Math.round(doneAll * 100 / totalAll) : 0;
+  var lw = String(plural(left, "намаз", "намаза", "намазов")).replace(/^[0-9]+ /, "");
+  h.push('<section class="hx kz-hero">'+
     '<div class="eyebrow">Осталось восполнить</div>'+
-    '<div style="font-family:var(--f-display);font-size:34px;font-weight:700;color:var(--accent-ink);margin-top:4px;font-variant-numeric:tabular-nums">'+left+'</div>'+
-    '<div style="font-size:13px;color:var(--ink-3)">'+(left ? plural(left,"намаз","намаза","намазов") : "намазов")+
-      (q.fast ? ' · '+plural(q.fast,"день поста","дня поста","дней поста") : '')+'</div>'+
-    (doneAll || q.fastDone ? '<div style="font-size:13px;color:var(--emerald);margin-top:8px">Уже восполнено: '+plural(doneAll,"намаз","намаза","намазов")+
-      (q.fastDone ? ' и '+plural(q.fastDone,"пост","поста","постов") : '')+'</div>' : '')+
-    (daysNeed ? '<div style="font-size:12.5px;color:var(--ink-3);margin-top:10px;line-height:1.5">Если за сутки восполнять намазы '+
-      (q.perDay === 1 ? 'одного пропущенного дня' : q.perDay+' пропущенных дней')+' - закончите примерно к '+esc(finish)+'</div>'+
-      '<div style="display:flex;justify-content:center;align-items:center;gap:10px;margin-top:8px">'+
-        '<button class="btn sec sm" data-qadaper="-1" aria-label="Меньше">−</button>'+
-        '<span style="font-size:13px;color:var(--ink-2)">дней за сутки: '+q.perDay+'</span>'+
-        '<button class="btn sec sm" data-qadaper="1" aria-label="Больше">+</button></div>' : '')+
+    '<div class="kz-top"><b class="hx-big">'+left+'</b><span>'+lw+'</span></div>'+
+    (q.fast || q.fastDone ? '<div class="kz-fast">Пост: осталось '+plural(q.fast,"день","дня","дней")+(q.fastDone ? ' · восполнено '+q.fastDone : '')+'</div>' : '')+
+    (totalAll ? '<div class="hx-bar" style="margin-top:14px"><i style="width:'+pctAll+'%"></i></div>'+
+      '<div class="hx-sub" style="margin-top:6px">Восполнено '+doneAll+' из '+totalAll+' · '+pctAll+'%</div>'
+      : '<div class="hx-sub" style="margin-top:8px">Запишите ниже, сколько намазов и дней поста пропущено, и отмечайте каждый восполненный. Счёт хранится только на этом телефоне.</div>')+
+    (daysNeed ? '<div class="kz-per"><span>Если за сутки восполнять намазы '+(q.perDay === 1 ? 'одного пропущенного дня' : q.perDay+' пропущенных дней')+' - закончите примерно к <b style="color:#F7E7B4">'+esc(finish)+'</b></span>'+
+      '<button class="btn sec sm" data-qadaper="-1" aria-label="Меньше дней за сутки">−</button>'+
+      '<button class="btn sec sm" data-qadaper="1" aria-label="Больше дней за сутки">+</button></div>' : '')+
   '</section>');
 
   /* по намазам */
-  h.push('<div class="sec-h"><h3>Намазы</h3></div>');
-  h.push('<div class="rows">'+ kinds.map(function(f){
-    var n = q.p[f.k] || 0, dn = q.done[f.k] || 0;
-    return '<div class="row" style="padding:10px 12px;gap:8px">'+
-      '<div style="flex:1;min-width:0"><div style="font-size:14.5px">'+esc(f.n)+'</div>'+
-        '<div style="font-size:12px;color:var(--ink-3)">осталось '+n+(dn ? ' · восполнено '+dn : '')+'</div></div>'+
-      '<button class="btn sec sm" style="flex:none" data-qadaadd="'+f.k+'" aria-label="Добавить пропущенный">+1</button>'+
-      '<button class="btn sm" style="flex:none'+(n?'':';opacity:.45')+'" data-qadadone="'+f.k+'">Восполнено</button>'+
+  function kzRow(k, name, n, dn){
+    var all = n + dn, pc = all ? Math.round(dn * 100 / all) : 0;
+    return '<div class="kz-row">'+
+      '<div class="kz-n"><b>'+esc(name)+'</b><small>осталось '+n+(dn ? ' · восполнено '+dn : '')+'</small>'+
+        (all ? '<div class="bar"><i style="width:'+pc+'%"></i></div>' : '')+'</div>'+
+      '<button class="btn sec sm" data-qadaadd="'+k+'" aria-label="Добавить пропущенный: '+esc(name)+'">+1</button>'+
+      '<button class="btn sm'+(n ? '' : ' kz-done')+'" data-qadadone="'+k+'" aria-label="Восполнено: '+esc(name)+'">✓<span class="kz-bl"> Восполнено</span></button>'+
     '</div>';
-  }).join("") +'</div>');
+  }
+  h.push('<section class="card kz-list"><div class="sh-num" style="padding:8px 0 4px"><i>1</i><div><b>Намазы</b><span>+1 - записать пропуск, ✓ - восполнили</span></div></div>'+
+    kinds.map(function(f){ return kzRow(f.k, f.n, q.p[f.k] || 0, q.done[f.k] || 0); }).join("")+'</section>');
 
   /* посты */
-  h.push('<div class="sec-h"><h3>Пост</h3></div>');
-  h.push('<div class="rows"><div class="row" style="padding:10px 12px;gap:8px">'+
-    '<div style="flex:1;min-width:0"><div style="font-size:14.5px">Дни поста</div>'+
-      '<div style="font-size:12px;color:var(--ink-3)">осталось '+q.fast+(q.fastDone ? ' · восполнено '+q.fastDone : '')+'</div></div>'+
-    '<button class="btn sec sm" style="flex:none" data-qadaadd="fast" aria-label="Добавить день поста">+1</button>'+
-    '<button class="btn sm" style="flex:none'+(q.fast?'':';opacity:.45')+'" data-qadadone="fast">Восполнено</button>'+
-  '</div></div>');
+  h.push('<section class="card kz-list"><div class="sh-num" style="padding:8px 0 4px"><i>2</i><div><b>Пост</b><span>дни, которые нужно возместить</span></div></div>'+
+    kzRow("fast", "Дни поста", q.fast, q.fastDone)+'</section>');
 
   /* быстрое добавление */
-  h.push('<section class="card"><div class="eyebrow">Добавить сразу много</div>'+
-    '<p style="font-size:13px;color:var(--ink-3);margin:6px 0 0;line-height:1.5">Если пропущены целые дни, укажите их число - '+
+  h.push('<section class="card"><div class="sh-num"><i>3</i><div><b>Добавить сразу много</b><span>если пропущены целые дни или годы</span></div></div>'+
+    '<p style="font-size:13px;color:var(--ink-2);margin:10px 0 0;line-height:1.5">Укажите число дней - '+
       'каждому намазу добавится столько же. Годы считаются примерно, по 365 дней.</p>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px">'+
       '<label style="font-size:12px;color:var(--ink-3)">дней<input id="qadaDays" class="search" inputmode="numeric" placeholder="0" style="margin-top:4px"></label>'+
@@ -14451,17 +14610,48 @@ function viewSira(){
   h.push('<section class="mihrab" style="border-radius:96px 96px var(--r-lg) var(--r-lg);padding:24px 20px 18px">'+
     '<div class="ar" style="font-size:28px;line-height:1.9">مُحَمَّدٌ رَسُولُ ٱللَّٰهِ</div>'+
     '<div style="font-family:var(--f-display);font-size:19px;font-weight:600;margin-top:6px">Сира Пророка Мухаммада ﷺ</div>'+
-    '<div class="ru" style="font-size:13.5px;color:rgba(255,255,255,.72)">'+SIRA.length+' глав - от Аравии до джахилии до прощального хаджа</div></section>');
+    '<div class="ru" style="font-size:13.5px;color:rgba(255,255,255,.8)">'+plural(SIRA.length, "глава", "главы", "глав")+': от Аравии времён джахилии до прощального хаджа</div></section>');
+
+  /* жизнь одной полосой: 40 лет до пророчества, 13 - призыв в Мекке, 10 - Медина */
+  h.push('<section class="card sr-life"><div class="eyebrow">63 года жизни</div>'+
+    '<div class="sr-bar" aria-hidden="true"><span class="sr-e1" style="flex:40"></span><span class="sr-e2" style="flex:13"></span><span class="sr-e3" style="flex:10"></span></div>'+
+    '<div class="sr-yrs"><span style="left:0;transform:none">570</span><span style="left:63.5%">610</span><span style="left:84.1%">622</span><span style="left:100%;transform:translateX(-100%)">632</span></div>'+
+    '<div class="sr-lg"><div><b><i class="sr-e1"></i>40</b><span>лет до пророчества</span></div>'+
+      '<div><b><i class="sr-e2"></i>13</b><span>лет призыва в Мекке</span></div>'+
+      '<div><b><i class="sr-e3"></i>10</b><span>лет в Медине</span></div></div></section>');
+
+  var iRev = -1, iHij = -1;
+  SIRA.forEach(function(x, i){ if(iRev < 0 && x.n.indexOf("Хира") === 0) iRev = i; if(iHij < 0 && x.n === "Хиджра") iHij = i; });
+  var first = SIRA[0] && SIRA[0].blocks ? 1 : 0;
+  function item(i){
+    var x = SIRA[i];
+    return '<li><button data-sira="'+i+'"><span class="sr-num">'+(i + 1)+'</span>'+
+      '<span class="sr-tx"><b>'+esc(x.n)+'</b><small>'+esc(x.when)+'</small></span>'+
+      (isFav("sira:" + i) ? '<span class="sr-fav" aria-label="в избранном">★</span>' : '')+
+      '<span class="sr-go" aria-hidden="true">›</span></button></li>';
+  }
+  function range(a, b){ var r = []; for(var i = a; i <= b; i++) r.push(item(i)); return r.join(""); }
+
+  if(first){
+    h.push('<button class="sr-hl" data-sira="0"><span class="sr-ic">✦</span><span style="flex:1;min-width:0"><b>'+esc(SIRA[0].n)+'</b>'+
+      '<span>Глава 1 · '+esc(SIRA[0].when)+'</span></span><span class="sr-go" style="color:var(--accent-ink);font-size:18px">›</span></button>');
+  }
+  h.push('<button class="cat-wide" data-open="siraquiz"><span class="cw-ic">?</span>'+
+    '<span class="cw-t"><b>Проверить себя</b><span>вопросы по главам сиры</span></span><span class="cw-go">›</span></button>');
+
+  if(iRev > first && iHij > iRev){
+    [["До пророчества", "570-610", "e1", first, iRev - 1],
+     ["Призыв в Мекке", "610-622", "e2", iRev, iHij - 1],
+     ["Медина", "622-632", "e3", iHij, SIRA.length - 1]].forEach(function(e){
+      h.push('<div class="sr-era"><i class="sr-'+e[2]+'"></i><b>'+e[0]+'</b><span>'+e[1]+'</span></div>');
+      h.push('<ol class="sr-tl '+e[2]+'">'+range(e[3], e[4])+'</ol>');
+    });
+  } else {
+    h.push('<ol class="sr-tl">'+range(first, SIRA.length - 1)+'</ol>');
+  }
   h.push('<div class="card flat" style="padding:13px 15px;font-size:13.5px;color:var(--ink-2);line-height:1.55">'+
     'Изложение опирается на Коран, «Сахих» аль-Бухари и «Сахих» Муслима, а также на классические жизнеописания Пророка ﷺ. '+
     'Источник указан в конце каждой главы.</div>');
-  h.push('<button class="btn sec" data-open="siraquiz">Проверить себя</button>');
-  SIRA.forEach(function(x, i){
-    h.push('<button class="name" data-sira="'+i+'" style="align-items:flex-start">'+
-      '<div class="num">'+(i+1)+'</div>'+
-      '<div style="min-width:0;flex:1"><b style="line-height:1.35">'+esc(x.n)+'</b>'+
-      '<span style="display:block;margin-top:3px">'+esc(x.when)+'</span></div></button>');
-  });
   h.push('<p class="disclaimer">Даты по григорианскому календарю приблизительны - источники расходятся в пределах года.</p>');
   h.push('</div>');
   return h.join("");
@@ -14472,6 +14662,7 @@ function viewSiraOne(){
     '<section class="card">'+
       '<div class="eyebrow">Глава '+(i+1)+' из '+SIRA.length+' · '+esc(x.when)+'</div>'+
       '<h3 style="font-family:var(--f-display);font-size:21px;font-weight:600;margin:8px 0 0;line-height:1.3">'+esc(x.n)+'</h3>'+
+      '<div class="sr-prog" aria-hidden="true"><i style="width:'+Math.round((i + 1) * 100 / SIRA.length)+'%"></i></div>'+
     '</section>'+
     (x.blocks ? renderBlocks(x.blocks) :
       '<section class="card"><p style="font-size:15.5px;line-height:1.75;margin:0">'+esc(x.t)+'</p>'+
@@ -18466,35 +18657,51 @@ function viewTajwid(){
    ЭКРАН: КИБЛА
    ============================================================ */
 function viewQibla(){
-  var b = qiblaBearing(), c = currentCity();
+  var b = qiblaBearing(), c = currentCity(), rb = Math.round(b);
+  function pt(a, r){ var rad = a * Math.PI / 180; return [(115 + r * Math.sin(rad)).toFixed(1), (115 - r * Math.cos(rad)).toFixed(1)]; }
+  /* роза ветров повёрнута на -азимут внутри циферблата, который сам повёрнут на +азимут:
+     без компаса север смотрит вверх, с компасом роза поворачивается вместе с телефоном */
+  var rose = "";
+  for(var i = 0; i < 72; i++){
+    var a = i * 5, cls = a % 90 === 0 ? "qb-t1" : a % 30 === 0 ? "qb-t2" : "qb-t3";
+    var p1 = pt(a, 108), p2 = pt(a, a % 90 === 0 ? 96 : a % 30 === 0 ? 99 : 102);
+    rose += '<line class="'+cls+'" x1="'+p1[0]+'" y1="'+p1[1]+'" x2="'+p2[0]+'" y2="'+p2[1]+'"/>';
+  }
+  [["С",0],["В",90],["Ю",180],["З",270]].forEach(function(x){
+    var q = pt(x[1], 84);
+    rose += '<text class="qb-l'+(x[1] === 0 ? " n" : "")+'" x="'+q[0]+'" y="'+q[1]+'">'+x[0]+'</text>';
+  });
+  var kaaba = '<g transform="translate(115 12)"><rect x="-12" y="-12" width="24" height="24" rx="3" fill="#15151A" stroke="#E6C868" stroke-width="1.5"/>'+
+    '<rect x="-12" y="-6" width="24" height="4" fill="#E6C868"/></g>';
+  var dir = (c.lat > KAABA.lat ? "Ю" : "С") + (c.lng > KAABA.lng ? "З" : "В");
   return '<div class="stack">'+
-    '<section class="card" style="text-align:center;padding:20px 16px 22px">'+
-      '<div class="eyebrow">Направление на Каабу из города '+esc(c.n)+'</div>'+
-      '<div class="ring" style="width:230px;height:230px;margin-top:14px">'+
-        '<svg viewBox="0 0 230 230" id="qdial" style="transform:rotate('+b.toFixed(1)+'deg);transition:transform .2s linear">'+
-          '<circle cx="115" cy="115" r="104" fill="none" stroke="var(--line)" stroke-width="2"/>'+
-          '<g stroke="var(--line)" stroke-width="2">'+
-            [0,45,90,135,180,225,270,315].map(function(a){
-              var r1=104, r2=94, rad=a*Math.PI/180;
-              return '<line x1="'+(115+r1*Math.sin(rad)).toFixed(1)+'" y1="'+(115-r1*Math.cos(rad)).toFixed(1)+
-                     '" x2="'+(115+r2*Math.sin(rad)).toFixed(1)+'" y2="'+(115-r2*Math.cos(rad)).toFixed(1)+'"/>';
-            }).join("")+
-          '</g>'+
-          '<path d="M115 22 L129 62 L115 54 L101 62 Z" fill="#D4AF37"/>'+
-          '<rect x="103" y="8" width="24" height="24" rx="4" fill="var(--sapphire)" stroke="#D4AF37" stroke-width="1.5"/>'+
+    '<section class="hx qb-hero">'+
+      '<div class="eyebrow">Кибла из города '+esc(c.n)+'</div>'+
+      '<div class="qb-wrap"><span class="qb-top" aria-hidden="true"></span>'+
+        '<svg viewBox="0 0 230 230" id="qdial" style="transform:rotate('+b.toFixed(1)+'deg);transition:transform .2s linear" aria-hidden="true">'+
+          '<circle cx="115" cy="115" r="110" class="qb-rim"/>'+
+          '<g transform="rotate('+(-b).toFixed(1)+' 115 115)">'+rose+'</g>'+
+          '<line class="qb-dir" x1="115" y1="64" x2="115" y2="30"/>'+
+          kaaba+
         '</svg>'+
-        '<div class="ring-in" style="inset:44px"><b style="font-size:32px">'+Math.round(b)+'°</b>'+
-        '<span>от севера</span></div>'+
+        '<div class="qb-c"><b>'+rb+'°</b><span>от севера</span></div>'+
       '</div>'+
-      '<div id="qlive" style="font-size:13.5px;color:var(--ink-3);margin-top:14px">Компас не запущен</div>'+
-      '<button class="btn sec sm" style="margin-top:12px" data-compass="1">Включить компас</button>'+
+      '<div id="qlive" class="qb-live">Компас не запущен</div>'+
+      '<button class="btn sm" data-compass="1">Включить компас</button>'+
     '</section>'+
     '<div class="stats">'+
-      '<div class="stat"><b>'+Math.round(b)+'°</b><span>азимут<br>киблы</span></div>'+
+      '<div class="stat"><b>'+rb+'°</b><span>азимут<br>киблы</span></div>'+
       '<div class="stat"><b>'+qiblaDistance().toLocaleString("ru-RU")+'</b><span>км до<br>Каабы</span></div>'+
-      '<div class="stat"><b>'+(c.lat>KAABA.lat?"Ю":"С")+(c.lng>KAABA.lng?"З":"В")+'</b><span>общее<br>направление</span></div>'+
+      '<div class="stat"><b>'+dir+'</b><span>общее<br>направление</span></div>'+
     '</div>'+
-    '<p class="disclaimer">Если компас недоступен, встаньте лицом на север и отсчитайте '+Math.round(b)+'° по часовой стрелке. Для точности сверьтесь с направлением михраба ближайшей мечети.</p>'+
+    '<section class="card vk-card"><div class="eyebrow">С компасом</div>'+visHtml({flow:[
+      ["Держите телефон ровно, экраном вверх", "подальше от металла и магнитов"],
+      ["Нажмите «Включить компас»", "если просит - поводите телефоном восьмёркой"],
+      ["Поворачивайтесь, пока Кааба не встанет под метку сверху", "тогда кибла прямо перед вами"]]})+'</section>'+
+    '<section class="card vk-card"><div class="eyebrow">Без компаса</div>'+visHtml({flow:[
+      ["Встаньте лицом на север", "по карте в телефоне или по приметам"],
+      ["Повернитесь на "+rb+"° по часовой стрелке", "90° - четверть круга, 180° - половина"],
+      ["Сверьтесь с михрабом ближайшей мечети", "это самый надёжный ориентир"]]})+'</section>'+
     '</div>';
 }
 
