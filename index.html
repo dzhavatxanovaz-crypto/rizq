@@ -5895,6 +5895,20 @@ function deepOpen(){
       if(mp[1] === BOOK2.id || mp[1] === BOOK1.id){ V.tab = "income"; open(mp[1] === BOOK2.id ? "book2" : "book1", null); }
       return true;
     }
+    /* Ссылка прямо в раздел: ?go=qw - словарь коранических слов, ?go=club -
+       разговорный клуб, ?go=arabic - курс арабского. Человек, пришедший по
+       такой ссылке, сразу попадает туда, куда его звали, и его не встречает
+       вопрос о городе: город он выберет, когда дойдёт до намаза. */
+    var GO_LINKS = { qw:["arabic", "qw"], club:["arabic", "club"], arabic:["arabic", null],
+      quran:["quran", null], azkar:["azkar", null], kniga:["book1", null], book:["book1", null] };
+    var mg = q.match(/[?&]go=([a-zA-Z0-9_]+)/);
+    if(mg && GO_LINKS[mg[1]]){
+      var g = GO_LINKS[mg[1]];
+      S.welcomed = 1; save();
+      if(g[0] === "arabic") V.tab = "dua";
+      open(g[0], g[1]);
+      return true;
+    }
     /* Ссылка на конкретный курс: ?course=ai. Нужна, чтобы из других наших
        приложений вести прямо на программу, а не на общий список. */
     var mc = q.match(/[?&]course=([a-zA-Z0-9_]+)/);
@@ -8261,7 +8275,10 @@ function clubCityDate(){
   function last(y, m){ var d = new Date(y, m + 1, 0); while(d.getDay() !== 6) d.setDate(d.getDate() - 1); return d; }
   var now = new Date(), d = last(now.getFullYear(), now.getMonth());
   var key = d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
-  if(key < todayKey()){ d = last(now.getFullYear(), now.getMonth() + 1); key = d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+  /* не раньше, чем клуб начал работать: первая очная встреча - после старта */
+  var floor = todayKey() > CLUB_START ? todayKey() : CLUB_START;
+  var i = 0;
+  while(key < floor && i < 24){ i++; d = last(now.getFullYear(), now.getMonth() + i); key = d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
   return key;
 }
 function clubSlot(){ return clubS().slot || ""; }
