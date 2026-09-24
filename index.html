@@ -1178,6 +1178,46 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hd-q{position:relative;padding:18px 18px 18px 22px}
 .hd-q::before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:4px;border-radius:0 4px 4px 0;background:linear-gradient(#E9C85E,#C9A12F)}
 .hd-q p{font-size:16px;line-height:1.75;margin:0}
+/* детям */
+.kd-hero .kd-t{font-family:var(--f-display);font-size:19px;font-weight:700;line-height:1.3;margin-top:6px;color:#F7EFD8}
+.kd-hero .hx-st b{font-size:17px}
+.kd-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:4px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line)}
+.kd-tabs button{min-height:40px;padding:0 2px;border-radius:10px;font-size:13.5px;font-weight:600;color:var(--ink-2)}
+.kd-tabs button.on{background:linear-gradient(135deg,#E9C85E,#C9A12F);color:#1E2A5A;box-shadow:0 4px 12px -6px rgba(201,161,47,.8)}
+.kd-read{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:700;color:#fff;background:#2D6A4F}
+.kd-night{display:inline-block;margin-left:6px;font-size:11px;font-weight:600;color:var(--accent-ink);vertical-align:1px}
+/* шукр */
+.sk-cal{padding:16px}
+.sk-top{display:flex;align-items:center;gap:14px}
+.sk-top .sk-n{font-family:var(--f-display);font-size:44px;font-weight:700;line-height:1;color:var(--accent-ink);font-variant-numeric:tabular-nums}
+.sk-top b{display:block;font-family:var(--f-display);font-size:15.5px}
+.sk-top span{display:block;font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.sk-w,.sk-g{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.sk-w{margin-top:14px}
+.sk-w span{text-align:center;font-size:10.5px;text-transform:uppercase;color:var(--ink-2)}
+.sk-g{margin-top:4px}
+.sk-g i{display:block;height:24px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line-soft)}
+.sk-g i.l1{background:rgba(212,175,55,.35);border-color:rgba(212,175,55,.45)}
+.sk-g i.l2{background:rgba(212,175,55,.62);border-color:rgba(212,175,55,.7)}
+.sk-g i.l3{background:linear-gradient(135deg,#E9C85E,#C9A12F);border-color:#C9A12F}
+.sk-g i.td{box-shadow:0 0 0 2px var(--ink-2)}
+.sk-g i.fu{opacity:.35}
+.sk-lg{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;font-size:12px;color:var(--ink-2)}
+.sk-lg em{font-style:normal;display:flex;align-items:center;gap:4px}
+.sk-lg em i{display:inline-block;width:11px;height:11px;border-radius:3px}
+/* рейтинг: поправки */
+.dash-st{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.dash-st b{font-size:15px!important}
+.dash-st span{color:var(--ink-2)!important}
+.lig-col span{font-size:10.5px;color:var(--ink-2)}
+.top-lig{gap:3px!important}
+.top-lig span{font-size:10px!important;letter-spacing:-.02em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:5px 1px!important}
+.top-lig span:not(.on){color:var(--ink-2)!important}
+.zone.up{color:#23573F}
+.zone.down{color:#9A3A26}
+:root[data-theme="dark"] .zone.up{color:#62D3A0}
+:root[data-theme="dark"] .zone.down{color:#F0A08A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .zone.up{color:#62D3A0}:root:not([data-theme="light"]) .zone.down{color:#F0A08A}}
 @media (max-width:359px){.kz-bl{display:none}.kz-row .btn:not(.sec){width:48px;padding-left:0;padding-right:0;font-size:17px}}
 .zk-hero{display:flex;align-items:center;gap:16px;padding:18px;border-radius:var(--r-lg);background:radial-gradient(120% 120% at 15% 10%,#2E3C80 0%,#1E2A5A 45%,#0E1636 100%);border:1px solid rgba(212,175,55,.4);color:#F4EBD0;box-shadow:var(--shadow);position:sticky;top:0;z-index:4}
 .zk-g{position:relative;flex:none;width:96px;height:96px}
@@ -13199,8 +13239,19 @@ function kidDuaCard(id, label){
 function viewKids(){
   var K = kidStore(), tab = V.kt || "stories", h = ['<div class="stack">'];
   var tabs = [["stories","Пророки"],["night","На ночь"],["duas","Дуа"],["names","Имена"]];
-  h.push('<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">'+tabs.map(function(x){
-    return '<button class="btn sm'+(tab===x[0]?"":" sec")+'" style="padding-left:4px;padding-right:4px" data-kidtab="'+x[0]+'">'+x[1]+'</button>';
+  var kRead = KID_STORIES.filter(function(s){ return K.read[s.id]; }).length;
+  var kDua = KID_DUAS.filter(function(x){ return K.duas[x[0]]; }).length;
+  h.push('<section class="hx kd-hero"><div class="eyebrow">Для всей семьи</div>'+
+    '<div class="kd-t">Истории пророков, дуа и имена</div>'+
+    '<div class="hx-st">'+
+      '<div><b>'+kRead+' / '+KID_STORIES.length+'</b><span>историй прочитали</span></div>'+
+      '<div><b>'+kDua+' / '+KID_DUAS.length+'</b><span>дуа выучили</span></div>'+
+      '<div><b>'+K.names.length+'</b><span>'+String(plural(K.names.length, "имя", "имени", "имён")).replace(/^[0-9]+ /, "")+' отложено</span></div>'+
+    '</div>'+
+    '<div class="hx-bar" style="margin-top:12px"><i style="width:'+Math.round((kRead + kDua) * 100 / Math.max(1, KID_STORIES.length + KID_DUAS.length))+'%"></i></div>'+
+  '</section>');
+  h.push('<div class="kd-tabs" role="tablist">'+tabs.map(function(x){
+    return '<button role="tab" aria-selected="'+(tab===x[0])+'" class="'+(tab===x[0]?"on":"")+'" data-kidtab="'+x[0]+'">'+x[1]+'</button>';
   }).join("")+'</div>');
 
   if(tab === "stories" || tab === "night"){
@@ -13213,8 +13264,8 @@ function viewKids(){
       var read = !!K.read[s.id];
       h.push('<button class="course" data-kidstory="'+s.id+'" style="align-items:center">'+
         '<div class="course-ic" style="font-size:22px">'+s.ic+'</div>'+
-        '<div style="flex:1"><h4>'+esc(s.t)+'</h4><p>'+esc(s.src)+'</p></div>'+
-        (read ? '<span style="flex:none;color:var(--emerald);font-weight:700">✓</span>' : '')+'</button>');
+        '<div style="flex:1;min-width:0"><h4>'+esc(s.t)+(s.night && tab !== "night" ? '<span class="kd-night">☾ на ночь</span>' : '')+'</h4><p>'+esc(s.src)+'</p></div>'+
+        (read ? '<span class="kd-read" role="img" aria-label="прочитали">✓</span>' : '')+'</button>');
     });
   }
 
@@ -19022,8 +19073,8 @@ function topDash(sc, d, me){
       '<div class="dash-sub">Рейтинг придуман не ради соревнования. Он помогает закрепить полезные привычки: '+
         'намаз вовремя, утренние и вечерние азкары, несколько страниц Корана каждый день. '+
         'Каждый понедельник неделя начинается заново, и вернуться можно с любого места.</div>'+
-      '<div class="lig-row">'+["Бронзовая","Серебряная","Золотая","Изумрудная","Алмазная"].map(function(n, i){
-        return '<div class="lig-col">'+ligMedal(i+1, i+1)+'<span>'+esc(n.replace("ая",""))+'</span></div>'; }).join("")+'</div>'+
+      '<div class="lig-row">'+["Бронза","Серебро","Золото","Изумруд","Алмаз"].map(function(n, i){
+        return '<div class="lig-col">'+ligMedal(i+1, i+1)+'<span>'+esc(n)+'</span></div>'; }).join("")+'</div>'+
       '<button class="btn" style="width:100%;margin-top:14px" data-sc="sheet">Участвовать</button>'+
       '<p class="disclaimer" style="text-align:left;padding:0;margin-top:8px">Имя - любое, можно участвовать скрытно. Телефон и почту не спрашиваем.</p>'+
     '</section>' + prizesHtml();
@@ -19045,7 +19096,7 @@ function topDash(sc, d, me){
       [["серия", (me.streak||0)+" дн."], ["азкары", me.azkars||0], ["зикры", me.tasbih||0], ["имена", (me.names||0)+"/99"], ["Коран", (me.quran||0)+" стр."], ["арабский", (me.words||0)+" сл."]]
         .map(function(p){ return '<div><b>'+esc(String(p[1]))+'</b><span>'+p[0]+'</span></div>'; }).join("")+'</div>' : '')+
     (d && d.names && TOP.period === "league" ? '<div class="top-lig">'+d.names.map(function(n, i){
-        return '<span class="'+(i+1 === d.league ? "on" : (i+1 < d.league ? "past" : ""))+'">'+esc(n.slice(0,3))+'</span>'; }).join("")+'</div>' : '')+
+        return '<span class="'+(i+1 === d.league ? "on" : (i+1 < d.league ? "past" : ""))+'" title="'+esc(n)+' лига">'+esc(["Бронза","Серебро","Золото","Изумруд","Алмаз"][i] || n.slice(0,3))+'</span>'; }).join("")+'</div>' : '')+
     (me ? '<button class="btn sec sm" style="margin-top:12px" data-sc="share">Поделиться результатом</button>' : '')+
     (sc.shown ? '' : '<p class="disclaimer" style="text-align:left;padding:0;margin:10px 0 0">Вы участвуете скрытно: в списке вас не видно.</p>')+
   '</section>';
@@ -20503,11 +20554,23 @@ function viewShukr(){
     '<textarea class="search" id="shukrInput" rows="2" style="resize:none;font-family:var(--f-body)" placeholder="За что вы благодарны прямо сейчас?"></textarea>'+
     '<button class="btn" style="margin-top:10px" data-addshukr="1">Записать</button></section>');
 
-  h.push('<div class="stats" style="margin-top:2px">'+
-    '<div class="stat"><b>'+all.length+'</b><span>'+plural(all.length,"запись","записи","записей")+'</span></div>'+
-    '<div class="stat"><b>'+shukrDays()+'</b><span>'+plural(shukrDays(),"день","дня","дней")+'</span></div>'+
-    '<div class="stat"><b>'+shukrStreak()+'</b><span>'+plural(shukrStreak(),"день","дня","дней")+" подряд"+'</span></div>'+
-  '</div>');
+  /* серия крупно и пять недель клеточками: видно, как складывается привычка */
+  var skS = shukrStreak(), skD = shukrDays(), skNow = new Date(); skNow.setHours(12, 0, 0, 0);
+  var skStart = new Date(skNow); skStart.setDate(skStart.getDate() - ((skStart.getDay() + 6) % 7) - 28);
+  var skCells = [];
+  for(var si = 0; si < 35; si++){
+    var sd = new Date(skStart); sd.setDate(skStart.getDate() + si);
+    var sk = dayKey(sd), sn = sd > skNow ? 0 : shukrOf(sk).length;
+    skCells.push('<i class="'+(sd > skNow ? "fu" : sn >= 3 ? "l3" : sn === 2 ? "l2" : sn === 1 ? "l1" : "")+(sk === todayKey() ? " td" : "")+'"'+
+      ' title="'+sd.getDate()+'.'+pad(sd.getMonth() + 1)+(sn ? ': '+plural(sn, "запись", "записи", "записей") : '')+'"></i>');
+  }
+  h.push('<section class="card sk-cal">'+
+    '<div class="sk-top"><span class="sk-n">'+skS+'</span><div><b>'+String(plural(skS, "день", "дня", "дней")).replace(/^[0-9]+ /, "")+' подряд</b>'+
+      '<span>'+plural(all.length, "запись", "записи", "записей")+' · '+plural(skD, "день", "дня", "дней")+' с благодарностью</span></div></div>'+
+    '<div class="sk-w">'+["пн","вт","ср","чт","пт","сб","вс"].map(function(w){ return '<span>'+w+'</span>'; }).join("")+'</div>'+
+    '<div class="sk-g" aria-label="Последние пять недель: дни с записями отмечены золотом">'+skCells.join("")+'</div>'+
+    '<div class="sk-lg"><span>Последние 5 недель</span><em><i style="background:var(--surface-2);border:1px solid var(--line)"></i>0<i style="background:rgba(212,175,55,.35)"></i>1<i style="background:rgba(212,175,55,.62)"></i>2<i style="background:#D4AF37"></i>3+</em></div>'+
+  '</section>');
 
   if(!all.length){
     h.push('<div class="empty"><div class="ic">✦</div><b>Записей пока нет</b>'+
