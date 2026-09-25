@@ -1,5 +1,5 @@
 /* Ризк - офлайн-кэш. Меняйте номер версии при каждом обновлении приложения. */
-var CACHE = "rizq-v220";
+var CACHE = "rizq-v221";
 var ASSETS = [
   "./",
   "./index.html",
@@ -68,9 +68,16 @@ self.addEventListener("push", function (e) {
 
 self.addEventListener("notificationclick", function (e) {
   e.notification.close();
+  /* метка уведомления - куда открыть: kahf - сура 18; go-xxx / open-xxx / course-xxx - разовые
+     уведомления с сервера (новая глава, эфир) ведут в нужный раздел */
+  var tag = String((e.notification && e.notification.tag) || ""), q = "";
+  if (tag === "kahf") q = "?go=kahf";
+  else { var m = tag.match(/^(go|open|course)-([a-z0-9_]{1,30})$/i); if (m) q = "?" + m[1] + "=" + m[2]; }
   e.waitUntil(clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (list) {
-    for (var i = 0; i < list.length; i++) { if ("focus" in list[i]) return list[i].focus(); }
-    return clients.openWindow("./");
+    for (var i = 0; i < list.length; i++) {
+      if ("focus" in list[i]) { if (q) { try { list[i].postMessage({ rizqGo: q }); } catch (x) {} } return list[i].focus(); }
+    }
+    return clients.openWindow("./" + q);
   }));
 });
 
