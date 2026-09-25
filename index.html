@@ -5854,8 +5854,38 @@ function viewHome(){
     '<div style="font-size:13.5px;color:var(--ink-2);margin-top:4px">Нажмите, чтобы перенести записи и открыть новый адрес</div></button>' + viewHomeMain();
   return viewHomeMain();
 }
+/* Последний час пятницы (после асра до магриба) - время, когда дуа принимается.
+   Абу Дауд 1048, ан-Насаи 1389 (сверено по sunnah.com 25.09.2026).
+   День недели и время - по городу намаза, а не по часам телефона. */
+function jumuaWindow(){
+  var c = currentCity(), t = timesNow().t, h = nowHours();
+  var dow = new Date(Date.now() + c.tz * 3600000).getUTCDay();
+  if(window.JUMUA_TEST) return { on:true, asr:t.asr, mg:t.maghrib, left:1 };
+  if(dow !== 5 || isNaN(t.asr) || isNaN(t.maghrib)) return { on:false };
+  return { on: h >= t.asr && h < t.maghrib, asr:t.asr, mg:t.maghrib, left:t.maghrib - h };
+}
+function jumuaHourCard(){
+  var w = jumuaWindow();
+  if(!w.on) return "";
+  var mins = Math.max(1, Math.round(w.left * 60));
+  var leftTxt = mins >= 60 ? (Math.floor(mins / 60) + " ч " + (mins % 60) + " мин") : (mins + " мин");
+  return '<section class="mihrab jm-card">'+
+    '<div class="eyebrow">Последний час пятницы</div>'+
+    '<div style="font-family:var(--f-display);font-size:19px;font-weight:600;margin:6px 0 2px">Время дуа</div>'+
+    '<div class="ru" style="color:rgba(255,255,255,.8);font-size:13.5px">До магриба '+esc(leftTxt)+' · магриб в '+hhmm(w.mg)+'</div>'+
+    '<div class="mihrab-sep"><i></i><b></b><i></i></div>'+
+    '<div class="ar" style="font-size:21px;line-height:1.9">يَوْمُ الْجُمُعَةِ اثْنَتَا عَشْرَةَ سَاعَةً، لَا يُوجَدُ فِيهَا عَبْدٌ مُسْلِمٌ يَسْأَلُ اللَّهَ شَيْئًا إِلَّا آتَاهُ إِيَّاهُ، فَالْتَمِسُوهَا آخِرَ سَاعَةٍ بَعْدَ الْعَصْرِ</div>'+
+    '<div class="ru" style="margin-top:8px">«День пятницы - двенадцать часов. В нём есть час, когда мусульманин, попросив у Аллаха что-либо, непременно получит это. Ищите его в последний час после асра»</div>'+
+    '<div class="src">Перевод смыслов. Передал Джабир ибн Абдуллах. Ан-Насаи, 1389; Абу Дауд, 1048</div>'+
+    '<div style="display:flex;gap:8px;margin-top:14px;position:relative;z-index:1">'+
+      '<button class="btn" style="flex:1" data-open="qduas">Дуа из Корана</button>'+
+      '<button class="btn sec" style="flex:1" data-open="mydua">Мои дуа</button>'+
+    '</div></section>';
+}
 function viewHomeMain(){
   var h = ['<div class="stack">'];
+  /* пятница после асра - карточка часа дуа, первой на главной (просьба Заиры 25.09) */
+  h.push(jumuaHourCard());
   h.push(a2hsCard());
   var d = duaOfDay(), a = ayatOfDay();
   var tn = timesNow(), np = nextPrayer();
