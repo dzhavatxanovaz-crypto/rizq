@@ -695,6 +695,20 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* азкары на главной: одна тонкая строка */
 .b1-quote blockquote{margin:10px 0 14px;padding-left:14px;border-left:3px solid var(--gold,#C3AD70);font-family:var(--f-display);font-size:16px;line-height:1.5;color:var(--ink)}
 .day-toggle{width:100%;margin-top:13px}
+.charity-line{display:flex;align-items:center;gap:10px;width:100%;text-align:left;margin-top:10px;padding:10px 12px;border:1px solid rgba(195,173,112,.45);border-radius:var(--r-md,10px);background:rgba(195,173,112,.09);color:var(--ink-2);font-size:13.5px;line-height:1.45}
+.charity-line .ch-ic{flex:none;color:#B5485A;font-size:15px}
+.charity-line .ch-t{flex:1;min-width:0}
+.charity-line .ch-go{display:block;margin-top:3px;color:var(--accent-ink);font-size:12.5px}
+.charity-line.plain{margin-top:12px;font-size:13px}
+.stack>.charity-line{margin-top:0}
+.nm-snd{display:inline-flex;align-items:center;justify-content:center;gap:6px;margin:14px auto 0;padding:9px 18px;min-height:40px;border-radius:999px;border:1px solid rgba(212,175,55,.6);background:rgba(212,175,55,.14);color:#F0E2B4;font-size:14px;position:relative;z-index:1}
+.nm-snd b{font-weight:600}
+.nm-snd.on{background:#D4AF37;color:#141B36;border-color:#D4AF37}
+.nm-snd-src{font-size:11px;color:rgba(255,255,255,.55);margin-top:8px;position:relative;z-index:1}
+.ar-vh{margin:0;padding-left:20px;font-size:14px;line-height:1.55;color:var(--ink-2)}
+.ar-vh li{margin:0 0 6px}
+.ar-vh-warn{font-size:13.5px;line-height:1.5;padding:9px 11px;border-radius:8px;background:rgba(195,173,112,.14);color:var(--ink-2);margin:0 0 10px}
+.ar-vh-btn{display:inline;border:0;background:none;padding:0;color:var(--accent-ink);text-decoration:underline;font:inherit;cursor:pointer}
 .azkar-line{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding-top:12px;padding-bottom:12px}
 .azkar-ic{font-size:19px;flex:none;color:var(--accent-ink)}
 .azkar-t{flex:1;min-width:0}
@@ -2369,19 +2383,19 @@ var NAMES99 = [
 {n:"Аш-Шахид", ar:"الشَّهِيد", mean:"Свидетель",
  exp:"От Него не скроется ничего. Достаточно того, что Аллах - Свидетель. В Судный день все органы будут свидетельствовать против человека. Аллах - твой свидетель и на добро, и на зло. Если делаешь добро без свидетелей - свидетель Аллах, и это лучшая награда.",
  dar:"", dru:""},
-{n:"Аль-Хакк", ar:"الْحَق", mean:"Истинный",
+{n:"Аль-Хакк", ar:"الْحَقّ", mean:"Истинный",
  exp:"Аллах - Истина. Встреча с Ним - истина, Рай - истина, Слово Аллаха - истина. Читая шахаду, человек должен понимать: Аллах Первый, Вечный, без конца. Все имена Аллаха - истина. Понимание этого укрепляет убеждённость.",
  dar:"", dru:""},
 {n:"Аль-Вакиль", ar:"الْوَكِيل", mean:"Покровитель, Попечитель, Достаточный",
  exp:"Все надежды человека связаны с Аллахом, Который покровительствует ему. Верующий, вверяя дело Аллаху, доволен любым итогом, потому что Аллах - единственный, кто определяет результат. «Хасбуналлаху ва нигIмаль Вакиль» - достаточно нам Аллаха, Он прекрасный Покровитель. Аль-Вакиль: обеспечивает всем необходимым, управляет делами, достаточный свидетель и поручитель, дарует душевный покой, единственный определяет итог. Упование должно быть не только на процесс, но и на результат. История пророка Нуха (950 лет призыва, всего 4 уверовавших) - пример довольства решением Аллаха. Таваккуль - избавление от тревог и гиперконтроля.",
  dar:"حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ", dru:"Достаточно нам Аллаха, и Он прекрасный Покровитель!"},
-{n:"Аль-Кавий", ar:"الْقَوِي", mean:"Сильный, Обладатель абсолютной силы",
+{n:"Аль-Кавий", ar:"الْقَوِيّ", mean:"Сильный, Обладатель абсолютной силы",
  exp:"Связано с аль-Кудра (могущество). Обладатель совершенной силы, которая не ослабевает, не смешана с немощью, не имеет предела, не нуждается в отдыхе, пище или помощниках. Если Аллах чего-то желает, никто не может помешать. Всё сущее подчинено Ему. Сила Аллаха творит, поддерживает и защищает творения. Тот, кто обращается к Аль-Кавий, ухватился за самую надёжную рукоять, которая никогда не сломается. Имя часто упоминается вместе с Аль-Азиз.",
  dar:"", dru:""},
 {n:"Аль-Матиин", ar:"الْمَتِين", mean:"Всесильный, Обладатель несокрушимой мощи",
  exp:"Качество силы - самая твёрдая, непоколебимая мощь. Всесильный в масштабе и в твёрдости силы. Аллах обладает абсолютной силой и абсолютной властью. Мусульмане должны быть такими, чтобы на них опирались, потому что они опираются на Аллаха, у которого самая качественная сила.",
  dar:"", dru:""},
-{n:"Аль-Валий", ar:"الْوَلِي", mean:"Правитель, Помогающий, Покровитель",
+{n:"Аль-Валий", ar:"الْوَلِيّ", mean:"Правитель, Помогающий, Покровитель",
  exp:"Два аспекта: 1) Вали амр - управляющий всеми делами всех творений; 2) Вали хас - особое покровительство только верующим. Аллах становится опекуном того, кто усердствует на Его пути, ведёт его дела с любовью и поддержкой.",
  dar:"", dru:""},
 {n:"Аль-Хамид", ar:"الْحَمِيد", mean:"Достохвальный",
@@ -2402,7 +2416,7 @@ var NAMES99 = [
 {n:"Аль-Мумит", ar:"الْمُمِيت", mean:"Умерщвляющий",
  exp:"Тот, Кто умерщвляет всё живое. Творит смерть через любую причину. Учёные советуют не обращаться к Аллаху только по имени «Аль-Мумит», а упоминать парно с «Аль-Мухьи». Верующий должен помнить о смерти, «умирайте до того, как умрёте». Умерщвляет в сердце гордыню и страсти.",
  dar:"", dru:""},
-{n:"Аль-Хайй", ar:"الْحَي", mean:"Вечно Живой",
+{n:"Аль-Хайй", ar:"الْحَيّ", mean:"Вечно Живой",
  exp:"Живёт вечно, не умирает, не спит, не печалится, не болеет. Для поддержания жизни Ему ничего не нужно. Часто упоминается вместе с Аль-Кайюм. Это имена, относящиеся к величайшему имени (Исму аль-А'зам). Пророк ﷺ в битве при Бадре повторял в суджуде «Йа Хайю, Йа Кайюм».",
  dar:"يَا حَيُّ يَا قَيُّومُ", dru:"О Вечно Живой, о Самодостаточный!"},
 {n:"Аль-Кайюм", ar:"الْقَيُّوم", mean:"Самодостаточный, Поддерживающий",
@@ -2435,7 +2449,7 @@ var NAMES99 = [
 {n:"Аль-Авваль", ar:"الأول", mean:"Первый, Изначальный",
  exp:"Нет ничего до Него и вне Его. Всё начинается с Аллаха, время и пространство - тоже Его творения. Он вне всего этого. Всё сотворённое имеет начало, кроме Аллаха.",
  dar:"يَا أَوَّلُ اجْعَل لِي أَوَّلِيَّةً عِنْدَكَ", dru:"О Первый, даруй мне первенство у Тебя (начало в добре)"},
-{n:"Аль-Ахир", ar:"الأخر", mean:"Последний, Вечно Пребывающий",
+{n:"Аль-Ахир", ar:"الآخِر", mean:"Последний, Вечно Пребывающий",
  exp:"Нет ничего после Него, к Нему всё возвращается. Не имеет конца и вне всяких границ. Между этими двумя Именами Вся жизнь творения.",
  dar:"يَا آخِرُ اجْعَل عَاقِبَتِي خَيْرًا", dru:"О Последний, сделай мой конец благим"},
 {n:"Аз-Захир", ar:"الظاهر", mean:"Явный, очевидный",
@@ -2468,7 +2482,7 @@ var NAMES99 = [
 {n:"Малик аль-Мульк", ar:"مالك الملك", mean:"Властелин всего, Царь царей",
  exp:"Власть Аллаха вечна и абсолютна во всех аспектах - от мельчайших до глобальных. Всё наше - лишь вверенное, не собственность.",
  dar:"اللَّهُمَّ مَالِكَ الْمُلْكِ، آتِنِي مِنْ فَضْلِكَ", dru:"О Властелин всего, даруй мне из Твоей милости"},
-{n:"Зу-ль-Джаляли валь-Икрам", ar:"ذو الجلال و الإكرام", mean:"Обладатель величия и щедрости",
+{n:"Зу-ль-Джаляли валь-Икрам", ar:"ذو الجلال والإكرام", mean:"Обладатель величия и щедрости",
  exp:"Абсолютное достоинство, трепет, слава и величие в сочетании с наивысшей щедростью, почётом, одариванием. Верующий черпает силы, зная о Нём как о Великодушном Источнике всех благ.",
  dar:"يَا ذَا الْجَلالِ وَالإِكْرَامِ أَكْرِمْنِي", dru:"О Обладатель Величия и Щедрости, одари меня своей милостью!"},
 {n:"Аль-Муксит", ar:"المقسط", mean:"Справедливый, устанавливающий справедливость",
@@ -2523,7 +2537,7 @@ var HADITH_SRC = [{"num":1,"n":"Дела оцениваются по намер�
 var DEF = {
   fav:[], tasbih:{}, tasbihTotal:0, read:{}, dcnt:{}, practice:{}, readDay:"", bought:[], done:[], orders:[],
   theme:"", city:"mah", method:"auto", madhab:1,
-  name:"", email:"", notifPrayer:true, notifDua:true, notifTasks:true, notifScore:true, notifAzkar:true, statOn:true, notifCourse:false, notifAzan:true,
+  name:"", email:"", notifPrayer:true, notifDua:true, notifTasks:true, notifScore:true, notifAzkar:true, notifJumua:true, statOn:true, notifCourse:false, notifAzan:true,
   salah:{}, myduas:[], goals:[], namesRead:{}, daily:{}, shukrNotes:{}, shukr:[], shukrMigrated:false, shukrOpen:false, salahOpen:false,
   checks:{}, sunnah:{}, sunnahOpen:false, health:{}, healthOpen:false, pauses:[],
   qada:{p:{}, done:{}, fast:0, fastDone:0, perDay:1, log:[]}, postSeen:"", points:0, pointsDay:{}, cat:{},
@@ -5854,6 +5868,14 @@ function viewHome(){
     '<div style="font-size:13.5px;color:var(--ink-2);margin-top:4px">Нажмите, чтобы перенести записи и открыть новый адрес</div></button>' + viewHomeMain();
   return viewHomeMain();
 }
+/* Строка о благотворительности (просьба Заиры 25.09, 20%). В окне оплаты - без ссылки,
+   чтобы не уводить со страницы заказа. */
+var CHARITY_TXT = "20% выручки от книг и программ в приложении мы направляем на благотворительность";
+function charityLine(plain){
+  return plain
+    ? '<div class="charity-line plain"><span class="ch-ic" aria-hidden="true">♥</span><span class="ch-t">'+esc(CHARITY_TXT)+'</span></div>'
+    : '<button class="charity-line" data-open="sadaqa"><span class="ch-ic" aria-hidden="true">♥</span><span class="ch-t">'+esc(CHARITY_TXT)+'<span class="ch-go">Куда помочь ›</span></span></button>';
+}
 /* Последний час пятницы (после асра до магриба) - время, когда дуа принимается.
    Абу Дауд 1048, ан-Насаи 1389 (сверено по sunnah.com 25.09.2026).
    День недели и время - по городу намаза, а не по часам телефона. */
@@ -6132,6 +6154,7 @@ function viewHomeMain(){
       '<span class="azkar-t"><b>'+esc(BOOK1.n)+'</b><span>'+sub+'</span></span>'+
       '<span class="azkar-go">›</span></button>');
   })();
+  h.push(charityLine());
   /* «Научись понимать Коран» - вход в словарь коранических слов (просьба Заиры 24.09) */
   (function(){
     var qp = qwPct(), qn = qwLearned().length;
@@ -7365,6 +7388,48 @@ function nameAyahPlay(i){
     render();
   });
 }
+/* Живое произношение имени: записи с Wikimedia Commons, по файлу на имя,
+   www/audio/names/NN.mp3 (NN - номер в NAMES99, 00 - «Аллах»). Имена 1-99 - Mohammed Sadiq
+   (04, 05 - Eesa Inoon), CC BY-SA 4.0; «Аллах» - Hakeem.gadi, CC BY-SA 3.0. Источники и sha1 -
+   docs/names-audio.json, скачивает scripts/names-audio.js. Файлы лежат у нас: интернет не нужен
+   после первого прослушивания (кэш rizq-names в sw.js), при открытии списка они докачиваются сами. */
+var NAME_SND = null, NAME_SND_I = null;
+function nameSndUrl(i){ return "audio/names/" + ("0" + i).slice(-2) + ".mp3"; }
+function nameSndMark(){
+  var b = document.querySelectorAll("[data-namesnd]");
+  for(var k = 0; k < b.length; k++){
+    var on = Number(b[k].getAttribute("data-namesnd")) === NAME_SND_I;
+    b[k].classList.toggle("on", on);
+    var t = b[k].querySelector("b"); if(t) t.textContent = on ? "■ Остановить" : "▶ Послушать имя";
+  }
+}
+function nameSnd(i){
+  if(NAME_AUDIO && NAME_PLAYING !== null){ NAME_AUDIO.pause(); NAME_PLAYING = null; }
+  if(!NAME_SND){
+    NAME_SND = new Audio();
+    NAME_SND.addEventListener("ended", function(){ NAME_SND_I = null; nameSndMark(); });
+    NAME_SND.addEventListener("error", function(){ if(NAME_SND_I === null) return; NAME_SND_I = null; nameSndMark(); toast("Не получилось открыть запись. Проверьте интернет и попробуйте ещё раз"); });
+  }
+  if(NAME_SND_I === i){ NAME_SND.pause(); NAME_SND_I = null; nameSndMark(); return; }
+  NAME_SND.src = nameSndUrl(i);
+  NAME_SND_I = i; nameSndMark();
+  var p = NAME_SND.play();
+  if(p && p.catch) p.catch(function(e){ if(e && e.name === "AbortError") return; NAME_SND_I = null; nameSndMark(); toast("Не получилось воспроизвести"); });
+}
+/* Все 99 записей - около 2 МБ. Докачиваем их по одной в тишине, когда человек открыл
+   список имён: потом каждое имя звучит и без интернета. Раз за запуск, не на экономии трафика. */
+var NAME_PRE = false;
+function namesPrefetch(){
+  if(NAME_PRE || !navigator.onLine || !("serviceWorker" in navigator) || !navigator.serviceWorker.controller) return;
+  try{ if(navigator.connection && navigator.connection.saveData) return; }catch(e){}
+  NAME_PRE = true;
+  var i = 0;
+  (function next(){
+    if(i >= NAMES99.length) return;
+    var u = nameSndUrl(i++);
+    fetch(u).then(function(r){ return r.ok ? r.blob() : null; }).catch(function(){}).then(function(){ setTimeout(next, 150); });
+  })();
+}
 /* Русское название суры по ссылке вида «59:23» */
 function suraTitle(ref){
   var su = parseInt(String(ref).split(":")[0], 10);
@@ -8092,7 +8157,9 @@ function viewNames(){
   });
   if(q && shown) h.push('<p class="disclaimer" style="text-align:left;padding:0 4px">Найдено: '+plural(shown,"имя","имени","имён")+'</p>');
   if(!shown) h.push('<div class="empty"><div class="ic">۹۹</div><b>Ничего не найдено</b><p>Попробуйте другое слово или номер имени.</p></div>');
-  h.push('<p class="disclaimer">Разбор имён - по материалам курса «99 имён Всевышнего».</p>');
+  h.push('<p class="disclaimer">Разбор имён - по материалам курса «99 имён Всевышнего». Произношение каждого имени - живая запись в карточке имени '+
+    '(Mohammed Sadiq и Eesa Inoon, имя «Аллах» - Hakeem.gadi; Wikimedia Commons, CC BY-SA 4.0 и 3.0; переведено в mp3, обрезана тишина по краям).</p>');
+  setTimeout(namesPrefetch, 2500);
   h.push('</div>');
   return h.join("");
 }
@@ -8112,7 +8179,9 @@ function viewName(){
     '<div class="eyebrow">'+(i===0 ? "Величайшее имя" : "Имя № "+(i+1)+" из "+NAMES99.length)+'</div>'+
     '<div class="ar" style="font-size:34px;line-height:1.8">'+esc(n.ar)+'</div>'+
     '<div style="font-family:var(--f-display);font-size:21px;font-weight:600;margin-top:6px">'+esc(n.n)+'</div>'+
-    '<div class="ru" style="color:rgba(255,255,255,.78);font-size:14.5px">'+esc(n.mean)+'</div></section>');
+    '<div class="ru" style="color:rgba(255,255,255,.78);font-size:14.5px">'+esc(n.mean)+'</div>'+
+    '<button class="nm-snd'+(NAME_SND_I === i ? ' on' : '')+'" data-namesnd="'+i+'"><b>'+(NAME_SND_I === i ? '■ Остановить' : '▶ Послушать имя')+'</b></button>'+
+    '<div class="nm-snd-src">Запись: '+(i === 0 ? 'Hakeem.gadi' : (i === 4 || i === 5) ? 'Eesa Inoon' : 'Mohammed Sadiq')+' · Wikimedia Commons · CC&nbsp;BY-SA&nbsp;'+(i === 0 ? '3.0' : '4.0')+'</div></section>');
 
   if(n.exp){
     h.push('<section class="card"><div class="eyebrow">Разбор имени</div>'+
@@ -10136,22 +10205,49 @@ function arUnitHar(u){
   return !u.w.every(function(w){ return arBox(w.id) >= 3; });
 }
 
-/* ---------- озвучка ---------- */
+/* ---------- озвучка ----------
+   Буквы, слоги и слова читает голос телефона, пока нет живой записи (audio/ar/<ключ>.mp3).
+   25.09: слоги в «Арабском для новичков» у многих молчали. Причины: на телефоне нет арабского
+   голоса (частый случай на Android с синтезатором Samsung и во встроенных браузерах Instagram
+   и Telegram), а подсказка была короткой всплывашкой с путём только для iPhone; на iPhone
+   задание на слух запускало голос по таймеру, без касания, и первый раз Safari его глушил;
+   сразу после cancel() Safari и Chrome иногда проглатывают новую фразу; Chrome теряет фразу,
+   если на неё нет ссылки. Теперь: голос выбирается ar-SA, затем любой арабский; первое касание
+   в курсе «будит» речь; после cancel() - пауза 120 мс; сторож 4 с - если голос не зазвучал,
+   открывается шторка, как включить арабский голос на этом телефоне. */
+var AR_TTS = { u:null, w:0, hint:false, woke:false };
+function arVoices(){ var v = []; try{ v = window.speechSynthesis ? speechSynthesis.getVoices() : []; }catch(e){} return v || []; }
 function arVoice(){
-  var v = [];
-  try{ v = window.speechSynthesis ? speechSynthesis.getVoices() : []; }catch(e){}
-  return v.filter(function(x){ return /^ar/i.test(x.lang); })[0] || null;
+  var v = arVoices().filter(function(x){ return /^ar([-_]|$)/i.test(x.lang || ""); });
+  if(!v.length) return null;
+  var sa = v.filter(function(x){ return /^ar[-_]sa/i.test(x.lang); }), pool = sa.length ? sa : v;
+  return pool.filter(function(x){ return x.localService; })[0] || pool[0];
+}
+/* iPhone разрешает речь только из касания: беззвучная фраза при первом касании в курсе */
+function arWake(){
+  if(AR_TTS.woke || !window.speechSynthesis || !window.SpeechSynthesisUtterance) return;
+  AR_TTS.woke = true;
+  try{ var z = new SpeechSynthesisUtterance(" "); z.volume = 0; z.lang = "ar-SA"; speechSynthesis.speak(z); }catch(e){}
 }
 function arStop(){
-  AR.play = null; clearTimeout(AR.t);
+  AR.play = null; clearTimeout(AR.t); clearTimeout(AR_TTS.w);
   if(AR.audio){ try{ AR.audio.pause(); }catch(e){} AR.audio = null; }
-  if(window.speechSynthesis) try{ speechSynthesis.cancel(); }catch(e){}
+  if(window.speechSynthesis) try{ if(speechSynthesis.speaking || speechSynthesis.pending) AR_TTS.cx = Date.now(); speechSynthesis.cancel(); }catch(e){}
   arMark(-1);
+}
+/* ключ записи для любой арабской строки: t-<коды букв> (пробел - _), например بَ -> t-628-64e.
+   Положите audio/ar/t-628-64e.mp3 - и слог зазвучит живым голосом вместо синтеза. */
+function arTtsKey(text){
+  var out = [];
+  for(var i = 0; i < text.length; i++){ var c = text.charCodeAt(i); out.push(c === 32 ? "_" : c.toString(16)); }
+  return "t-" + out.join("-").replace(/-?_-?/g, "_");
 }
 function arSay(text, done, key){
   if(AR.audio){ try{ AR.audio.pause(); }catch(e){} AR.audio = null; }
+  if(!key) key = arTtsKey(String(text));
   /* есть живая запись - играем её */
-  if(key && AR_AUDIO.indexOf(key) >= 0){
+  if(AR_AUDIO.indexOf(key) >= 0){
+    if(window.speechSynthesis) try{ speechSynthesis.cancel(); }catch(e){}
     var a = new Audio("audio/ar/" + key + ".mp3");
     AR.audio = a;
     a.onended = function(){ if(done) done(true); };
@@ -10162,22 +10258,59 @@ function arSay(text, done, key){
   arTts(text, done);
 }
 function arTts(text, done){
-  if(!window.speechSynthesis || !window.SpeechSynthesisUtterance){
-    toast("На этом телефоне нет голоса для озвучки"); if(done) done(false); return;
-  }
-  var v = arVoice(), all = [];
-  try{ all = speechSynthesis.getVoices(); }catch(e){}
-  if(all.length && !v){
-    toast("Добавьте арабский голос в настройках телефона: Универсальный доступ - Устная речь - Голоса");
-    if(done) done(false); return;
-  }
-  try{ speechSynthesis.cancel(); }catch(e){}
-  var u = new SpeechSynthesisUtterance(text);
-  u.lang = "ar-SA"; if(v) u.voice = v;
+  var fin = false;
+  function finish(ok){ if(fin) return; fin = true; clearTimeout(AR_TTS.w); if(done) done(ok); }
+  if(!window.speechSynthesis || !window.SpeechSynthesisUtterance){ arVoiceHelp("none"); finish(false); return; }
+  var ss = window.speechSynthesis, all = arVoices(), v = arVoice();
+  if(all.length && !v){ arVoiceHelp("noar"); finish(false); return; }
+  var u = new SpeechSynthesisUtterance(String(text));
+  u.lang = v ? String(v.lang).replace("_", "-") : "ar-SA";
+  if(v) u.voice = v;
   u.rate = 0.75;
-  u.onend = function(){ if(done) done(true); };
-  u.onerror = function(){ if(done) done(false); };
-  speechSynthesis.speak(u);
+  var started = false;
+  u.onstart = function(){ started = true; };
+  u.onend = function(){ finish(true); };
+  u.onerror = function(e){ var er = e && e.error; finish(false); if(!started && er && er !== "interrupted" && er !== "canceled") arVoiceHelp("fail"); };
+  AR_TTS.u = u;   /* ссылка нужна: иначе Chrome теряет фразу, и конец не приходит */
+  function go(){ try{ if(ss.paused) ss.resume(); }catch(e){} try{ ss.speak(u); }catch(e){ finish(false); } }
+  /* только что остановили другую фразу - даём движку 120 мс, иначе новая может пропасть */
+  var busy = Date.now() - (AR_TTS.cx || 0) < 150; try{ busy = busy || ss.speaking || ss.pending; }catch(e){}
+  if(busy){ try{ ss.cancel(); }catch(e){} setTimeout(go, 120); } else go();
+  clearTimeout(AR_TTS.w);
+  AR_TTS.w = setTimeout(function(){
+    var talking = false; try{ talking = ss.speaking; }catch(e){}
+    if(!started && !fin && !talking && AR_TTS.u === u){ finish(false); arVoiceHelp("silent"); }
+  }, 4000);
+}
+/* Почему не слышно и как включить арабский голос - по устройству. Шторка сама открывается
+   один раз за запуск, дальше - короткая строка; кнопка «Не слышно звука?» есть в уроках. */
+function arDevice(){
+  var ua = navigator.userAgent || "";
+  var inApp = /Instagram|FBAN|FBAV|Telegram|WhatsApp|VKClient|OKApp/i.test(ua);
+  var ios = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
+  return { inApp:inApp, ios:ios, android:/Android/i.test(ua) };
+}
+function arVoiceHelp(kind, force){
+  if(!force && AR_TTS.hint){ toast("Не слышно? Нужен арабский голос на телефоне - кнопка «Не слышно звука?» в уроке"); return; }
+  AR_TTS.hint = true;
+  var dv = arDevice(), vs = arVoices(), v = arVoice();
+  var why = kind === "none" ? "В этом браузере нет чтения вслух." :
+    (vs.length && !v) ? "На телефоне нет арабского голоса - поэтому буквы и слоги молчат." :
+    kind === "silent" || kind === "fail" ? "Телефон не смог прочитать арабский текст: скорее всего, арабский голос не скачан." :
+    "Буквы, слоги и слова читает голос телефона. Если арабского голоса нет, звука не будет.";
+  var ios = '<ol class="ar-vh"><li>Откройте «Настройки» → «Универсальный доступ» → «Устное содержимое» (Spoken Content) → «Голоса».</li>'+
+    '<li>Выберите «Арабский» и скачайте голос «Маджед» (Majed).</li><li>Закройте RIZQ совсем и откройте снова.</li></ol>';
+  var andr = '<ol class="ar-vh"><li>Откройте «Настройки» и найдите поиском «Синтез речи» (или «Преобразование текста в речь»).</li>'+
+    '<li>В строке «Синтезатор» выберите «Google» (Speech Services by Google). На Samsung по умолчанию стоит синтезатор Samsung - арабского голоса в нём может не быть.</li>'+
+    '<li>Нажмите значок настроек рядом с Google → «Установка голосовых данных» → «Арабский» → скачать.</li>'+
+    '<li>Если Google в списке нет - установите «Speech Services by Google» из Play Маркета.</li><li>Закройте RIZQ совсем и откройте снова.</li></ol>';
+  var body = dv.ios ? ios : dv.android ? andr : '<p class="ar-note">На iPhone:</p>' + ios + '<p class="ar-note">На Android:</p>' + andr;
+  sheet('<h3>Как включить арабский голос</h3>'+
+    '<p style="font-size:14.5px;line-height:1.6;color:var(--ink-2);margin:4px 0 10px">'+esc(why)+'</p>'+
+    (dv.inApp ? '<p class="ar-vh-warn">Вы открыли RIZQ внутри Instagram, Telegram или другого приложения. У таких окон часто нет голоса: откройте ссылку в Chrome или Safari.</p>' : '')+
+    body+
+    '<button class="btn" style="margin-top:12px" data-ar="tts:بَ بِ بُ">▶ Проверить голос: ба, би, бу</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Понятно</button>');
 }
 /* подсветка фразы, которая звучит, без перерисовки всего экрана */
 function arMark(i){
@@ -10273,7 +10406,7 @@ function arExStart(uid){
 /* задание на слух: слово звучит само, как только задание открылось */
 function arExAuto(){
   var t = AR.x && AR.x.t[AR.x.i];
-  if(t && t.k === "sy"){ var sw = t.say; setTimeout(function(){ arTts(sw); }, 250); return; }
+  if(t && t.k === "sy"){ var sw = t.say; setTimeout(function(){ arSay(sw); }, 250); return; }
   if(t && t.k === "pr"){ var pw = AR_PRON[t.i].w[t.j][0]; setTimeout(function(){ arSay(pw, null, "pr-" + t.i + "-" + t.j); }, 250); return; }
   if(t && t.k === "au"){ var w = arWord(t.id); if(w) setTimeout(function(){ arSay(w.ar, null, w.id); }, 250); }
 }
@@ -10836,6 +10969,7 @@ function arAyahHtml(w){
 /* ---------- нажатия ---------- */
 function arClick(v){
   var p = String(v).split(":"), k = p[0];
+  arWake();
   if(k === "home"){ arStop(); V.ret = null; open("arabic", null); return; }
   if(k === "unit"){ arStop(); open("arabic", "u:" + p[1]); return; }
   if(k === "abc"){ arStop(); open("arabic", "abc"); return; }
@@ -10871,15 +11005,16 @@ function arClick(v){
   if(k === "har"){ arS().har = p[1]; save(); render(); return; }
   if(k === "rd"){ arStop(); open("arabic", "rd"); return; }
   if(k === "rdl"){ arStop(); open("arabic", "rd:" + p[1]); return; }
-  if(k === "tts"){ arStop(); arTts(p.slice(1).join(":")); return; }
-  if(k === "rdsyall"){ var ru = rdLesson(p[1]); if(!ru) return; arStop(); AR.play = { i:0 }; arPlayList(rdSyl(ru).map(function(x){ return { t:x.ar }; }), 0); return; }
+  if(k === "tts"){ arStop(); arSay(p.slice(1).join(":")); return; }
+  if(k === "voicehelp"){ arStop(); arVoiceHelp("ask", true); return; }
+  if(k === "rdsyall"){ var ru = rdLesson(p[1]); if(!ru) return; arStop(); AR.play = { i:0 }; arPlayList(rdSyl(ru).map(function(x){ return { t:x.ar, k:arTtsKey(x.ar) }; }), 0); return; }
   if(k === "rdq"){
     var rq = rdLesson(p[1]), rw = rq && rq.w.filter(function(w){ return w[0] === p.slice(2).join(":"); })[0]; if(!rw) return;
     arStop(); sheet('<h3>'+esc(rw[2])+'</h3><div class="ar-wa" dir="rtl" style="font-size:26px;text-align:center;margin:4px 0 10px">'+esc(rw[0])+'</div>'+
       arAyahHtml({ q:rw[3], s:rw[4] })+'<p class="ar-note">Подсвечено слово с теми же буквами. В аяте может стоять другая форма того же корня.</p>');
     return;
   }
-  if(k === "rdshow"){ var ts = AR.x && AR.x.t[AR.x.i]; if(ts){ ts.shown = true; render(); arTts(ts.ar); } return; }
+  if(k === "rdshow"){ var ts = AR.x && AR.x.t[AR.x.i]; if(ts){ ts.shown = true; render(); arSay(ts.ar); } return; }
   if(k === "rdself"){ var tr = AR.x && AR.x.t[AR.x.i]; if(tr && !tr.done){ tr.self = +p[1]; arExCheck(); } return; }
   if(k === "club"){ arStop(); open("arabic", "club"); return; }
   if(k === "clubsend"){ arClubSend(); return; }
@@ -11512,7 +11647,8 @@ function viewArReadLesson(u){
         '<div class="ar-wt"><div class="ar-wa" dir="rtl">'+esc(w[0])+'</div><div class="ar-wr">'+esc(w[1])+' · '+esc(w[2])+'</div></div>'+
         (w[3] ? '<button class="ar-qchip" data-ar="rdq:'+u.id+':'+w[0]+'">Коран '+w[3]+'</button>' : '')+'</div>'; }).join("")+'</section>');
   }
-  h.push('<p class="ar-note" style="padding:0 4px">Сначала прочитайте вслух сами, потом нажмите и сверьтесь с голосом.</p>');
+  h.push('<p class="ar-note" style="padding:0 4px">Сначала прочитайте вслух сами, потом нажмите и сверьтесь с голосом. '+
+    '<button class="ar-vh-btn" data-ar="voicehelp">Не слышно звука?</button></p>');
   h.push('<section class="card ar-exc"><div><b>Упражнение</b><span>'+(best ? 'лучший результат '+best+'%' : 'на слух, чтение вслух'+(u.L ? ', буквы' : ''))+'</span></div>'+
     '<button class="btn sm" data-ar="ex:rd'+u.id+'">'+(best ? 'Ещё раз' : 'Начать')+'</button></section>');
   var nx = rdLesson(u.id + 1);
@@ -15192,7 +15328,7 @@ function viewBook2(){
   if(!own) h.push('<section class="b2-buy"><div class="eyebrow">Начало - бесплатно</div>'+
       '<p>Обращение к читателю, пролог и первая глава открыты. Вся книга - пролог, 16 глав и эпилог - откроется здесь сразу после оплаты, без писем и паролей, и будет читаться без интернета.</p>'+
       '<div class="b2-buy-p"><span class="price">'+money(BOOK2.price)+'</span><span class="chip">навсегда</span></div>'+
-      '<button class="btn" data-buy="'+BOOK2.id+'">Купить книгу - '+money(BOOK2.price)+'</button></section>');
+      '<button class="btn" data-buy="'+BOOK2.id+'">Купить книгу - '+money(BOOK2.price)+'</button>'+charityLine()+'</section>');
   h.push(waCard('Вопрос по книге?', 'Напишите - ответим', 'Ассаламу алейкум! Вопрос по книге «Девушка, которая смогла».', 'Написать в WhatsApp'));
   h.push('</div>');
   return h.join("");
@@ -15477,7 +15613,7 @@ function viewBook1(){
   if(!own) h.push('<section class="b2-buy"><div class="eyebrow">Начало - бесплатно</div>'+
       '<p>«Перед чтением» и три первые главы открыты. Вся книга - 99 глав, по одной на каждое Имя, - откроется здесь сразу после оплаты, без писем и паролей, и будет читаться без интернета.</p>'+
       '<div class="b2-buy-p"><span class="price">'+money(BOOK1.price)+'</span><span class="chip">навсегда</span></div>'+
-      '<button class="btn" data-buy="'+BOOK1.id+'">Купить книгу - '+money(BOOK1.price)+'</button></section>');
+      '<button class="btn" data-buy="'+BOOK1.id+'">Купить книгу - '+money(BOOK1.price)+'</button>'+charityLine()+'</section>');
   /* поделиться и подарить: самый дешёвый источник новых читателей */
   h.push('<div class="sec-h"><h3>Рассказать о книге</h3></div>');
   h.push('<div class="cats">'+
@@ -22074,6 +22210,9 @@ function pushItems(){
         if(atZ > now) items.push({ at:new Date(atZ).toISOString(), title:z[1], body:z[2], tag:"azkar" });
       });
     }
+    /* Пятница: за час до магриба - последний час, когда дуа принимается
+       (ан-Насаи 1389, Абу Дауд 1048). По умолчанию включено вместе с остальными напоминаниями. */
+    /* (пятница - ниже, отдельным циклом) */
     if(S.notifDua && pool.length){
       var morning = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 8, 0, 0).getTime();
       var dua = pool[(dayIndex() + k) % pool.length];
@@ -22107,7 +22246,22 @@ function pushItems(){
       }
     }
   }
-  return items;
+  /* пятница - отдельным циклом на 9 дней (столько хранит сервер): иначе в пятницу вечером
+     следующая пятница не попадала в расписание, пока человек не откроет приложение */
+  if(S.notifJumua !== false){
+    for(var kj = 0; kj < 9; kj++){
+      var dj = new Date(); dj.setDate(dj.getDate() + kj);
+      if(dj.getDay() !== 5) continue;
+      var tj = prayerTimes(dj, c.lat, c.lng, c.tz, S.method, S.madhab);
+      if(isNaN(tj.maghrib)) continue;
+      var atJ = Date.UTC(dj.getFullYear(), dj.getMonth(), dj.getDate()) + (tj.maghrib - 1 - c.tz) * 3600000;
+      if(atJ > now) items.push({ at:new Date(atJ).toISOString(), title:"Последний час пятницы",
+        body:"До магриба час (магриб в " + hhmm(tj.maghrib) + "). Ищите в это время час, когда дуа принимается", tag:"jumua" });
+    }
+  }
+  /* сервер берёт не больше 80 пунктов, иначе отказывает целиком - оставляем ближайшие */
+  items.sort(function(a, b){ return a.at < b.at ? -1 : a.at > b.at ? 1 : 0; });
+  return items.slice(0, 80);
 }
 /* Что влияет на расписание. Если это поменялось - отправляем сразу,
    иначе не чаще раза в шесть часов. */
@@ -22118,7 +22272,7 @@ function pushSig(){
     (S.debts || []).filter(function(x){ return !x.closed && x.due; })
     .map(function(x){ return x.due + x.id; }).join(",");
   return [c.lat, c.lng, c.tz, S.method, S.madhab, S.notifPrayer ? 1 : 0, S.notifDua ? 1 : 0,
-          S.notifTasks === false ? 0 : 1, S.notifScore === false ? 0 : 1, scoreState().on ? 1 : 0, S.notifAzkar === false ? 0 : 1,
+          S.notifTasks === false ? 0 : 1, S.notifScore === false ? 0 : 1, scoreState().on ? 1 : 0, S.notifAzkar === false ? 0 : 1, S.notifJumua === false ? 0 : 1,
           (S.scoreMe && S.scoreMe.place) || 0, pauseNow() ? 1 : 0, todayKey(), tasks,
           S.ar ? (S.ar.start ? 1 : 0) + ":" + (S.ar.remind || "9") + ":" + (arDayDone(arToday()) ? 1 : 0) : ""].join("|");
 }
@@ -22371,7 +22525,7 @@ function viewCourse(){
         (c.old? '<span style="font-size:15px;color:var(--ink-3);text-decoration:line-through">'+money(c.old)+'</span>' : '')+
         '<span class="chip" style="margin-left:auto">доступ навсегда</span></div>'+
         '<button class="btn" data-buy="'+c.id+'">Купить курс</button>'+
-        '<button class="btn sec" style="margin-top:9px" data-leadgo="'+c.id+'">Оставить заявку</button></section>');
+        '<button class="btn sec" style="margin-top:9px" data-leadgo="'+c.id+'">Оставить заявку</button>'+charityLine()+'</section>');
     } else if(L.tariffsFull){
       if(!finData()) finLoad(function(){ if(V.view === "course") render(); });
       var finC = finCounts(c.id, (SUNNAH_TARIFFS[0] || {}).p);
@@ -22386,6 +22540,7 @@ function viewCourse(){
           '<button class="btn sm" style="margin-top:11px" data-buy="'+c.id+'" data-tariff="'+esc(t.n)+'">Оплатить тариф «'+esc(t.n)+'»</button></section>');
       });
       h.push('<button class="btn" data-leadgo="'+c.id+'">Оставить заявку на программу</button>');
+      h.push(charityLine());
     } else {
       h.push('<section class="card">'+
         '<div class="eyebrow">Стоимость</div>'+
@@ -22692,6 +22847,7 @@ function viewProf(){
   h.push('<details class="more"><summary>Остальные напоминания и приватность</summary><div class="rows">'+
     swRow("notifDua", "✦", "Дуа дня утром") +
     swRow("notifAzkar", "☀", "Утренние и вечерние азкары") +
+    swRow("notifJumua", "☾", "Пятница: последний час для дуа") +
     swRow("notifTasks", "✓", "Задачи со временем") +
     swRow("notifScore", "◈", "Итоги недели в рейтинге") +
     swRow("statOn", "◔", "Обезличенная статистика") +
@@ -23048,7 +23204,7 @@ function accFetch(p, method, body){
 var SY_KEYS = (function(){
   var a = BK_KEYS.concat(["phone","email","qTime","qtGoal","nameMark","scoreGoal","scoreBest","score","qrmdOff","qFont",
     "qTajweed","qBook","mdnSize","qContinue","qFollow","madhabPicked","bought","leads","hlCity",
-    "notifPrayer","notifDua","notifTasks","notifScore","notifAzkar","notifCourse","notifAzan"]), seen = {}, out = [];
+    "notifPrayer","notifDua","notifTasks","notifScore","notifAzkar","notifJumua","notifCourse","notifAzan"]), seen = {}, out = [];
   for(var i = 0; i < a.length; i++) if(!seen[a[i]]){ seen[a[i]] = 1; out.push(a[i]); }
   return out;
 })();
@@ -23058,7 +23214,7 @@ var SY_ADD = { points:1, pointsDay:1, tasbihTotal:1, azkarLifetime:1, tasbih:1 }
 var SY_SET = {};
 ["name","email","phone","city","method","madhab","madhabPicked","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll",
  "qContinue","qFollow","fontSize","qFont","qFontSafe","qTajweed","qBook","mdnSize","qtGoal","qrmdOff","scoreGoal","score",
- "qLast","hlCity","zakat","notifPrayer","notifDua","notifTasks","notifScore","notifAzkar","notifCourse","notifAzan"]
+ "qLast","hlCity","zakat","notifPrayer","notifDua","notifTasks","notifScore","notifAzkar","notifJumua","notifCourse","notifAzan"]
   .forEach(function(k){ SY_SET[k] = 1; });
 
 function syHash(s){ var h = 5381, i = s.length; while(i) h = ((h << 5) + h) ^ s.charCodeAt(--i); return (h >>> 0).toString(36) + "." + s.length; }
@@ -23681,7 +23837,7 @@ function sheetBuy(id, tariff){
       (isBook ? '' : finPlanPills(id, price))+
       '<hr class="hr" style="margin:12px 0">'+
       '<div style="display:flex;align-items:baseline"><span style="font-size:14.5px;color:var(--ink-2)">'+(plan ? "Первый взнос" : "К оплате")+'</span>'+
-      '<span class="price" style="margin-left:auto;font-size:22px">'+money(payNow)+'</span></div>'+finPlanNote(price, plan)+'</div>'+
+      '<span class="price" style="margin-left:auto;font-size:22px">'+money(payNow)+'</span></div>'+finPlanNote(price, plan)+charityLine(true)+'</div>'+
     '<label class="eyebrow" style="display:block;margin-top:14px">Имя</label>'+
     '<input class="search" id="coName" style="margin:6px 0 10px" placeholder="Как к вам обращаться" value="'+esc(S.name||"")+'">'+
     '<label class="eyebrow">'+(isBook ? 'Почта - для чека об оплате' : 'Почта - на неё придут данные для входа')+'</label>'+
@@ -24403,7 +24559,10 @@ function sheetWhy(){
     '<p style="font-size:14.5px;line-height:1.65;color:var(--ink-2);margin:12px 0 0">'+
     'Текст Корана - в редакции Усмани. Хадисы приводятся с указанием сборника: «Сахих» аль-Бухари, '+
     '«Сахих» Муслима, «Сунан» Абу Дауда, ат-Тирмизи, Ибн Маджа. Сира изложена по классическим источникам жизнеописания Пророка ﷺ. '+
-    'Запись азана - Aaqib Azeez, <a href="https://commons.wikimedia.org/wiki/File:The_Adhan_-_Muslim_Call_to_Prayer_-_Aaqib_Azeez.mp3" target="_blank" rel="noopener">Wikimedia Commons</a>, лицензия <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.ru" target="_blank" rel="noopener">CC BY-SA 4.0</a>. Запись используется без изменений.</p>'+
+    'Запись азана - Aaqib Azeez, <a href="https://commons.wikimedia.org/wiki/File:The_Adhan_-_Muslim_Call_to_Prayer_-_Aaqib_Azeez.mp3" target="_blank" rel="noopener">Wikimedia Commons</a>, лицензия <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.ru" target="_blank" rel="noopener">CC BY-SA 4.0</a>. Запись используется без изменений. '+
+    'Произношение 99 имён - записи Mohammed Sadiq и Eesa Inoon (<a href="https://commons.wikimedia.org/wiki/Category:Arabic_pronunciation_of_names_of_God_in_Islam" target="_blank" rel="noopener">Wikimedia Commons</a>, '+
+    '<a href="https://creativecommons.org/licenses/by-sa/4.0/deed.ru" target="_blank" rel="noopener">CC BY-SA 4.0</a>), имя «Аллах» - Hakeem.gadi (<a href="https://commons.wikimedia.org/wiki/File:Ar-Allah.oga" target="_blank" rel="noopener">Wikimedia Commons</a>, '+
+    '<a href="https://creativecommons.org/licenses/by-sa/3.0/deed.ru" target="_blank" rel="noopener">CC BY-SA 3.0</a>); переведены из Ogg в mp3, обрезана тишина по краям.</p>'+
 
     '<hr class="hr" style="margin:18px 0 14px">'+
 
@@ -24608,7 +24767,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -25009,7 +25168,8 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.namegroup){ V.p = d.namegroup; render(); return; }
   if(d.lead){ leadSubmit(d.lead); return; }
   if(d.leadgo!==undefined){ leadJump(); return; }
-  if(d.nameaudio!==undefined){ nameAyahPlay(parseInt(d.nameaudio, 10)); return; }
+  if(d.namesnd!==undefined){ nameSnd(parseInt(d.namesnd, 10)); return; }
+  if(d.nameaudio!==undefined){ if(NAME_SND && NAME_SND_I !== null){ NAME_SND.pause(); NAME_SND_I = null; } nameAyahPlay(parseInt(d.nameaudio, 10)); return; }
   if(d.namecardshare!==undefined){ nameCardShare(parseInt(d.namecardshare, 10)); return; }
   if(d.namecardsave!==undefined){ nameCardSave(parseInt(d.namecardsave, 10)); return; }
   if(d.addshukr!==undefined){
@@ -25372,7 +25532,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.pushtoggle!==undefined){ if(pushOn()) pushDisable(); else pushEnable(); return; }
   if(d.sw){
     S[d.sw] = !S[d.sw]; save(); render();
-    if(d.sw === "notifPrayer" || d.sw === "notifDua" || d.sw === "notifTasks" || d.sw === "notifScore" || d.sw === "notifAzkar") pushSync(true);
+    if(d.sw === "notifPrayer" || d.sw === "notifDua" || d.sw === "notifTasks" || d.sw === "notifScore" || d.sw === "notifAzkar" || d.sw === "notifJumua") pushSync(true);
     if(S[d.sw] && (d.sw === "notifPrayer" || d.sw === "notifDua")){
       notifAsk().then(function(r){
         if(r === "granted"){ toast("Напоминания включены"); }

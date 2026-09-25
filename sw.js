@@ -1,5 +1,5 @@
 /* Ризк - офлайн-кэш. Меняйте номер версии при каждом обновлении приложения. */
-var CACHE = "rizq-v219";
+var CACHE = "rizq-v220";
 var ASSETS = [
   "./",
   "./index.html",
@@ -96,6 +96,21 @@ self.addEventListener("fetch", function (e) {
   /* Страницы мединского мусхафа и их шрифты не меняются (путь с номером издания v1):
      храним их отдельно, в rizq-mushaf, - обновление приложения их не стирает,
      и однажды открытая страница читается без интернета. */
+  /* Записи произношения 99 имён (~2 МБ) - в своём кэше rizq-names: однажды
+     скачанные, они звучат без интернета и не качаются заново после обновления. */
+  if (url.pathname.indexOf("/audio/names/") !== -1) {
+    e.respondWith(
+      caches.open("rizq-names").then(function (c) {
+        return c.match(e.request, { ignoreSearch: true }).then(function (hit) {
+          return hit || fetch(e.request).then(function (resp) {
+            if (resp && resp.status === 200) c.put(e.request, resp.clone());
+            return resp;
+          });
+        });
+      })
+    );
+    return;
+  }
   if (url.pathname.indexOf("/mushaf/") !== -1) {
     e.respondWith(
       caches.open("rizq-mushaf").then(function (c) {
