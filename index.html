@@ -1031,6 +1031,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .um-foot .btn{width:auto;flex:none}
 .jp-card{position:relative;padding:0}
 /* журнал: обложки, запись, рубрика (26.09.2026) */
+.jr-cv{width:100%}
+.jr-card .jr-meta{font-size:10px;letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 .jr-mast{display:flex;align-items:baseline;justify-content:space-between;padding:2px 4px 0}
 .jr-mast b{font-family:var(--f-display);font-size:22px;font-weight:700;letter-spacing:.02em}
 .jr-mast span{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink)}
@@ -19239,7 +19241,7 @@ function jrCard(p){
   var r = rubric(p.r), fk = "post:" + p.id, fon = isFav(fk);
   return '<div style="position:relative"><button class="jr-card" data-post="'+esc(p.id)+'">'+
     '<span class="jr-mini">'+jrCover(p, "mini")+'</span>'+
-    '<span class="jr-ct"><span class="jr-meta" style="-webkit-line-clamp:1">'+esc(r ? r.n : "")+' <i>· '+esc(postDate(p.d))+' · '+jrMinutes(p)+' мин</i></span>'+
+    '<span class="jr-ct"><span class="jr-meta">'+(V.rub && V.rub !== "_fav" ? '' : esc(r ? r.n : "")+' ')+'<i>'+(V.rub && V.rub !== "_fav" ? '' : '· ')+esc(postDate(p.d))+' · '+jrMinutes(p)+' мин</i></span>'+
       '<b>'+esc(p.n)+'</b>'+(p.s ? '<span>'+esc(p.s)+'</span>' : '')+'</span>'+
     (jrRead(p.id) ? '<span class="jr-rd">✓ прочитано</span>' : '')+'</button>'+
     '<button class="jp-star'+(fon?" on":"")+'" data-fav="'+esc(fk)+'" aria-label="'+(fon?"Убрать из избранного":"Сохранить в избранное")+'" style="position:absolute;top:8px;right:8px">'+(fon?"★":"☆")+'</button></div>';
@@ -19264,7 +19266,6 @@ function viewJournal(){
   var list = V.rub === "_fav" ? all.filter(function(p){ return isFav("post:" + p.id); })
     : V.rub ? all.filter(function(p){ return p.r===V.rub; }) : all;
   var h = ['<div class="stack">'];
-  h.push('<div class="jr-mast"><b>Журнал</b><span>RIZQ</span></div>');
   if(V.rub && V.rub !== "_fav" && rubric(V.rub)){
     var rr = rubric(V.rub), inR = all.filter(function(p){ return p.r === V.rub; }), rd = inR.filter(function(p){ return jrRead(p.id); }).length;
     h.push('<section class="jr-rub">'+jrCover({ id:"rub-" + V.rub, r:V.rub })+'<div class="jr-rt"><span class="jr-meta">Рубрика</span><b>'+esc(rr.n)+'</b>'+
@@ -19335,9 +19336,13 @@ function viewPost(){
   if(p.sum && p.sum.length){
     h.push('<section class="jr-sum"><h4>Главное за 30 секунд</h4><ol>'+p.sum.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ol></section>');
   }
-  h.push('<div class="jr-body stack">'+renderBlocks(p.body || [])+'</div>');
+  /* блок «спросите имама» из текста переносим в общий блок в конце - без повторов */
+  var imBody = [], body = (p.body || []).filter(function(b){
+    if(p.imam && b && b.t && /имам/i.test(b.t) && !b.ar){ if(b.p) imBody.push(b.p); (b.list || []).forEach(function(x){ imBody.push(x); }); return false; }
+    return true; });
+  h.push('<div class="jr-body stack">'+renderBlocks(body)+'</div>');
   if(p.imam){
-    var im = [].concat(p.imam);
+    var im = imBody.concat([].concat(p.imam).filter(function(x){ return imBody.indexOf(x) < 0; }));
     h.push('<section class="jr-imam"><h4>Спросите у имама своей мечети</h4>'+
       (im.length > 1 ? '<ul>'+im.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul>' : '<p style="margin:0">'+esc(im[0])+'</p>')+'</section>');
   }
