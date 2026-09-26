@@ -11013,8 +11013,9 @@ function viewArClub(){
   var h = ['<div class="stack">', clubOwnerNote(), nx ? clubMeetBtn(nx.date) : ""];
   h.push('<section class="qw-hero"><div class="qw-hero-ar" dir="rtl">نَادِي المُحَادَثَةِ</div>'+
     '<div class="qw-hero-h">Разговорный клуб арабского</div>'+(has ? '' : '<span class="nb-badge">Для новичков</span>')+
-    '<div class="qw-hero-p">Две встречи в неделю с преподавателем, по часу: среда и пятница в 13:00 по Москве. Женская группа до десяти человек. На встрече говорим только по-арабски.</div>'+
-    (has && nx ? '<div class="qw-big"><b>'+clubDateRu(nx.date).split(",")[0]+'</b><span>ближайшая встреча: '+clubDateRu(nx.date)+', '+CLUB_TIME+(CLUB_NEW_PROGRAM ? '<br>тема: '+esc(nx.m.t) : '')+'</span></div>'
+    '<div style="margin:10px 0 4px;font-family:var(--f-display);font-size:21px;font-weight:700;color:#F0D78C">Среда и пятница · '+CLUB_TIME+' МСК</div>'+
+    '<div class="qw-hero-p">Встреча с преподавателем, один час.</div>'+
+    (has && nx ? '<div class="qw-big"><b>'+clubDateRu(nx.date).split(",")[0]+'</b><span>ближайшая встреча: '+clubDateRu(nx.date)+(CLUB_NEW_PROGRAM ? '<br>тема: '+esc(nx.m.t) : '')+'</span></div>'
       : (CLUB_FULL ? '<div class="qw-big"><b>Группа набрана</b><span>встречи идут с 2 октября<br>запишитесь в лист ожидания -<br>напишем, когда откроем новую группу</span></div>' : '<div class="qw-big"><b>'+money(CLUB_PRICE)+'</b><span>в месяц · восемь встреч<br>или 7 900 ₽ за три месяца<br>первая встреча 2 октября</span></div>'))+
     (has ? '<div class="qw-st"><div><b>'+cnt.att+'</b><span>встреч отмечено</span></div>'+
       '<div><b>'+cnt.hw+'</b><span>заданий сделано</span></div>'+
@@ -11036,7 +11037,7 @@ function viewArClub(){
   }
   if(has){
     /* один поток (решение 26.09.2026) - выбирать нечего, просто показываем время */
-    h.push('<section class="card"><div class="eyebrow">Ваша группа</div><p style="margin:6px 0 0;line-height:1.5">Женская группа, один поток: среда и пятница, '+CLUB_TIME+' по Москве.</p></section>');
+    /* расписание уже в шапке - отдельная карточка «Ваша группа» не нужна (26.09.2026) */
   }
   if(CLUB_CITY_ON){
   h.push('<div class="sec-h"><h3>Очно в городе</h3></div>');
