@@ -9144,14 +9144,16 @@ function clubHas(){
   return bought(CLUB_ID);
 }
 /* кнопка «Войти во встречу»: в день встречи, ссылка - из CRM */
-function clubBigBtn(){
+function clubBigBtn(burg){
   if(!clubHas()) return "";
   var nx = clubNext();
-  return '<button class="card" data-ar="club" style="display:flex;align-items:center;gap:14px;width:100%;text-align:left;border-color:var(--accent-ink);background:linear-gradient(135deg,rgba(212,175,55,.18),rgba(212,175,55,.05))">'+
-    '<span dir="rtl" style="font-size:26px;flex:none;color:var(--accent-ink)">نَتَكَلَّمُ</span>'+
-    '<span style="flex:1;min-width:0"><b style="display:block;font-family:var(--f-display);font-size:17px">Разговорный арабский</b>'+
-    '<span style="font-size:12.5px;color:var(--ink-3)">'+(nx ? 'Ближайшая встреча: '+esc(clubDateRu(nx.date))+', '+CLUB_TIME : 'Уроки, слова и тесты клуба')+'</span></span>'+
-    '<span style="font-size:22px;color:var(--accent-ink)">›</span></button>';
+  var bg = burg ? "border:0;background:linear-gradient(135deg,#8C2433,#4E1119);color:#F7EFE3;box-shadow:0 10px 26px rgba(78,17,25,.45);padding:18px 16px"
+    : "border-color:var(--accent-ink);background:linear-gradient(135deg,rgba(212,175,55,.18),rgba(212,175,55,.05))";
+  return '<button class="card" data-ar="club" style="display:flex;align-items:center;gap:14px;width:100%;text-align:left;'+bg+'">'+
+    '<span dir="rtl" style="font-size:'+(burg ? 30 : 26)+'px;flex:none;color:'+(burg ? '#E6C868' : 'var(--accent-ink)')+'">نَتَكَلَّمُ</span>'+
+    '<span style="flex:1;min-width:0"><b style="display:block;font-family:var(--f-display);font-size:'+(burg ? 19 : 17)+'px">Разговорный арабский</b>'+
+    '<span style="font-size:13px;color:'+(burg ? 'rgba(247,239,227,.82)' : 'var(--ink-3)')+'">'+(nx ? 'Ближайшая встреча: '+esc(clubDateRu(nx.date))+', '+CLUB_TIME : 'Уроки, слова и тесты клуба')+'</span></span>'+
+    '<span style="font-size:24px;color:'+(burg ? '#E6C868' : 'var(--accent-ink)')+'">›</span></button>';
 }
 function clubMeetBtn(dt){
   if(!clubHas() || dt !== todayKey()) return "";
@@ -23391,7 +23393,7 @@ function initials(){
   return (p[0][0] + (p[1]?p[1][0]:"")).toUpperCase();
 }
 function viewProf(){
-  var h = ['<div class="stack">', clubBigBtn()];
+  var h = ['<div class="stack">'];
   var reg = signupState(), scp = scoreState(), scme = S.scoreMe;
   var mine = COURSES.filter(function(c){ return bought(c.id); });
   var pend = ordersPending();
@@ -23422,6 +23424,7 @@ function viewProf(){
 
   /* 2. покупки: сначала то, что ждёт оплаты, потом то, что уже открыто */
   h.push('<div class="sec-h"><h3>Мои покупки</h3></div>');
+  h.push(clubBigBtn(true));
   pend.forEach(function(o){
     h.push('<section class="card ord-wait">'+
       '<div class="ord-h"><b>'+esc(o.title)+'</b><span class="chip">ждём оплату</span></div>'+
