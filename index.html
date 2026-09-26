@@ -9251,6 +9251,8 @@ function qwGloss(i){
    Программа и фразы те же, что в CRM: курс «Разговорный клуб арабского».
    Между встречами человек занимается здесь: словарь встречи, разговор с приложением,
    проверка произношения, домашнее задание и отметка о посещении. */
+/* группа набрана - новые люди идут в лист ожидания, а не в оплату (26.09.2026) */
+var CLUB_FULL = true;
 var CLUB_ID = "arabclub", CLUB_PRICE = 2900, CLUB_START = "2026-10-01";
 var CLUB_DAYS = [3, 5], CLUB_TIME = "13:00";   /* среда, пятница */
 /* Тарифы клуба. Цену в оплату берёт CRM из своего каталога, здесь она только для показа. */
@@ -11003,14 +11005,13 @@ function viewArClub(){
     '<div class="qw-hero-h">Разговорный клуб арабского</div>'+(has ? '' : '<span class="nb-badge">Для новичков</span>')+
     '<div class="qw-hero-p">Две встречи в неделю с преподавателем, по часу: среда и пятница в 13:00 по Москве. Женская группа до десяти человек. На встрече говорим только по-арабски.</div>'+
     (has && nx ? '<div class="qw-big"><b>'+clubDateRu(nx.date).split(",")[0]+'</b><span>ближайшая встреча: '+clubDateRu(nx.date)+', '+CLUB_TIME+(CLUB_NEW_PROGRAM ? '<br>тема: '+esc(nx.m.t) : '')+'</span></div>'
-      : '<div class="qw-big"><b>'+money(CLUB_PRICE)+'</b><span>в месяц · восемь встреч<br>или 7 900 ₽ за три месяца<br>первая встреча 2 октября</span></div>')+
+      : (CLUB_FULL ? '<div class="qw-big"><b>Группа набрана</b><span>встречи идут с 2 октября<br>запишитесь в лист ожидания -<br>напишем, когда откроем новую группу</span></div>' : '<div class="qw-big"><b>'+money(CLUB_PRICE)+'</b><span>в месяц · восемь встреч<br>или 7 900 ₽ за три месяца<br>первая встреча 2 октября</span></div>'))+
     (has ? '<div class="qw-st"><div><b>'+cnt.att+'</b><span>встреч отмечено</span></div>'+
       '<div><b>'+cnt.hw+'</b><span>заданий сделано</span></div>'+
       '<div><b>'+(cnt.att >= 6 ? "да" : "нет")+'</b><span>свидетельство</span></div></div>' : '')+
     '</section>');
   if(!has){
-    h.push('<div class="ar-cta"><button class="btn" data-buy="arabclub" data-tariff="Месяц">Участвовать - '+money(CLUB_PRICE)+' в месяц</button>'+
-      '<button class="btn sec" data-buy="arabclub" data-tariff="3 месяца">Сразу 3 месяца - 7 900 ₽</button>'+
+    h.push('<div class="ar-cta">'+(CLUB_FULL ? '<button class="btn" data-ar="clubwait">Встать в лист ожидания</button>' : '<button class="btn" data-buy="arabclub" data-tariff="Месяц">Участвовать - '+money(CLUB_PRICE)+' в месяц</button><button class="btn sec" data-buy="arabclub" data-tariff="3 месяца">Сразу 3 месяца - 7 900 ₽</button>')+
       '<button class="btn ghost" data-ar="qwtest">Проверить свой уровень</button></div>');
     h.push(charityLine());
     h.push(clubNewbieBlock(false));
@@ -11125,7 +11126,7 @@ function viewArMeet(n){
   if(!has){
     h.push('<section class="card"><div class="eyebrow">Только для участников</div>'+
       '<p style="font-size:14px;line-height:1.55">Фразы встречи, тренажёр разговора и задание открываются после оплаты участия.</p>'+
-      '<button class="btn" data-buy="arabclub">Участвовать - '+money(CLUB_PRICE)+'</button></section></div>');
+      '<button class="btn" data-'+(CLUB_FULL ? 'ar="clubwait">Встать в лист ожидания' : 'buy="arabclub">Участвовать - '+money(CLUB_PRICE))+'</button></section></div>');
     return h.join("");
   }
   if(!clubOpen(m)){
@@ -11429,6 +11430,7 @@ function arClick(v){
   if(k === "rdself"){ var tr = AR.x && AR.x.t[AR.x.i]; if(tr && !tr.done){ tr.self = +p[1]; arExCheck(); } return; }
   if(k === "club"){ arStop(); open("arabic", "club"); return; }
   if(k === "clubsend"){ arClubSend(); return; }
+  if(k === "clubwait"){ sheetArClub(); return; }
   if(k === "goal"){ sheetArGoal(); return; }
   if(k === "gpreset"){
     var gp = AR_GOALS[+p[1]]; if(!gp) return;
@@ -11946,13 +11948,13 @@ function arClubCard(){
   }
   return '<section class="card ar-club"><div class="ar-club-ic" dir="rtl">نَتَكَلَّمُ</div>'+
     '<div class="ar-club-t"><b>Разговорный клуб арабского</b><i class="nb-badge" style="margin:4px 0 2px">Для новичков</i>'+
-    '<span>Женская группа. Две встречи в неделю с преподавателем, по часу: среда и пятница в 13:00 МСК. Между встречами говорите с приложением: оно спрашивает, вы отвечаете вслух. 2 900 ₽ в месяц или 7 900 ₽ за три месяца, первая встреча 2 октября.</span></div>'+
+    '<span>Женская группа, встречи среда и пятница в 13:00 МСК. '+(CLUB_FULL ? 'Группа набрана - можно встать в лист ожидания следующей.' : 'Между встречами говорите с приложением. 2 900 ₽ в месяц или 7 900 ₽ за три месяца.')+'</span></div>'+
     '<button class="btn sm" data-ar="club">Подробнее</button></section>';
 }
 function sheetArClub(){
   var cur = arCurrent();
-  sheet('<h3>Разговорный клуб</h3>'+
-    '<p style="font-size:13.5px;color:var(--ink-2);line-height:1.5;margin:0 0 12px">Маленькая группа онлайн, говорим по темам уроков. Оставьте контакты и удобное время - напишем, когда соберём группу.</p>'+
+  sheet('<h3>Лист ожидания</h3>'+
+    '<p style="font-size:13.5px;color:var(--ink-2);line-height:1.5;margin:0 0 12px">Группа на октябрь набрана. Оставьте контакты и удобное время - напишем один раз, когда откроем следующую группу. напишем, когда соберём группу.</p>'+
     '<input class="search" id="ac_n" placeholder="Как к вам обращаться" value="'+esc(S.name || "")+'">'+
     '<input class="search" id="ac_p" type="tel" style="margin-top:9px" placeholder="Телефон с WhatsApp" value="'+esc(S.phone || "")+'">'+
     '<div class="eyebrow" style="margin-top:12px">Когда удобно</div>'+
@@ -11978,8 +11980,8 @@ function arClubSend(){
   S.name = S.name || name; S.phone = phone; save();
   function done(){ arS().club = todayKey(); save(); closeSheet(); render(); }
   fetch(LEAD_API, { method:"POST", headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify({ name:name, phone:phone, course:"Разговорный клуб арабского", note:note, source:"rizq", consent:true, utm:utmPayload() }) })
-    .then(function(r){ if(!r.ok) throw 0; done(); toast("Вы в листе ожидания. Напишем, когда соберём группу"); })
+    body: JSON.stringify({ name:name, phone:phone, course:"Разговорный клуб арабского: лист ожидания", note:"Лист ожидания (группа набрана). " + note, source:"rizq", consent:true, utm:utmPayload() }) })
+    .then(function(r){ if(!r.ok) throw 0; done(); toast("Вы в листе ожидания. Напишем один раз, когда откроем новую группу"); })
     .catch(function(){ done(); window.open(waLink("Ассаламу алейкум! Хочу в разговорный клуб арабского в RIZQ. " + note + " Имя: " + name + ", телефон: " + phone), "_blank"); });
 }
 /* ---------- арабский для новичков: экраны и упражнения ---------- */
@@ -23164,7 +23166,7 @@ function viewCourse(){
         '<span class="price" style="font-size:26px">'+money(c.price)+'</span>'+
         (c.old? '<span style="font-size:15px;color:var(--ink-3);text-decoration:line-through">'+money(c.old)+'</span>' : '')+
         '<span class="chip" style="margin-left:auto">'+(c.id === "arabclub" ? "в месяц · без автосписаний" : "доступ навсегда")+'</span></div>'+
-        '<button class="btn" data-buy="'+c.id+'">'+(c.id === "arabclub" ? "Участвовать" : "Купить курс")+'</button>'+
+        '<button class="btn" data-buy="'+c.id+'">'+(c.id === "arabclub" ? (CLUB_FULL && !clubHas() ? "Встать в лист ожидания" : "Участвовать") : "Купить курс")+'</button>'+
         '<button class="btn sec" style="margin-top:9px" data-leadgo="'+c.id+'">Оставить заявку</button>'+charityLine()+'</section>');
     } else if(L.tariffsFull){
       if(!finData()) finLoad(function(){ if(V.view === "course") render(); });
@@ -26155,6 +26157,7 @@ document.getElementById("app").addEventListener("click", function(ev){
     save(); render(); return;
   }
 
+  if(d.buy === CLUB_ID && CLUB_FULL && !clubHas()){ sheetArClub(); return; }
   if(d.buy){ V.buyPlan = parseInt(d.plan, 10) || 0; sheetBuy(d.buy, d.tariff); return; }
   if(d.ask){ sheetAsk(d.ask); return; }
   if(d.checkout){ checkoutStart(d.checkout, d.tariff, d.plan); return; }
