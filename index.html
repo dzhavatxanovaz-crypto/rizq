@@ -11008,18 +11008,52 @@ function viewArQwTest(){
   h.push('</div>');
   return h.join("");
 }
+/* что сделать сегодня: одно действие по календарю встреч */
+function clubToday(){
+  if(!clubHas()) return "";
+  var ds = clubDates(), td = todayKey(), i, prev = -1, next = -1;
+  for(i = 0; i < ds.length; i++){ if(ds[i] < td) prev = i; else if(next < 0) next = i; }
+  var c = clubS(), tomorrow = (function(){ var d = new Date(); d.setDate(d.getDate() + 1); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); })();
+  var ico = "", t = "", sub = "", btn = "";
+  if(next >= 0 && ds[next] === td){
+    var m = CLUB_MEETS[next];
+    t = "Сегодня встреча в " + CLUB_TIME; sub = (m ? "Тема: " + m.t + ". " : "") + "До начала прослушайте диалог 2 раза.";
+    btn = '<button class="btn sm" data-ar="meet:'+(next + 1)+'">Открыть встречу</button>';
+  } else if(prev >= 0 && !(c.test && c.test["m" + (prev + 1)]) && CLUB_MEETS[prev] && CLUB_MEETS[prev].test){
+    t = "Тест встречи " + (prev + 1); sub = "3 минуты: новые слова и повтор прошлых. Результат увидите сразу.";
+    btn = '<button class="btn sm" data-ar="ctest:'+(prev + 1)+'">Пройти тест</button>';
+  } else if(next >= 0 && ds[next] === tomorrow){
+    var m2 = CLUB_MEETS[next];
+    t = "Завтра встреча" + (m2 ? ": " + m2.t : ""); sub = "Новый диалог уже открыт. Прослушайте его и прочитайте слова.";
+    btn = '<button class="btn sm" data-ar="meet:'+(next + 1)+'">Открыть диалог</button>';
+  } else {
+    var ws = clubWords();
+    t = ws.length ? "Повторите слова клуба" : "Первая встреча - " + clubDateRu(ds[0]);
+    sub = ws.length ? "10 слов карточками - 3 минуты." : "Диалог первой встречи откроется накануне. Пока можно начать бесплатный курс арабского.";
+    btn = ws.length && prev >= 0 ? '<button class="btn sm" data-ar="study:cm'+(prev + 1)+'">Повторить</button>' : '<button class="btn sm sec" data-ar="cdict">Словарик клуба</button>';
+  }
+  return '<section class="card" style="border-color:rgba(212,175,55,.6);background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(212,175,55,.03))">'+
+    '<div class="eyebrow" style="color:var(--accent-ink)">Сегодня в клубе</div>'+
+    '<b style="display:block;font-family:var(--f-display);font-size:18px;margin:6px 0 4px">'+esc(t)+'</b>'+
+    '<p style="margin:0 0 12px;font-size:14px;line-height:1.5;color:var(--ink-2)">'+esc(sub)+'</p>'+btn+'</section>';
+}
+function clubProgress(){
+  var ws = clubWords(), l = arS().l, known = ws.filter(function(w){ return l[w.id]; }).length;
+  var qn = 0; CLUB_MEETS.forEach(function(m){ if(clubOpen(m)){ var u = clubQwUnit(m.n); if(u) u.w.forEach(function(w){ if(l[w.id]) qn++; }); } });
+  var c = clubS(), tests = Object.keys(c.test || {}).map(function(k){ return c.test[k]; }), avg = tests.length ? Math.round(tests.reduce(function(a, t){ return a + t.ok / t.total; }, 0) / tests.length * 100) : 0;
+  return { words: known, qw: qn, att: Object.keys(c.att).length, avg: avg, tests: tests.length };
+}
 function viewArClub(){
   var has = clubHas(), nx = clubNext(), cnt = clubCount(), ds = clubDates();
-  var h = ['<div class="stack">', clubOwnerNote(), nx ? clubMeetBtn(nx.date) : ""];
+  var h = ['<div class="stack">', clubOwnerNote(), nx ? clubMeetBtn(nx.date) : "", clubToday()];
+  var pg = has ? clubProgress() : null;
   h.push('<section class="qw-hero"><div class="qw-hero-ar" dir="rtl">نَادِي المُحَادَثَةِ</div>'+
     '<div class="qw-hero-h">Разговорный клуб арабского</div>'+(has ? '' : '<span class="nb-badge">Для новичков</span>')+
     '<div style="margin:10px 0 4px;font-family:var(--f-display);font-size:21px;font-weight:700;color:#F0D78C">Среда и пятница · '+CLUB_TIME+' МСК</div>'+
     '<div class="qw-hero-p">Встреча с преподавателем, один час.</div>'+
-    (has && nx ? '<div class="qw-big"><b>'+clubDateRu(nx.date).split(",")[0]+'</b><span>ближайшая встреча: '+clubDateRu(nx.date)+(CLUB_NEW_PROGRAM ? '<br>тема: '+esc(nx.m.t) : '')+'</span></div>'
+    (has && nx ? '<div class="qw-big"><b>'+clubDateRu(nx.date).split(", ")[1]+'</b><span>ближайшая встреча, '+clubDateRu(nx.date).split(",")[0]+(CLUB_NEW_PROGRAM ? '<br>тема: '+esc(nx.m.t) : '')+'</span></div>'
       : (CLUB_FULL ? '<div class="qw-big"><b>Группа набрана</b><span>встречи идут с 2 октября<br>запишитесь в лист ожидания -<br>напишем, когда откроем новую группу</span></div>' : '<div class="qw-big"><b>'+money(CLUB_PRICE)+'</b><span>в месяц · восемь встреч<br>или 7 900 ₽ за три месяца<br>первая встреча 2 октября</span></div>'))+
-    (has ? '<div class="qw-st"><div><b>'+cnt.att+'</b><span>встреч отмечено</span></div>'+
-      '<div><b>'+cnt.hw+'</b><span>заданий сделано</span></div>'+
-      '<div><b>'+(cnt.att >= 6 ? "да" : "нет")+'</b><span>свидетельство</span></div></div>' : '')+
+    (has ? '<div class="qw-st"><div><b>'+pg.words+'</b><span>слов выучено</span></div><div><b>'+pg.qw+'</b><span>слов Корана</span></div><div><b>'+(pg.tests ? pg.avg+'%' : '-')+'</b><span>тесты в среднем</span></div></div>' : '')+
     '</section>');
   if(!has){
     h.push('<div class="ar-cta">'+(CLUB_FULL ? '<button class="btn" data-ar="clubwait">Встать в лист ожидания</button>' : '<button class="btn" data-buy="arabclub" data-tariff="Месяц">Участвовать - '+money(CLUB_PRICE)+' в месяц</button><button class="btn sec" data-buy="arabclub" data-tariff="3 месяца">Сразу 3 месяца - 7 900 ₽</button>')+
@@ -11146,8 +11180,9 @@ function viewArMeet(n){
   if(m.review) h.push('<p class="ar-note" style="padding:0 4px">В начале встречи повторяем диалог встречи '+esc(String(m.review))+(m.review2 ? ' и встречи '+esc(String(m.review2)) : '')+'.</p>');
   if(m.dialog && m.dialog.length){
     h.push('<div class="sec-h"><h3>Диалог</h3></div>');
-    h.push('<section class="card ar-dlg">'+m.dialog.map(function(r){
+    h.push('<section class="card ar-dlg">'+m.dialog.map(function(r, ri){
       return '<div style="padding:8px 0;border-top:1px solid var(--line)"><div style="display:flex;gap:8px;align-items:flex-start">'+
+        '<button class="ar-play" data-ar="sayd:'+m.n+':'+ri+'" aria-label="Слушать реплику" style="flex:none">▶</button>'+
         '<b style="flex:none;color:var(--accent-ink);min-width:18px">'+(r.who === "ب" ? "Б" : "А")+'</b>'+
         '<div style="flex:1;min-width:0"><div dir="rtl" style="font-size:20px;line-height:1.8">'+esc(r.ar)+'</div>'+
         '<div style="font-size:13px;color:var(--ink-3)">'+esc(r.tr)+'</div><div style="font-size:13.5px">'+esc(r.ru)+'</div></div></div></div>';
@@ -11442,6 +11477,8 @@ function arClick(v){
   if(k === "club"){ arStop(); open("arabic", "club"); return; }
   if(k === "clubsend"){ arClubSend(); return; }
   if(k === "clubwait"){ sheetArClub(); return; }
+  if(k === "sayd"){ var dm = CLUB_MEETS.filter(function(x){ return x.n === +p[1]; })[0], dr = dm && dm.dialog && dm.dialog[+p[2]];
+    if(dr){ arStop(); arSay(dr.ar, null, "dcm" + dm.n + "-" + p[2]); } return; }
   if(k === "asstudent"){ S.clubAsStudent = p[1] === "1" ? 1 : 0; save(); render(); toast(S.clubAsStudent ? "Режим ученицы" : "Режим владелицы"); return; }
   if(k === "goal"){ sheetArGoal(); return; }
   if(k === "gpreset"){
