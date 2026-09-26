@@ -19028,6 +19028,9 @@ function postsAll(){
   var loaded = null;
   try{ loaded = JSON.parse(localStorage.getItem("rizq.posts") || "null"); }catch(e){}
   var list = (loaded && loaded.length) ? loaded : POSTS_SEED;
+  /* публикация по расписанию: запись с будущей датой ещё не вышла (26.09.2026) */
+  var td = todayKey();
+  list = list.filter(function(p){ return !p.d || String(p.d) <= td; });
   return list.slice().sort(function(a,b){ var x = a.d || "", y = b.d || ""; return y < x ? -1 : y > x ? 1 : 0; });
 }
 function postsLoad(){
