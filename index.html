@@ -1030,6 +1030,59 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .um-mini button.on span{background:var(--surface);border-color:var(--surface);color:var(--accent-ink)}
 .um-foot .btn{width:auto;flex:none}
 .jp-card{position:relative;padding:0}
+/* журнал: обложки, запись, рубрика (26.09.2026) */
+.jr-mast{display:flex;align-items:baseline;justify-content:space-between;padding:2px 4px 0}
+.jr-mast b{font-family:var(--f-display);font-size:22px;font-weight:700;letter-spacing:.02em}
+.jr-mast span{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink)}
+.jr-feat{display:block;width:100%;text-align:left;border:0;padding:0;background:var(--surface);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);color:inherit}
+.jr-feat .jr-cv{display:block;height:176px}
+.jr-feat .jr-ft{padding:15px 17px 17px}
+.jr-feat .jr-ft b{display:block;font-family:var(--f-display);font-size:20px;line-height:1.28;margin:7px 0 6px}
+.jr-feat .jr-ft p{margin:0;font-size:14px;line-height:1.55;color:var(--ink-2)}
+.jr-meta{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink);font-weight:600}
+.jr-meta i{font-style:normal;color:var(--ink-3);letter-spacing:.04em;text-transform:none;font-weight:400}
+.jr-card{display:flex;gap:13px;align-items:stretch;width:100%;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:18px;padding:10px;color:inherit;position:relative}
+.jr-card .jr-mini{flex:none;width:78px;min-height:78px;border-radius:13px;overflow:hidden}
+.jr-card .jr-mini svg{display:block;width:100%;height:100%}
+.jr-card .jr-ct{flex:1;min-width:0;padding:2px 26px 2px 0}
+.jr-card .jr-ct b{display:block;font-family:var(--f-display);font-size:15.5px;line-height:1.3;margin:5px 0 4px}
+.jr-card .jr-ct span{display:block;font-size:13px;line-height:1.45;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.jr-card .jr-rd{position:absolute;right:12px;bottom:10px;font-size:11px;color:var(--accent-ink)}
+.jr-rub{border-radius:22px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+.jr-rub .jr-cv{display:block;height:120px}
+.jr-rub .jr-rt{padding:14px 17px 16px}
+.jr-rub .jr-rt b{font-family:var(--f-display);font-size:21px;display:block}
+.jr-rub .jr-rt p{margin:6px 0 10px;font-size:14px;line-height:1.55;color:var(--ink-2)}
+.jr-bar{height:6px;border-radius:9px;background:var(--surface-2);overflow:hidden}.jr-bar i{display:block;height:100%;background:var(--gold);border-radius:9px}
+.jr-prog{position:sticky;top:0;z-index:5;height:3px;margin:-4px -2px 6px;background:transparent}.jr-prog i{display:block;height:100%;width:0;background:var(--gold);border-radius:3px;transition:width .15s}
+.jr-hero{border-radius:24px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+.jr-hero .jr-cv{display:block;height:190px}
+.jr-hero .jr-ht{padding:16px 18px 18px}
+.jr-hero h2{font-family:var(--f-display);font-size:24px;line-height:1.25;font-weight:700;margin:8px 0 10px}
+.jr-hero .jr-lead{font-size:16px;line-height:1.6;color:var(--ink-2);margin:0}
+.jr-acts{display:flex;gap:8px;margin-top:14px}.jr-acts .btn{flex:1}
+.jr-sum{border-radius:20px;padding:16px 18px;background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(212,175,55,.05));border:1px solid rgba(212,175,55,.5)}
+.jr-sum h4{margin:0 0 10px;font-family:var(--f-display);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink)}
+.jr-sum ol{margin:0;padding:0;list-style:none;counter-reset:js}
+.jr-sum li{counter-increment:js;position:relative;padding:0 0 10px 34px;font-size:15px;line-height:1.5}
+.jr-sum li:before{content:counter(js);position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;background:var(--gold);color:#1E2A5A;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.jr-body .card{border-radius:20px}
+.jr-body .card>.eyebrow{font-size:12px;letter-spacing:.12em}
+.jr-body .dua{position:relative;border:1px solid rgba(212,175,55,.55);background:linear-gradient(180deg,rgba(212,175,55,.1),rgba(212,175,55,.02))!important;border-radius:18px;padding:18px 16px 14px}
+.jr-body .dua:before{content:"";position:absolute;left:50%;top:-1px;width:64px;height:3px;margin-left:-32px;background:var(--gold);border-radius:0 0 4px 4px}
+.jr-body .dua .ar{font-size:23px;line-height:2}
+.jr-body .dua .src{color:var(--accent-ink);font-weight:600}
+.jr-imam{border-radius:20px;padding:15px 17px;border:1px dashed rgba(212,175,55,.7);background:var(--surface)}
+.jr-imam h4{margin:0 0 8px;font-family:var(--f-display);font-size:15px}
+.jr-imam p,.jr-imam li{font-size:14px;line-height:1.55;color:var(--ink-2)}
+.jr-imam ul{margin:6px 0 0;padding-left:18px}
+.jr-src{border-radius:20px;padding:14px 17px;background:var(--surface-2)}
+.jr-src h4{margin:0 0 8px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.jr-src li{font-size:13px;line-height:1.5;color:var(--ink-2);margin-bottom:5px}
+.jr-src ol{margin:0;padding-left:18px}
+.jr-next{display:flex;gap:12px;align-items:center;width:100%;text-align:left;border:1px solid var(--line);border-radius:18px;background:var(--surface);padding:10px;color:inherit}
+.jr-next .jr-mini{flex:none;width:64px;height:64px;border-radius:12px;overflow:hidden}.jr-next .jr-mini svg{width:100%;height:100%;display:block}
+.jr-next b{display:block;font-family:var(--f-display);font-size:15px;line-height:1.3;margin-top:3px}
 .jp-open{display:block;width:100%;text-align:left;padding:16px 16px 16px}
 .jp-star{position:absolute;right:10px;bottom:9px;width:38px;height:38px;border-radius:12px;font-size:19px;line-height:1;color:var(--ink-3);display:grid;place-items:center}
 .jp-star.on{color:var(--accent-ink)}
@@ -6554,6 +6607,9 @@ function deepOpen(qArg){
        вопрос о городе: город он выберет, когда дойдёт до намаза. */
     var GO_LINKS = { qw:["arabic", "qw"], club:["arabic", "club"], arabic:["arabic", null],
       quran:["quran", null], azkar:["azkar", null], kniga:["book1", null], book:["book1", null] };
+    /* ?post=<id> - открыть запись журнала (ссылка «Поделиться») */
+    var mpo = q.match(/[?&]post=([a-z0-9_-]+)/);
+    if(mpo){ S.welcomed = 1; save(); V.tab = "journal"; open("post", decodeURIComponent(mpo[1])); return true; }
     var mg = q.match(/[?&]go=([a-zA-Z0-9_]+)/);
     /* ?go=delo - журнал сразу на рубрике «Дело по Сунне»: туда ведёт
        кодовое слово ДЕЛО из рилсов, все разборы серии лежат в этой рубрике. */
@@ -19129,6 +19185,77 @@ var RUBRICS = [
 ];
 function rubric(id){ return RUBRICS.filter(function(r){ return r.id===id; })[0]; }
 
+/* ---------- журнал: оформление ---------- */
+var JR_THEME = {
+  delo:{c1:"#0F3B34", c2:"#1F6B5A", g:"#E6C868", ic:"◈"}, vopros:{c1:"#1E2A5A", c2:"#34458A", g:"#E6C868", ic:"?"},
+  kalendar:{c1:"#241B4A", c2:"#4A3A8C", g:"#E6C868", ic:"☾"}, imya:{c1:"#3A1F12", c2:"#7A4A22", g:"#F0D78C", ic:"۹۹"},
+  sahaba:{c1:"#2B2410", c2:"#6B5A22", g:"#F0D78C", ic:"✾"}, zhenskoe:{c1:"#3E1832", c2:"#7A3A62", g:"#F0D78C", ic:"❁"},
+  novoe:{c1:"#132A45", c2:"#25507F", g:"#E6C868", ic:"✦"}
+};
+var JR_DESC = {
+  delo:"Деньги мусульманина по Корану и Сунне: торговля и риба, долги, закят, честная сделка. Каждая тема - со схемами и источниками.",
+  vopros:"Короткие ответы на частые вопросы - с источниками.", kalendar:"Даты исламского календаря и что в них делать.",
+  imya:"Имена Аллаха: смысл и как жить с этим знанием.", sahaba:"Истории сподвижников - о вере, характере и деле.",
+  zhenskoe:"Темы для мусульманки: поклонение, семья, забота о себе.", novoe:"Что появилось в приложении RIZQ."
+};
+function jrHash(t){ var h = 0; t = String(t || ""); for(var i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) % 100000; return h; }
+/* обложка: восьмиконечные звёзды (геометрия, без изображений живых существ) в цвете рубрики */
+function jrCover(p, mode){
+  var th = JR_THEME[p.r] || JR_THEME.novoe, k = jrHash(p.id), uid = "jr" + k + (mode || "");
+  var W = 400, H = mode === "mini" ? 400 : 220, step = mode === "mini" ? 100 : 80, off = (k % 5) * 8;
+  function star(cx, cy, r){ var pts = []; for(var i = 0; i < 16; i++){ var a = Math.PI / 8 * i - Math.PI / 2, rr = i % 2 ? r * 0.55 : r; pts.push((cx + rr * Math.cos(a)).toFixed(1) + "," + (cy + rr * Math.sin(a)).toFixed(1)); } return pts.join(" "); }
+  var pat = "";
+  for(var y = -step; y < H + step; y += step) for(var x = -step; x < W + step; x += step){
+    var cx = x + off + ((y / step) % 2 ? step / 2 : 0), cy = y + off;
+    pat += '<polygon points="'+star(cx, cy, step * 0.34)+'" fill="none" stroke="'+th.g+'" stroke-opacity=".28" stroke-width="1.2"/>';
+    pat += '<circle cx="'+cx+'" cy="'+cy+'" r="'+(step * 0.1)+'" fill="'+th.g+'" fill-opacity=".18"/>';
+  }
+  var cx0 = W / 2, cy0 = H / 2, R = mode === "mini" ? 120 : 62;
+  var emb = '<circle cx="'+cx0+'" cy="'+cy0+'" r="'+(R + 16)+'" fill="'+th.c1+'" fill-opacity=".72"/>'+
+    '<polygon points="'+star(cx0, cy0, R + 8)+'" fill="none" stroke="'+th.g+'" stroke-width="2"/>'+
+    '<circle cx="'+cx0+'" cy="'+cy0+'" r="'+(R * 0.62)+'" fill="none" stroke="'+th.g+'" stroke-opacity=".6" stroke-width="1.4"/>'+
+    '<text x="'+cx0+'" y="'+(cy0 + R * 0.26)+'" text-anchor="middle" font-size="'+(R * 0.72)+'" fill="'+th.g+'" font-family="serif">'+esc(th.ic)+'</text>';
+  return '<svg class="jr-cv" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+    '<defs><linearGradient id="'+uid+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+th.c1+'"/><stop offset="1" stop-color="'+th.c2+'"/></linearGradient></defs>'+
+    '<rect width="'+W+'" height="'+H+'" fill="url(#'+uid+')"/>'+pat+emb+'</svg>';
+}
+function jrMinutes(p){
+  var n = String(p.s || "").length;
+  (p.body || []).forEach(function(b){ ["t","p","tip","warn","rep","ru","note"].forEach(function(k){ if(b[k]) n += String(b[k]).length; });
+    ["list","steps"].forEach(function(k){ if(b[k]) b[k].forEach(function(x){ n += String(x).length; }); });
+    if(b.rows) b.rows.forEach(function(r){ n += String(r.join(" ")).length; }); if(b.flow) b.flow.forEach(function(r){ n += String(r.join(" ")).length; }); });
+  (p.sum || []).forEach(function(x){ n += String(x).length; });
+  return Math.max(2, Math.round(n / 900));
+}
+function jrRead(id){ return !!(S.postRead && S.postRead[id]); }
+function jrMark(id){ if(!S.postRead) S.postRead = {}; if(!S.postRead[id]){ S.postRead[id] = todayKey(); save(); } }
+function jrSources(p){
+  var out = [], seen = {};
+  (p.body || []).forEach(function(b){ if(b.src && !seen[b.src]){ seen[b.src] = 1; out.push(b.src); } });
+  (p.srcs || []).forEach(function(x){ if(!seen[x]){ seen[x] = 1; out.push(x); } });
+  return out;
+}
+function jrCard(p){
+  var r = rubric(p.r), fk = "post:" + p.id, fon = isFav(fk);
+  return '<div style="position:relative"><button class="jr-card" data-post="'+esc(p.id)+'">'+
+    '<span class="jr-mini">'+jrCover(p, "mini")+'</span>'+
+    '<span class="jr-ct"><span class="jr-meta" style="-webkit-line-clamp:1">'+esc(r ? r.n : "")+' <i>· '+esc(postDate(p.d))+' · '+jrMinutes(p)+' мин</i></span>'+
+      '<b>'+esc(p.n)+'</b>'+(p.s ? '<span>'+esc(p.s)+'</span>' : '')+'</span>'+
+    (jrRead(p.id) ? '<span class="jr-rd">✓ прочитано</span>' : '')+'</button>'+
+    '<button class="jp-star'+(fon?" on":"")+'" data-fav="'+esc(fk)+'" aria-label="'+(fon?"Убрать из избранного":"Сохранить в избранное")+'" style="position:absolute;top:8px;right:8px">'+(fon?"★":"☆")+'</button></div>';
+}
+function jrShare(id){
+  var p = postsAll().filter(function(x){ return x.id === id; })[0]; if(!p) return;
+  var url = APP_URL + "?post=" + encodeURIComponent(p.id) + "&utm_source=share&utm_medium=journal";
+  var text = p.n + (p.s ? " - " + p.s : "");
+  if(navigator.share) navigator.share({ title: p.n, text: text, url: url }).catch(function(){});
+  else { copyText(text + "\n" + url); toast("Ссылка скопирована"); }
+}
+function jrProgress(){
+  var bar = document.getElementById("jrProg"); if(!bar || V.view !== "post") return;
+  var max = $screen.scrollHeight - $screen.clientHeight;
+  bar.style.width = (max > 0 ? Math.min(100, Math.round($screen.scrollTop / max * 100)) : 0) + "%";
+}
 function viewJournal(){
   var all = postsAll();
   var used = RUBRICS.filter(function(r){ return all.some(function(p){ return p.r===r.id; }); });
@@ -19137,10 +19264,14 @@ function viewJournal(){
   var list = V.rub === "_fav" ? all.filter(function(p){ return isFav("post:" + p.id); })
     : V.rub ? all.filter(function(p){ return p.r===V.rub; }) : all;
   var h = ['<div class="stack">'];
-
-  h.push('<div class="card flat" style="padding:13px 15px;font-size:14px;color:var(--ink-2);line-height:1.55">'+
-    'Разборы вопросов, сезонные темы, истории сподвижников и то, что появляется в приложении. '+
-    'Записи подгружаются сами, когда есть интернет, и остаются доступны без него.</div>');
+  h.push('<div class="jr-mast"><b>Журнал</b><span>RIZQ</span></div>');
+  if(V.rub && V.rub !== "_fav" && rubric(V.rub)){
+    var rr = rubric(V.rub), inR = all.filter(function(p){ return p.r === V.rub; }), rd = inR.filter(function(p){ return jrRead(p.id); }).length;
+    h.push('<section class="jr-rub">'+jrCover({ id:"rub-" + V.rub, r:V.rub })+'<div class="jr-rt"><span class="jr-meta">Рубрика</span><b>'+esc(rr.n)+'</b>'+
+      '<p>'+esc(JR_DESC[V.rub] || "")+'</p>'+
+      '<div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-3);margin-bottom:6px"><span>'+plural(inR.length, "тема", "темы", "тем")+'</span><span>прочитано '+rd+' из '+inR.length+'</span></div>'+
+      '<div class="jr-bar"><i style="width:'+(inR.length ? Math.round(rd / inR.length * 100) : 0)+'%"></i></div></div></section>');
+  }
 
   if(used.length > 1){
     h.push('<div style="display:flex;flex-wrap:wrap;gap:7px">'+
@@ -19160,7 +19291,18 @@ function viewJournal(){
   if(!list.length){
     h.push('<div class="empty"><b>Записей пока нет</b></div>');
   } else {
-    list.forEach(function(p){
+    var feat = !V.rub && list[0];
+    if(feat){
+      var fr = rubric(feat.r);
+      h.push('<button class="jr-feat" data-post="'+esc(feat.id)+'">'+jrCover(feat)+'<span class="jr-ft">'+
+        '<span class="jr-meta">'+esc(fr ? fr.n : "")+' <i>· '+esc(postDate(feat.d))+' · '+jrMinutes(feat)+' мин чтения</i></span>'+
+        '<b>'+esc(feat.n)+'</b>'+(feat.s ? '<p>'+esc(feat.s)+'</p>' : '')+'</span></button>');
+    }
+    list.forEach(function(p, pi){
+      if(feat && pi === 0) return;
+      h.push(jrCard(p));
+    });
+    if(false) list.forEach(function(p){
       var r = rubric(p.r);
       var fk = "post:" + p.id, fon = isFav(fk);
       h.push('<div class="card jp-card"><button class="jp-open" data-post="'+esc(p.id)+'">'+
@@ -19182,15 +19324,32 @@ function viewJournal(){
 function viewPost(){
   var p = postsAll().filter(function(x){ return x.id === V.p; })[0];
   if(!p) return '<div class="empty"><b>Запись не найдена</b></div>';
-  var key = "post:" + p.id;
-  var h = ['<div class="stack">'];
-  h.push('<section class="card">'+
-    '<div class="eyebrow">'+esc((rubric(p.r)||{}).n ? rubric(p.r).n+" · "+postDate(p.d) : postDate(p.d))+'</div>'+
-    '<h3 style="font-family:var(--f-display);font-size:20px;font-weight:600;margin:8px 0 0;line-height:1.3">'+esc(p.n)+'</h3>'+
-    (p.s? '<p style="font-size:14.5px;line-height:1.6;color:var(--ink-2);margin:10px 0 0">'+esc(p.s)+'</p>' : '')+
-    '<button class="btn ghost sm" style="width:100%;margin-top:13px" data-fav="'+key+'">'+
-      (isFav(key) ? "★ Сохранено" : "☆ Сохранить")+'</button></section>');
-  h.push(renderBlocks(p.body || []));
+  var key = "post:" + p.id, r = rubric(p.r);
+  jrMark(p.id);
+  var h = ['<div class="stack">', '<div class="jr-prog"><i id="jrProg"></i></div>'];
+  h.push('<section class="jr-hero">'+jrCover(p)+'<div class="jr-ht">'+
+    '<span class="jr-meta">'+esc(r ? r.n : "Журнал")+' <i>· '+esc(postDate(p.d))+' · '+jrMinutes(p)+' мин чтения</i></span>'+
+    '<h2>'+esc(p.n)+'</h2>'+(p.s ? '<p class="jr-lead">'+esc(p.s)+'</p>' : '')+
+    '<div class="jr-acts"><button class="btn sec sm" data-fav="'+key+'">'+(isFav(key) ? "★ Сохранено" : "☆ Сохранить")+'</button>'+
+    '<button class="btn sec sm" data-pshare="'+esc(p.id)+'">Поделиться</button></div></div></section>');
+  if(p.sum && p.sum.length){
+    h.push('<section class="jr-sum"><h4>Главное за 30 секунд</h4><ol>'+p.sum.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ol></section>');
+  }
+  h.push('<div class="jr-body stack">'+renderBlocks(p.body || [])+'</div>');
+  if(p.imam){
+    var im = [].concat(p.imam);
+    h.push('<section class="jr-imam"><h4>Спросите у имама своей мечети</h4>'+
+      (im.length > 1 ? '<ul>'+im.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul>' : '<p style="margin:0">'+esc(im[0])+'</p>')+'</section>');
+  }
+  var srcs = jrSources(p);
+  if(srcs.length) h.push('<section class="jr-src"><h4>Источники</h4><ol>'+srcs.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ol></section>');
+  var same = postsAll().filter(function(x){ return x.r === p.r; }), ix = same.map(function(x){ return x.id; }).indexOf(p.id);
+  var nxp = same[ix + 1] || (ix > 0 ? same[0] : null);
+  if(nxp && nxp.id !== p.id){
+    h.push('<div class="eyebrow" style="padding:4px 4px 0">'+(same[ix + 1] ? 'Следующая тема рубрики' : 'Ещё в рубрике')+'</div>');
+    h.push('<button class="jr-next" data-post="'+esc(nxp.id)+'"><span class="jr-mini">'+jrCover(nxp, "mini")+'</span>'+
+      '<span style="flex:1;min-width:0"><span class="jr-meta">'+esc(r ? r.n : "")+' <i>· '+jrMinutes(nxp)+' мин</i></span><b>'+esc(nxp.n)+'</b></span><span style="color:var(--accent-ink);font-size:20px">›</span></button>');
+  }
   h.push('<button class="btn'+(isFav(key)?" sec":"")+'" style="width:100%" data-fav="'+key+'">'+
     (isFav(key) ? "★ Запись в избранном" : "☆ Сохранить запись в избранное")+'</button>');
   h.push('</div>');
@@ -25199,7 +25358,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -25237,6 +25396,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.tg!==undefined){ window.open("https://t.me/share/url?url="+encodeURIComponent(APP_URL)+"&text="+encodeURIComponent(SHARE_TEXT), "_blank", "noopener"); return; }
   if(d.rub!==undefined){ V.rub = d.rub; render(); return; }
   if(d.post){ V.tab="journal"; open("post", d.post); return; }
+  if(d.pshare){ jrShare(d.pshare); return; }
   if(d.sq){ V.q = d.sq; render();
     var fq=document.getElementById("knowSearch") || document.getElementById("homeSearch"); if(fq){ fq.value=d.sq; fq.focus(); } return; }
   if(d.tjplay){ var tp = d.tjplay.split(":"), tg = ayahGlobal(+tp[0], +tp[1]);
@@ -26173,6 +26333,7 @@ setInterval(function(){
 }, 60000);
 
 /* запоминаем, до какого аята дочитали при прокрутке */
+$screen.addEventListener("scroll", function(){ if(V.view === "post") jrProgress(); }, {passive:true});
 $screen.addEventListener("scroll", function(){ if(V.view === "book2ch") b2Scroll(); else if(V.view === "book1ch") b1Scroll(); if(V.view === "book2ch" || V.view === "book1ch") fabScroll(); }, {passive:true});
 var FAB_Y = 0;
 function fabScroll(){
