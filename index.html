@@ -22605,14 +22605,15 @@ function pushSig(){
 }
 function pushSync(force){
   if(!pushOn() || !pushSupported() || PUSH_BUSY) return;
-  var sig = pushSig() + (AC.tok ? "|acc" : "");
+  var accTok = (typeof AC !== "undefined" && AC && AC.tok) ? AC.tok : "";
+  var sig = pushSig() + (accTok ? "|acc" : "");
   if(!force && S.push.sig === sig && Date.now() - (S.push.at || 0) < 6 * 3600000) return;
   PUSH_BUSY = true;
   navigator.serviceWorker.ready.then(function(reg){ return reg.pushManager.getSubscription(); })
     .then(function(sub){
       if(!sub){ S.push.on = false; save(); return null; }
       var ph = { "Content-Type": "application/json" };
-      if(AC.tok) ph.Authorization = "Bearer " + AC.tok;
+      if(accTok) ph.Authorization = "Bearer " + accTok;
       return fetch(PUSH_API + "/subscribe", {
         method: "POST", headers: ph,
         body: JSON.stringify({ app: "rizq", sub: sub.toJSON(), items: pushItems() })
