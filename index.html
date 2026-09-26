@@ -9164,8 +9164,15 @@ function clubMeetBtn(dt){
 }
 /* режим владелицы: вошла в «Управление приложением» - видит клуб изнутри и все встречи сразу */
 function clubOwner(){ return !!S.admTok; }
-function clubOwnerNote(){ return clubStaff() ? '<section class="card" style="border-color:var(--accent-ink)"><div class="eyebrow" style="color:var(--accent-ink)">Режим владелицы</div>'+
-  '<p style="margin:6px 0 0;font-size:13.5px;line-height:1.5">Вы видите все встречи сразу. Ученицы видят диалог и слова накануне встречи. Замечания присылайте в чат Claude: номер встречи и что поправить.</p></section>' : ""; }
+function clubOwnerNote(){
+  if(!clubStaffReal()) return "";
+  if(S.clubAsStudent) return '<section class="card" style="border-color:var(--accent-ink)"><div class="eyebrow" style="color:var(--accent-ink)">Режим ученицы</div>'+
+    '<p style="margin:6px 0 10px;font-size:13.5px;line-height:1.5">Вы видите клуб так же, как ученицы: диалог, слова и тест встречи открываются накануне.</p>'+
+    '<button class="btn sm" data-ar="asstudent:0">Вернуться в режим владелицы</button></section>';
+  return '<section class="card" style="border-color:var(--accent-ink)"><div class="eyebrow" style="color:var(--accent-ink)">Режим владелицы</div>'+
+    '<p style="margin:6px 0 10px;font-size:13.5px;line-height:1.5">Вы видите все встречи сразу. Ученицы видят диалог и слова накануне встречи. Замечания присылайте в чат Claude: номер встречи и что поправить.</p>'+
+    '<button class="btn sec sm" data-ar="asstudent:1">Посмотреть как ученица</button></section>';
+}
 function clubS(){ var st = arS(); if(!st.cl) st.cl = { att:{}, hw:{} }; if(!st.cl.att) st.cl.att = {}; if(!st.cl.hw) st.cl.hw = {}; return st.cl; }
 /* ближайшая встреча: сегодняшняя, пока не прошёл день, иначе следующая */
 /* Новая программа по «Байна йадайк» подставляется сюда; пока пусто - старые темы не показываем. */
@@ -9198,7 +9205,8 @@ function clubQwUnit(n){ n = +n; if(!n) return null;
   return { id:"cq" + n, n:"Слова Корана · встреча " + n, ar:"كَلِمَاتُ القُرْآنِ", qw:1, w:w }; }
 /* диалог и слова встречи открываются участницам накануне (решение 26.09.2026) */
 /* преподаватель и владелица видят все встречи сразу (отметка доступа в CRM) */
-function clubStaff(){ return clubOwner() || !!(S.clubAcc && S.clubAcc.on && /^(teacher|owner)$/.test(S.clubAcc.by || "") && typeof AC !== "undefined" && AC.tok); }
+function clubStaff(){ return clubStaffReal() && !S.clubAsStudent; }
+function clubStaffReal(){ return clubOwner() || !!(S.clubAcc && S.clubAcc.on && /^(teacher|owner)$/.test(S.clubAcc.by || "") && typeof AC !== "undefined" && AC.tok); }
 function clubOpen(m){ if(clubStaff()) return true; var ds = clubDates(), dt = ds[m.n - 1]; if(!dt) return false;
   var d = new Date(dt + "T12:00:00"); d.setDate(d.getDate() - 1);
   return todayKey() >= d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
@@ -11433,6 +11441,7 @@ function arClick(v){
   if(k === "club"){ arStop(); open("arabic", "club"); return; }
   if(k === "clubsend"){ arClubSend(); return; }
   if(k === "clubwait"){ sheetArClub(); return; }
+  if(k === "asstudent"){ S.clubAsStudent = p[1] === "1" ? 1 : 0; save(); render(); toast(S.clubAsStudent ? "Режим ученицы" : "Режим владелицы"); return; }
   if(k === "goal"){ sheetArGoal(); return; }
   if(k === "gpreset"){
     var gp = AR_GOALS[+p[1]]; if(!gp) return;
