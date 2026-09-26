@@ -10970,14 +10970,18 @@ function viewClubTest(n){
 function clubTestAnswer(n, oi){
   var m = CLUB_MEETS.filter(function(x){ return x.n === n; })[0], t = V.ct; if(!m || !t || t.n !== n) return;
   var q = m.test[t.i]; if(!q) return;
-  if(q.options[oi] === q.answer){ t.ok++; toast("Верно"); } else { t.wrong.push(q); toast("Правильно: " + q.answer); }
+  if(q.options[oi] === q.answer){ t.ok++; toast("Верно"); } else { t.wrong.push(q); toast("Правильно: " + q.answer);
+    var cs = clubS(); if(!cs.errs) cs.errs = []; if(cs.errs.indexOf(q.answer) < 0){ cs.errs.push(q.answer); if(cs.errs.length > 80) cs.errs.shift(); } save(); }
   t.i++; if(t.i >= m.test.length) addPoints(2, "arabic");
   render();
 }
 function viewClubDict(){
   if(!clubHas()) return '<div class="stack"><div class="empty"><b>Словарик - для участниц клуба</b></div></div>';
-  var ws = clubWords(), h = ['<div class="stack">'];
-  h.push('<p class="ar-note" style="padding:0 4px">Все слова открытых встреч клуба. Нажмите ▶, чтобы послушать.</p>');
+  var ws = clubWords(), h = ['<div class="stack">'], errs = clubS().errs || [];
+  var mine = ws.filter(function(w){ return errs.indexOf(w.ar) >= 0 || errs.indexOf(w.ru) >= 0 || errs.some(function(e){ return String(e).indexOf(w.ar) >= 0; }); });
+  if(V.cdErr) ws = mine;
+  h.push('<div class="ar-cta"><button class="btn sm'+(V.cdErr ? "" : " sec")+'" data-ar="cderr">'+(V.cdErr ? "Показать все слова" : "Только мои ошибки"+(mine.length ? " · "+mine.length : ""))+'</button></div>');
+  h.push('<p class="ar-note" style="padding:0 4px">'+(V.cdErr ? (mine.length ? 'Слова, в которых были ошибки в тестах встреч.' : 'Ошибок в тестах пока нет - машаа Аллах.') : 'Все слова открытых встреч клуба. Нажмите ▶, чтобы послушать.')+'</p>');
   if(!ws.length) h.push('<div class="empty"><b>Слова появятся накануне первой встречи</b></div>');
   CLUB_MEETS.forEach(function(mm){
     var part = ws.filter(function(w){ return w.meet === mm.n; }); if(!part.length) return;
@@ -11252,7 +11256,8 @@ function arClick(v){
   if(k === "meet"){ arStop(); open("arabic", "meet:" + p[1]); return; }
   if(k === "ctest"){ arStop(); V.ct = { n:+p[1], i:0, ok:0, wrong:[] }; open("arabic", "ctest:" + p[1]); return; }
   if(k === "cta"){ clubTestAnswer(+p[1], +p[2]); return; }
-  if(k === "cdict"){ arStop(); open("arabic", "cdict"); return; }
+  if(k === "cdict"){ arStop(); V.cdErr = false; open("arabic", "cdict"); return; }
+  if(k === "cderr"){ V.cdErr = !V.cdErr; render(); return; }
   if(k === "att"){ clubAttend(p[1]); return; }
   if(k === "hw"){ clubHw(p[1]); return; }
   if(k === "slot"){ clubJoin(p[1]); return; }
