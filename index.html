@@ -22605,14 +22605,16 @@ function pushSig(){
 }
 function pushSync(force){
   if(!pushOn() || !pushSupported() || PUSH_BUSY) return;
-  var sig = pushSig();
+  var sig = pushSig() + (AC.tok ? "|acc" : "");
   if(!force && S.push.sig === sig && Date.now() - (S.push.at || 0) < 6 * 3600000) return;
   PUSH_BUSY = true;
   navigator.serviceWorker.ready.then(function(reg){ return reg.pushManager.getSubscription(); })
     .then(function(sub){
       if(!sub){ S.push.on = false; save(); return null; }
+      var ph = { "Content-Type": "application/json" };
+      if(AC.tok) ph.Authorization = "Bearer " + AC.tok;
       return fetch(PUSH_API + "/subscribe", {
-        method: "POST", headers: { "Content-Type": "application/json" },
+        method: "POST", headers: ph,
         body: JSON.stringify({ app: "rizq", sub: sub.toJSON(), items: pushItems() })
       }).then(function(r){ if(r.ok){ S.push.at = Date.now(); S.push.sig = sig; save(); } });
     })
@@ -23897,6 +23899,8 @@ function accLoginDone(j){
   AC.tok = j.token; AC.name = a.name || ""; AC.contact = a.contact || ""; AC.email = a.email || ""; AC.at = Date.now();
   AC.rev = 0; AC.kt = {}; AC.kh = {}; AC.sent = ""; AC.syncAt = 0; ACX.pulledAt = 0; ACX.meAt = 0; ACX.firstPull = !!j.synced;
   syBaseClear(); accStore();
+  /* вошла - push-подписка привязывается к аккаунту (напоминания клуба) */
+  setTimeout(function(){ pushSync(true); }, 800);
   LG.step = 1; LG.msg = ""; LG.miss = false; LG.after = "";
   var reg = signupState(); reg.registered = true; reg.queued = false; if(!reg.at) reg.at = Date.now();
   if(!S.name && AC.name) S.name = AC.name;
@@ -23940,6 +23944,8 @@ function accClear(){
   clearTimeout(ACX.timer);
   AC.tok = ""; AC.rev = 0; AC.kt = {}; AC.kh = {}; AC.sent = ""; AC.syncAt = 0; ACX.me = null; ACX.err = ""; ACX.pulledAt = 0;
   syBaseClear(); accStore();
+  /* вышла из аккаунта - подписка больше не привязана к ней */
+  setTimeout(function(){ pushSync(true); }, 800);
 }
 /* Выйти: последнее - в аккаунт, ключ этого устройства гасим. Записи на устройстве остаются.
    С удалением: сначала рейтинг аккаунта, затем снимок на сервере и ключи всех устройств. */
