@@ -10457,7 +10457,8 @@ var AR = { q:[], i:0, show:false, from:"", ok:0, again:0, fresh:0, play:null, t:
    (d1-0), буквы - abc-<номер> (abc-0). Пока записи нет, звучит голос телефона. */
 var AR_AUDIO = [];
 /* список готовых записей собирает scripts/ar-audio.js при выпуске - вписывать руками не нужно */
-try{ fetch("audio/ar/list.json").then(function(r){ return r.ok ? r.json() : []; })
+/* no-cache: сервер отдаёт audio/ar/* с max-age 30 дней, а список меняется при каждом выпуске озвучки (26.09.2026) */
+try{ fetch("audio/ar/list.json", { cache:"no-cache" }).then(function(r){ return r.ok ? r.json() : []; })
   .then(function(l){ if(Array.isArray(l)) AR_AUDIO = l; }).catch(function(){}); }catch(e){}
 
 function arS(){
