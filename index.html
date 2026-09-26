@@ -6146,6 +6146,7 @@ function viewHomeMain(){
   var h = ['<div class="stack">'];
   /* пятница после асра - карточка часа дуа, первой на главной (просьба Заиры 25.09) */
   h.push(jumuaHourCard());
+  h.push(clubBigBtn());
   h.push(kahfCard());
   h.push(fridaySadaqaCard());
   h.push(clubStartBanner());
@@ -9062,6 +9063,15 @@ function clubHas(){
   return bought(CLUB_ID);
 }
 /* кнопка «Войти во встречу»: в день встречи, ссылка - из CRM */
+function clubBigBtn(){
+  if(!clubHas()) return "";
+  var nx = clubNext();
+  return '<button class="card" data-ar="club" style="display:flex;align-items:center;gap:14px;width:100%;text-align:left;border-color:var(--accent-ink);background:linear-gradient(135deg,rgba(212,175,55,.18),rgba(212,175,55,.05))">'+
+    '<span dir="rtl" style="font-size:26px;flex:none;color:var(--accent-ink)">نَتَكَلَّمُ</span>'+
+    '<span style="flex:1;min-width:0"><b style="display:block;font-family:var(--f-display);font-size:17px">Разговорный арабский</b>'+
+    '<span style="font-size:12.5px;color:var(--ink-3)">'+(nx ? 'Ближайшая встреча: '+esc(clubDateRu(nx.date))+', '+CLUB_TIME : 'Уроки, слова и тесты клуба')+'</span></span>'+
+    '<span style="font-size:22px;color:var(--accent-ink)">›</span></button>';
+}
 function clubMeetBtn(dt){
   if(!clubHas() || dt !== todayKey()) return "";
   if(S.clubMeet && /^https:[/][/]telemost[.]yandex[.]ru[/]/.test(S.clubMeet))
@@ -9071,7 +9081,7 @@ function clubMeetBtn(dt){
 }
 /* режим владелицы: вошла в «Управление приложением» - видит клуб изнутри и все встречи сразу */
 function clubOwner(){ return !!S.admTok; }
-function clubOwnerNote(){ return clubOwner() ? '<section class="card" style="border-color:var(--accent-ink)"><div class="eyebrow" style="color:var(--accent-ink)">Режим владелицы</div>'+
+function clubOwnerNote(){ return clubStaff() ? '<section class="card" style="border-color:var(--accent-ink)"><div class="eyebrow" style="color:var(--accent-ink)">Режим владелицы</div>'+
   '<p style="margin:6px 0 0;font-size:13.5px;line-height:1.5">Вы видите все встречи сразу. Ученицы видят диалог и слова накануне встречи. Замечания присылайте в чат Claude: номер встречи и что поправить.</p></section>' : ""; }
 function clubS(){ var st = arS(); if(!st.cl) st.cl = { att:{}, hw:{} }; if(!st.cl.att) st.cl.att = {}; if(!st.cl.hw) st.cl.hw = {}; return st.cl; }
 /* ближайшая встреча: сегодняшняя, пока не прошёл день, иначе следующая */
@@ -9098,8 +9108,15 @@ function clubUnit(n){
     d:(m.dialog && m.dialog.length ? m.dialog.map(function(r){ return [r.who === "ب" ? "Б" : "А", r.ar, r.tr, r.ru]; })
        : m.ph.map(function(p){ return ["А", p[0], p[1], p[2]]; })) };
 }
+/* слова Корана к встрече: по CLUB_QW подряд из словаря «Понимаю Коран» */
+var CLUB_QW = 12;
+function clubQwUnit(n){ n = +n; if(!n) return null;
+  var w = qwAll().slice((n - 1) * CLUB_QW, n * CLUB_QW); if(!w.length) return null;
+  return { id:"cq" + n, n:"Слова Корана · встреча " + n, ar:"كَلِمَاتُ القُرْآنِ", qw:1, w:w }; }
 /* диалог и слова встречи открываются участницам накануне (решение 26.09.2026) */
-function clubOpen(m){ if(clubOwner()) return true; var ds = clubDates(), dt = ds[m.n - 1]; if(!dt) return false;
+/* преподаватель и владелица видят все встречи сразу (отметка доступа в CRM) */
+function clubStaff(){ return clubOwner() || !!(S.clubAcc && S.clubAcc.on && /^(teacher|owner)$/.test(S.clubAcc.by || "") && typeof AC !== "undefined" && AC.tok); }
+function clubOpen(m){ if(clubStaff()) return true; var ds = clubDates(), dt = ds[m.n - 1]; if(!dt) return false;
   var d = new Date(dt + "T12:00:00"); d.setDate(d.getDate() - 1);
   return todayKey() >= d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
 /* все слова открытых встреч - словарик клуба */
@@ -10339,6 +10356,7 @@ function arUnit(id){
   if(id === "qtop") return qwTop();
   if(id.indexOf("qr") === 0 && id.length > 2) return qwRoot(id.slice(2));
   if(id.indexOf("cm") === 0) return clubUnit(id.slice(2));
+  if(id.indexOf("cq") === 0) return clubQwUnit(id.slice(2));
   return AR_UNITS.concat(QW_UNITS).filter(function(u){ return String(u.id) === id; })[0];
 }
 /* урок, к которому относится слово: id слова - номер урока и буква */
@@ -10819,6 +10837,7 @@ function arBackTo(p){
   if(p === "cdict") return "club";
   if(p.indexOf("g:cm") === 0) return "meet:" + p.slice(4);
   if(p.indexOf("s:cm") === 0) return "meet:" + p.slice(4);
+  if(p.indexOf("s:cq") === 0) return "meet:" + p.slice(4);
   if(p.indexOf("u:q") === 0) return "qw";
   if(p.indexOf("x:q") === 0) return "u:" + p.slice(2);
   if(p.indexOf("g:") === 0) return "u:" + p.slice(2);
@@ -11032,6 +11051,14 @@ function viewArMeet(n){
   h.push('<div class="ar-cta"><button class="btn sm" data-ar="study:cm'+m.n+'">Учить слова</button>'+
     (m.test && m.test.length ? '<button class="btn sm sec" data-ar="ctest:'+m.n+'">Тест · '+m.test.length+' вопросов'+(c.test && c.test["m" + m.n] ? ' ✓' : '')+'</button>' : '')+'</div>');
   h.push('<section class="card ar-list">'+u.w.map(arWordRow).join("")+'</section>');
+  var qu = clubQwUnit(m.n);
+  if(qu){
+    var qn = qu.w.filter(function(w){ return arS().l[w.id]; }).length;
+    h.push('<div class="sec-h"><h3>Слова Корана к встрече</h3></div>');
+    h.push('<p class="ar-note" style="padding:0 4px;margin:-4px 0 8px">'+qu.w.length+' частых слов Корана. С каждой встречей вы понимаете больше: за полгода - почти все 600 слов, которые покрывают две трети текста Корана. Выучено: '+qn+' из '+qu.w.length+'.</p>');
+    h.push('<div class="ar-cta"><button class="btn sm" data-ar="study:cq'+m.n+'">Учить слова Корана</button></div>');
+    h.push('<section class="card ar-list">'+qu.w.map(arWordRow).join("")+'</section>');
+  }
   }
   if(m.qs.length && clubOpen(m)){
     h.push('<div class="sec-h"><h3>О чём спросят</h3></div>');
@@ -23102,7 +23129,7 @@ function initials(){
   return (p[0][0] + (p[1]?p[1][0]:"")).toUpperCase();
 }
 function viewProf(){
-  var h = ['<div class="stack">'];
+  var h = ['<div class="stack">', clubBigBtn()];
   var reg = signupState(), scp = scoreState(), scme = S.scoreMe;
   var mine = COURSES.filter(function(c){ return bought(c.id); });
   var pend = ordersPending();
@@ -23784,7 +23811,7 @@ function accMeLoad(force){
     accImportOrders(x.j);
     /* клуб: доступ из CRM (оплаченный или выданный вручную) и ссылка на встречу - только участнице */
     var ca = (x.j.access || []).filter(function(q){ return q && q.product === CLUB_ID; })[0];
-    S.clubAcc = { on: !!ca, until: ca ? (ca.until || "") : "", at: Date.now() };
+    S.clubAcc = { on: !!ca, until: ca ? (ca.until || "") : "", by: ca ? (ca.by || "") : "", at: Date.now() };
     S.clubMeet = (x.j.club && x.j.club.meet) || "";
     save(); if(V.view === "arabic") render();
     if(V.tab === "prof") render();
