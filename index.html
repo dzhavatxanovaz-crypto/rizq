@@ -1132,6 +1132,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .sq-card .sq-n{font-family:var(--f-display);font-size:16px;font-weight:600;line-height:1.35}
 .sq-card p{font-size:13.5px;color:var(--ink-2);line-height:1.6;margin:7px 0 0}
 .sq-till{display:inline-block;margin-top:9px;padding:3px 10px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);font-size:12px;color:var(--ink-2)}
+.sq-img{display:block;margin:-2px -2px 12px;border-radius:14px;overflow:hidden;background:var(--surface-2);aspect-ratio:16/10}
+.sq-img img{display:block;width:100%;height:100%;object-fit:cover}
+.sq-prog{margin-top:10px}
+.sq-prog .bar{height:6px}
+.sq-prog span{display:block;margin-top:6px;font-size:12.5px;color:var(--ink-2)}
+.sq-prog b{color:var(--ink);font-weight:600}
 .sq-card .btn,.sq-empty .btn{display:block;width:100%;margin-top:12px;text-align:center;text-decoration:none}
 .sq-empty{text-align:center;padding:20px 16px}
 .sq-empty .ic{font-size:30px;color:var(--accent-ink);line-height:1}
@@ -6794,7 +6800,7 @@ function buildIndex(){
    ["Умра - малый хадж","путеводитель: сезоны, вещи, ихрам, таваф, са'й","open:umrah","умра умру малый хадж паломничество мекка медина ихрам микат таваф сай сафа марва кааба путеводитель чек-лист вещи виза нусук"],
    ["Девушка, которая смогла","книга Заиры Джаватхановой, бизнес-роман","open:book2","книга девушка которая смогла бизнес роман амина читать купить книгу"],
    ["Восполнение","пропущенные намазы и посты","open:qada","каза восполнение пропущенный намаз пост долг восполнить казаа qada"],
-   ["Куда помочь","сборы, которые мы посмотрели","open:sadaqa","садака милостыня помочь сбор пожертвование благотворительность нуждающимся закят раздать туба tooba"],
+   ["Куда помочь","открытые сборы в Tooba","open:sadaqa","садака милостыня помочь сбор пожертвование благотворительность нуждающимся закят раздать туба tooba"],
   ].forEach(function(x){ add(x[0], x[1], x[2], x[3], "Разделы"); });
 
   /* записи журнала */
@@ -13023,7 +13029,7 @@ function viewSadaqa(){
   h.push('<section class="hx">'+
     '<div class="eyebrow">Садака</div>'+
     '<div class="sq-t">Помогайте через проверенные сборы</div>'+
-    '<div class="hx-sub" style="margin-top:6px">Здесь сборы, которые мы посмотрели сами. Кнопка открывает сбор в Tooba, перевод идёт туда напрямую - приложение не собирает деньги и не берёт комиссию.</div>'+
+    '<div class="hx-sub" style="margin-top:6px">Здесь несколько открытых сборов проверенных фондов из Tooba. Кнопка открывает сбор в Tooba, перевод идёт туда напрямую - приложение не собирает деньги и не берёт комиссию.</div>'+
     '<ol class="sq-steps"><li><i>1</i><b>Выберите</b>сбор</li><li><i>2</i><b>Откройте</b>в Tooba</li><li><i>3</i><b>Помогите</b>напрямую</li></ol>'+
   '</section>');
 
@@ -13032,7 +13038,7 @@ function viewSadaqa(){
       '<p>Здесь появятся сборы, которые мы посмотрели. Пока откройте список проверенных сборов в Tooba - там их сотни.</p>'+
       '<a class="btn" href="'+esc(SADAQA_LINK)+'" target="_blank" rel="noopener">Все сборы в Tooba ↗</a></section>');
   } else {
-    h.push('<div class="sec-h"><h3>Сборы, которые мы посмотрели</h3></div>');
+    h.push('<div class="sec-h"><h3>Открытые сборы</h3></div>');
     if(d.checkedAt){
       h.push('<p class="disclaimer" style="text-align:left;padding:0 4px;margin-top:-6px">Список проверяли '+esc(sadaqaDate(d.checkedAt))+
         '. Сбор мог закрыться после этого - актуальность видно в Tooba.</p>');
@@ -13042,12 +13048,16 @@ function viewSadaqa(){
       /* Ссылку пускаем только на http(s): в файле может оказаться что угодно,
          а javascript: в href - это выполнение чужого кода у человека. */
       if(!/^https?:[/][/]/i.test(url)) url = SADAQA_LINK;
+      var img = sadaqaImg(x.img);
       h.push('<section class="card sq-card">'+
-        (x.fund ? '<div class="eyebrow" style="margin-bottom:6px">'+esc(x.fund)+'</div>' : '')+
+        (img ? '<a class="sq-img" href="'+esc(url)+'" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">'+
+          '<img src="'+esc(img)+'" alt="" loading="lazy" decoding="async" width="600" height="450"></a>' : '')+
+        (x.fund ? '<div class="eyebrow" style="margin-bottom:6px">'+esc(x.fund)+(x.region ? ' · '+esc(x.region) : '')+'</div>' : '')+
         '<div class="sq-n">'+esc(x.n)+'</div>'+
         (x.s ? '<p>'+esc(x.s)+'</p>' : '')+
+        sadaqaProgress(x)+
         (x.till ? '<span class="sq-till">Срок: '+esc(x.till)+'</span>' : '')+
-        '<a class="btn sm" href="'+esc(url)+'" target="_blank" rel="noopener">Открыть в Tooba ↗</a>'+
+        '<a class="btn sm" href="'+esc(url)+'" target="_blank" rel="noopener">Помочь в Tooba ↗</a>'+
       '</section>');
     });
     h.push('<a class="cat-wide" style="text-decoration:none;color:inherit" '+
@@ -13063,7 +13073,7 @@ function viewSadaqa(){
   h.push(donateParts());
 
   h.push('<p class="disclaimer">Tooba - отдельное приложение и отдельная организация, мы к нему не относимся. '+
-    'Подборка неполная и делается вручную: перед переводом посмотрите сбор целиком - кто собирает, на что и сколько осталось.</p>');
+    'Подборку обновляем раз в три дня, фото - из страниц сборов в Tooba. Перед переводом посмотрите сбор целиком - кто собирает, на что и сколько осталось.</p>');
   h.push('</div>');
   return h.join("");
 }
@@ -13071,6 +13081,24 @@ function sadaqaDate(iso){
   var p = String(iso||"").split("-");
   if(p.length !== 3) return String(iso||"");
   return p[2]+"."+p[1]+"."+p[0];
+}
+/* Картинка сбора: только наш файл рядом с приложением (sadaqa/19106.jpg) или https.
+   Файл правится скриптом и руками - javascript:, data: и чужие схемы не пускаем. */
+function sadaqaImg(v){
+  v = String(v || "");
+  if(/^sadaqa[/][A-Za-z0-9_-]+[.](jpe?g|png|webp)$/.test(v)) return v;
+  if(/^https:[/][/][^\s"'<>]+$/i.test(v)) return v;
+  return "";
+}
+/* «Собрано X из Y» - только если обе цифры есть и выглядят правдой. */
+function sadaqaProgress(x){
+  var goal = Number(x.goal), got = Number(x.collected);
+  if(!(goal > 0) || !(got >= 0) || !isFinite(goal) || !isFinite(got)) return "";
+  var cur = x.cur && x.cur !== "RUB" ? " "+esc(String(x.cur).slice(0, 4)) : " ₽";
+  var num = function(n){ return Math.round(n).toLocaleString("ru-RU"); };
+  var pc = Math.max(2, Math.min(100, Math.round(got / goal * 100)));
+  return '<div class="sq-prog"><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+pc+'" aria-label="Собрано '+pc+'%"><i style="width:'+pc+'%"></i></div>'+
+    '<span>Собрано <b>'+num(got)+cur+'</b> из '+num(goal)+cur+'</span></div>';
 }
 
 /* ============================================================
