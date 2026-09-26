@@ -1032,6 +1032,26 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .jp-card{position:relative;padding:0}
 /* журнал: обложки, запись, рубрика (26.09.2026) */
 .jr-cv{width:100%}
+.jr-txt{padding:4px 6px 2px}
+.jr-txt h3{font-family:var(--f-display);font-size:20px;line-height:1.3;font-weight:700;margin:14px 0 10px;padding-left:12px;border-left:3px solid var(--gold)}
+.jr-txt p{font-size:17px;line-height:1.75;color:var(--ink);margin:0 0 12px}
+.jr-txt ul{font-size:16.5px;line-height:1.7;color:var(--ink);padding-left:22px;margin:0 0 12px}
+.jr-txt li{margin-bottom:6px}
+.jr-body .vk-card .eyebrow,.jr-body .card>.eyebrow{font-size:13px;letter-spacing:.06em;text-transform:none;font-family:var(--f-display);font-weight:700;color:var(--accent-ink)}
+.jr-body .card p{font-size:16px!important;line-height:1.7!important;color:var(--ink)!important}
+.jr-toc{border-radius:20px;padding:14px 16px;background:var(--surface);border:1px solid var(--line)}
+.jr-toc h4{margin:0 0 8px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.jr-toc button{display:flex;gap:10px;width:100%;text-align:left;border:0;background:none;color:var(--ink);font-size:15px;line-height:1.4;padding:7px 0;border-top:1px solid var(--line)}
+.jr-toc button:first-of-type{border-top:0}
+.jr-toc button i{font-style:normal;color:var(--accent-ink);font-weight:700;min-width:20px}
+.jr-quiz{border-radius:20px;padding:16px;background:var(--surface);border:1px solid rgba(212,175,55,.5)}
+.jr-quiz h4{margin:0 0 4px;font-family:var(--f-display);font-size:18px}
+.jr-quiz .jq{padding-top:12px;margin-top:12px;border-top:1px solid var(--line)}
+.jr-quiz .jq b{display:block;font-size:15.5px;line-height:1.45;margin-bottom:8px}
+.jr-quiz .jq button{display:block;width:100%;text-align:left;margin-top:7px;padding:11px 13px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font-size:15px;line-height:1.4}
+.jr-quiz .jq button.ok{border-color:#3FA46A;background:rgba(63,164,106,.16)}
+.jr-quiz .jq button.no{border-color:#C0504D;background:rgba(192,80,77,.14)}
+.jr-quiz .jq p{margin:9px 0 0;font-size:14px;line-height:1.55;color:var(--ink-2)}
 .jr-card .jr-meta{font-size:10px;letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 .jr-mast{display:flex;align-items:baseline;justify-content:space-between;padding:2px 4px 0}
 .jr-mast b{font-family:var(--f-display);font-size:22px;font-weight:700;letter-spacing:.02em}
@@ -19203,6 +19223,28 @@ var JR_DESC = {
   imya:"Имена Аллаха: смысл и как жить с этим знанием.", sahaba:"Истории сподвижников - о вере, характере и деле.",
   zhenskoe:"Темы для мусульманки: поклонение, семья, забота о себе.", novoe:"Что появилось в приложении RIZQ."
 };
+var JR_IC = {
+  scales:"M50 18V80M30 80H70M22 30H78M22 30L12 55H32ZM78 30L68 55H88ZM12 55Q22 64 32 55M68 55Q78 64 88 55",
+  coins:"M25 40a25 9 0 1 0 50 0a25 9 0 1 0-50 0M25 40v12a25 9 0 0 0 50 0v-12M25 52v12a25 9 0 0 0 50 0v-12",
+  calendar:"M20 28H80V82H20ZM20 42H80M35 20V34M65 20V34M32 54H42M48 54H58M64 54H74M32 68H42M48 68H58",
+  exchange:"M22 38H74M62 26L76 38L62 50M78 64H26M38 52L24 64L38 76",
+  ring:"M28 62a22 22 0 1 0 44 0a22 22 0 1 0-44 0M42 30L50 20L58 30L50 40Z",
+  percent:"M28 76L72 24M27 32a7 7 0 1 0 14 0a7 7 0 1 0-14 0M59 68a7 7 0 1 0 14 0a7 7 0 1 0-14 0",
+  oath:"M20 26H80V62H48L34 76V62H20ZM36 44L46 52L64 36",
+  star:"M50 18L59 40L82 41L64 56L70 79L50 66L30 79L36 56L18 41L41 40Z",
+  box:"M20 36L50 22L80 36V70L50 84L20 70ZM20 36L50 50L80 36M50 50V84",
+  chart:"M20 80H82M24 70L42 52L56 62L78 34M66 34H78V46",
+  partners:"M22 45a12 12 0 1 0 24 0a12 12 0 1 0-24 0M54 45a12 12 0 1 0 24 0a12 12 0 1 0-24 0M16 80Q34 60 52 80M48 80Q66 60 84 80",
+  doc:"M28 16H62L74 28V84H28ZM62 16V28H74M38 44H64M38 56H64M38 68H54",
+  give:"M38 32a12 12 0 1 0 24 0a12 12 0 1 0-24 0M18 70Q34 56 50 66Q66 76 82 60M18 82H82",
+  moon:"M60 20a32 32 0 1 0 22 52a26 26 0 1 1-22-52Z",
+  house:"M18 48L50 22L82 48M26 44V80H74V44M44 80V60H56V80",
+  book:"M50 28Q34 20 18 26V78Q34 72 50 80Q66 72 82 78V26Q66 20 50 28ZM50 28V80"
+};
+var JR_ICON = { "rassrochka-halyal":"calendar", "procent-na-ostatok":"percent", "zaym-blagodarnost":"give", "obmen-valyuty":"exchange",
+  "zoloto-obmen":"ring", "klyatva-v-torgovle":"oath", "otzyvy-chestno":"star", "brak-v-tovare":"box", "nacenka":"chart",
+  "mudaraba":"partners", "zakyat-biznesa":"coins", "dolg-dve-storony":"doc", "istigfar-rizk":"moon", "rodstvennye-svyazi":"house",
+  "mera-i-ves":"scales", "vesy":"scales", "dolg-zapis":"doc", "rizq-v-korane":"book" };
 function jrHash(t){ var h = 0; t = String(t || ""); for(var i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) % 100000; return h; }
 /* обложка: восьмиконечные звёзды (геометрия, без изображений живых существ) в цвете рубрики */
 function jrCover(p, mode){
@@ -19219,7 +19261,8 @@ function jrCover(p, mode){
   var emb = '<circle cx="'+cx0+'" cy="'+cy0+'" r="'+(R + 16)+'" fill="'+th.c1+'" fill-opacity=".72"/>'+
     '<polygon points="'+star(cx0, cy0, R + 8)+'" fill="none" stroke="'+th.g+'" stroke-width="2"/>'+
     '<circle cx="'+cx0+'" cy="'+cy0+'" r="'+(R * 0.62)+'" fill="none" stroke="'+th.g+'" stroke-opacity=".6" stroke-width="1.4"/>'+
-    '<text x="'+cx0+'" y="'+(cy0 + R * 0.26)+'" text-anchor="middle" font-size="'+(R * 0.72)+'" fill="'+th.g+'" font-family="serif">'+esc(th.ic)+'</text>';
+    (JR_IC[JR_ICON[p.id]] ? '<g transform="translate('+(cx0 - R * 0.55)+' '+(cy0 - R * 0.55)+') scale('+(R * 1.1 / 100)+')"><path d="'+JR_IC[JR_ICON[p.id]]+'" fill="none" stroke="'+th.g+'" stroke-width="'+(mode === "mini" ? 4.5 : 5.5)+'" stroke-linecap="round" stroke-linejoin="round"/></g>'
+      : '<text x="'+cx0+'" y="'+(cy0 + R * 0.26)+'" text-anchor="middle" font-size="'+(R * 0.72)+'" fill="'+th.g+'" font-family="serif">'+esc(th.ic)+'</text>');
   return '<svg class="jr-cv" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
     '<defs><linearGradient id="'+uid+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+th.c1+'"/><stop offset="1" stop-color="'+th.c2+'"/></linearGradient></defs>'+
     '<rect width="'+W+'" height="'+H+'" fill="url(#'+uid+')"/>'+pat+emb+'</svg>';
@@ -19343,7 +19386,28 @@ function viewPost(){
   var imBody = [], body = (p.body || []).filter(function(b){
     if(p.imam && b && b.t && /имам/i.test(b.t) && !b.ar){ if(b.p) imBody.push(b.p); (b.list || []).forEach(function(x){ imBody.push(x); }); return false; }
     return true; });
-  h.push('<div class="jr-body stack">'+renderBlocks(body)+'</div>');
+  var toc = [];
+  var bodyHtml = body.map(function(b, i){
+    var plain = b && !b.ar && !b.flow && !b.yn && !b.tbl && !b.grid && !b.keys && !b.lv && !b.bars && !b.pill && !b.rows && !b.links && !b.steps && !b.svg && !b.fn && !b.jump;
+    if(b && b.t) toc.push([i, b.t]);
+    if(plain && (b.p || b.list)){
+      return '<section class="jr-txt" id="jb-'+i+'">'+(b.t ? '<h3>'+esc(b.t)+'</h3>' : '')+(b.p ? '<p>'+esc(b.p)+'</p>' : '')+
+        (b.list ? '<ul>'+b.list.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul>' : '')+
+        (b.tip ? '<div class="btip">'+esc(b.tip)+'</div>' : '')+(b.warn ? '<div class="bwarn">'+esc(b.warn)+'</div>' : '')+'</section>';
+    }
+    return '<div id="jb-'+i+'">'+renderBlocks([b], "jbc-"+i+"-")+'</div>';
+  }).join("");
+  if(toc.length > 3) h.push('<section class="jr-toc"><h4>В этой статье</h4>'+toc.map(function(t, k){ return '<button data-jrto="jb-'+t[0]+'"><i>'+(k + 1)+'</i><span>'+esc(t[1])+'</span></button>'; }).join("")+'</section>');
+  h.push('<div class="jr-body stack">'+bodyHtml+'</div>');
+  if(p.quiz && p.quiz.length){
+    var qa = (V.jrq && V.jrq[p.id]) || {};
+    h.push('<section class="jr-quiz"><h4>Проверьте себя</h4><div style="font-size:13.5px;color:var(--ink-3)">'+p.quiz.length+' вопроса по статье</div>'+
+      p.quiz.map(function(q, qi){ var ch = qa[qi];
+        return '<div class="jq"><b>'+(qi + 1)+'. '+esc(q.q)+'</b>'+q.o.map(function(o, oi){
+          var cls = ch === undefined ? "" : (oi === q.a ? " ok" : (oi === ch ? " no" : ""));
+          return '<button class="'+cls.trim()+'" data-jrq="'+esc(p.id)+':'+qi+':'+oi+'"'+(ch !== undefined ? ' disabled' : '')+'>'+esc(o)+'</button>'; }).join("")+
+          (ch !== undefined ? '<p>'+(ch === q.a ? '✓ Верно. ' : '✕ Правильный ответ выделен. ')+esc(q.why || "")+'</p>' : '')+'</div>'; }).join("")+'</section>');
+  }
   if(p.imam){
     var im = imBody.concat([].concat(p.imam).filter(function(x){ return imBody.indexOf(x) < 0; }));
     h.push('<section class="jr-imam"><h4>Спросите у имама своей мечети</h4>'+
@@ -25366,7 +25430,7 @@ document.getElementById("app").addEventListener("change", function(ev){
 });
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
   if(!node) return;
   var d = node.dataset;
 
@@ -25405,6 +25469,9 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.rub!==undefined){ V.rub = d.rub; render(); return; }
   if(d.post){ V.tab="journal"; open("post", d.post); return; }
   if(d.pshare){ jrShare(d.pshare); return; }
+  if(d.jrto){ var el = document.getElementById(d.jrto); if(el) $screen.scrollTo({ top: el.offsetTop - 64, behavior: "smooth" }); return; }
+  if(d.jrq){ var jq = d.jrq.split(":"); if(!V.jrq) V.jrq = {}; if(!V.jrq[jq[0]]) V.jrq[jq[0]] = {};
+    if(V.jrq[jq[0]][jq[1]] === undefined){ V.jrq[jq[0]][jq[1]] = +jq[2]; var st = $screen.scrollTop; render(); $screen.scrollTop = st; } return; }
   if(d.sq){ V.q = d.sq; render();
     var fq=document.getElementById("knowSearch") || document.getElementById("homeSearch"); if(fq){ fq.value=d.sq; fq.focus(); } return; }
   if(d.tjplay){ var tp = d.tjplay.split(":"), tg = ayahGlobal(+tp[0], +tp[1]);
