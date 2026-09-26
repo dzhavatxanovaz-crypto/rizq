@@ -4778,46 +4778,50 @@ function notifShow(title, body){
 /* звук азана: играет, пока вкладка открыта или свёрнута - как и уведомления.
    Запись - Aaqib Azeez, Wikimedia Commons, CC BY-SA 4.0, атрибуция в «О проекте».
    Файл сверен по SHA-1 с Commons 10.09.2026: байт в байт тот же, без изменений. */
-var azanEl = null, AZAN_UNLOCKED = false, AZAN_WAIT = 0; /* AZAN_WAIT - время (мс), до которого отложенный азан ещё уместен */
-function azanAudio(){
-  if(!azanEl){ azanEl = new Audio("audio/adhan.mp3"); azanEl.preload = "auto"; }
-  return azanEl;
+var AZAN_UNLOCKED = false, AZAN_WAIT = 0; /* AZAN_WAIT - время (мс), до которого отложенный азан ещё уместен */
+var AZ = { ctx:null, buf:null, loading:null, src:null, playing:false };
+function azanCtx(){
+  if(!AZ.ctx){ var C = window.AudioContext || window.webkitAudioContext; if(!C) return null; try{ AZ.ctx = new C(); }catch(e){ return null; } }
+  return AZ.ctx;
 }
-/* Браузер не даёт включать звук без действия человека. При первом касании экрана
-   «прогреваем» запись беззвучно - после этого азан в час намаза играет сам. */
+function azanLoad(){
+  if(AZ.buf) return Promise.resolve(AZ.buf);
+  if(AZ.loading) return AZ.loading;
+  var ctx = azanCtx(); if(!ctx) return Promise.reject(new Error("no audio"));
+  AZ.loading = fetch("audio/adhan.mp3").then(function(r){ return r.arrayBuffer(); })
+    .then(function(ab){ return new Promise(function(ok, bad){ ctx.decodeAudioData(ab, ok, bad); }); })
+    .then(function(b){ AZ.buf = b; return b; })
+    .catch(function(e){ AZ.loading = null; throw e; });
+  return AZ.loading;
+}
+/* касание экрана только «будит» аудиоканал - без звука и без файла азана */
 function azanUnlock(){
-  if(!AZAN_UNLOCKED){
-    /* Прогрев без звука: muted работает и на iPhone (volume там из кода не меняется).
-       Останавливаем сразу и ещё раз по таймеру - на случай, если play() долго грузится. */
-    var a = azanAudio();
-    try{
-      a.muted = true;
-      var p = a.play();
-      var done = function(){ try{ a.pause(); a.currentTime = 0; }catch(e){} a.muted = false; AZAN_UNLOCKED = true; };
-      if(p && p.then) p.then(done).catch(function(){ a.muted = false; });
-      else done();
-      setTimeout(function(){ if(a.muted){ try{ a.pause(); a.currentTime = 0; }catch(e){} a.muted = false; } }, 1500);
-    }catch(e){ a.muted = false; }
-  }
-  /* отложенный азан играем, только если время намаза наступило не больше 3 минут назад */
+  var ctx = azanCtx();
+  if(ctx && ctx.state === "suspended"){ try{ ctx.resume(); }catch(e){} }
+  if(ctx) AZAN_UNLOCKED = true;
+  /* отложенный азан - только если время намаза наступило не больше 3 минут назад */
   if(AZAN_WAIT && Date.now() < AZAN_WAIT){ AZAN_WAIT = 0; playAzan(); } else AZAN_WAIT = 0;
 }
 document.addEventListener("pointerdown", azanUnlock, { passive:true });
 document.addEventListener("touchstart", azanUnlock, { passive:true });
 function playAzan(){
-  try{
-    var a = azanAudio();
-    a.muted = false;
-    a.currentTime = 0;
-    var p = a.play();
-    azanStopBtn(true);
-    /* если браузер отказал, включим по первому касанию - но только в ближайшие 3 минуты */
-    if(p && p.catch) p.catch(function(){ azanStopBtn(false); AZAN_WAIT = Date.now() + 3 * 60000; });
-  }catch(e){ AZAN_WAIT = Date.now() + 3 * 60000; }
+  var ctx = azanCtx();
+  if(!ctx || ctx.state !== "running"){ AZAN_WAIT = Date.now() + 3 * 60000; return false; }
+  azanStop(true);
+  AZ.playing = true; azanStopBtn(true);
+  azanLoad().then(function(b){
+    if(!AZ.playing) return;
+    var src = ctx.createBufferSource(); src.buffer = b; src.connect(ctx.destination);
+    src.onended = function(){ if(AZ.src === src){ AZ.src = null; AZ.playing = false; azanStopBtn(false); } };
+    AZ.src = src; src.start(0);
+  }).catch(function(){ AZ.playing = false; azanStopBtn(false); });
+  return true;
 }
-function azanStop(){
-  AZAN_WAIT = 0;
-  if(azanEl){ try{ azanEl.pause(); azanEl.currentTime = 0; }catch(e){} }
+function azanPlaying(){ return !!AZ.playing; }
+function azanStop(keepWait){
+  if(!keepWait) AZAN_WAIT = 0;
+  AZ.playing = false;
+  if(AZ.src){ try{ AZ.src.onended = null; AZ.src.stop(0); }catch(e){} AZ.src = null; }
   azanStopBtn(false);
 }
 /* Кнопка «Остановить азан» поверх экрана, пока он звучит. */
@@ -4830,12 +4834,11 @@ function azanStopBtn(on){
   b.setAttribute("style", "position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:9999;padding:12px 20px;border-radius:24px;border:0;font:600 15px/1 inherit;background:#47332F;color:#EDEEE1;box-shadow:0 6px 20px rgba(0,0,0,.25)");
   b.addEventListener("click", function(ev){ ev.stopPropagation(); azanStop(); });
   document.body.appendChild(b);
-  var a = azanAudio();
-  a.onended = function(){ azanStopBtn(false); };
-  a.onpause = function(){ if(!a.muted) azanStopBtn(false); };
 }
-/* свернули приложение - азан замолкает */
-document.addEventListener("visibilitychange", function(){ if(document.hidden) azanStop(); });
+/* свернули приложение - азан замолкает, аудиоканал засыпает */
+document.addEventListener("visibilitychange", function(){
+  if(document.hidden){ azanStop(); if(AZ.ctx && AZ.ctx.state === "running"){ try{ AZ.ctx.suspend(); }catch(e){} } }
+});
 
 var notifSent = {};
 function notifCheck(){
@@ -26099,12 +26102,12 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.ordcheck){ ordersCheck(true); return; }
   if(d.azantest){
     if(S.notifAzan === false){ toast("Звук азана выключен в настройках"); return; }
-    var ael0 = azanAudio();
-    if(!ael0.paused && !ael0.muted){ azanStop(); toast("Азан остановлен"); return; }
-    azanUnlock(); playAzan();
-    var ael = azanAudio();
+    if(azanPlaying()){ azanStop(); toast("Азан остановлен"); return; }
+    azanUnlock();
+    var ok = playAzan();
+    var ael = { paused: !ok };
     toast(ael.paused ? "Не удалось включить звук. Проверьте, не выключен ли звук на телефоне" : "Азан играет. Нажмите ещё раз, чтобы остановить");
-    if(!ael.paused && d.azanstop) { ael.pause(); }
+    if(ok && d.azanstop) azanStop();
     return;
   }
   if(d.orddel !== undefined){
