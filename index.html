@@ -9012,7 +9012,11 @@ function clubDates(){
   }
   return out;
 }
-function clubHas(){ return bought(CLUB_ID); }
+function clubHas(){ return bought(CLUB_ID) || clubOwner(); }
+/* режим владелицы: вошла в «Управление приложением» - видит клуб изнутри и все встречи сразу */
+function clubOwner(){ return !!S.admTok; }
+function clubOwnerNote(){ return clubOwner() ? '<section class="card" style="border-color:var(--accent-ink)"><div class="eyebrow" style="color:var(--accent-ink)">Режим владелицы</div>'+
+  '<p style="margin:6px 0 0;font-size:13.5px;line-height:1.5">Вы видите все встречи сразу. Ученицы видят диалог и слова накануне встречи. Замечания присылайте в чат Claude: номер встречи и что поправить.</p></section>' : ""; }
 function clubS(){ var st = arS(); if(!st.cl) st.cl = { att:{}, hw:{} }; if(!st.cl.att) st.cl.att = {}; if(!st.cl.hw) st.cl.hw = {}; return st.cl; }
 /* ближайшая встреча: сегодняшняя, пока не прошёл день, иначе следующая */
 /* Новая программа по «Байна йадайк» подставляется сюда; пока пусто - старые темы не показываем. */
@@ -9039,7 +9043,7 @@ function clubUnit(n){
        : m.ph.map(function(p){ return ["А", p[0], p[1], p[2]]; })) };
 }
 /* диалог и слова встречи открываются участницам накануне (решение 26.09.2026) */
-function clubOpen(m){ var ds = clubDates(), dt = ds[m.n - 1]; if(!dt) return false;
+function clubOpen(m){ if(clubOwner()) return true; var ds = clubDates(), dt = ds[m.n - 1]; if(!dt) return false;
   var d = new Date(dt + "T12:00:00"); d.setDate(d.getDate() - 1);
   return todayKey() >= d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
 /* все слова открытых встреч - словарик клуба */
@@ -10816,7 +10820,7 @@ function viewArQwTest(){
 }
 function viewArClub(){
   var has = clubHas(), nx = clubNext(), cnt = clubCount(), ds = clubDates();
-  var h = ['<div class="stack">'];
+  var h = ['<div class="stack">', clubOwnerNote()];
   h.push('<section class="qw-hero"><div class="qw-hero-ar" dir="rtl">نَادِي المُحَادَثَةِ</div>'+
     '<div class="qw-hero-h">Разговорный клуб арабского</div>'+(has ? '' : '<span class="nb-badge">Для новичков</span>')+
     '<div class="qw-hero-p">Две встречи в неделю с преподавателем, по часу: среда и пятница в 13:00 по Москве. Женская группа до десяти человек. На встрече говорим только по-арабски.</div>'+
@@ -10929,7 +10933,7 @@ function viewClubDict(){
 function viewArMeet(n){
   var u = clubUnit(n); if(!u) return '<div class="stack"><div class="empty"><b>Встреча не найдена</b></div></div>';
   var m = u.club, ds = clubDates(), dt = ds[m.n - 1], c = clubS(), has = clubHas();
-  var h = ['<div class="stack">'];
+  var h = ['<div class="stack">', clubOwnerNote()];
   h.push('<section class="ar-uhead"><div class="ar-uhead-ar" dir="rtl">'+esc(u.ar)+'</div>'+
     '<div class="ar-uhead-h">Встреча '+m.n+' · '+esc(m.t)+'</div>'+
     '<div class="ar-uhead-s">'+clubDateRu(dt)+', '+CLUB_TIME+' МСК · '+u.w.length+' слов</div></section>');
