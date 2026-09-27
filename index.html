@@ -4376,7 +4376,7 @@ var VOLT_URL = "https://app.javattigroup.ru/";
 
 var COURSES = [
 {
-  id:"ai", ic:"◆", start:"Старт 8 октября", price:14900, old:45000, lvl:"С нуля", dur:"6 модулей · 39 уроков · доступ 4 месяца", site:"https://lavry-emba.ru/mini",
+  id:"ai", ic:"◆", start:"Старт по запросу · предварительная запись", price:0, prereg:1, lvl:"С нуля", dur:"6 модулей · 39 уроков · доступ 4 месяца", site:"https://lavry-emba.ru/mini",
   n:"Нейросети для жизни и бизнеса",
   short:"Контент, который продаёт: ИИ-видео, рилсы, тексты, Телеграм и автоматизация бизнеса.",
   full:"Погружение из шести модулей для всех, кто ведёт соцсети и продвигает через них услуги или товары. Разбираем нейросети для генерации контента - от промтов и озвучки до ИИ-аватаров и рилсов, - а затем переводим это в деньги: продающие сценарии, упаковка Телеграм-канала, автоматизация процессов и работа с заказчиком. Шесть эфиров с автором и общий чат участников. Доступ открывается сразу после оплаты.",
@@ -11532,6 +11532,8 @@ function arClick(v){
   if(k === "club"){ arStop(); open("arabic", "club"); return; }
   if(k === "clubsend"){ arClubSend(); return; }
   if(k === "clubwait"){ sheetArClub(); return; }
+  if(k === "prereg"){ sheetPreReg(p[1]); return; }
+  if(k === "preregsend"){ preRegSend(p[1]); return; }
   if(k === "wcard"){ arStop(); V.wc = null; sheetWordCard(p[1]); return; }
   if(k === "wcx"){ if(!V.wc) return; var wcw = arWord(V.wc.id); if(+p[1] === 1 && V.wc.a1 === null){ V.wc.a1 = +p[2]; if(wcw){ arSay(wcw.ar, null, wcw.id); } }
     else if(+p[1] === 2 && V.wc.a2 === null){ V.wc.a2 = +p[2]; } sheetWordCard(V.wc.id); return; }
@@ -12057,6 +12059,34 @@ function arClubCard(){
     '<div class="ar-club-t"><b>Разговорный клуб арабского</b><i class="nb-badge" style="margin:4px 0 2px">Для новичков</i>'+
     '<span>Женская группа, встречи среда и пятница в 13:00 МСК. '+(CLUB_FULL ? 'Группа набрана - можно встать в лист ожидания следующей.' : 'Между встречами говорите с приложением. 2 900 ₽ в месяц или 7 900 ₽ за три месяца.')+'</span></div>'+
     '<button class="btn sm" data-ar="club">Подробнее</button></section>';
+}
+/* анкета предварительной записи на курс без даты старта */
+function sheetPreReg(id){
+  var c = COURSES.filter(function(x){ return x.id === id; })[0]; if(!c) return;
+  sheet('<h3>Предварительная запись</h3>'+
+    '<p style="font-size:13.5px;color:var(--ink-2);line-height:1.5;margin:0 0 12px">«'+esc(c.n)+'». Дату старта сообщим одним сообщением, когда откроем запись.</p>'+
+    '<input class="search" id="pr_n" placeholder="Как к вам обращаться" value="'+esc(S.name || "")+'">'+
+    '<input class="search" id="pr_p" type="tel" style="margin-top:9px" placeholder="Телефон" value="'+esc(S.phone || "")+'">'+
+    '<input class="search" id="pr_w" style="margin-top:9px" placeholder="Что хотите делать с нейросетями (необязательно)">'+
+    '<label style="display:flex;align-items:flex-start;gap:9px;margin-top:12px;font-size:13px;color:var(--ink-2);line-height:1.5">'+
+      '<input type="checkbox" id="pr_ok" style="margin-top:2px;flex:none"><span>Согласна на обработку персональных данных и на одно сообщение о старте курса (<a href="https://javattigroup.ru/privacy" target="_blank" rel="noopener">политика</a>)</span></label>'+
+    '<button class="btn" style="width:100%;margin-top:12px" data-ar="preregsend:'+id+'">Записаться</button>'+
+    '<button class="btn sec" style="width:100%;margin-top:8px" data-scrim="1">Отмена</button>');
+}
+function preRegSend(id){
+  var c = COURSES.filter(function(x){ return x.id === id; })[0]; if(!c) return;
+  var name = String((document.getElementById("pr_n") || {}).value || "").trim();
+  var phone = String((document.getElementById("pr_p") || {}).value || "").trim();
+  var want = String((document.getElementById("pr_w") || {}).value || "").trim().slice(0, 300);
+  var ok = document.getElementById("pr_ok");
+  if(name.length < 2){ toast("Напишите, как к вам обращаться"); return; }
+  if(digitsOf(phone).length < 10){ toast("Проверьте номер телефона"); return; }
+  if(!ok || !ok.checked){ toast("Нужно согласие на обработку данных"); return; }
+  S.name = S.name || name; S.phone = phone; save();
+  fetch(LEAD_API, { method:"POST", headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ name:name, phone:phone, course:c.n + ": предварительная запись", note:"Предварительная запись (старт по запросу)." + (want ? " Хочет: " + want : ""), source:"rizq", consent:true, utm:utmPayload() }) })
+    .then(function(r){ if(!r.ok) throw 0; closeSheet(); toast("Вы записаны. Напишем, когда откроем запись"); })
+    .catch(function(){ toast("Не получилось отправить - проверьте интернет и попробуйте ещё раз"); });
 }
 function sheetArClub(){
   var cur = arCurrent();
@@ -23267,7 +23297,13 @@ function viewCourse(){
       h.push(landList(L.tasks));
     }
     h.push(landBand());
-    if(c.price){
+    if(c.prereg){
+      h.push('<section class="card"><div class="eyebrow" style="color:var(--accent-ink)">Старт по запросу</div>'+
+        '<p style="font-size:14.5px;line-height:1.6;color:var(--ink-2);margin:8px 0 12px">Курс готовится к новому потоку. Оставьте заявку - напишем один раз, когда откроем запись. '+
+        'А уроки по нейросетям Заира уже проводит на эфирах клуба JAVATTI по понедельникам в 15:00 по Москве.</p>'+
+        '<button class="btn" data-ar="prereg:'+c.id+'">Предварительная запись</button>'+
+        '<a class="btn sec" style="display:block;text-align:center;text-decoration:none;margin-top:9px" href="'+esc(javattiUrl("club"))+'" target="_blank" rel="noopener">Эфиры в приложении JAVATTI</a></section>');
+    } else if(c.price){
       h.push('<section class="card">'+
         '<div style="display:flex;align-items:baseline;gap:9px;margin-bottom:12px">'+
         '<span class="price" style="font-size:26px">'+money(c.price)+'</span>'+
@@ -26280,6 +26316,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   }
 
   if(d.buy === CLUB_ID && CLUB_FULL && !clubHas()){ sheetArClub(); return; }
+  if(d.buy && (COURSES.filter(function(x){ return x.id === d.buy; })[0] || {}).prereg){ sheetPreReg(d.buy); return; }
   if(d.buy){ V.buyPlan = parseInt(d.plan, 10) || 0; sheetBuy(d.buy, d.tariff); return; }
   if(d.ask){ sheetAsk(d.ask); return; }
   if(d.checkout){ checkoutStart(d.checkout, d.tariff, d.plan); return; }
