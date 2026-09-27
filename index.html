@@ -6640,6 +6640,9 @@ function deepOpen(qArg){
     /* ?post=<id> - открыть запись журнала (ссылка «Поделиться») */
     var mpo = q.match(/[?&]post=([a-z0-9_-]+)/);
     if(mpo){ S.welcomed = 1; save(); V.tab = "journal"; open("post", decodeURIComponent(mpo[1])); return true; }
+    /* ?login=<код> - личная ссылка входа от школы */
+    var mlg = q.match(/[?&]login=([a-f0-9]{40})/);
+    if(mlg){ S.welcomed = 1; save(); setTimeout(function(){ accLinkLogin(mlg[1]); }, 300); return true; }
     var mg = q.match(/[?&]go=([a-zA-Z0-9_]+)/);
     /* ?go=delo - журнал сразу на рубрике «Дело по Сунне»: туда ведёт
        кодовое слово ДЕЛО из рилсов, все разборы серии лежат в этой рубрике. */
@@ -23497,7 +23500,7 @@ function initials(){
 function viewProf(){
   var h = ['<div class="stack">'];
   var reg = signupState(), scp = scoreState(), scme = S.scoreMe;
-  var mine = COURSES.filter(function(c){ return bought(c.id); });
+  var mine = COURSES.filter(function(c){ return bought(c.id) || (c.id === CLUB_ID && typeof clubHas === "function" && clubHas()); });
   var pend = ordersPending();
 
   /* 1. кто вы: имя, статус и три числа, ради которых сюда заходят */
@@ -24288,6 +24291,20 @@ function accVerify(){
     if(!x.ok || !x.j.token){ LG.msg = x.j.error || "Код не подошёл"; sheetLoginCode(); return; }
     accLoginDone(x.j);
   }).catch(function(){ LG.busy = false; LG.msg = "Нет связи с сервером школы - проверьте интернет"; sheetLoginCode(); });
+}
+/* вход по личной ссылке */
+function accLinkLogin(code){
+  var dev = "";
+  try{ dev = (navigator.userAgent || "").slice(0, 80); }catch(e){}
+  try{ history.replaceState(null, "", location.pathname); }catch(e){}
+  toast("Входим в ваш аккаунт...");
+  accFetch("link", "POST", { link:code, device:dev }).then(function(x){
+    if(!x.ok || !x.j.token){ toast(x.j.error || "Ссылка не сработала - войдите по телефону в профиле"); return; }
+    accLoginDone(x.j);
+    ACX.meAt = 0; accMeLoad(true);
+    setTimeout(function(){ toast("Вы вошли" + (x.j.account && x.j.account.name ? ", " + x.j.account.name : "")); }, 400);
+    setTimeout(function(){ if(typeof clubHas === "function" && clubHas()){ V.tab = "dua"; open("arabic", "club"); } }, 2500);
+  }).catch(function(){ toast("Нет связи с сервером школы - откройте ссылку ещё раз, когда будет интернет"); });
 }
 function accLoginDone(j){
   var a = j.account || {};
