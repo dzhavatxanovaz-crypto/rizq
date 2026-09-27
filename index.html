@@ -9219,11 +9219,29 @@ function clubOpen(m){ if(clubStaff() || (m && m.n === 1)) return true; var ds = 
 function clubWords(){ var out = []; CLUB_MEETS.forEach(function(m){ if(clubOpen(m)){ var u = clubUnit(m.n); u.w.forEach(function(w){ w.meet = m.n; out.push(w); }); } }); return out; }
 function clubWordById(id){ var m = /^cm(\d+)/.exec(String(id)); if(!m) return null; var u = clubUnit(m[1]); if(!u) return null;
   for(var i = 0; i < u.w.length; i++) if(u.w[i].id === id) return u.w[i]; return null; }
+/* отметки клуба - в CRM школы: преподаватель видит, кто был на встрече и как прошёл тест.
+   Только вошедшим в аккаунт участницам; без сети - молча, отправится в следующий раз. */
+function clubSync(){
+  try{
+    if(typeof AC === "undefined" || !AC || !AC.tok || !window.fetch || typeof accFetch !== "function" || !clubHas()) return false;
+    clearTimeout(clubSync.t);
+    clubSync.t = setTimeout(function(){
+      try{
+        var c = clubS();
+        accFetch("club-progress", "POST", { att:c.att || {}, hw:c.hw || {}, test:c.test || {} })
+          .then(function(){}, function(){});
+      }catch(e){}
+    }, 1500);
+    return true;
+  }catch(e){ return false; }
+}
+/* один раз за запуск приложения - при открытии клуба */
+function clubSyncOpen(){ if(clubSyncOpen.done) return; if(clubSync()) clubSyncOpen.done = 1; }
 function clubAttend(n){
   var c = clubS(); c.att["m" + n] = todayKey(); save(); scoreSync();
-  addPoints(3, "arabic"); toast("Встреча отмечена, машаа Аллах"); render();
+  addPoints(3, "arabic"); toast("Встреча отмечена, машаа Аллах"); render(); clubSync();
 }
-function clubHw(n){ var c = clubS(); c.hw["m" + n] = todayKey(); save(); addPoints(2, "arabic"); toast("Задание отмечено"); render(); }
+function clubHw(n){ var c = clubS(); c.hw["m" + n] = todayKey(); save(); addPoints(2, "arabic"); toast("Задание отмечено"); render(); clubSync(); }
 function clubCount(){ var c = clubS(); return { att:Object.keys(c.att).length, hw:Object.keys(c.hw).length }; }
 /* ---------- Понимаю Коран: счёт по словарю коранических слов ---------- */
 function qwAll(){ var out = []; QW_UNITS.forEach(function(u){ u.w.forEach(function(w){ out.push(w); }); }); return out; }
@@ -11076,6 +11094,7 @@ function clubProgress(){
   return { words: known, qw: qn, att: Object.keys(c.att).length, avg: avg, tests: tests.length };
 }
 function viewArClub(){
+  clubSyncOpen();
   var has = clubHas(), nx = clubNext(), cnt = clubCount(), ds = clubDates();
   var h = ['<div class="stack">', clubOwnerNote(), nx ? clubMeetBtn(nx.date) : "", clubToday()];
   var pg = has ? clubProgress() : null;
@@ -11172,8 +11191,9 @@ function clubTestAnswer(n, oi){
   var q = m.test[t.i]; if(!q) return;
   if(q.options[oi] === q.answer){ t.ok++; toast("Верно"); } else { t.wrong.push(q); toast("Правильно: " + q.answer);
     var cs = clubS(); if(!cs.errs) cs.errs = []; if(cs.errs.indexOf(q.answer) < 0){ cs.errs.push(q.answer); if(cs.errs.length > 80) cs.errs.shift(); } save(); }
-  t.i++; if(t.i >= m.test.length) addPoints(2, "arabic");
+  t.i++; var done = t.i >= m.test.length; if(done) addPoints(2, "arabic");
   render();
+  if(done) clubSync();
 }
 function viewClubDict(){
   if(!clubHas()) return '<div class="stack"><div class="empty"><b>Словарик - для участниц клуба</b></div></div>';
