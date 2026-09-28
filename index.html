@@ -2140,6 +2140,9 @@ details.more[open]>summary:after{content:"⌄"}
 .tj-madd{color:#E8B24A}
 .tj-qalqala{color:#E0806A}
 .tj-ikhfa{color:#8FD3B0}
+.ayah-basm{font-family:var(--f-quran);direction:rtl;text-align:center;line-height:2.1;
+  font-size:calc(var(--q-size,28px) * .78);color:var(--ink-2);margin:2px 0 10px;
+  padding-bottom:8px;border-bottom:1px solid var(--line-soft)}
 .ayah-ar{
   font-family:var(--f-quran);direction:rtl;text-align:right;
   font-size:var(--q-size,28px);line-height:var(--q-lh,2.35);color:var(--ink);
@@ -5496,6 +5499,27 @@ function qWordMap(i){
 function qWordsHtml(i, noB){
   return qTokens(i).filter(function(o){ return !(noB && o.b); }).map(function(o){ return o.w ? '<span class="qw" data-w="'+o.w+'">'+esc(o.x)+'</span>' : esc(o.x); }).join(" ");
 }
+/* Басмала. В корпусе она приклеена к первому аяту суры, а в печатном мусхафе
+   пишется отдельной строкой и в счёт аята не входит. Исключения: «Аль-Фатиха»,
+   где басмала - это аят 1 по мусхафу Хафса, и «Ат-Тауба», где её нет вовсе;
+   оба случая уже учтены в qTokens. qBasmOf - басмала аята, qaShow - текст без
+   неё, qBasmRow - строка басмалы для показа над первым аятом суры. */
+function qBasmOf(i){
+  var tk = qTokens(i)[0];
+  return tk && tk.b ? tk.x : "";
+}
+function qaShow(i){
+  var b = qBasmOf(i), t = String(QA[i] || "");
+  if(!b || t.indexOf(b) !== 0) return t;
+  t = t.slice(b.length);
+  while(t.charAt(0) === " ") t = t.slice(1);
+  return t;
+}
+function qBasmRow(i){
+  var b = qBasmOf(i);
+  return b ? '<div class="ayah-basm" dir="rtl" lang="ar">' + esc(b) + '</div>' : '';
+}
+
 var QSEG = {}, QSEG_BUSY = {};
 function qSegParse(j){
   var m = {};
@@ -8938,7 +8962,7 @@ function viewQMarks(){
           '<b style="display:block;font-family:var(--f-display);font-size:14.5px">'+esc(qRef(i))+'</b>'+
           '<span style="font-size:12.5px;color:var(--ink-3)">страница '+pageOf(i)+' · джуз '+juzOf(i)+'</span>'+
           '<span style="display:block;font-family:var(--f-ar);direction:rtl;text-align:right;'+
-            'font-size:19px;line-height:1.9;color:var(--ink-2);margin-top:8px">'+esc(QA[i].slice(0,90))+'</span>'+
+            'font-size:19px;line-height:1.9;color:var(--ink-2);margin-top:8px">'+esc(qaShow(i).slice(0,90))+'</span>'+
         '</button>'+
         '<button class="qbtn on" data-qmark="'+i+'" title="Снять закладку" style="flex:none">★</button>'+
       '</div>');
@@ -9272,7 +9296,7 @@ function qwCur(){
 /* разбор аята: под каждым словом - перевод из нашего же словаря */
 function qwGloss(i){
   var out = [], seen = {};
-  String(QA[i] || "").split(" ").forEach(function(x){
+  qaShow(i).split(" ").forEach(function(x){
     var k = arNorm(x).replace(/ه$/, "ة").replace(/ة/g, "ة");
     var id = QW_FORMS[arNorm(x)] || QW_FORMS[arNorm(x).replace(/ه$/, "ة")];
     if(!id || seen[id]) return; seen[id] = 1;
@@ -11462,7 +11486,7 @@ function viewArStudy(){
 function arAyahHtml(w){
   var sp = w.q.split(":"), s = +sp[0], a = +sp[1], i = ayahGlobal(s, a);
   var keys = arNorm(w.s).split(" ");
-  var txt = String(QA[i] || "").split(" ").map(function(x){
+  var txt = qaShow(i).split(" ").map(function(x){
     var n = arNorm(x);
     var hit = keys.some(function(k){ return k.length > 1 && n.indexOf(k) >= 0; });
     return hit ? '<mark>'+esc(x)+'</mark>' : esc(x);
@@ -12447,7 +12471,9 @@ function hifzWhen(key){
 function hifzText(i){
   var open = !hifzData().on || HZ.show[i];
   if(open){
-    return '<div class="ayah-ar">'+qWordsHtml(i)+'</div>'+
+    /* Басмалу в списке аятов не повторяем: она уже стоит в шапке суры, а в аят
+       по мусхафу не входит (кроме «Аль-Фатихи» - там qTokens её не отделяет). */
+    return '<div class="ayah-ar">'+qWordsHtml(i, true)+'</div>'+
       ((HAS_TR && S.qTr)? '<div class="ayah-ru">'+esc(QR[i])+'</div>' : '');
   }
   return '<button class="ayah-hide" data-hifzshow="'+i+'"><b>Прочитайте по памяти</b>и нажмите, чтобы проверить себя</button>';
@@ -12889,7 +12915,7 @@ function sheetAyah(i){
       '<button class="ay-a'+(isMark(i) ? ' on' : '')+'" data-qmark="'+i+'"><i>★</i>'+(isMark(i) ? "В закладках" : "Закладка")+'</button>'+
       '<button class="ay-a" data-qcopy="'+i+'"><i>⧉</i>Копировать</button>'+
     '</div>'+
-    '<div class="ayah-ar" style="margin-top:14px">'+(TJD ? tjdRender(i) : esc(QA[i]))+'</div>'+
+    qBasmRow(i)+'<div class="ayah-ar" style="margin-top:14px">'+(TJD ? tjdRender(i, true) : esc(qaShow(i)))+'</div>'+
     (HAS_TR ? '<div class="ayah-ru" style="margin-top:10px">'+esc(QR[i])+'</div>' : '')+
     '<details class="tjx-box" data-tjx="'+i+'"'+(S.tjxOpen ? ' open' : '')+'><summary>Правила чтения в этом аяте</summary><div id="tjx-body">'+tjdExplain(i)+'</div></details>'+
     '<button class="btn sec" style="width:100%;margin-top:12px" data-scrim="1">Закрыть</button>');
@@ -13036,7 +13062,7 @@ function viewQSearch(){
         out.push('<button class="qrow" style="align-items:flex-start" data-qread="'+i+'">'+
           '<span class="qnum">'+ayahInSurah(i)+'</span>'+
           '<div style="min-width:0;flex:1"><b>'+esc(qRef(i))+'</b>'+
-          '<span style="display:block;margin-top:4px;line-height:1.5" dir="rtl">'+esc((HAS_TR? QR[i] : QA[i]).slice(0,120))+'...</span></div></button>');
+          '<span style="display:block;margin-top:4px;line-height:1.5" dir="rtl">'+esc((HAS_TR? QR[i] : qaShow(i)).slice(0,120))+'...</span></div></button>');
       }
     }
     h.push('<div style="font-size:13.5px;color:var(--ink-3);padding:0 2px">Найдено: '+found+(found>=60?" (показаны первые 60)":"")+'</div>');
@@ -16113,7 +16139,7 @@ function b1Body(i, text){
 /* аят в конце главы: арабский из мусхафа, перевод смыслов, переход в Коран */
 function b1AyahCard(m){
   var s = +m[1], a = +m[2], b = m[3] ? +m[3] : a, ar = [];
-  if(QSUR[s - 1]) for(var k = a; k <= b && k <= QSUR[s - 1][4]; k++) ar.push(QA[ayahGlobal(s, k)] + " ﴿" + k + "﴾");
+  if(QSUR[s - 1]) for(var k = a; k <= b && k <= QSUR[s - 1][4]; k++) ar.push(qaShow(ayahGlobal(s, k)) + " ﴿" + k + "﴾");
   var ref = s + ":" + a + (b > a ? "-" + b : "");
   return '<div class="b1-ayah"><span><i>۞</i>Коран · ' + esc(QSUR[s - 1] ? QSUR[s - 1][2] : "") + ', ' + ref + '</span>' +
     (ar.length ? '<p class="b1-ayah-ar" dir="rtl" lang="ar">' + esc(ar.join(" ")) + '</p>' : '') +
@@ -23950,7 +23976,7 @@ function vaultRestore(){
 }
 function qShareAyah(i){
   var nl = String.fromCharCode(10);
-  var text = QA[i] + nl + nl + ((HAS_TR && QR[i]) ? QR[i] + nl + nl : "") + qRef(i) + nl + nl + "Коран в приложении Rizq: " + APP_URL;
+  var text = qaShow(i) + nl + nl + ((HAS_TR && QR[i]) ? QR[i] + nl + nl : "") + qRef(i) + nl + nl + "Коран в приложении Rizq: " + APP_URL;
   if(navigator.share){ navigator.share({ text: text }).catch(function(){}); return; }
   copyText(text);
 }
@@ -25847,7 +25873,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   }
   if(d.qcopy!==undefined){
     var ci = parseInt(d.qcopy,10);
-    var txt = QA[ci] + (HAS_TR ? "\n\n" + QR[ci] : "") + "\n\n(" + qRef(ci) + ")";
+    var txt = qaShow(ci) + (HAS_TR ? "\n\n" + QR[ci] : "") + "\n\n(" + qRef(ci) + ")";
     if(navigator.clipboard){ navigator.clipboard.writeText(txt).then(function(){ toast("Аят скопирован"); }, function(){ toast("Не удалось скопировать"); }); }
     else toast("Копирование недоступно");
     return;
