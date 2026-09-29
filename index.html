@@ -1628,6 +1628,20 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .dua-f{flex-wrap:wrap}
 .dua-f .btn{white-space:nowrap}
 .dua-f .rep{text-align:right;line-height:1.3}
+/* Кнопка счёта азкара - цветная, как круг в тасбихе: видно издалека, сколько
+   прочитано, полоса внизу заполняется. Касание не прокручивает экран само,
+   поэтому срабатывает мгновенно. */
+.dua-cnt{position:relative;overflow:hidden;flex:1 1 170px;min-height:48px;padding:0 16px;border:0;border-radius:14px;
+  background:linear-gradient(135deg,#D4AF37,#F1D77E);color:#2A1F0A;font-weight:700;font-size:15px;line-height:1;
+  display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 3px 12px rgba(212,175,55,.35);
+  touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:pointer;transition:transform .07s ease}
+.dua-cnt b{font-size:20px;font-variant-numeric:tabular-nums}
+.dua-cnt i{position:absolute;left:0;bottom:0;height:4px;width:var(--p,0%);background:rgba(42,31,10,.5);transition:width .12s ease}
+.dua-cnt.done{background:linear-gradient(135deg,#1E9E6A,#3CC98F);color:#fff;box-shadow:0 3px 12px rgba(30,158,106,.35)}
+.dua-cnt.done i{background:rgba(255,255,255,.45)}
+.dua-cnt.hit{transform:scale(.96)}
+[data-tick]{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+[data-tick].hit{transform:scale(.97)}
 @media (max-width:360px){ .dua-f{gap:6px} .dua-f .fav{width:32px;height:32px} .dua-f .btn.sm{padding:9px 10px;font-size:13px} }
 @media (max-width:360px){ .dua-f{gap:6px} .dua-f .fav{width:32px;height:32px} .dua-f .btn.sm{padding:9px 10px;font-size:13px} }
 
@@ -6908,6 +6922,7 @@ function buildIndex(){
     sunnah:"раватиб витр тахаджуд духа тарауих добровольные необязательные",
     quranadab:"адаб адабы этикет коран как читать чистота омовение мусхаф касаться таджвид суджуд тилява",
     istikhara:"истихара истихару намаз истихары выбор решение как выбрать брак замужество работа совет дуа истихары",
+    madhabs:"мазхаб мазхабы ханафит ханафитский шафиит шафиитский маликит ханбалит различия отличия абу ханифа шафии руки кунут витр амин басмала за имамом",
     purity:"омовение вуду гусль таяммум мыться чистота осквернение джунуб",
     fasting:"пост рамадан ураза что нарушает разговение сухур каффара када фидья",
     hajj:"хадж умра паломничество мекка ихрам арафат мина таваф жертва",
@@ -7301,7 +7316,7 @@ function duaCard(d){
     '<div class="dua-f">'+
       '<button class="fav'+(isFav(k)?" on":"")+'" data-fav="'+k+'" aria-label="В избранное">'+(isFav(k)?"★":"☆")+'</button>'+
       '<button class="fav" data-dshare="'+d.id+'" aria-label="Поделиться" title="Поделиться">⤴</button>'+
-      '<button class="btn sec sm" data-count="'+d.id+'"'+(fin?' style="border-color:var(--emerald);color:var(--emerald)"':'')+'>Прочитал · '+cnt+'/'+need+'</button>'+
+      '<button class="dua-cnt'+(fin?' done':'')+'" data-count="'+d.id+'" data-c="'+Math.min(cnt,need)+'" data-n="'+need+'" style="--p:'+Math.round(Math.min(cnt,need)*100/need)+'%" aria-label="Прочитал: '+cnt+' из '+need+'">'+(fin?'✓ ':'Прочитал · ')+'<b>'+cnt+'</b> / '+need+'<i></i></button>'+
       (need>1 ? '<button class="fav" data-dset="'+d.id+'" aria-label="Вписать число" title="Вписать число">✎</button>' : '')+
       '<span class="rep">'+(fin ? "✓ сегодня" : d.rep>1 ? (cnt ? "осталось "+(d.rep-cnt) : "повторить "+d.rep+" "+timesWord(d.rep)) : "")+'</span>'+
     '</div></article>';
@@ -16457,7 +16472,7 @@ var GUIDES = {
 salah: {
   n:"Намаз",
   sub:"Порядок молитвы и что читать в каждом положении",
-  madhab:"Порядок дан по шафиитскому мазхабу - он принят в Дагестане и на Северном Кавказе. Отличия ханафитского мазхаба отмечены отдельно.",
+  madhab:"Порядок дан по шафиитскому мазхабу - он принят в Дагестане и на Северном Кавказе. Чем отличается намаз у ханафитов - в разделе «Намаз в разных мазхабах».",
   blocks:[
     {div:"Зачем и когда"},
     {t:"Первое, о чём спросят", p:"Намаз - граница между верой и её потерей, и первое дело, которое будет рассмотрено в Судный день. Если оно в порядке, в порядке и всё остальное.",
@@ -16489,6 +16504,8 @@ salah: {
       "Наступило время этого намаза",
       "Есть намерение совершить именно этот намаз"
     ]},
+    {t:"Если вы следуете ханафитскому мазхабу", p:"Здесь порядок дан по шафиитскому мазхабу. Чем отличается намаз у ханафитов и почему в этом нет ничего страшного - в отдельном разделе.",
+     jump:"guide:madhabs", jn:"Открыть «Намаз в разных мазхабах»"},
     {div:"Порядок в намазе"},
     {t:"В картинках", p:"Те же шаги с рисунком каждого положения и озвучкой слов - удобно учить самому и объяснять ребёнку.",
      jump:"open:salahpics", jn:"Открыть «Намаз в картинках»"},
@@ -18279,6 +18296,58 @@ GUIDES.nikah = {
   ]
 };
 
+/* Намаз в разных мазхабах (29.09.2026, отзыв пользователей: всё дано по
+   шафиитскому мазхабу, а ханафитам непонятно, чем их намаз отличается).
+   Задача раздела - показать различия спокойно: это разные мнения учёных, у
+   каждого есть опора, и намаз по любому из четырёх мазхабов действителен. */
+GUIDES.madhabs = {
+  n:"Намаз в разных мазхабах",
+  sub:"Чем отличается намаз у шафиитов и ханафитов",
+  madhab:"Сравнение двух мазхабов, которым следует большинство мусульман России. Это справка, а не фетва: спорное и непонятное уточняйте у имама своей мечети.",
+  blocks:[
+    {div:"Почему намаз отличается"},
+    {t:"Разные - и все правильные", p:"Мазхаб - это школа понимания Корана и сунны, которая сложилась вокруг крупного учёного. Четыре мазхаба - ханафитский, маликитский, шафиитский и ханбалитский - учёные признают больше тысячи лет. В главном они едины: пять намазов и их время, число ракятов, Аль-Фатиха, поясной и земной поклоны, ташаххуд, салам. Различаются подробности, и у каждой школы есть на них опора в хадисах."},
+    {t:"Откуда различия", list:[
+      "До учёных дошли разные достоверные хадисы о том, как молился Пророк ﷺ, - и сам он в разное время делал по-разному",
+      "Один и тот же хадис можно понять по-разному, и учёные взвешивали доводы",
+      "Каждый имам держался своего способа выводить решения, чтобы не отступить от сунны"
+    ]},
+    {t:"Две награды или одна", p:"Учёный, который честно приложил усилие, получает награду, даже если ошибся. Поэтому различие мнений учёных - не повод для спора и тем более для упрёков.",
+     ar:"إِذَا حَكَمَ الْحَاكِمُ فَاجْتَهَدَ ثُمَّ أَصَابَ فَلَهُ أَجْرَانِ، وَإِذَا حَكَمَ فَاجْتَهَدَ ثُمَّ أَخْطَأَ فَلَهُ أَجْرٌ",
+     tr:"Иза хакяма-ль-хакиму фаджтахада сумма асаба фалаху аджран, ва иза хакяма фаджтахада сумма ахта'а фалаху аджр",
+     ru:"Если судья вынес решение, приложив усилие, и оказался прав, ему две награды. А если вынес решение, приложив усилие, и ошибся, ему одна награда.",
+     src:"'Амр ибн аль-'Ас, да будет доволен им Аллах. Аль-Бухари 7352, Муслим 1716"},
+    {t:"Пророк ﷺ не упрекнул ни тех, ни других", p:"Однажды Пророк ﷺ сказал сподвижникам: «Пусть никто не молится аср, кроме как у Бану Курайза». В пути наступило время намаза. Одни сказали: будем молиться только там. Другие сказали: он имел в виду поспешить - и помолились в дороге. Пророку ﷺ рассказали об этом, и он не порицал никого из них.",
+     src:"Ибн Умар, да будет доволен Аллах ими обоими. Аль-Бухари 946"},
+    {div:"В чём отличается"},
+    {t:"Руки при такбире вступления", rows:[["Шафииты","ладони напротив плеч, кончики пальцев на уровне ушей"],["Ханафиты","мужчины - большими пальцами к мочкам ушей, женщины - до плеч"]]},
+    {t:"Поднимать ли руки снова", rows:[["Шафииты","ещё при поясном поклоне, при выпрямлении из него и вставая на третий ракят - это сунна"],["Ханафиты","только при первом такбире"]]},
+    {t:"Где держать руки стоя", rows:[["Шафииты","правая на левой, ниже груди и выше пупка"],["Ханафиты","мужчины - под пупком, женщины - на груди"]]},
+    {t:"Басмала и Аль-Фатиха", rows:[["Шафииты","басмала - часть Аль-Фатихи, в громких намазах её читают вслух. Без Аль-Фатихи ракят недействителен"],["Ханафиты","басмалу читают про себя. Аль-Фатиха - ваджиб, обязанность; столп намаза - само чтение Корана"]]},
+    {t:"За имамом", rows:[["Шафииты","Аль-Фатиху читает и тот, кто молится за имамом, в каждом ракяте"],["Ханафиты","за имамом молчат и слушают: чтение имама засчитывается и за них"]]},
+    {t:"«Амин» после Аль-Фатихи", rows:[["Шафииты","вслух в громких намазах"],["Ханафиты","про себя"]]},
+    {t:"Дуа кунут", rows:[["Шафииты","во втором ракяте фаджра после выпрямления из поясного поклона и в витре во второй половине Рамадана"],["Ханафиты","в фаджр не читают; в витре - каждую ночь, в третьем ракяте до поясного поклона"]]},
+    {t:"Витр", rows:[["Шафииты","сунна; от одного до одиннадцати ракятов, часто два и один отдельно"],["Ханафиты","ваджиб; три ракята с одним саламом, как магриб, с кунутом"]]},
+    {t:"Как сидеть", rows:[["Шафииты","в первом ташаххуде - на левой стопе, в последнем - на полу, левая стопа выведена под правую ногу"],["Ханафиты","мужчины в обоих - на левой стопе, женщины - на полу, ноги выведены вправо"]]},
+    {t:"Палец в ташаххуде", rows:[["Шафииты","указательный палец поднимают при словах «илля Ллах» и держат до салама"],["Ханафиты","поднимают при «ля иляха» и опускают при «илля Ллах»"]]},
+    {t:"Ташаххуд и салават", rows:[["Шафииты","ташаххуд в передаче Ибн Аббаса; салават в последнем сидении - столп намаза"],["Ханафиты","ташаххуд в передаче Ибн Мас'уда; салават - сунна"]]},
+    {t:"Время асра", p:"Приложение считает время асра по мазхабу, выбранному в настройках.", rows:[["Шафииты","когда тень предмета стала равна ему самому"],["Ханафиты","когда тень вдвое длиннее предмета - позже"]]},
+    {t:"В пути", rows:[["Шафииты","четырёхракятные намазы сокращать можно; объединять зухр с асром и магриб с ишой - тоже"],["Ханафиты","сокращать обязательно; объединять нельзя, кроме Арафата и Муздалифы в хадж"]]},
+    {t:"Что нарушает омовение", rows:[["Шафииты","касание кожи человека противоположного пола, за которого разрешён брак"],["Ханафиты","касание не нарушает; нарушает вытекшая кровь или гной, рвота полным ртом"]]},
+    {t:"Маликиты и ханбалиты", p:"Маликитскому мазхабу следуют в основном в Северной и Западной Африке, ханбалитскому - на Аравийском полуострове. Например, маликиты обычно стоят в намазе, опустив руки вдоль тела. Их намаз так же действителен."},
+    {div:"Как к этому относиться"},
+    {t:"Что важно помнить", list:[
+      "Намаз по любому из четырёх мазхабов действителен",
+      "Увидели, что человек молится иначе, - не поправляйте его: скорее всего, он следует другой школе",
+      "По мнению большинства учёных, намаз за имамом другого мазхаба действителен",
+      "Держитесь одного мазхаба - того, которому учились или который принят в вашей мечети, а не выбирайте из каждой школы то, что легче",
+      "Спорное и непонятное уточняйте у имама своей мечети"
+    ]},
+    {t:"Кто какому мазхабу следует", p:"В Дагестане, Чечне и Ингушетии большинство - шафииты. Татары, башкиры, кабардинцы, балкарцы, карачаевцы, черкесы, мусульмане Средней Азии и Турции - в основном ханафиты. В этом приложении порядок намаза дан по шафиитскому мазхабу, а отличия ханафитского собраны здесь."},
+    {t:"Порядок намаза", p:"Полный порядок по шагам - в руководстве «Намаз».", jump:"guide:salah", jn:"Открыть «Намаз»"}
+  ]
+};
+
 GUIDES.salahfix = {
   n:"Если в намазе что-то пошло не так",
   sub:"Ошибки, пропущенные намазы, намаз в пути и при болезни",
@@ -18461,7 +18530,8 @@ function namazHub(){
     ["open", "salahpics", "☾", "Намаз в картинках", "для новичков и детей, с озвучкой", 1],
     ["guide", "sunnah", "✦", "Суннат-намазы", "раватиб, витр, тахаджуд, духа", 1],
     ["guide", "istikhara", "◈", "Истихара-намаз", "попросить Аллаха выбрать лучшее", 0],
-    ["guide", "salahfix", "↺", "Ошибки и восполнение", "сахв, пропущенные, в пути", 0]
+    ["guide", "salahfix", "↺", "Ошибки и восполнение", "сахв, пропущенные, в пути", 0],
+    ["guide", "madhabs", "⚖", "Намаз в разных мазхабах", "шафииты и ханафиты: в чём разница", 1]
   ];
   return '<div class="nm-hub">'+T.map(function(x){
     return '<button class="nm-tile'+(x[5] ? ' gold' : '')+'" data-'+x[0]+'="'+x[1]+'"><span class="nm-ic">'+x[2]+'</span>'+
@@ -18506,6 +18576,18 @@ function sunnahDay(){
   '</section>';
 }
 var GUIDE_VIS = {
+  madhabs: [
+    {t:"Главное", keys:[["4","мазхаба признают учёные"],["1","основа у всех - Коран и сунна"],["2","мазхаба у мусульман России"]]},
+    {t:"Шафииты и ханафиты", tbl:{h:["","Шафииты","Ханафиты"], r:[
+      ["Руки стоя","ниже груди","мужчины под пупком"],
+      ["Поднимать руки","4 раза","1 раз, при такбире"],
+      ["За имамом","читают Аль-Фатиху","молчат"],
+      ["«Амин»","вслух","про себя"],
+      ["Кунут в фаджр","да","нет"],
+      ["Витр","сунна","ваджиб, 3 ракята"],
+      ["Аср","раньше","позже"]]},
+     note:"Все эти намазы действительны. Подробности - ниже."}
+  ],
   purity: [
     {t:"Главное в цифрах", keys:[["6","обязательных действий вуду"],["2","обязательных действия гусля"],["1","фард - на один таяммум"]]},
     {t:"Вуду: обязательный порядок", flow:[["Намерение","в момент, когда начинаете мыть лицо"],["Лицо","от линии волос до подбородка, от уха до уха"],["Руки","до локтей включительно"],["Голова","протереть хотя бы часть"],["Ноги","до щиколоток включительно"]],
@@ -25628,11 +25710,102 @@ document.getElementById("app").addEventListener("change", function(ev){
   if(el.id === "plRepSel"){ V.plRep = el.value; return; }
   if(el.id.indexOf("pta_") === 0){ ptAdjSet(el.id.slice(4), parseInt(el.value, 10)); return; }
 });
+/* ---------- счётчики азкаров и тасбиха: мгновенное касание (29.09.2026) ----------
+   Раньше счёт шёл по «клику», а браузер отменяет клик, если палец хоть немного
+   сдвинулся, и после каждого касания азкаров перерисовывался весь экран -
+   поэтому касания пропадали и сбивали с сосредоточенности.
+   Теперь тасбих считает в момент касания. Азкар сразу показывает +1 и
+   записывает, когда палец поднят; если палец повели дальше 18 точек, это
+   прокрутка - число возвращается, а экран едет за пальцем. */
+function tasbihTick(){
+  var key = "z"+V.zikr;
+  S.tasbih[key] = (S.tasbih[key]||0)+1;
+  bumpTasbih();
+  var z = ZIKRS[V.zikr];
+  if(S.tasbih[key] % z.goal === 0) toast("Круг завершён: "+z.goal);
+  save();
+  if(!tasbihPaint()) renderInPlace();
+  if(navigator.vibrate) { try{ navigator.vibrate(12); }catch(e){} }
+}
+var DUA_RT = null;
+function duaCount(id){
+  LAST_COUNT = Date.now();
+  var dua = DUAS.filter(function(x){return x.id===id;})[0];
+  if(!dua) return;
+  var was = !!S.read[dua.id];
+  markRead(dua.id);
+  if(!S.dcnt) S.dcnt = {};
+  if(!(dua.rep>1)){
+    S.dcnt[dua.id] = 1;
+    toast(was ? "Уже отмечено сегодня ✓" : "Отмечено ✓");
+  } else {
+    S.dcnt[dua.id] = Math.min(dua.rep, (S.dcnt[dua.id]||0)+1);
+    bumpTasbih();
+    if(S.dcnt[dua.id]===dua.rep) toast("Машаа Аллах - "+dua.rep+" "+timesWord(dua.rep)+" завершено");
+  }
+  save();
+  duaPaint(dua);
+}
+/* Перерисовываем только карточку этого азкара. Весь экран (сводки «прочитано»)
+   догоняем, когда пальцы отдыхают: иначе частые касания попадали бы в момент
+   замены экрана и терялись. */
+function duaPaint(dua){
+  var el = document.getElementById("dua-" + dua.id);
+  if(el && el.parentNode){
+    var box = document.createElement("div");
+    box.innerHTML = duaCard(dua);
+    if(box.firstElementChild) el.parentNode.replaceChild(box.firstElementChild, el);
+  }
+  clearTimeout(DUA_RT);
+  DUA_RT = setTimeout(function again(){
+    for(var k in FT){ DUA_RT = setTimeout(again, 600); return; }
+    renderInPlace();
+  }, 1300);
+}
+function duaPreview(node, on){
+  var c = +node.getAttribute("data-c") || 0, n = +node.getAttribute("data-n") || 1;
+  var v = on ? Math.min(n, c + 1) : c, b = node.querySelector("b");
+  if(b) b.textContent = v;
+  node.style.setProperty("--p", Math.round(v * 100 / n) + "%");
+  node.classList.toggle("hit", !!on);
+}
+var FT = {}, FT_SEL = "[data-tick]," + "[data-count]";
+document.getElementById("app").addEventListener("pointerdown", function(ev){
+  if(ev.button > 0) return;
+  var node = ev.target.closest ? ev.target.closest(FT_SEL) : null;
+  if(!node) return;
+  if(node.dataset.tick !== undefined){
+    tasbihTick();
+    node.classList.add("hit"); setTimeout(function(){ node.classList.remove("hit"); }, 90);
+    return;
+  }
+  FT[ev.pointerId] = { id: node.dataset.count, x: ev.clientX, y: ev.clientY, top: $screen.scrollTop, moved: false, node: node };
+  duaPreview(node, true);
+  if(navigator.vibrate) { try{ navigator.vibrate(12); }catch(e){} }
+}, { passive: true });
+document.addEventListener("pointermove", function(ev){
+  var f = FT[ev.pointerId]; if(!f) return;
+  var dx = ev.clientX - f.x, dy = ev.clientY - f.y;
+  if(!f.moved && (Math.abs(dx) > 18 || Math.abs(dy) > 18)){ f.moved = true; duaPreview(f.node, false); }
+  if(f.moved) $screen.scrollTop = f.top - dy;
+}, { passive: true });
+function ftEnd(ev){
+  var f = FT[ev.pointerId]; if(!f) return;
+  delete FT[ev.pointerId];
+  if(!f.moved) duaCount(f.id);
+}
+document.addEventListener("pointerup", ftEnd, { passive: true });
+document.addEventListener("pointercancel", ftEnd, { passive: true });
+
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
   var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
   if(!node) return;
   var d = node.dataset;
+  /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
+     Клик от того же касания второй раз не считаем. С клавиатуры клик приходит
+     с detail 0 - его считаем как обычно. */
+  if((d.tick !== undefined || d.count) && window.PointerEvent && ev.detail > 0) return;
 
   /* затемнение и кнопки «Отмена» закрывают шторку; клик внутри - нет */
   if(node.classList.contains("scrim") || d.scrim!==undefined){ closeSheet(); return; }
@@ -25761,39 +25934,12 @@ document.getElementById("app").addEventListener("click", function(ev){
     markRead(qk); renderInPlace(); toast(qwas ? "Уже отмечено сегодня ✓" : "Отмечено ✓ +" + POINTS.azkar + " балл");
     return;
   }
-  if(d.count){
-    LAST_COUNT = Date.now();
-    var dua = DUAS.filter(function(x){return x.id===d.count;})[0];
-    var was = !!S.read[dua.id];
-    markRead(dua.id);
-    if(!S.dcnt) S.dcnt = {};
-    if(!(dua.rep>1)){
-      S.dcnt[dua.id] = 1;
-      toast(was ? "Уже отмечено сегодня ✓" : "Отмечено ✓");
-    } else if(dua.rep>1){
-      if(!S.dcnt) S.dcnt = {};
-      S.dcnt[dua.id] = Math.min(dua.rep, (S.dcnt[dua.id]||0)+1);
-      bumpTasbih();
-      if(S.dcnt[dua.id]===dua.rep) toast("Машаа Аллах - "+dua.rep+" "+timesWord(dua.rep)+" завершено");
-    }
-    save(); renderInPlace();
-    return;
-  }
+  if(d.count){ duaCount(d.count); return; }
   if(d.tset!==undefined){ manSheet("t", V.zikr); return; }
   if(d.dset){ manSheet("d", d.dset); return; }
   if(d.manq){ var mq = document.getElementById("manN"); if(mq){ mq.value = d.manq; mq.focus(); } return; }
   if(d.manok!==undefined){ manApply(); return; }
-  if(d.tick!==undefined){
-    var key = "z"+V.zikr;
-    S.tasbih[key] = (S.tasbih[key]||0)+1;
-    bumpTasbih();
-    var z = ZIKRS[V.zikr];
-    if(S.tasbih[key] % z.goal === 0) toast("Круг завершён: "+z.goal);
-    save();
-    if(!tasbihPaint()) renderInPlace();
-    if(navigator.vibrate) { try{ navigator.vibrate(12); }catch(e){} }
-    return;
-  }
+  if(d.tick!==undefined){ tasbihTick(); return; }
   if(d.reset!==undefined){
     /* «Сбросить» стоит рядом с «+ 1»: случайное касание обнуляло счёт без вопроса */
     var rc = S.tasbih["z"+V.zikr] || 0;
