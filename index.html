@@ -5545,6 +5545,140 @@ function qBasmRow(i){
   return b ? '<div class="ayah-basm" dir="rtl" lang="ar">' + esc(b) + '</div>' : '';
 }
 
+/* ---------- отзывы о приложении (29.09.2026) ----------
+   Раньше люди писали Заире в WhatsApp, она пересказывала, а человеку никто не
+   отвечал. Теперь отзыв уходит в CRM сам (в очереди на телефоне, если нет
+   интернета), а ответ «сделали» приложение показывает на этом же устройстве. */
+var FB_KINDS = [["bug","Что-то не работает"],["idea","Идея, как сделать лучше"],["religion","Неточность в религиозном тексте"]];
+var FB_BUSY = 0;
+function appVersion(cb){
+  try{
+    if(!window.caches){ cb(""); return; }
+    caches.keys().then(function(k){ var v = k.filter(function(x){ return x.indexOf("rizq-v") === 0; })[0]; cb(v ? v.slice(5) : ""); }, function(){ cb(""); });
+  }catch(e){ cb(""); }
+}
+/* Экран, с которого пишут: только название раздела и ключ, без текстов человека. */
+function fbScreen(){
+  try{
+    var p = V.view ? V.p : null, key = (typeof p === "string" || typeof p === "number") ? ":" + String(p).slice(0, 30) : "";
+    return String(V.view || V.tab || "home") + key;
+  }catch(e){ return "?"; }
+}
+function fbKeep(){
+  var t = document.getElementById("fbText"), o = document.getElementById("fbOk"), c = document.getElementById("fbContact");
+  if(t) V.fbDraft = t.value; if(o) V.fbOk = o.checked; if(c) V.fbContact = c.value;
+}
+function sheetFeedback(kind, screen){
+  if(kind) V.fbKind = kind; if(!V.fbKind) V.fbKind = "idea";
+  if(screen) V.fbScreen = screen;
+  sheet('<h3>Предложить улучшение</h3>'+
+    '<p class="note" style="margin:0 0 12px">Отзыв сразу попадёт команде RIZQ. Когда сделаем, покажем ответ здесь же, в приложении.</p>'+
+    '<div class="pill-row" style="justify-content:flex-start;flex-wrap:wrap;gap:6px">'+FB_KINDS.map(function(k){
+      return '<button class="pill'+(k[0] === V.fbKind ? ' on' : '')+'" data-fbkind="'+k[0]+'">'+esc(k[1])+'</button>';
+    }).join("")+'</div>'+
+    '<textarea class="search" id="fbText" rows="5" style="margin:12px 0 8px;min-height:120px;resize:vertical;line-height:1.5" placeholder="'+
+      (V.fbKind === "religion" ? 'Где неточность и как, по-вашему, правильно. Если знаете источник, укажите его' : 'Что случилось или что хотелось бы. Можно надиктовать с клавиатуры телефона')+'">'+esc(V.fbDraft || "")+'</textarea>'+
+    '<label style="display:flex;gap:9px;align-items:flex-start;font-size:13px;color:var(--ink-2);line-height:1.5">'+
+      '<input type="checkbox" id="fbOk" style="margin-top:2px;flex:none"'+(V.fbOk ? ' checked' : '')+'>'+
+      '<span>Можно связаться со мной, если понадобятся подробности. Согласна на обработку этого контакта школой JAVATTI для ответа на отзыв. <a href="privacy.html" target="_blank" rel="noopener" style="color:var(--accent-ink)">Политика</a></span></label>'+
+    '<input class="search" id="fbContact" style="margin:8px 0 4px" placeholder="Телефон или почта - необязательно" value="'+esc(V.fbContact != null ? V.fbContact : (S.phone || S.email || ""))+'">'+
+    '<button class="btn" style="margin-top:12px" data-fbsend="1">Отправить</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>'+
+    '<p class="note" style="margin-top:10px">Вместе с отзывом уходит только название экрана, версия приложения и модель телефона - так быстрее найти, в чём дело. Контакт - только если вы отметили согласие.</p>');
+}
+function fbSend(){
+  fbKeep();
+  var text = String(V.fbDraft || "").trim();
+  if(text.length < 3){ toast("Напишите хотя бы несколько слов"); return; }
+  var contact = V.fbOk ? String(V.fbContact || "").trim() : "";
+  var rec = { app:"rizq", kind: V.fbKind || "idea", text: text.slice(0, 2000), screen: V.fbScreen || fbScreen(),
+    device: String(navigator.userAgent || "").slice(0, 120), visitor: rizqVisitor(), contact: contact, consent: !!contact };
+  V.fbDraft = "";
+  appVersion(function(v){ rec.version = v; S.fbQ = (S.fbQ || []).concat([rec]); save(); fbFlush(); });
+  sheet('<div class="payr"><div class="payr-ic">✓</div><h3>Спасибо, получили</h3>'+
+    '<p>Отзыв передан команде RIZQ. Когда сделаем, покажем ответ здесь же, в приложении. Если сейчас нет интернета, отзыв уйдёт сам, когда связь появится.</p></div>'+
+    '<button class="btn ghost" style="margin-top:12px" data-scrim="1">Хорошо</button>');
+}
+/* Очередь на телефоне: отзыв не теряется без интернета. 400 - отзыв испорчен,
+   повторять его бессмысленно, убираем из очереди. */
+function fbFlush(){
+  var q = S.fbQ || [];
+  if(!q.length || FB_BUSY || !window.fetch) return;
+  FB_BUSY = 1;
+  fetch(crmApi() + "/api/public/app-feedback", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(q[0]) })
+    .then(function(r){ FB_BUSY = 0; if(r.ok || r.status === 400){ S.fbQ = (S.fbQ || []).slice(1); save(); if(S.fbQ.length) fbFlush(); } })
+    .catch(function(){ FB_BUSY = 0; });
+}
+/* «Вы просили - мы сделали»: ответ на отзыв с этого устройства, один раз. */
+function fbDoneCheck(){
+  if(!window.fetch || !S.vid || document.querySelector(".scrim")) return;
+  fetch(crmApi() + "/api/public/app-feedback/mine/" + S.vid).then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      if(!j || !j.done || !j.done.length || document.querySelector(".scrim")) return;
+      sheet('<div class="payr"><div class="payr-ic">❁</div><h3>Вы просили - мы сделали</h3>'+
+        j.done.map(function(x){ return '<p style="margin-top:8px">'+esc(x.reply || "Ваше предложение учтено")+'</p>'; }).join("")+'</div>'+
+        '<p class="note" style="margin-top:10px">Спасибо, что написали. Так приложение становится лучше для всех.</p>'+
+        '<button class="btn" style="margin-top:12px" data-scrim="1">Хорошо</button>');
+      j.done.forEach(function(x){
+        fetch(crmApi() + "/api/public/app-feedback/" + x.id + "/seen", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ visitor: S.vid }) }).catch(function(){});
+      });
+    }).catch(function(){});
+}
+
+/* «Что нового» - один раз после обновления. Новым пользователям не показываем:
+   для них всё новое. Чтобы показать снова, поменять WN.id и пункты. */
+var WN = { id:"2026-09-29", items:[
+  ["⚖", "Намаз в разных мазхабах", "чем отличается намаз у шафиитов и ханафитов - в разделе «Намаз»"],
+  ["✦", "Счёт от лёгкого касания", "в азкарах и тасбихе касание засчитывается сразу, кнопка счёта в азкарах стала цветной"],
+  ["۞", "Басмала в Коране", "стоит отдельной строкой перед сурой; в «Аль-Фатихе» счёт аятов начинается с «Аль-хамду лилляхи»"],
+  ["✎", "Предложить улучшение", "в профиле: пишите, что сделать лучше, - ответ покажем здесь же"]
+]};
+function wnCheck(){
+  if(S.wnSeen === WN.id) return;
+  if(!S.welcomed){ S.wnSeen = WN.id; save(); return; }
+  if(document.querySelector(".scrim")) return;
+  S.wnSeen = WN.id; save();
+  sheet('<h3>Что нового в RIZQ</h3>'+
+    '<div class="rows" style="margin-top:6px">'+WN.items.map(function(x){
+      return '<div class="row" style="align-items:flex-start;cursor:default"><span class="ic">'+x[0]+'</span>'+
+        '<span style="flex:1;min-width:0"><b style="display:block">'+esc(x[1])+'</b><span style="font-size:13px;color:var(--ink-3);line-height:1.45">'+esc(x[2])+'</span></span></div>';
+    }).join("")+'</div>'+
+    '<button class="btn" style="margin-top:12px" data-scrim="1">Понятно</button>');
+}
+
+/* Сбои приложения - в CRM, чтобы чинить до жалоб. Не больше 5 за сеанс и без
+   повторов одного и того же. Экран - только название раздела. */
+var ERR_SENT = 0, ERR_SEEN = {};
+function errReport(msg, src, line){
+  try{
+    var m = String(msg || "").slice(0, 240);
+    if(!m || ERR_SENT >= 5 || ERR_SEEN[m] || !window.fetch) return;
+    ERR_SEEN[m] = 1; ERR_SENT++;
+    fetch(crmApi() + "/api/public/app-error", { method:"POST", headers:{ "Content-Type":"application/json" }, keepalive:true,
+      body: JSON.stringify({ app:"rizq", msg: m + " [" + fbScreen() + "]", src: String(src || "").slice(0, 120), line: line || 0,
+        ua: String(navigator.userAgent || "").slice(0, 200) }) }).catch(function(){});
+  }catch(e){}
+}
+window.addEventListener("error", function(e){ errReport(e.message, e.filename, e.lineno); });
+window.addEventListener("unhandledrejection", function(e){ var r = e && e.reason; errReport("promise: " + (r && r.message ? r.message : r)); });
+
+/* «Злые касания»: 4 касания одной кнопки за 1,2 секунды - знак, что кнопка не
+   сработала. Уходит только экран и вид кнопки (имя её data-атрибута), без
+   текстов человека. Кнопки, которые жмут много раз нарочно, не считаем. */
+var RT = { key:"", n:0, at:0, sent:{} }, RT_SEL = "button, a";
+var RT_SKIP = ["tick", "count", "qsize", "b1fs", "b2fs", "mpage", "qpage"];
+document.getElementById("app").addEventListener("pointerdown", function(ev){
+  var b = ev.target.closest ? ev.target.closest(RT_SEL) : null;
+  if(!b) return;
+  var an = [].filter.call(b.attributes, function(a){ return a.name.indexOf("data-") === 0; })[0];
+  var kind = an ? an.name.slice(5) : (b.tagName === "A" ? "link" : "button");
+  if(RT_SKIP.indexOf(kind) > -1) return;
+  var key = fbScreen() + " / " + kind, now = Date.now();
+  if(key === RT.key && now - RT.at < 1200) RT.n++; else { RT.key = key; RT.n = 1; }
+  RT.at = now;
+  if(RT.n === 4 && !RT.sent[key]){ RT.sent[key] = 1; errReport("rage-tap: " + key); }
+}, { passive: true });
+
 var QSEG = {}, QSEG_BUSY = {};
 function qSegParse(j){
   var m = {};
@@ -18705,6 +18839,8 @@ function viewGuide(){
   h.push(renderBlocks(g.blocks));
   h.push('<button class="btn ghost sm" style="width:100%" data-fav="' + key + '">' +
     (isFav(key) ? "★ Сохранено в избранном" : "☆ Сохранить это руководство") + '</button>');
+  /* Неточность в религиозном тексте - сразу команде, с указанием руководства. */
+  h.push('<button class="btn ghost sm" style="width:100%" data-fbopen="religion">Нашли неточность? Сообщите нам</button>');
   h.push('</div>');
   return h.join("");
 }
@@ -23770,6 +23906,7 @@ function viewProf(){
   /* 5. помощь и о проекте - внизу: сюда заходят реже всего */
   h.push('<div class="sec-h"><h3>Помощь и о проекте</h3></div>');
   h.push('<div class="rows">'+
+    '<button class="row" data-fbopen="idea"><span class="ic">✎</span>Предложить улучшение<span class="val">ответ покажем здесь</span><span class="go">›</span></button>'+
     '<button class="row" data-open="support"><span class="ic">☎</span>Написать нам<span class="val">'+esc(SUPPORT.phone)+'</span><span class="go">›</span></button>'+
     '<button class="row" data-why="1"><span class="ic">✦</span>О проекте RIZQ<span class="val">зачем мы это делаем</span><span class="go">›</span></button>'+
     '<button class="row" data-open="share"><span class="ic">❁</span>Рассказать о приложении<span class="val">ссылка и иконка</span><span class="go">›</span></button>'+
@@ -25590,7 +25727,7 @@ function render(){
   if(RENDER_BUSY) return;
   RENDER_BUSY = 1;
   try{ renderCore(); RENDER_FAIL = 0; }
-  catch(e){ renderFallback(e); }
+  catch(e){ renderFallback(e); errReport("render: " + (e && e.message ? e.message : e)); }
   finally{ RENDER_BUSY = 0; }
 }
 function renderCore(){
@@ -25799,7 +25936,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -26611,6 +26748,9 @@ document.getElementById("app").addEventListener("click", function(ev){
     var gA = ayahGlobal(+ay[0], +ay[1]); openReader(QSUR[sI][6], QSUR[sI][6] + QSUR[sI][4] - 1, "surah", gA); } return; }
   if(d.b1ret !== undefined){ b1Return(); return; }
   if(d.b1gift !== undefined){ sheetGift(); return; }
+  if(d.fbopen !== undefined){ V.fbScreen = fbScreen(); V.fbDraft = ""; sheetFeedback(d.fbopen || "idea"); return; }
+  if(d.fbkind !== undefined){ fbKeep(); sheetFeedback(d.fbkind); return; }
+  if(d.fbsend !== undefined){ fbSend(); return; }
   if(d.giftgo !== undefined){ giftStart(); return; }
   if(d.giftcode !== undefined){ sheetGiftCode(); return; }
   if(d.giftcodego !== undefined){ var gc = document.getElementById("gCode"); giftClaim(gc ? gc.value : ""); return; }
@@ -26902,6 +27042,9 @@ sadaqaLoad();
 signupFlush();
 accBoot();
 pushSync(false);
+fbFlush();
+setTimeout(function(){ wnCheck(); fbDoneCheck(); }, 2500);
+document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible"){ fbFlush(); setTimeout(fbDoneCheck, 1500); } });
 document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible") pushSoon(); });
 
 /* переезд: старый адрес показывает окно, новый принимает код */
