@@ -5981,7 +5981,7 @@ function fbDoneCheck(){
 /* «Что нового» - один раз после обновления. Новым пользователям не показываем:
    для них всё новое. Чтобы показать снова, поменять WN.id и пункты. */
 var WN = { id:"2026-10-01h", items:[
-  ["▣", "Студия аятов", "ролик с Кораном за минуту и готовый текст для поста - плашка на главной"],
+  ["▣", "Видеостудия JAVATTI", "ролик с Кораном за минуту и готовый текст для поста - плашка на главной"],
   ["✉", "Чат круга и личные сообщения", "общайтесь с сёстрами своего круга хатма: «Коран» → «Хатм вместе»"],
   ["▣", "Рилс по теме журнала", "кнопка «Рилс по теме» в журнале и в «Знаниях»: заголовок, Коран голосом чтеца, мысли, хадисы"],
   ["▣", "Фоны Мекки и Медины, дуа из Корана", "в «Видео из аятов»: Кааба, Зелёный купол и другие; дуа из Корана голосом чтеца"],
@@ -6639,7 +6639,7 @@ function renderHdr(){
         : V.view==="kchat" ? "Чат круга"
         : V.view==="dms" ? "Личные сообщения"
         : V.view==="dm" ? (CH.dmc && CH.dmc.pub === V.p && CH.dmc.name ? CH.dmc.name : "Сообщения")
-        : V.view==="vmake" ? "Студия аятов"
+        : V.view==="vmake" ? "Видеостудия JAVATTI"
         : V.view==="trread" ? (V.p !== null && V.p !== undefined && V.p !== "" && QSUR[V.p] ? QSUR[V.p][2] : "Перевод смыслов") : "";
     $hdr.innerHTML = '<header class="hdr"><div class="hdr-row">'+
       '<button class="back" data-back="1" aria-label="Назад">‹</button>'+
@@ -7337,7 +7337,8 @@ function deepOpen(qArg){
        вопрос о городе: город он выберет, когда дойдёт до намаза. */
     var GO_LINKS = { qw:["arabic", "qw"], club:["arabic", "club"], arabic:["arabic", null],
       quran:["quran", null], azkar:["azkar", null], kniga:["book1", null], book:["book1", null],
-      duas:["duas", null], khatms:["khatms", null], dms:["dms", null] };
+      duas:["duas", null], khatms:["khatms", null], dms:["dms", null],
+      studio:["vmake", null], video:["vmake", null] };   /* кодовое слово СТУДИЯ */
     /* ?post=<id> - открыть запись журнала (ссылка «Поделиться») */
     var mpo = q.match(/[?&]post=([a-z0-9_-]+)/);
     if(mpo){ S.welcomed = 1; save(); V.tab = "journal"; open("post", decodeURIComponent(mpo[1])); return true; }
@@ -7360,7 +7361,7 @@ function deepOpen(qArg){
       var g = GO_LINKS[mg[1]];
       S.welcomed = 1; save();
       if(g[0] === "arabic" || g[0] === "duas") V.tab = "dua";
-      if(g[0] === "khatms" || g[0] === "dms") V.tab = "quran";
+      if(g[0] === "khatms" || g[0] === "dms" || g[0] === "vmake") V.tab = "quran";
       open(g[0], g[1]);
       return true;
     }
@@ -7664,7 +7665,7 @@ function buildIndex(){
    ["Хадж и умра в пути","чек-лист по шагам, счёт кругов","open:hajjtrip","хадж умра чек-лист чеклист таваф сай круги ихрам мекка паломничество камни джамарат арафат муздалифа мина сборы"],
    ["Детям","истории пророков, перед сном, дуа, имена","open:kids","дети детям ребенок ребёнок истории пророков сказки перед сном на ночь дуа для детей имена имя для ребенка мальчику девочке"],
    ["Исламская рассрочка","партнёры и покупка товара в рассрочку","open:installment","рассрочка исламская халяль мурабаха кредит без процентов частями взносы купить в рассрочку партнерское финансирование"],
-   ["Студия аятов","ролик для Reels: аяты, азкары, дуа","open:vmake","студия видео ролик рилс reels shorts tiktok аяты азкары дуа фон контент инстаграм"],
+   ["Видеостудия JAVATTI","ролик для Reels: аяты, азкары, дуа","open:vmake","студия видео ролик рилс reels shorts tiktok аяты азкары дуа фон контент инстаграм"],
    ["Перевод смыслов","перевод Кулиева целиком, сура за сурой","open:trread","перевод смыслов кулиев тафсир читать по-русски текст корана целиком"],
    ["Личные сообщения","переписка с сёстрами из круга","open:dms","личные сообщения переписка написать сестре чат"],
    ["Хатм вместе","читать Коран кругом","open:khatms","хатм вместе круг джуз подруги сёстры сообщество читать коран вместе"],
@@ -13084,7 +13085,7 @@ function viewQuranHome(){
     '<span class="cw-t"><b>Плеер сур</b><span>Больше 200 чтецов, суры целиком, поиск по имени</span></span><span class="cw-go">›</span></button>');
 
   h.push('<button class="cat-wide" data-open="vmake" style="margin-top:10px"><span class="cw-ic">▣</span>'+
-    '<span class="cw-t"><b>Студия аятов</b><span>ролик для Reels: аяты, азкары и дуа голосом чтеца на фоне Каабы и Медины</span></span><span class="cw-go">›</span></button>');
+    '<span class="cw-t"><b>Видеостудия JAVATTI</b><span>ролик для Reels: аяты, азкары и дуа голосом чтеца на фоне Каабы и Медины</span></span><span class="cw-go">›</span></button>');
   h.push('<button class="cat-wide" data-open="khatms" style="margin-top:10px"><span class="cw-ic">◎</span>'+
     '<span class="cw-t"><b>Хатм вместе</b><span>читайте Коран кругом: 30 джузов на всех</span></span><span class="cw-go">›</span></button>');
   h.push('<div class="sec-h"><h3>Мой путь</h3></div>');
@@ -15489,7 +15490,7 @@ function sheetVmRec(){
 }
 /* главная: заметная плашка студии */
 function vmHomePlate(){
-  return '<button class="vm-home" data-open="vmake"><span class="vm-home-k">Студия аятов</span>'+
+  return '<button class="vm-home" data-open="vmake"><span class="vm-home-k">Видеостудия JAVATTI</span>'+
     '<b>Ролик с Кораном - за минуту</b>'+
     '<span class="vm-home-s">Голос чтеца, фон Каабы или Медины, готовый текст для поста</span>'+
     '<span class="vm-home-go">Создать ролик ›</span></button>';
