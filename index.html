@@ -2350,6 +2350,13 @@ details.more[open]>summary:after{content:"⌄"}
 .hb-chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 6px}
 .hb-chips span{padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.12);font-size:12.5px}
 .hb-eve-s{display:block;font-size:13px;color:rgba(255,255,255,.75)}
+.hb-push{display:flex;gap:12px;padding:16px;border-radius:22px;background:linear-gradient(135deg,#1C2A52,#0E3B2E);color:#fff}
+.hb-push-ic{font-size:28px;flex:none}
+.hb-push-t b{display:block;font-family:var(--f-display);font-size:18px;color:#fff}
+.hb-push-t span{display:block;font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.82);margin-top:4px}
+.hb-push-t em{display:block;font-style:normal;font-size:12.5px;line-height:1.45;color:#E9C46A;margin-top:8px}
+.hb-push-a{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.hb-push .btn.ghost{color:#fff;border-color:rgba(255,255,255,.35)}
 .cm-stats{font-size:13px;color:var(--ink-2);padding:2px 4px}
 .cm-stats span{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:2px}
 .cm-today{font-size:13.5px;font-weight:600;color:var(--gold);padding:0 4px}
@@ -2878,7 +2885,7 @@ var HADITH_SRC = [{"num":1,"n":"Дела оцениваются по намер�
 var DEF = {
   fav:[], tasbih:{}, tasbihTotal:0, read:{}, dcnt:{}, practice:{}, readDay:"", bought:[], done:[], orders:[],
   theme:"", city:"mah", method:"auto", madhab:1,
-  name:"", email:"", notifPrayer:true, notifDua:true, notifTasks:true, notifScore:true, notifAzkar:true, notifJumua:true, notifKahf:true, statOn:true, notifCourse:false, notifAzan:true,
+  name:"", email:"", notifPrayer:true, notifDua:true, notifAyat:true, notifTasks:true, notifScore:true, notifAzkar:true, notifJumua:true, notifKahf:true, statOn:true, notifCourse:false, notifAzan:true,
   salah:{}, myduas:[], goals:[], namesRead:{}, daily:{}, shukrNotes:{}, shukr:[], shukrMigrated:false, shukrOpen:false, salahOpen:false,
   checks:{}, sunnah:{}, sunnahOpen:false, health:{}, healthOpen:false, pauses:[],
   qada:{p:{}, done:{}, fast:0, fastDone:0, perDay:1, log:[]}, postSeen:"", points:0, pointsDay:{}, cat:{},
@@ -6849,6 +6856,23 @@ function hbShare(){
   try{ navigator.clipboard.writeText(t).then(function(){ toast("Скопировано"); }); }catch(e){}
 }
 /* после намаза: 45 минут после каждого фарда */
+/* всем, у кого уведомления выключены: время намаза - уведомлением */
+function pushCardHome(){
+  try{
+    if(pushOn()) return "";
+    if(!pushSupported() && !pushIosBrowser()) return "";
+    if(S.pushCardHide && Date.now() - S.pushCardHide < 3 * 86400000) return "";
+    var denied = false; try{ denied = ("Notification" in window) && Notification.permission === "denied"; }catch(e){}
+    var ios = pushIosBrowser();
+    return '<section class="hb-push"><div class="hb-push-ic">🔔</div><div class="hb-push-t">'+
+      '<b>Узнавайте о времени намаза</b>'+
+      '<span>RIZQ напомнит в момент азана о каждом намазе, утром пришлёт аят дня, после фаджра и асра - азкары. Даже когда приложение закрыто.</span>'+
+      (ios ? '<em>На iPhone: сначала «Поделиться» → «На экран «Домой»», откройте RIZQ оттуда и нажмите «Включить».</em>' : '')+
+      (denied ? '<em>Телефон запретил уведомления для RIZQ: откройте настройки телефона → Уведомления → разрешите для этого сайта или приложения.</em>' : '')+
+      '<div class="hb-push-a">'+(denied ? '' : '<button class="btn sm" data-pushask="1">Включить уведомления</button>')+
+      '<button class="btn ghost sm" data-pushcard="1">Позже</button></div></div></section>';
+  }catch(e){ return ""; }
+}
 function hbAfterPrayer(){
   try{
     var tn = timesNow(), now = nowHours(), keys = ["fajr","dhuhr","asr","maghrib","isha"], names = { fajr:"Фаджра", dhuhr:"Зухра", asr:"Асра", maghrib:"Магриба", isha:"Иши" };
@@ -6896,6 +6920,7 @@ function viewHomeMain(){
   var h = ['<div class="stack">'];
   /* пятница после асра - карточка часа дуа, первой на главной (просьба Заиры 25.09) */
   h.push(hbAfterPrayer());
+  h.push(pushCardHome());
   h.push(jumuaHourCard());
   h.push(clubBigBtn());
   h.push(kahfCard());
@@ -15086,7 +15111,7 @@ function vmRun(record){
       catch(e){ rec = new MediaRecorder(stream); }
       rec.ondataavailable = function(e){ if(e.data && e.data.size) chunks.push(e.data); };
       rec.onstop = function(){ vmDone(new Blob(chunks, { type:(rec.mimeType || mime).split(";")[0] }), res); };
-      rec.start(500);
+      rec.start();   /* одним куском: куски по 500 мс на iPhone давали ролик только из первого */
     }
     VM.playing = true; VM.playAt = start;
     function finish(cancel){
@@ -25919,6 +25944,13 @@ function pushItems(){
     /* Пятница: за час до магриба - последний час, когда дуа принимается
        (ан-Насаи 1389, Абу Дауд 1048). По умолчанию включено вместе с остальными напоминаниями. */
     /* (пятница - ниже, отдельным циклом) */
+    /* Аят дня в 7:00 («да» Заиры 30.09.2026) - тот же аят, что на главной в этот день */
+    if(S.notifAyat !== false && typeof AYAT_DAY !== "undefined"){
+      var at7 = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 7, 0, 0).getTime();
+      var ap = AYAT_DAY[(dayIndex() + k) % AYAT_DAY.length], ai = ayahGlobal(ap[0], ap[1]);
+      var abody = HAS_TR && QR[ai] ? String(QR[ai]).slice(0, 120) + (String(QR[ai]).length > 120 ? "..." : "") : "Сура «" + QSUR[ap[0] - 1][2] + "», " + ap[1] + " - откройте, чтобы прочитать и послушать";
+      if(at7 > now) items.push({ at: new Date(at7).toISOString(), title: "Аят дня", body: abody, tag: "ayat" });
+    }
     if(S.notifDua && pool.length){
       var morning = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 8, 0, 0).getTime();
       var dua = pool[(dayIndex() + k) % pool.length];
@@ -25990,7 +26022,7 @@ function pushSig(){
     .map(function(x){ return x.due + x.tm + x.id; }).join(",") + "|" +
     (S.debts || []).filter(function(x){ return !x.closed && x.due; })
     .map(function(x){ return x.due + x.id; }).join(",");
-  return [c.lat, c.lng, c.tz, S.method, S.madhab, S.notifPrayer ? 1 : 0, S.notifDua ? 1 : 0,
+  return [c.lat, c.lng, c.tz, S.method, S.madhab, S.notifPrayer ? 1 : 0, S.notifDua ? 1 : 0, S.notifAyat === false ? 0 : 1, HAS_TR ? 1 : 0,
           S.notifTasks === false ? 0 : 1, S.notifScore === false ? 0 : 1, scoreState().on ? 1 : 0, S.notifAzkar === false ? 0 : 1, S.notifJumua === false ? 0 : 1, S.notifKahf === false ? 0 : 1, JSON.stringify(S.ptAdj || {}), (S.kahf && S.kahf[todayKey()]) ? 1 : 0,
           (S.scoreMe && S.scoreMe.place) || 0, pauseNow() ? 1 : 0, todayKey(), tasks,
           S.ar ? (S.ar.start ? 1 : 0) + ":" + (S.ar.remind || "9") + ":" + (arDayDone(arToday()) ? 1 : 0) : ""].join("|");
@@ -26597,6 +26629,7 @@ function viewProf(){
         (pushIosBrowser() ? '(на iPhone - после установки иконки на экран «Домой») ' : '')+'или добавьте намаз в календарь телефона.')+
     '</p>');
   h.push('<details class="more"><summary>Остальные напоминания и приватность</summary><div class="rows">'+
+    swRow("notifAyat", "۞", "Аят дня в 7:00") +
     swRow("notifDua", "✦", "Дуа дня утром") +
     swRow("notifAzkar", "☀", "Утренние и вечерние азкары") +
     swRow("notifKahf", "۞", "Пятница: сура аль-Кахф утром") +
@@ -26979,7 +27012,7 @@ function accFetch(p, method, body){
 var SY_KEYS = (function(){
   var a = BK_KEYS.concat(["phone","email","qTime","qtGoal","nameMark","scoreGoal","scoreBest","score","qrmdOff","qFont",
     "qTajweed","qBook","mdnSize","qContinue","qFollow","madhabPicked","bought","leads","hlCity",
-    "notifPrayer","notifDua","notifTasks","notifScore","notifAzkar","notifJumua","notifKahf","notifCourse","notifAzan"]), seen = {}, out = [];
+    "notifPrayer","notifDua","notifAyat","notifTasks","notifScore","notifAzkar","notifJumua","notifKahf","notifCourse","notifAzan"]), seen = {}, out = [];
   for(var i = 0; i < a.length; i++) if(!seen[a[i]]){ seen[a[i]] = 1; out.push(a[i]); }
   return out;
 })();
@@ -26989,7 +27022,7 @@ var SY_ADD = { points:1, pointsDay:1, tasbihTotal:1, azkarLifetime:1, tasbih:1 }
 var SY_SET = {};
 ["name","email","phone","city","method","madhab","madhabPicked","ptAdj","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll",
  "qContinue","qFollow","fontSize","qFont","qFontSafe","qTajweed","qBook","mdnSize","qtGoal","qrmdOff","scoreGoal","score",
- "qLast","hlCity","zakat","notifPrayer","notifDua","notifTasks","notifScore","notifAzkar","notifJumua","notifKahf","notifCourse","notifAzan"]
+ "qLast","hlCity","zakat","notifPrayer","notifDua","notifAyat","notifTasks","notifScore","notifAzkar","notifJumua","notifKahf","notifCourse","notifAzan"]
   .forEach(function(k){ SY_SET[k] = 1; });
 
 function syHash(s){ var h = 5381, i = s.length; while(i) h = ((h << 5) + h) ^ s.charCodeAt(--i); return (h >>> 0).toString(36) + "." + s.length; }
@@ -28677,7 +28710,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-hb],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-pushcard],[data-hb],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -29433,13 +29466,14 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.sqfrix!==undefined){ S.sqFriHide = todayKey(); save(); render(); return; }
   if(d.clubbannerx!==undefined){ S.clubBannerHide = 1; save(); render(); return; }
   if(d.bkhide!==undefined){ var nb0 = Date.now(); S.bkCard = { day:todayKey(), at:nb0, hid:nb0 }; save(); render(); toast("Скрыли на неделю"); return; }
+  if(d.pushcard!==undefined){ S.pushCardHide = Date.now(); save(); renderInPlace(); toast("Напомню через три дня. Включить можно в профиле"); return; }
   if(d.pushask!==undefined){ closeSheet(); if(d.pushask === "1") pushEnable(); else toast("Хорошо. Включить можно в профиле, в напоминаниях"); return; }
   if(d.ptadj){ var pa0 = String(d.ptadj).split(":"); ptAdjSet(pa0[0], ptAdjGet(pa0[0]) + parseInt(pa0[1], 10)); return; }
   if(d.ptreset!==undefined){ S.ptAdj = {}; var y0 = $screen.scrollTop; save(); render(); $screen.scrollTop = y0; toast("Поправки сброшены: время снова по расчёту"); return; }
   if(d.pushtoggle!==undefined){ if(pushOn()) pushDisable(); else pushEnable(); return; }
   if(d.sw){
     S[d.sw] = !S[d.sw]; save(); render();
-    if(d.sw === "notifPrayer" || d.sw === "notifDua" || d.sw === "notifTasks" || d.sw === "notifScore" || d.sw === "notifAzkar" || d.sw === "notifJumua" || d.sw === "notifKahf") pushSync(true);
+    if(d.sw === "notifAyat" || d.sw === "notifPrayer" || d.sw === "notifDua" || d.sw === "notifTasks" || d.sw === "notifScore" || d.sw === "notifAzkar" || d.sw === "notifJumua" || d.sw === "notifKahf") pushSync(true);
     if(S[d.sw] && (d.sw === "notifPrayer" || d.sw === "notifDua")){
       notifAsk().then(function(r){
         if(r === "granted"){ toast("Напоминания включены"); }
