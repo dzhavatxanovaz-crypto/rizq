@@ -15104,6 +15104,8 @@ function vmRun(record){
       var b = ac.createBufferSource(); b.buffer = sg.buf; b.connect(dest); b.connect(ac.destination);
       b.start(start + sg.t0); srcs.push(b);
     });
+    /* неслышный тон на весь ролик: без живого звука запись обрывалась на 1-2 секунде */
+    try{ var hum = ac.createOscillator(), hg = ac.createGain(); hg.gain.value = 0.0001; hum.connect(hg); hg.connect(dest); hum.start(start); hum.stop(start + res.total + 0.6); srcs.push(hum); }catch(e){}
     if(record){
       var stream = cv.captureStream(30);
       dest.stream.getAudioTracks().forEach(function(tr){ stream.addTrack(tr); });
