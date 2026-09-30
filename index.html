@@ -2200,6 +2200,9 @@ details.more[open]>summary:after{content:"⌄"}
 .qrow b{display:block;font-family:var(--f-display);font-size:15px;font-weight:600}
 .qrow span{font-size:13px;color:var(--ink-3)}
 .qrow .qar{margin-left:auto;font-family:var(--f-ar);font-size:21px;color:var(--accent-ink);direction:rtl;flex:none}
+.qm-dot{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;box-shadow:0 0 0 2px rgba(255,255,255,.14)}
+.qm-tag{display:inline-flex;align-items:center;gap:6px;margin-left:8px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);
+  background:var(--surface-2);color:var(--ink-2);font-size:11.5px;font-weight:600}
 .qnum{width:30px;height:30px;flex:none;border-radius:9px;background:var(--surface-2);border:1px solid var(--line);
   display:grid;place-items:center;font-size:12.5px;font-weight:600;color:var(--ink-3);font-variant-numeric:tabular-nums}
 .qgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
@@ -5183,8 +5186,45 @@ var RECITERS = [
   {id:"ar.husary",             n:"Махмуд Аль-Хусари", qc:6, vb:"https://mirrors.quranicaudio.com/everyayah/Husary_64kbps/"},
   {id:"ar.abdulbasitmurattal", n:"Абдуль-Басит (мураттель)", qc:2, vb:"https://verses.quran.com/AbdulBaset/Murattal/mp3/"},
   {id:"ar.abdurrahmaansudais", n:"Абдуррахман Ас-Судайс", qc:3, vb:"https://verses.quran.com/Sudais/mp3/"},
-  {id:"ar.mahermuaiqly",       n:"Махер Аль-Муайкли", hide:1},   /* пока скрыт: у quran.com нет разметки слов */
-  {id:"ar.minshawi",           n:"Мухаммад Аль-Миншави", qc:9, vb:"https://verses.quran.com/Minshawi/Murattal/mp3/"}
+  {id:"ar.mahermuaiqly",       n:"Махер Аль-Муайкли"},   /* разметки слов на quran.com нет - подсвечивается аят целиком */
+  {id:"ar.minshawi",           n:"Мухаммад Аль-Миншави", qc:9, vb:"https://verses.quran.com/Minshawi/Murattal/mp3/"},
+  /* 30.09.2026: ещё 35 чтецов по аятам с everyayah (у кого есть копия на зеркале quranicaudio -
+     берём оттуда, у остальных - с everyayah.com). Разметки слов у них нет: подсвечивается аят. */
+  {id:"ea.basitmj", n:"Абдуль-Басит (муджаввад)", vb:"https://mirrors.quranicaudio.com/everyayah/Abdul_Basit_Mujawwad_128kbps/"},
+  {id:"ea.basfar", n:"Абдуллах Басфар", vb:"https://everyayah.com/data/Abdullah_Basfar_64kbps/"},
+  {id:"ea.abdulsamad", n:"Абдус-Самад", vb:"https://everyayah.com/data/AbdulSamad_64kbps_QuranExplorer.Com/"},
+  {id:"ea.shaatree", n:"Абу Бакр Аш-Шатри", vb:"https://mirrors.quranicaudio.com/everyayah/Abu_Bakr_Ash-Shaatree_128kbps/"},
+  {id:"ea.ajamy", n:"Ахмад Аль-Аджами", vb:"https://everyayah.com/data/ahmed_ibn_ali_al_ajamy_128kbps/"},
+  {id:"ea.ghamadi", n:"Саад Аль-Гамиди", vb:"https://mirrors.quranicaudio.com/everyayah/Ghamadi_40kbps/"},
+  {id:"ea.rifai", n:"Хани Ар-Рифаи", vb:"https://everyayah.com/data/Hani_Rifai_64kbps/"},
+  {id:"ea.husarymj", n:"Махмуд Аль-Хусари (муджаввад)", vb:"https://mirrors.quranicaudio.com/everyayah/Husary_128kbps_Mujawwad/"},
+  {id:"ea.hudhaify", n:"Али Аль-Хузайфи", vb:"https://mirrors.quranicaudio.com/everyayah/Hudhaify_128kbps/"},
+  {id:"ea.akhdar", n:"Ибрахим Аль-Ахдар", vb:"https://everyayah.com/data/Ibrahim_Akhdar_32kbps/"},
+  {id:"ea.minshawimj", n:"Мухаммад Аль-Миншави (муджаввад)", vb:"https://everyayah.com/data/Minshawy_Mujawwad_64kbps/"},
+  {id:"ea.tablawi", n:"Мухаммад Ат-Таблави", vb:"https://mirrors.quranicaudio.com/everyayah/Mohammad_al_Tablaway_128kbps/"},
+  {id:"ea.ayyoub", n:"Мухаммад Айюб", vb:"https://mirrors.quranicaudio.com/everyayah/Muhammad_Ayyoub_128kbps/"},
+  {id:"ea.jibreel", n:"Мухаммад Джибриль", vb:"https://mirrors.quranicaudio.com/everyayah/Muhammad_Jibreel_128kbps/"},
+  {id:"ea.ismail", n:"Мустафа Исмаил", vb:"https://everyayah.com/data/Mustafa_Ismail_48kbps/"},
+  {id:"ea.shuraym", n:"Сауд Аш-Шурайм", vb:"https://mirrors.quranicaudio.com/everyayah/Saood_ash-Shuraym_128kbps/"},
+  {id:"ea.bukhatir", n:"Салах Бухатир", vb:"https://everyayah.com/data/Salaah_AbdulRahman_Bukhatir_128kbps/"},
+  {id:"ea.qasim", n:"Мухсин Аль-Касим", vb:"https://everyayah.com/data/Muhsin_Al_Qasim_192kbps/"},
+  {id:"ea.juhany", n:"Абдуллах Аль-Джухани", vb:"https://everyayah.com/data/Abdullaah_3awwaad_Al-Juhaynee_128kbps/"},
+  {id:"ea.budair", n:"Салах Аль-Будайр", vb:"https://everyayah.com/data/Salah_Al_Budair_128kbps/"},
+  {id:"ea.matroud", n:"Абдуллах Матруд", vb:"https://everyayah.com/data/Abdullah_Matroud_128kbps/"},
+  {id:"ea.neana", n:"Ахмад Наина", vb:"https://everyayah.com/data/Ahmed_Neana_128kbps/"},
+  {id:"ea.abdulkareem", n:"Мухаммад Абдуль-Карим", vb:"https://everyayah.com/data/Muhammad_AbdulKareem_128kbps/"},
+  {id:"ea.tunaiji", n:"Халифа Ат-Тунайджи", vb:"https://everyayah.com/data/khalefa_al_tunaiji_64kbps/"},
+  {id:"ea.banna", n:"Махмуд Али Аль-Банна", vb:"https://everyayah.com/data/mahmoud_ali_al_banna_32kbps/"},
+  {id:"ea.qahtani", n:"Халид Аль-Кахтани", vb:"https://everyayah.com/data/Khaalid_Abdullaah_al-Qahtaanee_192kbps/"},
+  {id:"ea.dosari", n:"Ясир Ад-Досари", vb:"https://mirrors.quranicaudio.com/everyayah/Yasser_Ad-Dussary_128kbps/"},
+  {id:"ea.qatami", n:"Насир Аль-Катами", vb:"https://everyayah.com/data/Nasser_Alqatami_128kbps/"},
+  {id:"ea.suesy", n:"Али Хаджжадж Ас-Сувайси", vb:"https://everyayah.com/data/Ali_Hajjaj_AlSuesy_128kbps/"},
+  {id:"ea.sahl", n:"Сахль Ясин", vb:"https://everyayah.com/data/Sahl_Yassin_128kbps/"},
+  {id:"ea.salamah", n:"Ясир Саляма", vb:"https://mirrors.quranicaudio.com/everyayah/Yaser_Salamah_128kbps/"},
+  {id:"ea.alaqimy", n:"Акрам Аль-Алякми", vb:"https://everyayah.com/data/Akram_AlAlaqimy_128kbps/"},
+  {id:"ea.jaber", n:"Али Джабер", vb:"https://everyayah.com/data/Ali_Jaber_64kbps/"},
+  {id:"ea.abbad", n:"Фарес Аббад", vb:"https://everyayah.com/data/Fares_Abbad_64kbps/"},
+  {id:"ea.sowaid", n:"Айман Сувайд", vb:"https://mirrors.quranicaudio.com/everyayah/Ayman_Sowaid_64kbps/"}
 ];
 var QTOTAL = (typeof QA !== "undefined") ? QA.length : 0;
 
@@ -5650,12 +5690,12 @@ function fbDoneCheck(){
 
 /* «Что нового» - один раз после обновления. Новым пользователям не показываем:
    для них всё новое. Чтобы показать снова, поменять WN.id и пункты. */
-var WN = { id:"2026-09-29-fs", items:[
-  ["Aa", "Крупный текст", "⚙ Настройки → Размер текста: теперь до полутора раз, крупнее и шапка, и подписи внизу"],
-  ["⚖", "Намаз в разных мазхабах", "чем отличается намаз у шафиитов и ханафитов - в разделе «Намаз»"],
-  ["✦", "Счёт от лёгкого касания", "в азкарах и тасбихе касание засчитывается сразу, кнопка счёта в азкарах стала цветной"],
-  ["۞", "Басмала в Коране", "стоит отдельной строкой перед сурой; в «Аль-Фатихе» счёт аятов начинается с «Аль-хамду лилляхи»"],
-  ["✎", "Предложить улучшение", "в профиле: пишите, что сделать лучше, - ответ покажем здесь же"]
+var WN = { id:"2026-09-30", items:[
+  ["▶", "Плеер сур", "больше 200 чтецов, суры целиком, поиск по имени - на вкладке «Коран»"],
+  ["◉", "41 чтец для чтения по аятам", "в настройках чтения: поиск по имени, у пятерых подсвечивается каждое слово"],
+  ["●", "Цветные метки закладок", "«Важное», «Выучить», «Размышлять», «Для дуа», «Перечитать» и фильтр по цвету"],
+  ["🔖", "Переход по закладке", "аят сразу встаёт вверху экрана и больше не уплывает"],
+  ["Aa", "Крупный текст", "⚙ Настройки → Размер текста: до полутора раз"]
 ]};
 function wnCheck(){
   if(S.wnSeen === WN.id) return;
@@ -5795,7 +5835,7 @@ function qMedia(i){
   if(!("mediaSession" in navigator)) return;
   try{
     var s = surahOf(i);
-    navigator.mediaSession.metadata = new MediaMetadata({ title: QSUR[s][2] + ", аят " + (i - QSUR[s][6] + 1), artist: qRec().n, album: "Коран · RIZQ",
+    navigator.mediaSession.metadata = new MediaMetadata({ title: qRef(i), artist: qRec().n, album: "Коран · RIZQ",
       artwork: [{ src: "icons/icon-192.png", sizes: "192x192", type: "image/png" }, { src: "icons/icon-512.png", sizes: "512x512", type: "image/png" }] });
     if(!QP.ms){
       QP.ms = 1;
@@ -5813,6 +5853,7 @@ function qStop(){
   paintPlayer();
 }
 function qPlay(i){
+  if(SPL.audio && SPL.playing){ SPL.audio.pause(); SPL.playing = false; }
   if(!QP.audio){
     QP.audio = new Audio();
     QP.audio.addEventListener("ended", function(){
@@ -6289,7 +6330,8 @@ function renderHdr(){
         : V.view==="umrah" ? "Хадж и Умра"
         : V.view==="book2" ? "Девушка, которая смогла"
         : V.view==="book2ch" ? "Девушка, которая смогла"
-        : V.view==="settings" ? "Настройки" : "";
+        : V.view==="settings" ? "Настройки"
+        : V.view==="spl" ? "Плеер сур" : "";
     $hdr.innerHTML = '<header class="hdr"><div class="hdr-row">'+
       '<button class="back" data-back="1" aria-label="Назад">‹</button>'+
       '<div><h2 class="hdr-title">'+esc(t)+'</h2></div></div></header>';
@@ -7208,6 +7250,7 @@ function buildIndex(){
    ["Хадж и умра в пути","чек-лист по шагам, счёт кругов","open:hajjtrip","хадж умра чек-лист чеклист таваф сай круги ихрам мекка паломничество камни джамарат арафат муздалифа мина сборы"],
    ["Детям","истории пророков, перед сном, дуа, имена","open:kids","дети детям ребенок ребёнок истории пророков сказки перед сном на ночь дуа для детей имена имя для ребенка мальчику девочке"],
    ["Исламская рассрочка","партнёры и покупка товара в рассрочку","open:installment","рассрочка исламская халяль мурабаха кредит без процентов частями взносы купить в рассрочку партнерское финансирование"],
+   ["Плеер сур","больше 200 чтецов, суры целиком","open:spl","плеер сура чтец слушать коран целиком аудио афаси судайс гамиди мп3"],
    ["Размер текста","крупный шрифт для чтения","open:settings","шрифт размер крупный текст мелко зрение увеличить плохо вижу буквы"],
    ["Умра - малый хадж","путеводитель: сезоны, вещи, ихрам, таваф, са'й","open:umrah","умра умру малый хадж паломничество мекка медина ихрам микат таваф сай сафа марва кааба путеводитель чек-лист вещи виза нусук"],
    ["Девушка, которая смогла","книга Заиры Джаватхановой, бизнес-роман","open:book2","книга девушка которая смогла бизнес роман амина читать купить книгу"],
@@ -9153,11 +9196,24 @@ function viewSuras(){
 /* ============================================================
    ЭКРАН: КОРАН - оглавление
    ============================================================ */
+/* ---------- цветные метки закладок (30.09.2026) ---------- */
+var QMC = [["gold","Важное","#D4AF37"],["green","Выучить наизусть","#2FA36B"],["blue","Размышлять","#3F7FD9"],["rose","Для дуа","#D9577A"],["violet","Перечитать","#8E6BD9"]];
+function qmCol(i){ var k = (S.qMarkCol || {})[i] || "gold"; return QMC.filter(function(c){ return c[0] === k; })[0] || QMC[0]; }
+function sheetMarkColor(i){
+  var cur = qmCol(i)[0];
+  sheet('<h3>Метка закладки</h3><p class="note" style="margin:0 0 12px">'+esc(qRef(i))+'. Цвет помогает вспомнить, зачем вы сохранили аят.</p>'+
+    '<div class="rows">'+QMC.map(function(c){
+      return '<button class="row" data-qmcolset="'+i+':'+c[0]+'"><span class="ic"><i class="qm-dot" style="background:'+c[2]+'"></i></span>'+
+        '<span style="flex:1">'+esc(c[1])+'</span>'+(c[0] === cur ? '<span class="val" style="color:var(--emerald)">✓</span>' : '')+'</button>';
+    }).join("")+'</div>'+
+    '<button class="btn ghost" style="margin-top:10px" data-scrim="1">Готово</button>');
+}
 function viewQMarks(){
   var h = ['<div class="stack">'];
-  var list = S.qMarks.slice().sort(function(a,b){ return a - b; });
+  var all = S.qMarks.slice().sort(function(a,b){ return a - b; });
+  var list = V.qmf ? all.filter(function(i){ return qmCol(i)[0] === V.qmf; }) : all;
 
-  if(!list.length){
+  if(!all.length){
     h.push('<div class="empty"><div class="ic">★</div><b>Закладок пока нет</b>'+
       '<p>Открывайте суру и нажимайте звёздочку у аята - он появится здесь, '+
       'и вы вернётесь к нему в один шаг.</p>'+
@@ -9167,7 +9223,15 @@ function viewQMarks(){
   }
 
   h.push('<div class="card flat" style="padding:13px 15px;font-size:13.5px;color:var(--ink-2);line-height:1.55">'+
-    'Сохранено аятов: '+list.length+'. Нажмите на закладку, чтобы открыть это место в Коране.</div>');
+    'Сохранено аятов: '+all.length+'. Нажмите на закладку, чтобы открыть это место в Коране, а на цветную точку - чтобы сменить метку.</div>');
+  h.push('<div class="pill-row" style="justify-content:flex-start;flex-wrap:wrap;gap:6px">'+
+    '<button class="pill'+(!V.qmf ? ' on' : '')+'" data-qmf="">Все · '+all.length+'</button>'+
+    QMC.map(function(c){
+      var n = all.filter(function(i){ return qmCol(i)[0] === c[0]; }).length;
+      if(!n) return '';
+      return '<button class="pill'+(V.qmf === c[0] ? ' on' : '')+'" data-qmf="'+c[0]+'"><i class="qm-dot" style="background:'+c[2]+'"></i> '+esc(c[1])+' · '+n+'</button>';
+    }).join("")+'</div>');
+  if(!list.length) h.push('<p class="note">С этой меткой закладок нет.</p>');
 
   /* группируем по сурам */
   var bySurah = {};
@@ -9189,6 +9253,7 @@ function viewQMarks(){
           '<span style="display:block;font-family:var(--f-ar);direction:rtl;text-align:right;'+
             'font-size:19px;line-height:1.9;color:var(--ink-2);margin-top:8px">'+esc(qaShow(i).slice(0,90))+'</span>'+
         '</button>'+
+        '<button class="qbtn" data-qmcol="'+i+'" title="Метка: '+esc(qmCol(i)[1])+'" aria-label="Метка: '+esc(qmCol(i)[1])+'" style="flex:none"><i class="qm-dot" style="background:'+qmCol(i)[2]+'"></i></button>'+
         '<button class="qbtn on" data-qmark="'+i+'" title="Снять закладку" style="flex:none">★</button>'+
       '</div>');
     });
@@ -12590,6 +12655,8 @@ function viewQuranHome(){
     '<button data-open="qsearch"><span>⌕</span>Поиск</button>'+
     '<button data-open="qmarks"><span>🔖</span>Закладки'+(S.qMarks.length ? '<em>'+S.qMarks.length+'</em>' : '')+'</button>'+
     '<button data-open="qoffline"><span>⤓</span>Офлайн'+(qoffN ? '<em>'+qoffN+'</em>' : '')+'</button></div>');
+  h.push('<button class="cat-wide gold" data-open="spl" style="margin-top:10px"><span class="cw-ic">▶</span>'+
+    '<span class="cw-t"><b>Плеер сур</b><span>Больше 200 чтецов, суры целиком, поиск по имени</span></span><span class="cw-go">›</span></button>');
   h.push('<div class="sec-h"><h3>Мой путь</h3></div>');
   h.push(qtCard());
   h.push('<div class="qgroup">');
@@ -12720,6 +12787,7 @@ function hifzActs(i){
 function ayahInner(i, withSurah){
   return '<div class="ayah-h">'+
       (ayahInSurah(i) ? '<span class="ayah-n">'+ayahInSurah(i)+'</span>' : '<span class="ayah-n" title="Басмала">۞</span>')+
+      (isMark(i) ? '<button class="qm-tag" data-qmcol="'+i+'" aria-label="Метка: '+esc(qmCol(i)[1])+'"><i class="qm-dot" style="background:'+qmCol(i)[2]+'"></i>'+esc(qmCol(i)[1])+'</button>' : '')+
       (isSajda(i)? '<span class="sajda">۩ земной поклон</span>' : '')+
       '<span style="margin-left:auto;font-size:12px;color:var(--ink-3)">'+esc(QSUR[surahOf(i)][2])+(withSurah ? ', аят '+ayahInSurah(i) : '')+'</span>'+
     '</div>'+
@@ -13216,13 +13284,143 @@ function viewReader(){
 /* ============================================================
    ЭКРАН: НАСТРОЙКИ ЧТЕНИЯ
    ============================================================ */
+/* Список чтецов для выбора: сначала те, кто подсвечивает каждое слово, потом -
+   аят целиком. q - поиск по имени (регистр и «ё» не важны). */
+function recListHtml(q){
+  var nq = String(q || "").toLowerCase().split("ё").join("е").trim();
+  var list = RECITERS.filter(function(r){
+    if(r.hide && S.qReciter !== r.id) return false;
+    return !nq || r.n.toLowerCase().split("ё").join("е").indexOf(nq) > -1;
+  });
+  if(!list.length) return '<p class="note" style="margin-top:10px">Такого чтеца нет. Проверьте имя.</p>';
+  function row(r){
+    var on = S.qReciter === r.id;
+    return '<button class="row" data-qreciter="'+r.id+'"><span class="ic">'+(on ? "◉" : "○")+'</span>'+
+      '<span style="flex:1;min-width:0">'+esc(r.n)+(r.best ? '<span style="display:block;font-size:12px;color:var(--accent-ink);margin-top:2px">рекомендуем · лучше всего работает без интернета</span>' : '')+'</span>'+
+      (on ? '<span class="val" style="color:var(--emerald)">✓</span>' : '')+'</button>';
+  }
+  var words = list.filter(function(r){ return r.qc; }), ayat = list.filter(function(r){ return !r.qc; });
+  return (words.length ? '<div class="eyebrow" style="margin:14px 0 8px">Подсвечивают каждое слово · '+words.length+'</div><div class="rows">'+words.map(row).join("")+'</div>' : '')+
+    (ayat.length ? '<div class="eyebrow" style="margin:16px 0 8px">Подсвечивают аят · '+ayat.length+'</div><div class="rows">'+ayat.map(row).join("")+'</div>' : '');
+}
+/* ---------- плеер сур: больше 200 чтецов mp3quran (30.09.2026); список - scripts/mp3quran-chtecy.js ---------- */
+var SPL = { list: null, busy: false, err: false, audio: null, sura: 0, playing: false };
+function splLoad(){
+  if(SPL.list || SPL.busy || !window.fetch) return;
+  SPL.busy = true; SPL.err = false;
+  fetch("mp3quran-chtecy.json").then(function(r){ return r.json(); })
+    .then(function(j){ SPL.busy = false; SPL.list = j.r || []; if(V.view === "spl") renderInPlace(); })
+    .catch(function(){ SPL.busy = false; SPL.err = true; if(V.view === "spl") renderInPlace(); });
+}
+function splRec(){ var id = S.splRec; return (SPL.list || []).filter(function(r){ return r.i === id; })[0] || null; }
+function splHas(r, n){ return !r.l || ("," + r.l + ",").indexOf("," + n + ",") > -1; }
+function splUrl(r, n){ return r.s + ("00" + n).slice(-3) + ".mp3"; }
+function splTime(t){ t = Math.max(0, Math.floor(t || 0)); var m = Math.floor(t / 60), c = t % 60; return m + ":" + (c < 10 ? "0" : "") + c; }
+/* Список чтецов с поиском: регистр и «ё» не важны. */
+function splRecList(q){
+  /* поиск без пробелов, дефисов и регистра, по русскому и английскому имени: «афаси», «alafasy» */
+  var nq = String(q || "").toLowerCase().split("ё").join("е").replace(/[^a-zа-я0-9]/g, "");
+  var list = (SPL.list || []).filter(function(r){ return !nq || String(r.k || r.n).indexOf(nq) > -1; });
+  if(!list.length) return '<p class="note" style="margin-top:10px">Такого чтеца нет. Попробуйте часть имени: «Афаси», «Судайс», «Гамиди».</p>';
+  return '<div class="rows" style="margin-top:10px">'+list.map(function(r){
+    var n = r.l ? r.l.split(",").length : 114;
+    return '<button class="row" data-splrec="'+r.i+'"><span class="ic">▶</span><span style="flex:1;min-width:0">'+esc(r.n)+
+      '<span style="display:block;font-size:12px;color:var(--ink-3);margin-top:2px">'+(n === 114 ? "все 114 сур" : n + " " + plural(n, "сура", "суры", "сур").replace(/^[0-9]+ /, ""))+(r.m ? " · муджаввад" : "")+'</span></span></button>';
+  }).join("")+'</div>';
+}
+function splStopQuran(){ try{ if(QP.audio && QP.playing){ QP.audio.pause(); QP.playing = false; paintPlayer(); } }catch(e){} }
+function splPlay(n){
+  var r = splRec(); if(!r) return;
+  if(!splHas(r, n)){ toast("У этого чтеца нет этой суры"); return; }
+  splStopQuran();
+  if(!SPL.audio){
+    SPL.audio = new Audio(); SPL.audio.preload = "auto";
+    SPL.audio.addEventListener("timeupdate", splTick);
+    SPL.audio.addEventListener("ended", function(){ SPL.playing = false; if(S.splAuto !== false) splNext(1); else renderInPlace(); });
+    SPL.audio.addEventListener("error", function(){ SPL.playing = false; toast("Не удалось включить суру. Нужен интернет"); renderInPlace(); });
+  }
+  SPL.sura = n; SPL.audio.src = splUrl(r, n);
+  var p = SPL.audio.play(); if(p && p.catch) p.catch(function(){ SPL.playing = false; renderInPlace(); });
+  SPL.playing = true; S.splLast = n; save();
+  splMedia(r, n);
+  renderInPlace();
+}
+function splToggle(){
+  if(!SPL.audio || !SPL.sura){ splPlay(S.splLast || 1); return; }
+  if(SPL.playing){ SPL.audio.pause(); SPL.playing = false; }
+  else { splStopQuran(); var p = SPL.audio.play(); if(p && p.catch) p.catch(function(){}); SPL.playing = true; }
+  renderInPlace();
+}
+function splNext(dir){
+  var r = splRec(); if(!r) return;
+  for(var n = (SPL.sura || 0) + dir; n >= 1 && n <= 114; n += dir){ if(splHas(r, n)){ splPlay(n); return; } }
+  SPL.playing = false; renderInPlace();
+}
+function splTick(){
+  var a = SPL.audio; if(!a) return;
+  var sk = document.getElementById("splSeek"), tm = document.getElementById("splTime");
+  if(sk && a.duration) sk.value = Math.round(a.currentTime * 1000 / a.duration);
+  if(tm) tm.textContent = splTime(a.currentTime) + " / " + splTime(a.duration);
+}
+/* Экран блокировки: название суры и чтеца, пауза, следующая, предыдущая. */
+function splMedia(r, n){
+  if(!("mediaSession" in navigator)) return;
+  try{
+    QP.ms = 0; /* чтение по аятам вернёт свои кнопки, когда снова заиграет */
+    navigator.mediaSession.metadata = new MediaMetadata({ title: "Сура " + QSUR[n - 1][2], artist: r.n, album: "Плеер сур · RIZQ",
+      artwork: [{ src: "icons/icon-192.png", sizes: "192x192", type: "image/png" }, { src: "icons/icon-512.png", sizes: "512x512", type: "image/png" }] });
+    navigator.mediaSession.setActionHandler("play", function(){ if(!SPL.playing) splToggle(); });
+    navigator.mediaSession.setActionHandler("pause", function(){ if(SPL.playing) splToggle(); });
+    navigator.mediaSession.setActionHandler("nexttrack", function(){ splNext(1); });
+    navigator.mediaSession.setActionHandler("previoustrack", function(){ splNext(-1); });
+  }catch(e){}
+}
+function viewSpl(){
+  splLoad();
+  var h = ['<div class="stack">'];
+  if(!SPL.list){
+    h.push('<section class="card"><p class="note" style="margin:0">'+(SPL.err ? 'Не удалось открыть список чтецов. Проверьте интернет и откройте раздел ещё раз.' : 'Загружаем список чтецов...')+'</p><p class="note" style="margin:10px 0 0">Здесь суры звучат целиком: больше 200 чтецов в риваяте Хафс от Асыма, поиск по имени, продолжение по порядку и управление с экрана блокировки. Для этого нужен интернет.'+'</p></section></div>');
+    return h.join("");
+  }
+  var r = splRec();
+  if(!r){
+    h.push('<section class="card"><div class="eyebrow">Выберите чтеца</div>'+
+      '<p class="note" style="margin:8px 0 0">'+SPL.list.length+' чтецов, риваят Хафс от Асыма. Суры звучат целиком, для этого нужен интернет.</p>'+
+      '<input class="search" id="splSearch" style="margin:12px 0 0" placeholder="Найти чтеца по имени" autocomplete="off">'+
+      '<div id="splList">'+splRecList("")+'</div></section>');
+    h.push('<p class="disclaimer">Записи - mp3quran.net. Для чтения по аятам с подсветкой - раздел «Коран».</p></div>');
+    return h.join("");
+  }
+  var cur = SPL.sura, a = SPL.audio;
+  h.push('<section class="card">'+
+    '<div style="display:flex;align-items:center;gap:10px"><div style="flex:1;min-width:0"><div class="eyebrow">Чтец</div>'+
+      '<b style="display:block;font-family:var(--f-display);font-size:17px;margin-top:4px">'+esc(r.n)+'</b></div>'+
+      '<button class="btn sec sm" data-splchange="1">Сменить</button></div>'+
+    (cur ? '<div style="margin-top:14px;font-size:15px">Сура '+cur+'. <b>'+esc(QSUR[cur - 1][2])+'</b></div>'+
+      '<input class="slider" type="range" min="0" max="1000" value="'+(a && a.duration ? Math.round(a.currentTime * 1000 / a.duration) : 0)+'" id="splSeek" style="width:100%;margin-top:10px">'+
+      '<div id="splTime" style="font-size:12.5px;color:var(--ink-3);text-align:right">'+(a ? splTime(a.currentTime) + " / " + splTime(a.duration) : "")+'</div>' : '')+
+    '<div style="display:flex;gap:8px;justify-content:center;margin-top:12px">'+
+      '<button class="qbtn" data-splnext="-1" aria-label="Предыдущая сура">⏮</button>'+
+      '<button class="qbtn on" data-spltog="1" style="width:56px" aria-label="'+(SPL.playing ? "Пауза" : "Слушать")+'">'+(SPL.playing ? "❚❚" : "▶")+'</button>'+
+      '<button class="qbtn" data-splnext="1" aria-label="Следующая сура">⏭</button></div>'+
+    '<button class="row" data-splauto="1" style="margin-top:12px"><span class="ic">↻</span>Дальше по порядку<span class="sw'+(S.splAuto !== false ? " on" : "")+'"></span></button>'+
+  '</section>');
+  h.push('<div class="rows">'+QSUR.map(function(q, k){
+    var n = k + 1; if(!splHas(r, n)) return '';
+    var on = n === cur;
+    return '<button class="row" data-splplay="'+n+'"'+(on ? ' style="border-color:var(--gold)"' : '')+'><span class="ic">'+(on && SPL.playing ? "❚❚" : n)+'</span>'+
+      '<span style="flex:1;min-width:0">'+esc(q[2])+'<span style="display:block;font-size:12px;color:var(--ink-3)">'+surahAyatCount(k)+' аятов</span></span>'+
+      '<span class="val" style="font-family:var(--f-ar)">'+esc(q[1])+'</span></button>';
+  }).join("")+'</div>');
+  h.push('<p class="disclaimer">Записи - mp3quran.net, риваят Хафс от Асыма. Нужен интернет.</p></div>');
+  return h.join("");
+}
+
 function viewQSettings(){
   return '<div class="stack">'+
     '<section class="card"><div class="eyebrow">Чтец</div>'+
-      '<div class="rows" style="margin-top:10px">'+ RECITERS.filter(function(r){ return !r.hide || S.qReciter === r.id; }).map(function(r){
-        return '<button class="row" data-qreciter="'+r.id+'"><span class="ic">'+(S.qReciter===r.id?"◉":"○")+'</span>'+
-          '<span style="flex:1;min-width:0">'+esc(r.n)+(r.best ? '<span style="display:block;font-size:12px;color:var(--accent-ink);margin-top:2px">рекомендуем · лучше всего работает без интернета</span>' : '')+'</span></button>';
-      }).join("") +'</div></section>'+
+      '<input class="search" id="recSearch" style="margin:10px 0 0" placeholder="Найти чтеца по имени - всего '+RECITERS.length+'" autocomplete="off">'+
+      '<div id="recList">'+recListHtml("")+'</div></section>'+
 
     '<section class="card"><div class="eyebrow">Скорость чтения</div>'+
       '<div style="display:flex;align-items:center;gap:10px;margin-top:10px">'+
@@ -24067,7 +24265,7 @@ function viewSettings(){
    ============================================================ */
 var BK_KEYS = ["fav","tasbih","tasbihTotal","read","dcnt","practice","orders","readDay","done","salah","myduas","goals",
   "namesRead","daily","shukrNotes","shukr","checks","sunnah","health","pauses","qada","points","pointsDay",
-  "fin","finLimits","debts","finRepeat","fontSize","todos","quiz","azkarLifetime","qLast","qMax","qRead","qFontSafe","notes","noteFolders","qMarks","qplan","hifz","ar","zakat","trip","umrah","b2","b1","kids","finReqs","kahf","ptAdj",
+  "fin","finLimits","debts","finRepeat","fontSize","todos","quiz","azkarLifetime","qLast","qMax","qRead","qFontSafe","notes","noteFolders","qMarks","qMarkCol","qplan","hifz","ar","zakat","trip","umrah","b2","b1","kids","finReqs","kahf","ptAdj",
   "name","city","method","madhab","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll"];
 
 /* Что человек потеряет, если копии не будет. Считаем по тем же данным,
@@ -25862,6 +26060,7 @@ function renderCore(){
   else if(V.view==="finance") html = viewFinance();
   else if(V.view==="planner") html = viewPlanner();
   else if(V.view==="settings") html = viewSettings();
+  else if(V.view==="spl") html = viewSpl();
   else if(V.view==="sadaqa") html = viewSadaqa();
   else if(V.view==="qada") html = viewQada();
   else if(V.view==="salahpics") html = viewSalahPics();
@@ -25897,6 +26096,17 @@ function renderCore(){
    СОБЫТИЯ
    ============================================================ */
 document.getElementById("app").addEventListener("input", function(ev){
+  if(ev.target && ev.target.id === "splSearch"){
+    var sl = document.getElementById("splList");
+    if(sl) sl.innerHTML = splRecList(ev.target.value);
+  }
+  if(ev.target && ev.target.id === "splSeek" && SPL.audio && SPL.audio.duration){
+    SPL.audio.currentTime = SPL.audio.duration * Number(ev.target.value) / 1000;
+  }
+  if(ev.target && ev.target.id === "recSearch"){
+    var rl = document.getElementById("recList");
+    if(rl) rl.innerHTML = recListHtml(ev.target.value);
+  }
   if(ev.target && ev.target.id === "citySearch"){
     var cl = document.getElementById("cityList");
     if(cl) cl.innerHTML = cityOptions(ev.target.value);
@@ -26010,7 +26220,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -26232,11 +26442,11 @@ document.getElementById("app").addEventListener("click", function(ev){
     else qPlay(V.qFrom);
     return;
   }
-  if(d.qmarksclear!==undefined){ S.qMarks = []; save(); render(); toast("Закладки очищены"); return; }
+  if(d.qmarksclear!==undefined){ S.qMarks = []; S.qMarkCol = {}; V.qmf = ""; save(); render(); toast("Закладки очищены"); return; }
   if(d.qmark!==undefined){
     var mi = parseInt(d.qmark,10), mp = S.qMarks.indexOf(mi);
-    if(mp > -1){ S.qMarks.splice(mp,1); toast("Закладка снята"); }
-    else { S.qMarks.push(mi); toast("Закладка: "+qRef(mi)); }
+    if(mp > -1){ S.qMarks.splice(mp,1); if(S.qMarkCol) delete S.qMarkCol[mi]; toast("Закладка снята"); }
+    else { S.qMarks.push(mi); if(!S.qMarkCol) S.qMarkCol = {}; S.qMarkCol[mi] = S.qmLast || "gold"; toast("Закладка: "+qRef(mi)+" · "+qmCol(mi)[1]); }
     save(); readerKeepPlace(renderInPlace);
     var am = document.querySelectorAll('.ay-a[data-qmark="'+mi+'"]'), on = S.qMarks.indexOf(mi) > -1;
     for(var ak = 0; ak < am.length; ak++){ am[ak].classList.toggle("on", on); am[ak].innerHTML = '<i>★</i>'+(on ? "В закладках" : "Закладка"); }
@@ -26824,6 +27034,20 @@ document.getElementById("app").addEventListener("click", function(ev){
     var gA = ayahGlobal(+ay[0], +ay[1]); openReader(QSUR[sI][6], QSUR[sI][6] + QSUR[sI][4] - 1, "surah", gA); } return; }
   if(d.b1ret !== undefined){ b1Return(); return; }
   if(d.b1gift !== undefined){ sheetGift(); return; }
+  if(d.qmcol !== undefined){ sheetMarkColor(parseInt(d.qmcol, 10)); return; }
+  if(d.qmcolset !== undefined){
+    var qmp = d.qmcolset.split(":"), qmi = parseInt(qmp[0], 10);
+    if(!S.qMarkCol) S.qMarkCol = {}; S.qMarkCol[qmi] = qmp[1]; S.qmLast = qmp[1]; save();
+    closeSheet(); if(V.view === "reader") readerKeepPlace(renderInPlace); else renderInPlace();
+    toast("Метка: " + qmCol(qmi)[1]); return;
+  }
+  if(d.qmf !== undefined){ V.qmf = d.qmf; renderInPlace(); return; }
+  if(d.splrec !== undefined){ S.splRec = parseInt(d.splrec, 10); save(); renderInPlace(); $screen.scrollTop = 0; return; }
+  if(d.splchange !== undefined){ S.splRec = null; save(); renderInPlace(); $screen.scrollTop = 0; return; }
+  if(d.splplay !== undefined){ var spn = parseInt(d.splplay, 10); if(spn === SPL.sura && SPL.audio) splToggle(); else splPlay(spn); return; }
+  if(d.spltog !== undefined){ splToggle(); return; }
+  if(d.splnext !== undefined){ splNext(parseInt(d.splnext, 10)); return; }
+  if(d.splauto !== undefined){ S.splAuto = S.splAuto === false; save(); renderInPlace(); return; }
   if(d.fbopen !== undefined){ V.fbScreen = fbScreen(); V.fbDraft = ""; sheetFeedback(d.fbopen || "idea"); return; }
   if(d.fbkind !== undefined){ fbKeep(); sheetFeedback(d.fbkind); return; }
   if(d.fbsend !== undefined){ fbSend(); return; }
