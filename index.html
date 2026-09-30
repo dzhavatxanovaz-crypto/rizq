@@ -9359,6 +9359,7 @@ function viewName(){
     '<div style="font-family:var(--f-display);font-size:21px;font-weight:600;margin-top:6px">'+esc(n.n)+'</div>'+
     '<div class="ru" style="color:rgba(255,255,255,.78);font-size:14.5px">'+esc(n.mean)+'</div>'+
     '<button class="nm-snd'+(NAME_SND_I === i ? ' on' : '')+'" data-namesnd="'+i+'"><b>'+(NAME_SND_I === i ? '■ Остановить' : '▶ Послушать имя')+'</b></button>'+
+    '<button class="nm-snd" data-vm="name:'+i+'" style="margin-left:8px"><b>▣ Сделать ролик</b></button>'+
     '<div class="nm-snd-src">Запись: '+(i === 0 ? 'Hakeem.gadi' : (i === 4 || i === 5) ? 'Eesa Inoon' : 'Mohammed Sadiq')+' · Wikimedia Commons · CC&nbsp;BY-SA&nbsp;'+(i === 0 ? '3.0' : '4.0')+'</div></section>');
 
   if(n.exp){
@@ -15049,6 +15050,7 @@ function vmDuaObj(){ return DUAS.filter(function(d){ return d.id === VM.dua; })[
 function vmSegs(){
   var out = [];
   if(VM.kind === "post" || VM.kind === "guide" || VM.kind === "custom") return vmTopicSegs();
+  if(VM.kind === "name") return vmNameSegs();
   if(VM.kind === "qdua"){
     var qd = vmQdObj(); if(!qd) return out;
     var qa = vmQdAyahs(qd), who = String(qd.who || "").replace(/[.]$/, "");
@@ -15087,13 +15089,48 @@ function vmSegs(){
   }
   return out;
 }
+/* ---------- ролик об имени Аллаха (30.09.2026) ---------- */
+function vmNameParts(txt){
+  var ss = String(txt || "").split(". ").map(function(x){ return x.trim(); }).filter(Boolean), out = [], cur = "";
+  ss.forEach(function(x){
+    var t = x.replace(/[.]$/, "") + ".";
+    if(cur && (cur + " " + t).length > 170){ out.push(cur); cur = t; } else cur = cur ? cur + " " + t : t;
+  });
+  if(cur) out.push(cur);
+  return out.slice(0, 4);
+}
+function vmNameSegs(){
+  var i = VM.nm | 0, nm = NAMES99[i]; if(!nm) return [];
+  var ref = i === 0 ? "Величайшее имя Аллаха" : "99 имён Аллаха · " + (i + 1) + " из " + NAMES99.length;
+  var out = [{ ref:ref, card:{ k:"Имя Аллаха", arBig:true, ar:nm.ar, h:nm.n, p:nm.mean }, url:nameSndUrl(i), minDur:vmCardDur(nm.n + " " + nm.mean) + 1.5, dur:6 }];
+  vmNameParts(nm.exp).forEach(function(p){ out.push({ ref:ref, card:{ k:nm.n, p:p }, dur:vmCardDur(p) }); });
+  var ay = NAME_AYAT[i];
+  if(VM.nmAy !== false && ay){
+    var pr = String(ay[1]).split(":"), ab = String(pr[1] || "").split("-");
+    var sura = parseInt(pr[0], 10), from = parseInt(ab[0], 10), to = parseInt(ab[1] || ab[0], 10);
+    if(sura && from) out = out.concat(vmAyahSegs({ sura:sura, from:from, to:Math.min(to || from, from + 2) }));
+  }
+  if(VM.nmDua !== false && nm.dar) out.push({ ref:ref, card:{ k:"Дуа с этим именем", ar:nm.dar, p:nm.dru }, dur:vmCardDur(nm.dru) + 2 });
+  out.push({ ref:"RIZQ", card:{ k:"Приложение RIZQ", h:"Все 99 имён - в приложении RIZQ", p:"Разбор каждого имени, произношение и дуа. Напишите РИЗК в комментариях - пришлю ссылку. Это бесплатно." }, dur:5 });
+  return out;
+}
+function vmNameList(q){
+  var nq = String(q || "").toLowerCase().trim();
+  return NAMES99.map(function(n, k){ return [n, k]; }).filter(function(x){ return !nq || (x[0].n + " " + x[0].mean).toLowerCase().indexOf(nq) > -1; }).map(function(x){
+    return '<button class="vm-it'+(x[1] === (VM.nm | 0) ? " on" : "")+'" data-vm="nsel:'+x[1]+'"><b>'+(x[1] + 1)+'. '+esc(x[0].n)+' · <span dir="rtl" lang="ar" style="font-family:var(--f-ar)">'+esc(x[0].ar)+'</span></b><span>'+esc(x[0].mean)+'</span></button>';
+  }).join("") || '<p class="note">Ничего не нашлось</p>';
+}
+document.addEventListener("input", function(ev){
+  var t = ev.target; if(!t || t.id !== "vmNameQ") return;
+  VM.nq = t.value; var l = document.getElementById("vmNameList"); if(l) l.innerHTML = vmNameList(t.value);
+});
 function vmTimes(segs){ var t = 0; segs.forEach(function(sg){ sg.t0 = t; t += sg.dur; sg.t1 = t; }); return t; }
 function vmFonts(){
   if(!document.fonts || !document.fonts.load) return Promise.resolve();
   return Promise.all(['76px "Amiri Quran"', "500 40px Montserrat", "26px Marcellus"].map(function(f){ return document.fonts.load(f).catch(function(){}); }));
 }
 /* кадр для предпросмотра - без звука и без сети */
-var VM_KEEPK = ["kind","sura","from","to","bg","fmt","tr","basm","dua","qd","dc","len","az","post","guide","bgManual"];
+var VM_KEEPK = ["kind","sura","from","to","bg","fmt","tr","basm","dua","qd","dc","len","az","post","guide","bgManual","nm","nmAy","nmDua"];
 function vmRemember(){ var o = {}; VM_KEEPK.forEach(function(k){ if(VM[k] !== undefined) o[k] = VM[k]; }); S.vmLast = o; try{ save(); }catch(e){} }
 function vmRestore(){ if(VM.restored) return; VM.restored = true; var o = S.vmLast; if(!o) return; VM_KEEPK.forEach(function(k){ if(o[k] !== undefined) VM[k] = o[k]; }); }
 function vmPreview(){
@@ -15138,14 +15175,14 @@ function vmStat(t){ VM.stat = t; var e = document.getElementById("vmStat"); if(e
 function vmBuild(W, H){
   var segs = vmSegs();
   if(!segs.length) return Promise.reject(new Error("Выберите, что показать"));
-  if(segs.some(function(x){ return x.url; }) && !vmBase()) return Promise.reject(new Error("У этого чтеца звук нельзя записать в ролик. Выберите другого чтеца в настройках Корана"));
+  if(segs.some(function(x){ return x.url && String(x.url).indexOf("audio/names/") !== 0; }) && !vmBase()) return Promise.reject(new Error("У этого чтеца звук нельзя записать в ролик. Выберите другого чтеца в настройках Корана"));
   var n = 0, ctx = vmCanvas(10, 10).getContext("2d");
   return vmFonts().then(function(){ return vmPhoto(vmBgOf(VM.bg)); }).then(function(){
     return segs.reduce(function(p, sg){
       return p.then(function(){
         if(!sg.url) return;
         vmStat("Загружаем чтение: " + (++n) + " из " + segs.filter(function(x){ return x.url; }).length);
-        return vmAudio(sg.url).then(function(buf){ sg.buf = buf; sg.dur = buf.duration + 0.25; })
+        return vmAudio(sg.url).then(function(buf){ sg.buf = buf; sg.dur = Math.max(sg.minDur || 0, buf.duration + 0.25); })
           .then(function(){ return sg.i !== undefined ? vmSegWait(sg.i).then(function(z){ sg.seg = z; }) : null; });
       });
     }, Promise.resolve());
@@ -15191,7 +15228,7 @@ function vmEstimate(){
   var t = 0;
   vmSegs().forEach(function(sg){
     if(sg.i !== undefined) t += String(QA[sg.i] || "").length * 0.08 + 1;
-    else if(sg.url) t += 5;
+    else if(sg.url) t += sg.minDur || 5;
     else t += sg.dur || 5;
   });
   return Math.round(t);
@@ -15318,6 +15355,7 @@ function vmDone(blob, res){
   if(VM.kind === "post" || VM.kind === "guide" || VM.kind === "custom"){ var ntp = vmTopic(); name = "Рилс: " + (ntp ? String(ntp.n).slice(0, 40) : ""); }
   if(VM.kind === "qdua"){ var nq = vmQdObj(), nqa = nq ? vmQdAyahs(nq) : null; name = "Дуа из Корана" + (nqa ? ", " + QSUR[nqa.sura - 1][2] + " " + nqa.from : ""); }
   if(VM.kind === "dua"){ var nd = vmDuaObj(); if(nd) name = nd.n; }
+  if(VM.kind === "name"){ var nn = NAMES99[VM.nm | 0]; if(nn) name = "Имя Аллаха " + nn.n; }
   if(!blob || !blob.size){ vmStat("Запись не получилась: браузер не отдал видео. Попробуйте ещё раз или откройте RIZQ в Safari или Chrome"); return; }
   var capEl = document.getElementById("vmCap");
   var rec = { id:"c" + Date.now(), at:Date.now(), name:name, caption: capEl ? capEl.value : vmCaption(), type:blob.type, size:blob.size, dur:Math.round(res.total), blob:blob };
@@ -15463,7 +15501,7 @@ function vmTopicSegs(){
 /* раскладка карточки текста: надзаголовок, заголовок, арабский (хадис), текст, источник */
 function vmCardLayout(ctx, sg, W, H){
   var u = W / 1080, top = H * (VM.fmt === "9x16" ? 0.25 : 0.23), bot = H * (VM.fmt === "9x16" ? 0.84 : 0.88), avail = bot - top;
-  var c = sg.card, hS = 66 * u, pS = 50 * u, aS = 58 * u, maxW = W - 180 * u, hL, pL, aL, hh;
+  var c = sg.card, hS = 66 * u, pS = 50 * u, aS = (c.arBig ? 150 : 58) * u, maxW = W - 180 * u, hL, pL, aL, hh;
   for(var tries = 0; tries < 20; tries++){
     ctx.font = "700 " + hS + "px Montserrat,Inter,sans-serif"; hL = c.h ? vmWrap(ctx, vmWords(c.h), maxW, hS * 0.28) : [];
     ctx.font = aS + 'px "Amiri Quran","Noto Naskh Arabic",serif'; aL = c.ar ? vmWrap(ctx, vmWords(c.ar), maxW, aS * 0.3) : [];
@@ -15478,14 +15516,18 @@ function vmCardDraw(ctx, sg, W, H, b){
   var u = W / 1080, L1 = sg.lay, c = sg.card, y = L1.y0;
   ctx.textAlign = "center";
   if(c.k){ ctx.fillStyle = b.acc; ctx.font = "700 " + (30 * u) + "px Montserrat,Inter,sans-serif"; vmSpaced(ctx, c.k.toUpperCase(), W / 2, y + 34 * u, 5 * u); y += 70 * u; }
-  ctx.fillStyle = b.ink; ctx.font = "700 " + L1.hS + "px Montserrat,Inter,sans-serif";
-  L1.hL.forEach(function(line){ y += L1.hS * 1.25; ctx.fillText(line.items.map(function(o){ return o.x; }).join(" "), W / 2, y - L1.hS * 0.25); });
-  if(L1.hL.length) y += 30 * u;
-  if(L1.aL.length){
+  function drawH(){
+    ctx.fillStyle = b.ink; ctx.font = "700 " + L1.hS + "px Montserrat,Inter,sans-serif";
+    L1.hL.forEach(function(line){ y += L1.hS * 1.25; ctx.fillText(line.items.map(function(o){ return o.x; }).join(" "), W / 2, y - L1.hS * 0.25); });
+    if(L1.hL.length) y += 30 * u;
+  }
+  function drawA(){
+    if(!L1.aL.length) return;
     ctx.font = L1.aS + 'px "Amiri Quran","Noto Naskh Arabic",serif'; ctx.direction = "rtl"; ctx.fillStyle = b.acc;
     L1.aL.forEach(function(line){ y += L1.aS * 1.9; ctx.fillText(line.items.map(function(o){ return o.x; }).join(" "), W / 2, y - L1.aS * 0.5); });
     ctx.direction = "ltr"; y += 20 * u;
   }
+  if(c.arBig){ drawA(); drawH(); } else { drawH(); drawA(); }
   ctx.fillStyle = L1.hL.length ? b.ru : b.ink; ctx.font = "500 " + L1.pS + "px Montserrat,Inter,sans-serif";
   L1.pL.forEach(function(line){ y += L1.pS * 1.42; ctx.fillText(line.items.map(function(o){ return o.x; }).join(" "), W / 2, y - L1.pS * 0.35); });
   if(c.src){ ctx.fillStyle = b.acc; ctx.font = "500 " + (30 * u) + "px Montserrat,Inter,sans-serif"; ctx.fillText(c.src, W / 2, y + 60 * u); }
@@ -15535,6 +15577,15 @@ function vmCaption(){
     if(d.src) out.push("Источник: " + d.src);
     if(d.rep > 1) out.push("Повторять " + d.rep + " " + (typeof timesWord === "function" ? timesWord(d.rep) : "раз") + ".");
     out.push(VM_CTA); out.push("#азкары #дуа #ислам #RIZQ #JAVATTI");
+  } else if(VM.kind === "name"){
+    var nm = NAMES99[VM.nm | 0]; if(!nm) return "";
+    out.push(nm.n + " (" + nm.ar + ") - " + nm.mean);
+    if(nm.exp) out.push(String(nm.exp).trim());
+    var nay = NAME_AYAT[VM.nm | 0];
+    if(nay) out.push("Аят: «" + String(nay[2]).trim() + "» (" + nay[1] + ")");
+    if(nm.dar) out.push("Дуа: " + nm.dar + " - «" + String(nm.dru || "").trim() + "»");
+    out.push("Все 99 имён с разбором, произношением и дуа - в приложении RIZQ.");
+    out.push(VM_CTA); out.push("#99имён #именаАллаха #ислам #RIZQ #JAVATTI");
   } else {
     var tp = vmTopic(); if(!tp) return "";
     out.push(VM.hook || tp.n);
@@ -15616,6 +15667,7 @@ function viewVmake(){
     '<button class="pill'+(VM.kind === "ayah" ? " on" : "")+'" data-vm="kind:ayah">Аяты</button>'+
     '<button class="pill'+(VM.kind === "qdua" ? " on" : "")+'" data-vm="kind:qdua">Дуа из Корана</button>'+
     '<button class="pill'+(VM.kind === "dua" ? " on" : "")+'" data-vm="kind:dua">Азкары и дуа</button>'+
+    '<button class="pill'+(VM.kind === "name" ? " on" : "")+'" data-vm="kind:name">99 имён</button>'+
     '<button class="pill'+(VM.kind === "post" ? " on" : "")+'" data-vm="kind:post">Тема из журнала</button>'+
     '<button class="pill'+(VM.kind === "guide" ? " on" : "")+'" data-vm="kind:guide">Тема из «Знаний»</button></div>');
   if(VM.kind === "ayah"){
@@ -15643,6 +15695,19 @@ function viewVmake(){
       '<div class="pill-row" style="justify-content:flex-start;margin-top:8px">'+[[0.8, "Быстрее"], [1, "Обычно"], [1.25, "Медленнее"]].map(function(x){
         return '<button class="pill'+(VM.len === x[0] ? " on" : "")+'" data-vm="len:'+x[0]+'">'+x[1]+'</button>'; }).join("")+'</div>'+
       '<p class="note" style="margin:8px 0 0">Коран звучит голосом чтеца на аятах; мысли и хадисы идут текстом. Аяты и хадисы - из самой записи, они проверены при публикации.</p></section>');
+  } else if(VM.kind === "name"){
+    var nmo = NAMES99[VM.nm | 0];
+    h.push('<section class="card vm-box">'+
+      (nmo ? '<div class="vm-sel"><b><span dir="rtl" lang="ar" style="font-family:var(--f-ar);font-size:22px">'+esc(nmo.ar)+'</span> · '+esc(nmo.n)+'</b><span>'+esc(nmo.mean)+'</span></div>' : '')+
+      '<input id="vmNameQ" class="search" placeholder="Найти имя: Ар-Рахман, Милостивый..." value="'+esc(VM.nq || "")+'">'+
+      '<div id="vmNameList" class="vm-list">'+vmNameList(VM.nq)+'</div>'+
+      '<label class="dm-anon" style="margin:10px 0 0"><input type="checkbox" id="vmNmAy"'+(VM.nmAy !== false ? " checked" : "")+'> Аят с этим именем - голосом чтеца</label>'+
+      '<label class="dm-anon" style="margin:6px 0 0"><input type="checkbox" id="vmNmDua"'+(VM.nmDua !== false ? " checked" : "")+'> Дуа с этим именем</label>'+
+      '<label class="dm-anon" style="margin:6px 0 0"><input type="checkbox" id="vmTr"'+(VM.tr ? " checked" : "")+'> Перевод смыслов под аятом</label>'+
+      '<div class="rows" style="margin-top:10px"><button class="row" data-vm="reciter"><span class="ic">♪</span><span style="flex:1">Чтец аята</span><span class="val">'+esc(vmRec().n)+'</span></button></div>'+
+      '<div class="pill-row" style="justify-content:flex-start;margin-top:8px">'+[[0.8, "Быстрее"], [1, "Обычно"], [1.25, "Медленнее"]].map(function(x){
+        return '<button class="pill'+(VM.len === x[0] ? " on" : "")+'" data-vm="len:'+x[0]+'">'+x[1]+'</button>'; }).join("")+'</div>'+
+      '<p class="note" style="margin:8px 0 0">Имя звучит в живом произношении, аят - голосом чтеца. Значение, описание и дуа - из раздела «99 имён».</p></section>');
   } else if(VM.kind === "qdua"){
     var qd = vmQdObj(), qa = qd ? vmQdAyahs(qd) : null;
     h.push('<section class="card vm-box">'+
@@ -15707,7 +15772,7 @@ function vmClipsHtml(){
 }
 function vmCmd(c){
   var p = c.split(":"), k = p[0], v = p.slice(1).join(":");
-  if(k === "kind"){ vmStop(); VM.kind = v; if(v === "qdua" && VM.qd === undefined) VM.qd = 0; VM.off = {}; VM.hook = "";
+  if(k === "kind"){ vmStop(); VM.kind = v; if(v === "qdua" && VM.qd === undefined) VM.qd = 0; if(v === "name" && VM.nm === undefined) VM.nm = 1; VM.off = {}; VM.hook = "";
     if(v === "post" && !VM.post){ var pf = postsAll()[0]; if(pf) VM.post = pf.id; }
     if(v === "guide" && !VM.guide) VM.guide = "salah"; if(v === "dua" && !VM.dua){ var first = DUAS.filter(function(d){ return d.ar; })[0]; if(first) VM.dua = first.id; } renderInPlace(); return; }
   if(k === "set"){
@@ -15737,6 +15802,8 @@ function vmCmd(c){
   if(k === "setrec"){ S.qReciter = v; save(); closeSheet(); renderInPlace(); toast("Чтец: " + vmRec().n); return; }
   if(k === "capcopy"){ var cpe = document.getElementById("vmCap"); vmCopy(document.querySelector(".scrim") && VM.cur && VM.cur.caption ? VM.cur.caption : (cpe ? cpe.value : vmCaption())); return; }
   if(k === "qsel"){ VM.qd = parseInt(v, 10); renderInPlace(); return; }
+  if(k === "nsel"){ VM.nm = parseInt(v, 10) || 0; renderInPlace(); return; }
+  if(k === "name"){ vmStop(); VM.kind = "name"; VM.nm = parseInt(v, 10) || 0; VM.len = 1; closeSheet(); V.tab = "quran"; open("vmake", null); return; }
   if(k === "psel"){ VM.post = v; VM.hook = ""; VM.off = {}; renderInPlace(); return; }
   if(k === "gsel"){ VM.guide = v; VM.hook = ""; VM.off = {}; renderInPlace(); return; }
   if(k === "post"){ VM.kind = "post"; VM.post = v; VM.hook = ""; VM.off = {}; VM.len = 1; closeSheet(); open("vmake", null); return; }
@@ -15758,6 +15825,8 @@ document.addEventListener("change", function(ev){
   if(t.id === "vmFrom"){ VM.from = parseInt(t.value, 10) || 1; if(VM.to < VM.from) VM.to = VM.from; vmFix(); var tt = document.getElementById("vmTo"); if(tt) tt.value = VM.to; t.value = VM.from; }
   if(t.id === "vmTo"){ VM.to = parseInt(t.value, 10) || VM.from; vmFix(); t.value = VM.to; }
   if(t.id === "vmBasm") VM.basm = t.checked;
+  if(t.id === "vmNmAy") VM.nmAy = t.checked;
+  if(t.id === "vmNmDua") VM.nmDua = t.checked;
   if(t.id === "vmTr") VM.tr = t.checked;
   vmPreview();
 });
