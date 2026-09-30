@@ -2283,6 +2283,48 @@ details.more[open]>summary:after{content:"⌄"}
 .vm-bgrow b{display:block;font-size:15.5px}
 .vm-bgrow i{font-style:normal;font-size:13px;font-weight:600;color:var(--emerald);white-space:nowrap}
 .vm-folds{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 10px}
+.dm-page{gap:14px}
+.dm-hero{position:relative;overflow:hidden;border-radius:26px;padding:22px 20px 20px;color:#fff;
+  background:radial-gradient(120% 90% at 85% 0%,rgba(233,196,106,.28),transparent 55%),linear-gradient(160deg,#0E3B2E 0%,#0B2A3F 60%,#151A3A 100%);box-shadow:0 14px 34px rgba(8,20,30,.28)}
+.dm-hero::before{content:'';position:absolute;inset:0;opacity:.18;pointer-events:none;
+  background-image:radial-gradient(1.2px 1.2px at 12% 18%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 72% 12%,#fff 50%,transparent 51%),radial-gradient(1.4px 1.4px at 40% 32%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 88% 44%,#fff 50%,transparent 51%),radial-gradient(1.2px 1.2px at 22% 70%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 60% 82%,#fff 50%,transparent 51%)}
+.dm-hero > *{position:relative}
+.dm-hero-k{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#E9C46A}
+.dm-hero h2{font-family:var(--f-display);font-size:28px;line-height:1.1;margin:6px 0 8px;color:#fff}
+.dm-hero-p{font-size:14px;line-height:1.55;color:rgba(255,255,255,.82);margin:0 0 14px}
+.dm-hero-n{display:flex;align-items:baseline;gap:10px;margin:0 0 14px}
+.dm-hero-n b{font-family:var(--f-display);font-size:44px;line-height:1;color:#E9C46A}
+.dm-hero-n span{font-size:13px;color:rgba(255,255,255,.8);max-width:180px;line-height:1.35}
+.dm-hero-q{margin:0 0 16px;padding:12px 14px;border-left:3px solid #E9C46A;background:rgba(255,255,255,.07);border-radius:0 14px 14px 0;font-size:14.5px;line-height:1.55;color:#fff}
+.dm-hero-q b{color:#E9C46A;font-size:16px}
+.dm-hero-q cite{display:block;font-style:normal;font-size:12px;color:rgba(255,255,255,.62);margin-top:6px}
+.dm-hero-btn{display:inline-block;padding:12px 20px;border-radius:999px;border:0;background:#E9C46A;color:#1C1A12;font-weight:700;font-size:15px;text-decoration:none;box-shadow:0 6px 18px rgba(233,196,106,.35)}
+.dm-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.dm-steps div{padding:12px 10px;border-radius:16px;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;gap:4px;min-width:0}
+.dm-steps i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700;background:var(--gold);color:#1C1A12}
+.dm-steps b{font-size:13.5px;color:var(--ink)}
+.dm-steps span{font-size:11.5px;line-height:1.4;color:var(--ink-3)}
+.dm-ic{flex:none;width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-size:20px;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);border:1px solid color-mix(in srgb,var(--c) 35%,transparent)}
+.dm-mine2{padding:16px;border-radius:22px;background:var(--surface);border:1.5px solid var(--gold);display:flex;flex-direction:column;gap:8px}
+.dm-mine-top{display:flex;gap:12px;align-items:center}
+.dm-mine-top em{display:block;font-style:normal;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.dm-mine-top b{display:block;font-family:var(--f-display);font-size:19px;color:var(--ink)}
+.dm-mine-top div span{font-size:12px;color:var(--ink-3)}
+.dm-big{display:flex;align-items:center;gap:12px;padding:10px 0 4px}
+.dm-big b{font-family:var(--f-display);font-size:48px;line-height:1;color:var(--emerald)}
+.dm-big span{font-size:14px;line-height:1.35;color:var(--ink-2)}
+.dm-sub{font-size:12.5px;color:var(--ink-3)}
+.dm-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.dm-card{position:relative;padding:14px 14px 12px;border-radius:20px;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;gap:10px;box-shadow:0 4px 14px rgba(0,0,0,.04)}
+.dm-card.done{border-color:var(--gold)}
+.dm-card-h{display:flex;gap:12px;align-items:center}
+.dm-card-h b{display:block;font-size:15.5px;color:var(--ink)}
+.dm-card-h div span{display:block;font-size:13px;color:var(--ink-3)}
+.dm-card-f{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dm-pray{flex:1;min-width:180px;padding:12px 16px;border-radius:14px;border:0;background:var(--emerald);color:#fff;font-weight:700;font-size:15px}
+.dm-amin{flex:1;padding:11px 14px;border-radius:14px;background:color-mix(in srgb,var(--gold) 16%,transparent);color:var(--ink);font-weight:600;font-size:13.5px}
+.dm-cnt{font-size:13px;font-weight:600;color:var(--ink-3);white-space:nowrap}
+.vm-sets{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
 .cm-stats{font-size:13px;color:var(--ink-2);padding:2px 4px}
 .cm-stats span{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:2px}
 .cm-today{font-size:13.5px;font-weight:600;color:var(--gold);padding:0 4px}
@@ -13942,47 +13984,67 @@ function cmReaderCard(from){
 }
 
 /* ---------- дуа друг за друга ---------- */
+/* значок и цвет темы просьбы */
+var DM_TOPIC_IC = { health:["✚","#2FA36B"], family:["⌂","#C98A3D"], children:["✿","#D9577A"], marriage:["❦","#B0628F"], rizq:["◈","#C9A227"],
+  debt:["⚖","#5B7FB8"], study:["✎","#3F7FD9"], forgive:["☾","#6E5BB8"], iman:["✦","#1F8A8A"], deceased:["❀","#8C7B6B"] };
+function dmTopicIc(k){ return DM_TOPIC_IC[k] || ["✦","#C9A227"]; }
 function viewDuas(){
-  var h = ['<div class="stack">'];
-  h.push('<p class="note" style="margin:0">Попросите сестёр сделать за вас дуа - вашу просьбу увидят все сёстры в RIZQ. И сделайте дуа за них.</p>');
-  h.push(cmHadithCard());
-  h.push(cmDuaProof());
-  if(!accOn()){ h.push(cmLoginCard("Дуа друг за друга")); h.push('</div>'); return h.join(""); }
-  cmMe(); cmDua();
-  if(!CM.dua){ h.push(cmWait(CM.dErr, "redua")); h.push('</div>'); return h.join(""); }
-  h.push(cmNameRow());
-  if(CM.dua.today) h.push('<div class="cm-today">Сегодня сёстры сделали дуа '+plural(CM.dua.today, "раз", "раза", "раз")+'</div>');
-  h.push(cmStatsLine());
-  var m = CM.dua.mine;
+  var h = ['<div class="stack dm-page">'];
+  var logged = accOn();
+  if(logged){ cmMe(); cmDua(); }
+  var D = CM.dua, m = D && D.mine;
+  /* 1. главный блок */
+  h.push('<section class="dm-hero">'+
+    '<span class="dm-hero-k">Сообщество RIZQ</span>'+
+    '<h2>Дуа друг за друга</h2>'+
+    '<p class="dm-hero-p">Попросите сестёр сделать дуа за вас - просьбу увидят все сёстры в RIZQ. И сделайте дуа за них.</p>'+
+    (D && D.today ? '<div class="dm-hero-n"><b>'+D.today+'</b><span>'+plural(D.today, "дуа", "дуа", "дуа").split(" ").pop()+' сёстры сделали сегодня</span></div>' : '')+
+    '<blockquote class="dm-hero-q">«Кто делает дуа за брата в его отсутствие, ангел, приставленный к нему, говорит: <b>„Амин, и тебе того же“</b>»<cite>Пророк ﷺ · Муслим, 2732</cite></blockquote>'+
+    (logged ? (m ? '<a class="dm-hero-btn" href="#dmMine">Моя просьба ↓</a>' : '<button class="dm-hero-btn" data-cm="duaask">🤲 Попросить дуа</button>')
+            : '<button class="dm-hero-btn" data-acc="login">Войти и попросить дуа</button>')+
+    '</section>');
+  /* 2. как это работает */
+  h.push('<div class="dm-steps">'+
+    '<div><i>1</i><b>Попросите</b><span>выберите, о чём: здоровье, семья, дети, долги</span></div>'+
+    '<div><i>2</i><b>Сёстры просят</b><span>за вас - и ангел просит того же для них</span></div>'+
+    '<div><i>3</i><b>Вы видите</b><span>сколько раз и сколько сестёр сделали дуа</span></div></div>');
+  if(!logged){ h.push(cmLoginCard("Дуа друг за друга")); h.push(cmDuaProof()); h.push('</div>'); return h.join(""); }
+  if(!D){ h.push(cmWait(CM.dErr, "redua")); h.push('</div>'); return h.join(""); }
+  /* 3. моя просьба */
   if(m && (m.n || 0) > (S.cmDuaSeen || 0)){ S.cmDuaSeen = m.n; save(); }
   if(m){
     var st = m.note ? (m.noteStatus === "ok" ? "Ваши слова видны всем" : m.noteStatus === "pending" ? "Ваши слова ждут проверки - пока их видите только вы" : "Ваши слова не прошли проверку - просьба видна без них") : "";
     var days = Math.max(0, Math.ceil((Date.parse(String(m.expires).replace(" ", "T") + "Z") - Date.now()) / 86400000));
-    h.push('<section class="card dm-mine"><span class="note">Ваша просьба</span>'+
-      '<b>'+esc(duaTopic(m.topic))+'</b>'+
-      (m.anon ? '<span class="note">Сёстры видят вас как «Сестра»</span>' : '')+
-      (m.note ? '<div class="dm-note">«'+esc(m.note)+'»</div><span class="note">'+st+'</span>' : '')+
-      '<div class="dm-n">'+(m.n ? 'За вас сделали дуа '+plural(m.n, "раз", "раза", "раз")+(m.people > 1 ? ' ('+plural(m.people, "сестра", "сестры", "сестёр")+')' : '') : 'Скоро за вас сделают дуа, ин ша Аллах')+'</div>'+
-      '<span class="note">Просьба видна ещё '+plural(days, "день", "дня", "дней")+'</span>'+
-      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">'+
-        '<button class="btn sec sm" data-cm="duaask">Изменить</button>'+
-        (days < 10 ? '<button class="btn sec sm" data-cm="duarenew">Продлить на 30 дней</button>' : '')+
+    var ic = dmTopicIc(m.topic);
+    h.push('<section class="dm-mine2" id="dmMine">'+
+      '<div class="dm-mine-top"><span class="dm-ic" style="--c:'+ic[1]+'">'+ic[0]+'</span><div><em>Ваша просьба</em><b>'+esc(duaTopic(m.topic))+'</b>'+
+        (m.anon ? '<span>сёстры видят вас как «Сестра»</span>' : '')+'</div></div>'+
+      (m.note ? '<div class="dm-note">«'+esc(m.note)+'»</div><div class="dm-sub">'+st+'</div>' : '')+
+      '<div class="dm-big"><b>'+(m.n || 0)+'</b><span>'+(m.n ? plural(m.n, "раз", "раза", "раз").split(" ").pop()+' за вас сделали дуа'+(m.people ? '<br>'+plural(m.people, "сестра", "сестры", "сестёр") : '') : 'скоро за вас сделают дуа, ин ша Аллах')+'</span></div>'+
+      '<div class="dm-sub">Просьба видна ещё '+plural(days, "день", "дня", "дней")+'</div>'+
+      '<div class="dm-acts"><button class="btn sec sm" data-cm="duaask">Изменить</button>'+
+        (days < 10 ? '<button class="btn sec sm" data-cm="duarenew">Продлить</button>' : '')+
         '<button class="btn ghost sm" data-cm="duadel">Удалить</button></div></section>');
-  } else {
-    h.push('<button class="btn" data-cm="duaask">Попросить дуа</button>');
   }
-  var items = CM.dua.items || [];
+  h.push(cmStatsLine());
+  /* 4. просьбы сестёр */
+  var items = D.items || [];
   h.push('<div class="sec-h" style="margin-top:6px"><h3>Просят сделать дуа</h3></div>');
   if(!items.length) h.push('<p class="note">Пока никто не просил. Будьте первой - и сделайте дуа за всех мусульман.</p>');
   items.forEach(function(x){
-    h.push('<section class="card dm-it"><div class="dm-h"><b>'+esc(x.name)+'</b><span>'+esc(duaTopic(x.topic))+'</span></div>'+
+    var ic = dmTopicIc(x.topic);
+    h.push('<section class="dm-card'+(x.done ? " done" : "")+'">'+
+      '<div class="dm-card-h"><span class="dm-ic" style="--c:'+ic[1]+'">'+ic[0]+'</span><div><b>'+esc(x.name)+'</b><span>просит дуа: '+esc(duaTopic(x.topic).toLowerCase())+'</span></div></div>'+
       (x.note ? '<div class="dm-note">«'+esc(x.note)+'»</div>' : '')+
-      '<div class="dm-f">'+(x.done ? '<span class="dm-ok">✓ Вы сделали дуа сегодня</span>' : '<button class="btn sm" data-duamade="'+x.id+'">Я сделала дуа</button>')+
-      '<span class="note">'+(x.n ? 'дуа сделали '+plural(x.n, "раз", "раза", "раз") : '')+'</span>'+
+      '<div class="dm-card-f">'+(x.done ? '<span class="dm-amin">✓ Амин · вы сделали дуа сегодня</span>' : '<button class="dm-pray" data-duamade="'+x.id+'">🤲 Я сделала дуа</button>')+
+      (x.n ? '<span class="dm-cnt">'+x.n+' дуа</span>' : '')+
       '<button class="dm-rep" data-dreport="'+x.id+'" aria-label="Пожаловаться на просьбу">Пожаловаться</button></div></section>');
   });
-  h.push('<button class="btn sec" data-cm="shareduas">↗ Поделиться с подругами</button>');
-  h.push('<p class="disclaimer" style="text-align:left;padding:0 2px">Здесь нет переписки и фото. Свои слова в просьбе появляются после проверки - без ссылок, телефонов и подробностей, по которым можно узнать человека.</p>');
+  h.push('<button class="btn sec" data-cm="shareduas">↗ Позвать подруг делать дуа вместе</button>');
+  /* 5. свёрнутое: настройки, доводы, правила */
+  h.push('<details class="km-help"><summary>Имя и уведомления</summary><div style="margin-top:10px">'+cmNameRow()+'</div></details>');
+  h.push(cmDuaProof());
+  h.push('<p class="disclaimer" style="text-align:left;padding:0 2px">Здесь нет переписки и фото. Свои слова в просьбе появляются после проверки - без ссылок, телефонов и подробностей, по которым можно узнать человека. За каждое дуа за сестру - '+POINTS.duasis+' балла в вашем рейтинге.</p>');
   h.push('</div>');
   return h.join("");
 }
@@ -15180,6 +15242,28 @@ function vmCaption(){
   return out.join(NL + NL);
 }
 /* выбор фона: свёрнут - одна строка с текущим фоном; раскрыт - папки и сетка */
+/* готовые подборки: тема -> аяты и папка фонов */
+var VM_SETS = [
+  ["Хадж", "hadzh", [[22,27,27],[3,97,97],[2,197,197]]],
+  ["Умра и Кааба", "mekka", [[2,196,196],[2,158,158],[2,125,125],[2,127,127],[3,96,96]]],
+  ["Пост", "post", [[2,183,183],[2,185,185],[2,186,186]]],
+  ["Намаз", "namaz", [[20,14,14],[29,45,45],[2,238,238],[2,45,45]]],
+  ["Ночь предопределения", "mekka", [[97,1,5]]],
+  ["Терпение", "atmo", [[94,5,6],[2,153,153]]],
+  ["Надежда", "medina", [[39,53,53],[65,3,3],[2,286,286]]],
+  ["Покой сердца", "koran", [[13,28,28]]]
+];
+function vmPickBg(fold){
+  var list = VM_BG.filter(function(b){ return b.f === fold; });
+  if(!list.length) return;
+  VM.bgRot = (VM.bgRot || 0) + 1;
+  VM.bg = list[VM.bgRot % list.length].id; VM.bgf = fold;
+}
+function vmSetsHtml(){
+  return '<div class="vm-l" style="margin-top:2px">Готовые подборки</div><div class="vm-sets">'+VM_SETS.map(function(st, k){
+    return '<button class="pill'+(VM.setK === k ? " on" : "")+'" data-vm="set:'+k+'">'+esc(st[0])+'</button>'; }).join("")+
+    '<button class="pill" data-vm="rnd">✨ Случайный аят</button></div>';
+}
 function vmBgPicker(){
   var cur = vmBgOf(VM.bg), fold = VM.bgf || cur.f || "uzory";
   var head = '<button class="vm-bgrow" data-vm="bgopen"><img alt="" src="'+(cur.thumb || vmThumb(cur.id))+'"><span><em>Фон</em><b>'+esc(cur.n)+'</b></span><i>'+(VM.bgOpen ? "Свернуть ▴" : "Сменить ▾")+'</i></button>';
@@ -15230,8 +15314,8 @@ function viewVmake(){
     '<button class="pill'+(VM.kind === "guide" ? " on" : "")+'" data-vm="kind:guide">Тема из «Знаний»</button></div>');
   if(VM.kind === "ayah"){
     vmFix();
-    h.push('<section class="card vm-box">'+
-      '<label class="vm-l" for="vmSura">Сура</label><select id="vmSura" class="search">'+QSUR.map(function(q, k){
+    h.push('<section class="card vm-box">'+vmSetsHtml()+
+      '<label class="vm-l" for="vmSura" style="margin-top:8px">Сура</label><select id="vmSura" class="search">'+QSUR.map(function(q, k){
         return '<option value="'+(k + 1)+'"'+(k + 1 === VM.sura ? " selected" : "")+'>'+q[0]+'. '+esc(q[2])+'</option>'; }).join("")+'</select>'+
       '<div class="vm-row"><label class="vm-l">С аята<input id="vmFrom" class="search" type="number" min="1" max="'+vmSuraMax()+'" value="'+VM.from+'"></label>'+
       '<label class="vm-l">По аят<input id="vmTo" class="search" type="number" min="1" max="'+vmSuraMax()+'" value="'+VM.to+'"></label></div>'+
@@ -15311,6 +15395,20 @@ function vmCmd(c){
   if(k === "kind"){ vmStop(); VM.kind = v; if(v === "qdua" && VM.qd === undefined) VM.qd = 0; VM.off = {}; VM.hook = "";
     if(v === "post" && !VM.post){ var pf = postsAll()[0]; if(pf) VM.post = pf.id; }
     if(v === "guide" && !VM.guide) VM.guide = "salah"; if(v === "dua" && !VM.dua){ var first = DUAS.filter(function(d){ return d.ar; })[0]; if(first) VM.dua = first.id; } renderInPlace(); return; }
+  if(k === "set"){
+    var sk = parseInt(v, 10), st = VM_SETS[sk]; if(!st) return;
+    VM.setI = VM.setI || {}; var si = VM.setI[sk] = (VM.setK === sk ? ((VM.setI[sk] || 0) + 1) : (VM.setI[sk] || 0)) % st[2].length;
+    var it = st[2][si]; VM.setK = sk; VM.kind = "ayah"; VM.sura = it[0]; VM.from = it[1]; VM.to = it[2]; vmPickBg(st[1]);
+    renderInPlace(); toast(st[0] + ": «" + QSUR[it[0] - 1][2] + "», " + it[1] + (it[2] > it[1] ? "-" + it[2] : "")); return;
+  }
+  if(k === "rnd"){
+    var tries = 0, ri, rs;
+    do { ri = 1 + Math.floor(Math.random() * (QTOTAL - 1)); rs = surahOf(ri); tries++; }
+    while(tries < 200 && (!ayahInSurah(ri) || String(QA[ri]).length > 160));
+    VM.kind = "ayah"; VM.setK = -1; VM.sura = rs + 1; VM.from = VM.to = ayahInSurah(ri);
+    var folds = ["mekka","medina","namaz","koran","atmo","post","hadzh"]; vmPickBg(folds[Math.floor(Math.random() * folds.length)]);
+    renderInPlace(); return;
+  }
   if(k === "bgopen"){ VM.bgOpen = !VM.bgOpen; renderInPlace(); return; }
   if(k === "bgf"){ VM.bgf = v; renderInPlace(); return; }
   if(k === "bg"){ VM.bg = v; var hb = document.querySelector(".vm-bgrow"); if(hb){ var cb = vmBgOf(v); hb.querySelector("img").src = cb.thumb || vmThumb(cb.id); hb.querySelector("b").textContent = cb.n; } var bs = document.querySelectorAll(".vm-bg"); for(var q = 0; q < bs.length; q++) bs[q].classList.toggle("on", bs[q].getAttribute("data-vm") === c); vmPreview(); return; }
