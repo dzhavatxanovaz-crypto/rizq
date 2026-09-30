@@ -159,9 +159,9 @@
   --nav-bg:rgba(255,255,255,.92);
 
   --r-lg:22px; --r-md:16px; --r-sm:11px;
-  --f-display:"Montserrat",system-ui,"Segoe UI",sans-serif;
+  --f-display:"Montserrat","Noto Naskh Arabic",system-ui,"Segoe UI",sans-serif;
   --f-mark:"Marcellus",Georgia,"Times New Roman",serif;
-  --f-body:"Inter",system-ui,"Segoe UI",sans-serif;
+  --f-body:"Inter","Noto Naskh Arabic",system-ui,"Segoe UI",sans-serif;
   /* арабский везде - начертанием как в мусхафе (Amiri Quran); Noto Naskh остаётся запасным (просьба Заиры 23.09) */
   --f-ar:"Amiri Quran","Noto Naskh Arabic","Segoe UI",serif;
   /* шрифт чтения Корана - выбирается в настройках чтения */
@@ -2429,6 +2429,24 @@ details.more[open]>summary:after{content:"⌄"}
 .q3-b b{font-family:var(--f-display);font-size:12.5px;line-height:1.2;color:var(--ink);letter-spacing:-.01em}
 .q3-b span:last-child{font-size:11px;color:var(--ink-3);line-height:1.25}
 .hb-ayah .ar{font-size:22px;line-height:1.9}
+.hb-ay-top{display:flex;align-items:center;gap:6px;margin:-4px -4px 0 0}
+.hb-ay-h{flex:1;min-width:0;display:flex;align-items:baseline;gap:6px;background:none;border:0;padding:6px 0;text-align:left;color:inherit;white-space:nowrap;overflow:hidden}
+.hb-ay-h .hb-k{margin:0;flex:none}
+.hb-ay-src{min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;color:var(--ink-3)}
+.hb-ay-src::before{content:"· "}
+.hb-ay-play{flex:none;width:32px;height:32px;padding:0 0 0 2px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(212,175,55,.55);background:rgba(212,175,55,.12);color:var(--accent-ink);font-size:11px}
+.hb-ay-i{flex:none;width:28px;height:32px;padding:0;border:0;background:none;color:var(--ink-3);font-size:13px}
+.hb-ayah.hb-ay-c{padding:12px 14px 13px}
+.hb-ay-line{display:block;width:100%;margin-top:2px;padding:0;border:0;background:none;text-align:left;font-size:14px;line-height:1.45;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hb-ay-line.hb-ay-ar{font-family:var(--f-quran);font-size:19px;line-height:1.75;text-align:right;direction:rtl}
+.hb-ay-top + .ar{margin-top:4px}
+.hb-push-a .btn{flex:1 1 auto}
+.hm-mini .cat .ic.hm-ar{font-family:var(--f-quran);font-size:17px;line-height:21px;height:21px;color:var(--accent-ink)}
+@media (max-width:400px){
+  .prayer-top .nm,.prayer-top .cd b{font-size:21px}
+  .prayer-top .cd b{white-space:nowrap}
+  .hm-mini .cat b{font-size:10.5px}
+}
 .hb-ayah .hb-ru{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .cm-stats{font-size:13px;color:var(--ink-2);padding:2px 4px}
 .cm-stats span{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:2px}
@@ -5002,6 +5020,10 @@ function qrLoad(){
       QR_BUSY = false;
       if(!j || !j.t || j.t.length !== QTOTAL) return;
       QR = j.t; HAS_TR = true;
+      /* главная: аят дня с переводом - перерисовываем только его карточку, прокрутка не прыгает */
+      if(V.tab === "home" && !V.view){ try{ hbAyahRedraw(); }catch(e){} }
+      /* утреннее уведомление «Аят дня» - уже с переводом (HAS_TR входит в подпись pushSig) */
+      try{ if(pushOn()) pushSoon(); }catch(e){}
       if(V.tab === "quran" || V.view === "reader" || V.view === "qsearch" || V.view === "qsettings" || V.view === "qmarks"){
         if(V.view === "reader") readerKeepPlace(renderInPlace); else renderInPlace();
       }
@@ -6902,13 +6924,22 @@ var AYAT_DAY = [[2,152],[94,5],[13,28],[2,186],[39,53],[65,3],[93,3],[2,153],[14
   [16,97],[35,15],[2,45],[49,13],[55,13],[18,10],[21,87],[25,74],[28,24],[3,8],[14,40],[17,80],[2,201],[3,173],[3,200],[7,56],[8,46],
   [39,10],[12,87],[20,114],[94,6]];
 function hbAyah(){ var p = AYAT_DAY[dayIndex() % AYAT_DAY.length]; return ayahGlobal(p[0], p[1]); }
+/* свёрнутая карточка (по умолчанию): строка «Аят дня · сура, номер», ▶ и ▾, ниже - первая строка
+   перевода (или начало арабского, пока перевода нет). Развёрнутая - как раньше. S.ayahOpen - только
+   вид на этом телефоне, в копию не входит. */
 function hbAyahCard(){
-  var i = hbAyah(), s = surahOf(i);
+  var i = hbAyah(), s = surahOf(i), op = !!S.ayahOpen, tr = HAS_TR && QR[i];
   var ar = qTokens(i).filter(function(o){ return !o.b; }).map(function(o){ return o.x; }).join(" ") + " ﴿" + arNum(ayahInSurah(i)) + "﴾";
-  return '<section class="hb-ayah"><div class="hb-k">Аят дня</div>'+
+  var top = '<div class="hb-ay-top"><button class="hb-ay-h" data-hb="ayopen" aria-expanded="'+op+'"><span class="hb-k">Аят дня</span>'+
+      '<span class="hb-ay-src">сура «'+esc(QSUR[s][2])+'», '+ayahInSurah(i)+'</span></button>'+
+    (op ? '' : '<button class="hb-ay-play" data-hb="play" aria-label="Слушать аят">▶</button>')+
+    '<button class="hb-ay-i" data-hb="ayopen" aria-label="'+(op ? 'Свернуть аят дня' : 'Развернуть аят дня')+'">'+(op ? '▴' : '▾')+'</button></div>';
+  if(!op) return '<section class="hb-ayah hb-ay-c">'+top+
+    (tr ? '<button class="hb-ay-line" data-hb="ayopen">'+esc(QR[i])+'</button>'
+        : '<button class="hb-ay-line hb-ay-ar" data-hb="ayopen" dir="rtl" lang="ar">'+esc(ar)+'</button>')+'</section>';
+  return '<section class="hb-ayah">'+top+
     '<div class="ar" dir="rtl" lang="ar">'+esc(ar)+'</div>'+
-    (HAS_TR ? '<div class="hb-ru">'+esc(QR[i])+'</div>' : '')+
-    '<div class="hb-src">Сура «'+esc(QSUR[s][2])+'», '+ayahInSurah(i)+(HAS_TR ? ' · перевод смыслов Э. Кулиева' : '')+'</div>'+
+    (tr ? '<div class="hb-ru">'+esc(QR[i])+'</div><div class="hb-src">Перевод смыслов Э. Кулиева</div>' : '')+
     '<div class="hb-acts"><button class="btn sm" data-hb="play">▶ Слушать</button>'+
     '<button class="btn sec sm" data-vm="ayah:'+i+'">▣ Ролик</button>'+
     '<button class="btn ghost sm" data-hb="share" aria-label="Поделиться">↗</button></div></section>';
@@ -6922,6 +6953,21 @@ function hbPlay(){
   }catch(e){}
 }
 var HB = { audio:null };
+/* перерисовать только карточку аята дня: если она выше видимой части экрана, сдвигаем
+   прокрутку на разницу высоты - текст под пальцем остаётся на месте */
+function hbAyahRedraw(){
+  var el = $screen.querySelector(".hb-ayah"); if(!el) return;
+  var r0 = el.getBoundingClientRect(), top0 = $screen.getBoundingClientRect().top;
+  var ref = el.nextElementSibling, y0 = ref ? ref.getBoundingClientRect().top : 0;
+  var box = document.createElement("div"); box.innerHTML = hbAyahCard();
+  var nw = box.firstChild; if(!nw) return;
+  el.parentNode.replaceChild(nw, el);
+  /* меряем фактический сдвиг следующего блока: Chrome сам держит якорь прокрутки, Safari - нет */
+  if(ref && r0.bottom <= top0 + 4){
+    var dy = ref.getBoundingClientRect().top - y0;
+    if(Math.abs(dy) > 0.5){ TB_LOCK = Date.now() + 400; $screen.scrollTop += dy / qZoom(); TB_Y = $screen.scrollTop; }
+  }
+}
 function hbShare(){
   var i = hbAyah(), s = surahOf(i);
   var t = "Аят дня: " + (HAS_TR ? QR[i] : "") + " (сура «" + QSUR[s][2] + "», " + ayahInSurah(i) + ")" + String.fromCharCode(10) + APP_URL;
@@ -6985,7 +7031,7 @@ function hbEvening(){
     return '<section class="hb-eve"><div class="hb-k">Ваш день с RIZQ</div>'+
       '<b>'+plural(p, "балл", "балла", "баллов")+' сегодня. Машаллах!</b>'+
       (parts.length ? '<div class="hb-chips">'+parts.map(function(x){ return '<span>'+esc(x)+'</span>'; }).join("")+'</div>' : '')+
-      '<span class="hb-eve-s">Перед сном - вечерние азкары и три последние суры. Завтра - новый аят дня.</span></section>';
+      '<span class="hb-eve-s">Перед сном - аят аль-Курси и три последние суры. Завтра - новый аят дня.</span></section>';
   }catch(e){ return ""; }
 }
 
@@ -7167,11 +7213,11 @@ function viewHomeMain(){
       }).join("")+
     '</div>') : "")+
     '<div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;margin-top:13px;padding-top:12px;border-top:1px solid var(--line-soft)">'+
-      '<span style="font-size:13px;color:'+(st?"var(--accent-ink)":"var(--ink-3)")+';font-weight:600;line-height:1.4">'+
-        (st ? "◈ серия: "+daysWord(st) : "серия начнётся с первого полного дня")+
+      '<span style="flex:1 1 100%;font-size:13px;color:'+(st?"var(--accent-ink)":"var(--ink-3)")+';font-weight:600;line-height:1.4">'+
+        (st ? "◈ серия: "+daysWord(st) : "серия начнётся с первого дня 5 из 5")+
         ((S.points||0) ? '<span style="color:var(--ink-3);font-weight:400"> · </span>'+plural(S.points||0,"балл","балла","баллов") : "")+'</span>'+
-      (pz ? '' : '<button class="btn ghost sm" style="margin-left:auto;flex:none" data-pauseopen="1" aria-label="Пауза в трекере">Пауза</button>')+
-      '<button class="btn ghost sm" style="'+(pz?"margin-left:auto;":"")+'flex:none" data-open="report">Отчёт за месяц</button>'+
+      (pz ? '' : '<button class="btn ghost sm" style="flex:1" data-pauseopen="1" aria-label="Пауза в трекере">Пауза</button>')+
+      '<button class="btn ghost sm" style="flex:1" data-open="report">Отчёт за месяц</button>'+
     '</div></section>');
   /* благодарность - всегда на виду, а не спрятана за галочкой шукра */
   shukrMigrate();
@@ -7231,12 +7277,12 @@ function viewHomeMain(){
   /* быстрый доступ */
   h.push('<div class="sec-h"><h3>Быстрый доступ</h3></div>');
   h.push('<div class="cats hm-mini">'+
-    '<button class="cat" data-go="quran"><div class="ic">﴾﴿</div><b>Коран</b><span>114 сур, аудио</span></button>'+
+    '<button class="cat" data-go="quran"><div class="ic hm-ar" dir="rtl" lang="ar">قُرْآن</div><b>Коран</b><span>114 сур, аудио</span></button>'+
     '<button class="cat" data-open="names"><div class="ic">۹۹</div><b>99 имён Аллаха</b><span>разбор и дуа</span></button>'+
     '<button class="cat" data-open="sira"><div class="ic">✾</div><b>Сира Пророка ﷺ</b><span>'+SIRA.length+' глав</span></button>'+
     '<button class="cat" data-open="hadith"><div class="ic">☰</div><b>40 хадисов</b><span>ан-Навави</span></button>'+
     '<button class="cat" data-open="qduas"><div class="ic">✦</div><b>Дуа из Корана</b><span>мольбы пророков</span></button>'+
-    '<button class="cat" data-open="suras"><div class="ic">﴾﴿</div><b>Короткие суры</b><span>для намаза наизусть</span></button>'+
+    '<button class="cat" data-open="suras"><div class="ic hm-ar" dir="rtl" lang="ar">سُوَر</div><b>Короткие суры</b><span>для намаза наизусть</span></button>'+
     '<button class="cat gold" data-open="tasbih"><div class="ic">◉</div><b>Тасбих</b>'+
       '<span>'+((S.tasbihTotal||0)? "произнесено "+(S.tasbihTotal||0) : "счётчик зикра")+'</span></button>'+
     '<button class="cat" data-open="mydua"><div class="ic">✎</div><b>Мои дуа</b>'+
@@ -7266,8 +7312,8 @@ function viewHomeMain(){
     var T = [
       ['<span dir="rtl" lang="ar">أَفْهَمُ</span>', "Понимать Коран", qn ? "вы понимаете " + qp.pct + "% слов" : "600 слов - " + Math.round(QW_COVERED / QW_TOTAL * 100) + "% Корана", 'data-ar="qw"'],
       ['<span dir="rtl" lang="ar">عَرَبِي</span>', "Арабский с JAVATTI", "уроки с нуля", 'data-ar="home"'],
-      ["◈", "Рейтинг", scH.on && scMe && scMe.place ? "ваше место " + scMe.place : "неделя с понедельника", 'data-open="top"'],
-      ["☪", "Халяль рядом", "еда, магазины, мечеть", 'data-open="halal"']
+      ["◈", "Рейтинг", scH.on && scMe && scMe.place ? "ваше место " + scMe.place : "баллы за неделю", 'data-open="top"'],
+      ["☪", "Халяль рядом", "еда, магазины, мечети", 'data-open="halal"']
     ];
     h.push('<div class="hm-tiles">' + T.map(function(t){
       return '<button class="hm-tile" '+t[3]+'><span class="hm-tile-ic">'+t[0]+'</span><span class="hm-tile-t"><b>'+t[1]+'</b><span>'+esc(t[2])+'</span></span></button>';
@@ -15555,7 +15601,7 @@ function sheetVmRec(){
 /* главная: заметная плашка студии */
 function vmHomePlate(){
   return '<button class="vm-home" data-open="vmake"><span class="vm-home-k">Видеостудия JAVATTI</span>'+
-    '<b>Ролик с Кораном - за минуту</b>'+
+    '<b>Ролик с Кораном за пару минут</b>'+
     '<span class="vm-home-s">Голос чтеца, фон Каабы или Медины, готовый текст для поста</span>'+
     '<span class="vm-home-go">Создать ролик ›</span></button>';
 }
@@ -18160,8 +18206,8 @@ function mrNextName(o){ return MONTHS_RU[(o.m + 1) % 12].toLowerCase(); }
 function mrGoal(o){
   if(!o.pages) return "читать хотя бы одну страницу Корана в день";
   if(!o.azkar) return "утренние азкары после фаджра - три раза в неделю";
-  if(!o.namaz) return "отмечать пять намазов в приложении каждый день";
-  if(!o.sisters) return "одно дуа за сестру каждую неделю";
+  if(!o.namaz) return "отмечать в приложении каждый совершённый намаз";
+  if(!o.sisters) return "одно дуа за сестру в неделю";
   return "одна страница Корана в день";
 }
 function mrHero(){
@@ -18172,9 +18218,9 @@ function mrHero(){
     return '<div class="mr-t'+(k === t.length - 1 && t.length % 2 ? ' wide' : '')+'"><b>'+x.n+'</b><span>'+esc(x.l)+'</span></div>';
   }).join("")+'</div>';
   if(!o.done) h += '<p class="mr-soft">Месяц ещё идёт. Итог соберётся в последний день - заходите посмотреть.</p>';
-  else if(o.little) h += '<p class="mr-soft">Этот месяц был тихим - так бывает у каждого. Хорошо, что вы здесь: новый месяц - новая страница.</p>'+
+  else if(o.little) h += '<p class="mr-soft">В этом месяце отметок немного - так бывает у каждого. Хорошо, что вы здесь: новый месяц - новая страница.</p>'+
     '<div class="mr-goal"><span>Одна цель на '+esc(mrNextName(o))+'</span><b>'+esc(ddCap(mrGoal(o)))+'</b></div>';
-  else h += '<p class="mr-soft">Машаа Аллах! Пусть Аллах примет каждое из этих дел.</p>';
+  else h += '<p class="mr-soft">Машаллах! Пусть Аллах примет каждое из этих дел.</p>';
   h += '<button class="btn mr-btn" data-mr="story">Поделиться в сторис</button></section>';
   return h;
 }
@@ -18188,7 +18234,7 @@ function mrHomeCard(){
   var o = mrStats(mk), t = mrTiles(o).slice(0, 3);
   return '<section class="mr-card"><div class="hb-k">'+MONTHS_RU[o.m]+' '+o.y+'</div>'+
     '<b class="mr-m">Ваш месяц с RIZQ готов</b>'+
-    '<p>'+(t.length ? esc(t.map(function(x){ return x.s; }).join(" · ")) + '. И картинка для сторис' : 'Посмотрите, каким был месяц, и выберите одну цель на следующий')+'</p>'+
+    '<p>'+(t.length ? esc(t.map(function(x){ return x.s; }).join(" · ")) + '. Внутри - картинка для сторис' : 'Посмотрите, каким был месяц, и выберите одну цель на следующий')+'</p>'+
     '<div class="mr-card-a"><button class="btn sm" style="flex:1" data-mr="open:'+mk+'">Открыть отчёт</button>'+
     '<button class="btn ghost sm" data-mr="hide:'+mk+'" aria-label="Скрыть">×</button></div></section>';
 }
@@ -24698,7 +24744,7 @@ function viewMyDua(){
   h.push('<section class="dd-hero"><div class="hb-k">Дневник дуа</div>'+
     '<div class="dd-count">'+ddCount(all.length, done.length)+'</div>'+
     '<p>Записывайте, о чём просите Аллаха. Когда просьба исполнится - отметьте «Аллах ответил». Со временем здесь соберётся летопись Его милости к вам.</p>'+
-    '<p class="dd-priv">Это личный дневник: записи не уходят в сообщество и видны только в вашем приложении.</p></section>');
+    '<p class="dd-priv">Это личный дневник: записи видны только вам и не попадают в «Дуа друг за друга».</p></section>');
   h.push('<section class="card"><textarea class="search" id="duaInput" rows="3" style="resize:none;font-family:var(--f-body)" placeholder="О чём вы просите Аллаха?"></textarea>'+
     '<button class="btn" style="margin-top:10px" data-addmydua="1">Записать</button></section>');
   if(!all.length){
@@ -24747,12 +24793,12 @@ function ddWaitRow(x){
 /* хадисы сверены 30.09.2026: аль-Бухари 6340 (Муслим 2735 - книга 48, хадис 125 в базе); ат-Тирмизи 3573 - хасан сахих */
 function ddHadith(){
   return '<details class="card fold dd-hd"><summary>Когда ответ ещё в пути</summary>'+
-    '<p>Ответ на дуа бывает не таким и не тогда, как мы ждём. Просьба остаётся в дневнике - продолжайте просить.</p>'+
+    '<p>Ответ на дуа может прийти позже или не в том виде, как мы ждём. Просьба остаётся в дневнике - продолжайте просить.</p>'+
     '<div class="ar" dir="rtl" lang="ar">يُسْتَجَابُ لأَحَدِكُمْ مَا لَمْ يَعْجَلْ، يَقُولُ: دَعَوْتُ فَلَمْ يُسْتَجَبْ لِي</div>'+
     '<p>Пророк ﷺ сказал: «Каждому из вас отвечают, пока он не станет торопиться и говорить: „Я просил, а мне не ответили“».</p>'+
     '<div class="dd-src">аль-Бухари 6340, Муслим 2735</div>'+
     '<div class="ar" dir="rtl" lang="ar">مَا عَلَى الأَرْضِ مُسْلِمٌ يَدْعُو اللَّهَ بِدَعْوَةٍ إِلاَّ آتَاهُ اللَّهُ إِيَّاهَا أَوْ صَرَفَ عَنْهُ مِنَ السُّوءِ مِثْلَهَا مَا لَمْ يَدْعُ بِمَأْثَمٍ أَوْ قَطِيعَةِ رَحِمٍ</div>'+
-    '<p>«Нет на земле мусульманина, который обратится к Аллаху с мольбой, чтобы Аллах не дал ему просимого или не отвёл от него равное этому зло, пока он не просит о греховном или о разрыве родственных связей». Кто-то сказал: «Тогда мы будем просить больше». Он ответил: «У Аллаха - больше».</p>'+
+    '<p>Пророк ﷺ сказал: «Нет на земле мусульманина, который обратится к Аллаху с мольбой, чтобы Аллах не дал ему просимого или не отвёл от него равное этому зло, пока он не просит о греховном или о разрыве родственных связей». Один из присутствующих сказал: «Тогда мы будем просить больше». Пророк ﷺ ответил: «У Аллаха - больше».</p>'+
     '<div class="dd-src">ат-Тирмизи 3573, хасан сахих</div></details>';
 }
 function sheetDdAnswer(id){
@@ -24761,7 +24807,7 @@ function sheetDdAnswer(id){
   sheet('<div class="hb-k">Дневник дуа</div>'+
     '<h3 style="margin:4px 0 10px">'+(x.done ? 'Аллах ответил на просьбу' : 'Альхамду лиЛлях! Аллах ответил')+'</h3>'+
     '<div class="dd-q">«'+esc(x.t)+'»</div>'+
-    '<label class="dd-lb">Когда<input class="search" type="date" id="ddWhen" value="'+dv+'" min="'+dayKey(new Date(x.ts))+'" max="'+todayKey()+'"></label>'+
+    '<label class="dd-lb">Когда пришёл ответ<input class="search" type="date" id="ddWhen" value="'+dv+'" min="'+dayKey(new Date(x.ts))+'" max="'+todayKey()+'"></label>'+
     '<label class="dd-lb">Как это случилось <span>- необязательно, видно только вам</span>'+
       '<textarea class="search" id="ddHow" rows="3" maxlength="400" style="resize:none;font-family:var(--f-body)" placeholder="Например: пришло не так, как ожидалось, но лучше">'+esc(x.how || "")+'</textarea></label>'+
     '<button class="btn" style="width:100%;margin-top:14px" data-dd="save:'+x.id+'">Сохранить</button>'+
@@ -26447,7 +26493,7 @@ function pushItems(){
       if(dm.getDate() !== 1) continue;
       var atR = new Date(dm.getFullYear(), dm.getMonth(), 1, 10, 0, 0).getTime(), pmR = new Date(dm.getFullYear(), dm.getMonth() - 1, 1);
       if(atR > now) items.push({ at:new Date(atR).toISOString(), title:"Ваш месяц с RIZQ готов",
-        body:"Намазы, Коран, азкары и садака за " + MONTHS_RU[pmR.getMonth()].toLowerCase() + " - и картинка для сторис", tag:"open-report" });
+        body:"Итоги месяца: намазы, Коран, азкары и садака за " + MONTHS_RU[pmR.getMonth()].toLowerCase() + ". Внутри - картинка для сторис", tag:"open-report" });
     }
   }
   /* сервер берёт не больше 80 пунктов, иначе отказывает целиком - оставляем ближайшие */
@@ -27187,6 +27233,9 @@ function viewSettings(){
 var BK_KEYS = ["fav","tasbih","tasbihTotal","read","dcnt","practice","orders","readDay","done","salah","myduas","goals",
   "namesRead","daily","shukrNotes","shukr","checks","sunnah","health","pauses","qada","points","pointsDay",
   "fin","finLimits","debts","finRepeat","fontSize","todos","quiz","azkarLifetime","qLast","qMax","qRead","qFontSafe","notes","noteFolders","qMarks","qMarkCol","trLast","qplan","hifz","ar","zakat","trip","umrah","b2","b1","kids","finReqs","kahf","ptAdj",
+  /* счётчики по дням для отчёта за месяц: баллы по категориям (азкары, дуа за сестёр...) и минуты
+     чтения Корана - без них на новом телефоне прошлые месяцы обнулялись (30.09.2026) */
+  "cat","qTime",
   "name","city","method","madhab","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll"];
 
 /* Что человек потеряет, если копии не будет. Считаем по тем же данным,
@@ -28926,6 +28975,7 @@ function render(){
 }
 function renderCore(){
   if(!HAS_TR && (V.tab === "quran" || V.view === "reader")) qrLoad();
+  else if(!HAS_TR && V.tab === "home" && !V.view) setTimeout(qrLoad, 1200);
   if(pushOn()) pushSoon();
   if(KS.on && V.view!=="kidstory"){ kidStop(); }
   if(SP.key && V.view!=="salahpics"){ spStop(); }
@@ -29976,6 +30026,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.st){ stGo(d.st === "dl"); return; }
   if(d.hb){
     if(d.hb === "play"){ hbPlay(); return; }
+    if(d.hb === "ayopen"){ S.ayahOpen = !S.ayahOpen; save(); hbAyahRedraw(); return; }
     if(d.hb === "share"){ hbShare(); return; }
     if(d.hb.indexOf("apdone:") === 0){ if(!S.apDone) S.apDone = {}; S.apDone[d.hb.slice(7)] = 1; save(); renderInPlace(); toast("Да примет Аллах!"); return; }
     return;
