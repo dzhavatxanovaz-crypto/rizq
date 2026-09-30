@@ -2236,7 +2236,7 @@ details.more[open]>summary:after{content:"⌄"}
 .vm-sel{display:flex;flex-direction:column;gap:2px;padding:4px 2px 8px}
 .vm-sel b{font-size:15.5px}
 .vm-sel span{font-size:12.5px;color:var(--ink-3)}
-.vm-list{max-height:260px;overflow:auto;display:flex;flex-direction:column;gap:4px;margin-top:6px}
+.vm-list{display:flex;flex-direction:column;gap:4px;margin-top:6px}
 .vm-it{display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface)}
 .vm-it b{font-size:14px;font-weight:600}
 .vm-it span{font-size:12px;color:var(--ink-3)}
@@ -2248,6 +2248,41 @@ details.more[open]>summary:after{content:"⌄"}
 .vm-bg span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .vm-prev{display:flex;justify-content:center}
 .vm-prev canvas{width:min(100%,300px);height:auto;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.vm-script{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.vm-sc{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-size:13px;color:var(--ink-2);line-height:1.45}
+.vm-sc input{margin-top:3px;flex:none}
+.vm-sc b{display:block;font-size:12px;color:var(--ink);text-transform:uppercase;letter-spacing:.04em}
+.chat-rules{margin:0;font-size:12.5px;line-height:1.5}
+.chat-box{display:flex;flex-direction:column;gap:8px;min-height:120px}
+.msg{display:flex;align-items:flex-end;gap:4px;max-width:88%}
+.msg.me{align-self:flex-end;flex-direction:row-reverse}
+.msg-b{padding:8px 12px;border-radius:16px 16px 16px 4px;background:var(--surface);border:1px solid var(--line);min-width:0}
+.msg.me .msg-b{border-radius:16px 16px 4px 16px;background:var(--surface-2);border-color:var(--gold)}
+.msg-b b{display:block;font-size:12px;color:var(--emerald);margin-bottom:2px}
+.msg-b span{display:block;font-size:15px;line-height:1.45;color:var(--ink);white-space:pre-wrap;word-break:break-word}
+.msg-b i{display:block;font-style:normal;font-size:11px;color:var(--ink-3);margin-top:3px;text-align:right}
+.msg-m{flex:none;background:none;border:0;color:var(--ink-3);font-size:18px;padding:4px 2px;line-height:1}
+.chat-in{position:sticky;bottom:0;display:flex;gap:8px;align-items:flex-end;padding:8px 0;background:var(--bg)}
+.chat-in textarea{flex:1;min-height:44px;max-height:140px;resize:vertical;border-radius:14px;border:1px solid var(--line);padding:10px 12px;font:inherit;font-size:15px;background:var(--surface);color:var(--ink)}
+.km-members{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.km-members .note{flex-basis:100%}
+.km-mem{padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:13.5px;color:var(--ink)}
+.km-mem.me{color:var(--ink-3)}
+.vm-cap{width:100%;min-height:180px;border-radius:12px;border:1px solid var(--line);padding:10px 12px;font:inherit;font-size:13.5px;line-height:1.5;background:var(--surface);color:var(--ink);resize:vertical}
+.vm-home{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;min-height:168px;padding:18px 18px 16px;border:0;border-radius:22px;text-align:left;overflow:hidden;color:#fff;
+  background:linear-gradient(100deg,rgba(10,8,6,.92) 0%,rgba(10,8,6,.72) 45%,rgba(10,8,6,.2) 100%),url(vm-fon/banner.jpg) center/cover no-repeat;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.vm-home-k{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#E9C46A}
+.vm-home b{font-family:var(--f-display);font-size:21px;line-height:1.2;max-width:78%;color:#fff}
+.vm-home-s{font-size:13px;line-height:1.45;max-width:72%;color:rgba(255,255,255,.82)}
+.vm-home-go{margin-top:6px;padding:8px 14px;border-radius:999px;background:#E9C46A;color:#2B1F1B;font-size:13px;font-weight:700}
+.vm-bgcard{padding:10px 12px}
+.vm-bgrow{display:flex;align-items:center;gap:12px;width:100%;background:none;border:0;padding:0;text-align:left;color:inherit}
+.vm-bgrow img{width:44px;height:78px;object-fit:cover;border-radius:8px;flex:none}
+.vm-bgrow span{flex:1;min-width:0}
+.vm-bgrow em{display:block;font-style:normal;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.vm-bgrow b{display:block;font-size:15.5px}
+.vm-bgrow i{font-style:normal;font-size:13px;font-weight:600;color:var(--emerald);white-space:nowrap}
+.vm-folds{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 10px}
 .cm-stats{font-size:13px;color:var(--ink-2);padding:2px 4px}
 .cm-stats span{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:2px}
 .cm-today{font-size:13.5px;font-weight:600;color:var(--gold);padding:0 4px}
@@ -5871,7 +5906,10 @@ function fbDoneCheck(){
 
 /* «Что нового» - один раз после обновления. Новым пользователям не показываем:
    для них всё новое. Чтобы показать снова, поменять WN.id и пункты. */
-var WN = { id:"2026-10-01e", items:[
+var WN = { id:"2026-10-01h", items:[
+  ["▣", "Студия аятов", "ролик с Кораном за минуту и готовый текст для поста - плашка на главной"],
+  ["✉", "Чат круга и личные сообщения", "общайтесь с сёстрами своего круга хатма: «Коран» → «Хатм вместе»"],
+  ["▣", "Рилс по теме журнала", "кнопка «Рилс по теме» в журнале и в «Знаниях»: заголовок, Коран голосом чтеца, мысли, хадисы"],
   ["▣", "Фоны Мекки и Медины, дуа из Корана", "в «Видео из аятов»: Кааба, Зелёный купол и другие; дуа из Корана голосом чтеца"],
   ["▣", "Видео из аятов, азкаров и дуа", "ролик для Reels с чтецом, подсветкой слов и восточным фоном - «Коран» → «Видео из аятов»"],
   ["♡", "Дуа друг за друга - на главной", "попросите сестёр сделать дуа за вас - просьбу увидят все сёстры в RIZQ"],
@@ -6282,6 +6320,9 @@ function back(){
   if(V.view==="reader" || V.view==="qsettings" || V.view==="qsearch"){ qStop(); autoScrollOff(); }
   if(V.view==="qsettings" || V.view==="qsearch"){ V.view=null; V.p=null; V.q=""; render(); return; }
   if(V.view==="name"){ V.view="names"; V.p=null; V.q=""; render(); return; }
+  if(V.view==="kchat"){ V.view="khatm"; render(); return; }
+  if(V.view==="dm"){ V.view="dms"; V.p=null; CH.dml = null; render(); return; }
+  if(V.view==="dms"){ V.view="khatms"; V.p=null; render(); return; }
   if(V.view==="khatm"){ V.view="khatms"; V.p=null; render(); return; }
   if(V.view==="trread" && V.p !== null && V.p !== undefined && V.p !== ""){ V.p=null; render(); $screen.scrollTop = 0; return; }
   if(V.view==="hadithOne"){ V.view="hadith"; V.p=null; V.q=""; render(); return; }
@@ -6521,7 +6562,10 @@ function renderHdr(){
         : V.view==="khatms" ? "Хатм вместе"
         : V.view==="khatm" ? "Круг хатма"
         : V.view==="duas" ? "Дуа друг за друга"
-        : V.view==="vmake" ? "Видео из аятов"
+        : V.view==="kchat" ? "Чат круга"
+        : V.view==="dms" ? "Личные сообщения"
+        : V.view==="dm" ? (CH.dmc && CH.dmc.pub === V.p && CH.dmc.name ? CH.dmc.name : "Сообщения")
+        : V.view==="vmake" ? "Студия аятов"
         : V.view==="trread" ? (V.p !== null && V.p !== undefined && V.p !== "" && QSUR[V.p] ? QSUR[V.p][2] : "Перевод смыслов") : "";
     $hdr.innerHTML = '<header class="hdr"><div class="hdr-row">'+
       '<button class="back" data-back="1" aria-label="Назад">‹</button>'+
@@ -6767,6 +6811,7 @@ function viewHomeMain(){
   h.push('<div class="sec-h"><h3>Сегодня</h3></div>');
   h.push(cmHomeCard());
   h.push(cmDuaPlate());
+  h.push(vmHomePlate());
   /* план чтения Корана: одна строка, если план идёт - сразу под временем намаза (просьба Заиры 21.09).
      На главной он нужен не для отчёта, а чтобы вспомнить о нём до вечера. */
   (function(){
@@ -7121,7 +7166,7 @@ function deepOpen(qArg){
        вопрос о городе: город он выберет, когда дойдёт до намаза. */
     var GO_LINKS = { qw:["arabic", "qw"], club:["arabic", "club"], arabic:["arabic", null],
       quran:["quran", null], azkar:["azkar", null], kniga:["book1", null], book:["book1", null],
-      duas:["duas", null], khatms:["khatms", null] };
+      duas:["duas", null], khatms:["khatms", null], dms:["dms", null] };
     /* ?post=<id> - открыть запись журнала (ссылка «Поделиться») */
     var mpo = q.match(/[?&]post=([a-z0-9_-]+)/);
     if(mpo){ S.welcomed = 1; save(); V.tab = "journal"; open("post", decodeURIComponent(mpo[1])); return true; }
@@ -7144,7 +7189,7 @@ function deepOpen(qArg){
       var g = GO_LINKS[mg[1]];
       S.welcomed = 1; save();
       if(g[0] === "arabic" || g[0] === "duas") V.tab = "dua";
-      if(g[0] === "khatms") V.tab = "quran";
+      if(g[0] === "khatms" || g[0] === "dms") V.tab = "quran";
       open(g[0], g[1]);
       return true;
     }
@@ -7205,7 +7250,7 @@ function shareOf(k){ return SHARE_WHAT[k] || SHARE_WHAT.app; }
 function shareThis(k){
   var w = shareOf(k);
   /* Где системного «поделиться» нет - копируем адрес: это работает везде. */
-  if(navigator.share){ navigator.share({title:w.title, text:w.text, url:w.url}).catch(function(){}); }
+  if(navigator.share){ navigator.share({title:w.title, text:(w.text ? w.text + String.fromCharCode(10) : "") + w.url}).catch(function(){}); }
   else copyText(w.url);
 }
 function shareWA(k){
@@ -7448,8 +7493,9 @@ function buildIndex(){
    ["Хадж и умра в пути","чек-лист по шагам, счёт кругов","open:hajjtrip","хадж умра чек-лист чеклист таваф сай круги ихрам мекка паломничество камни джамарат арафат муздалифа мина сборы"],
    ["Детям","истории пророков, перед сном, дуа, имена","open:kids","дети детям ребенок ребёнок истории пророков сказки перед сном на ночь дуа для детей имена имя для ребенка мальчику девочке"],
    ["Исламская рассрочка","партнёры и покупка товара в рассрочку","open:installment","рассрочка исламская халяль мурабаха кредит без процентов частями взносы купить в рассрочку партнерское финансирование"],
-   ["Видео из аятов","ролик для Reels: аяты, азкары, дуа","open:vmake","видео ролик рилс reels shorts tiktok аяты азкары дуа фон контент инстаграм"],
+   ["Студия аятов","ролик для Reels: аяты, азкары, дуа","open:vmake","студия видео ролик рилс reels shorts tiktok аяты азкары дуа фон контент инстаграм"],
    ["Перевод смыслов","перевод Кулиева целиком, сура за сурой","open:trread","перевод смыслов кулиев тафсир читать по-русски текст корана целиком"],
+   ["Личные сообщения","переписка с сёстрами из круга","open:dms","личные сообщения переписка написать сестре чат"],
    ["Хатм вместе","читать Коран кругом","open:khatms","хатм вместе круг джуз подруги сёстры сообщество читать коран вместе"],
    ["Дуа друг за друга","попросить дуа, сделать дуа за сестёр","open:duas","дуа просьба помолиться сообщество сёстры друг за друга"],
    ["Плеер сур","больше 200 чтецов, суры целиком","open:spl","плеер сура чтец слушать коран целиком аудио афаси судайс гамиди мп3"],
@@ -8539,7 +8585,7 @@ function nameCardShare(i){
       navigator.share({ files: [file], text: text }).catch(function(){});
       return;
     }
-    if(navigator.share){ navigator.share({ text: text, url: APP_URL }).catch(function(){}); return; }
+    if(navigator.share){ navigator.share({ text: text.indexOf(APP_URL) > -1 ? text : text + String.fromCharCode(10) + APP_URL }).catch(function(){}); return; }
     nameCardSave(i);
   });
 }
@@ -12861,13 +12907,13 @@ function viewQuranHome(){
     '<button data-guide="aboutquran"><span>۞</span>О Коране</button>'+
     '<button data-open="qsearch"><span>⌕</span>Поиск</button>'+
     '<button data-open="qmarks"><span>🔖</span>Закладки'+(S.qMarks.length ? '<em>'+S.qMarks.length+'</em>' : '')+'</button>'+
+    '<button data-open="trread"><span>Ru</span>Перевод</button>'+
     '<button data-open="qoffline"><span>⤓</span>Офлайн'+(qoffN ? '<em>'+qoffN+'</em>' : '')+'</button></div>');
   h.push('<button class="cat-wide gold" data-open="spl" style="margin-top:10px"><span class="cw-ic">▶</span>'+
     '<span class="cw-t"><b>Плеер сур</b><span>Больше 200 чтецов, суры целиком, поиск по имени</span></span><span class="cw-go">›</span></button>');
-  h.push('<button class="cat-wide" data-open="trread" style="margin-top:10px"><span class="cw-ic">Ru</span>'+
-    '<span class="cw-t"><b>Перевод смыслов</b><span>перевод Кулиева целиком, сура за сурой - как книгу</span></span><span class="cw-go">›</span></button>');
+
   h.push('<button class="cat-wide" data-open="vmake" style="margin-top:10px"><span class="cw-ic">▣</span>'+
-    '<span class="cw-t"><b>Видео из аятов</b><span>ролик для Reels: аяты, азкары и дуа на красивом фоне</span></span><span class="cw-go">›</span></button>');
+    '<span class="cw-t"><b>Студия аятов</b><span>ролик для Reels: аяты, азкары и дуа голосом чтеца на фоне Каабы и Медины</span></span><span class="cw-go">›</span></button>');
   h.push('<button class="cat-wide" data-open="khatms" style="margin-top:10px"><span class="cw-ic">◎</span>'+
     '<span class="cw-t"><b>Хатм вместе</b><span>читайте Коран кругом: 30 джузов на всех</span></span><span class="cw-go">›</span></button>');
   h.push('<div class="sec-h"><h3>Мой путь</h3></div>');
@@ -13650,7 +13696,7 @@ function cmFetch(p, body){
     body: body ? JSON.stringify(body) : undefined })
     .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return { status:r.status, ok:r.ok, j:j || {} }; }); });
 }
-function cmHere(){ return V.view === "khatms" || V.view === "khatm" || V.view === "duas"; }
+function cmHere(){ return V.view === "khatms" || V.view === "khatm" || V.view === "duas" || V.view === "dms"; }
 function cmRedraw(){ if((cmHere() || (V.tab === "home" && !V.view)) && !document.querySelector(".scrim")) renderInPlace(); }
 var CM_NET = "Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.";
 /* Общий разбор ответа: вышел ключ - просим войти; нет имени - просим имя и повторяем. */
@@ -13752,6 +13798,10 @@ function cmHomeCard(){
         '<span class="ic">◎</span><span><b>Ваш джуз '+x.n+' ждёт</b><em>круг «'+esc(c.title)+'»'+(c.due ? ' · до '+esc(new Date(c.due + "T00:00:00").toLocaleDateString("ru-RU", { day:"numeric", month:"long" })) : '')+'</em></span><span class="go">Читать ›</span></button>');
     });
   });
+  if(m.dmUnread) rows.push('<button class="cm-home-row" data-open="dms"><span class="ic">✉</span><span><b>Новые личные сообщения: '+m.dmUnread+'</b><em>от сестёр из ваших кругов</em></span><span class="go">›</span></button>');
+  (m.circles || []).forEach(function(c){
+    if(c.unread && rows.length < 4) rows.push('<button class="cm-home-row" data-cm="kchat:'+esc(c.code)+'"><span class="ic">◎</span><span><b>Новое в чате круга: '+c.unread+'</b><em>«'+esc(c.title)+'»</em></span><span class="go">›</span></button>');
+  });
   var dn = m.dua ? (m.dua.n || 0) - (S.cmDuaSeen || 0) : 0;
   if(dn > 0) rows.push('<button class="cm-home-row" data-open="duas"><span class="ic">♡</span><span><b>За вас сделали дуа ещё '+plural(dn, "раз", "раза", "раз")+'</b>'+
     '<em>Да примет Аллах! Сделайте дуа и за сестёр</em></span><span class="go">›</span></button>');
@@ -13776,6 +13826,8 @@ function viewKhatms(){
   h.push(cmNameRow());
   h.push(cmStatsLine());
   var cs = CM.me.circles || [];
+  h.push('<div class="rows"><button class="row" data-open="dms"><span class="ic">✉</span><span style="flex:1">Личные сообщения</span>'+
+    '<span class="val"'+(CM.me.dmUnread ? ' style="color:var(--emerald);font-weight:700"' : '')+'>'+(CM.me.dmUnread ? CM.me.dmUnread + " новых" : (CM.me.dm ? "вкл" : "выкл"))+'</span></button></div>');
   if(!cs.length) h.push('<section class="card"><p class="note" style="margin:0">Вы пока ни в одном круге. Создайте свой и отправьте ссылку подругам - или откройте ссылку, которую прислали вам.</p></section>');
   cs.forEach(function(c){
     var mine = c.mine || [], left = mine.filter(function(x){ return !x.done; });
@@ -13786,6 +13838,7 @@ function viewKhatms(){
       cmBar(c.done)+
       '<span class="note">Прочитано '+c.done+' из 30'+(mine.length ? ' · ваши: '+mine.map(function(x){ return x.n + (x.done ? " ✓" : ""); }).join(", ") : ' · вы ещё не взяли джуз')+'</span>'+
       (left.length ? '<span class="km-left">Осталось прочитать вам: '+left.length+'</span>' : '')+
+      (c.unread ? '<span class="km-left">В чате новых сообщений: '+c.unread+'</span>' : '')+
       '</button>');
   });
   h.push('<button class="btn" data-cm="new">Создать круг</button>');
@@ -13820,7 +13873,11 @@ function viewKhatm(){
       (c.member ? '<button class="btn" data-cm="next">Начать новый хатм</button>' : '')+'</section>');
   }
   h.push(cmKhatmHelp(!c.member || c.taken === 0));
-  if(c.member) h.push('<button class="btn sec" data-cm="invite">Пригласить в круг</button>');
+  if(c.member){
+    var cmc = (CM.me && (CM.me.circles || []).filter(function(x){ return x.code === c.code; })[0]) || {};
+    h.push('<div style="display:flex;gap:8px"><button class="btn" style="flex:1" data-cm="kchat:'+esc(c.code)+'">Чат круга'+(cmc.unread ? ' · '+cmc.unread+' новых' : '')+'</button>'+
+      '<button class="btn sec" style="flex:1" data-cm="invite">Пригласить</button></div>');
+  }
   h.push(cmKhatmLegend());
   h.push('<div class="km-grid">'+c.juz.map(function(j){
     var cls = j.done ? "done" : (j.me ? "me" : ((j.name || j.taken) ? "busy" : "free"));
@@ -13830,7 +13887,8 @@ function viewKhatm(){
   }).join("")+'</div>');
   h.push(cmKhatmProof());
   if(c.member){
-    h.push('<div class="note">В круге: '+c.members.map(function(m){ return esc(m.name) + (m.me ? " (вы)" : ""); }).join(", ")+'</div>');
+    h.push('<div class="km-members"><span class="note">В круге - нажмите на имя, чтобы написать лично:</span>'+c.members.map(function(m){
+      return '<button class="km-mem'+(m.me ? " me" : "")+'" data-kmem="'+esc(m.pub || "")+'">'+esc(m.name)+(m.me ? " (вы)" : "")+(m.lead ? " ★" : "")+'</button>'; }).join("")+'</div>');
     h.push('<button class="btn ghost sm" data-cm="leave">Выйти из круга</button>');
     if(c.owner) h.push('<button class="btn ghost sm" style="color:#C0392B" data-cm="close">Закрыть круг</button>');
   }
@@ -14018,7 +14076,7 @@ function cmInvite(fresh){
 }
 function cmShare(){
   var x = CM.share; if(!x) return;
-  if(navigator.share){ navigator.share({ title:"Хатм вместе", text:x.text, url:x.url }).catch(function(){}); return; }
+  if(navigator.share){ navigator.share({ title:"Хатм вместе", text:x.text + String.fromCharCode(10) + x.url }).catch(function(){}); return; }
   var t = x.text + " " + x.url;
   try{ navigator.clipboard.writeText(t).then(function(){ toast("Ссылка скопирована"); }, function(){ toast(x.url); }); }catch(e){ toast(x.url); }
 }
@@ -14050,7 +14108,24 @@ function cmReport(id){
   }).catch(function(){ toast(CM_NET); });
 }
 function cmCmd(c){
+  if(c.indexOf(":") > -1 && chCmd(c)) return;
   var code = String(V.p || "");
+  if(c === "kcsend"){ kcSend(); return; }
+  if(c === "dmsend"){ dmSend(); return; }
+  if(c === "dmblock"){
+    var bl = CH.dmc && CH.dmc.blocked;
+    if(!bl && !confirm("Заблокировать? Сестра не сможет вам писать, её сообщения пропадут из списка.")) return;
+    cmFetch("/dm/" + encodeURIComponent(code) + (bl ? "/unblock" : "/block"), {}).then(function(r){
+      if(!cmOk(r)) return; if(CH.dmc) CH.dmc.blocked = r.j.blocked; dmPaint(); CH.dml = null; toast(r.j.blocked ? "Заблокирована" : "Разблокирована"); }).catch(function(){ toast(CM_NET); });
+    return;
+  }
+  if(c === "dmtog"){
+    var on = !(CH.dml && CH.dml.dm);
+    cmFetch("/prefs", { dm:on }).then(function(r){
+      if(!cmOk(r)) return; if(CH.dml) CH.dml.dm = r.j.dm; if(CM.me) CM.me.dm = r.j.dm;
+      toast(r.j.dm ? "Сёстры из ваших кругов смогут вам писать" : "Личные сообщения выключены"); cmRedraw(); }).catch(function(){ toast(CM_NET); });
+    return;
+  }
   if(c === "shareduas"){ cmShareDuas(); return; }
   if(c === "due"){ sheetDue(); return; }
   if(c === "duesave"){ cmDueSave(false); return; }
@@ -14122,7 +14197,9 @@ function cmDuaMade(id){
   cmFetch("/dua/" + id + "/made", {}).then(function(r){
     if(!cmOk(r)) return;
     (CM.dua && CM.dua.items || []).forEach(function(x){ if(x.id === id){ x.done = true; x.n = r.j.n; } });
-    toast("Амин. И вам того же, ин ша Аллах"); cmRedraw();
+    var fresh = !(CM.duaPts || {})[id + ":" + todayKey()];
+    if(fresh){ CM.duaPts = CM.duaPts || {}; CM.duaPts[id + ":" + todayKey()] = 1; addPoints(POINTS.duasis, "duasis"); }
+    toast("Амин. И вам того же, ин ша Аллах" + (fresh ? " · +" + POINTS.duasis + " балла" : "")); cmRedraw();
   }).catch(function(){ toast(CM_NET); });
 }
 
@@ -14177,7 +14254,8 @@ function cmDuaPlate(){
 function cmShareDuas(){
   var url = APP_URL + "?go=duas";
   var text = "«Дуа друг за друга» в RIZQ: попросите сестёр сделать дуа за вас и сделайте дуа за них. Пророк ﷺ сказал: кто делает дуа за брата в его отсутствие, ангел говорит: «Амин, и тебе того же» (Муслим, 2732).";
-  if(navigator.share){ navigator.share({ title:"Дуа друг за друга", text:text, url:url }).catch(function(){}); return; }
+  /* ссылку кладём в сам текст: WhatsApp и Instagram отбрасывают отдельное поле url (жалоба Заиры 30.09) */
+  if(navigator.share){ navigator.share({ title:"Дуа друг за друга", text:text + String.fromCharCode(10) + url }).catch(function(){}); return; }
   try{ navigator.clipboard.writeText(text + " " + url).then(function(){ toast("Текст и ссылка скопированы"); }, function(){ toast(url); }); }catch(e){ toast(url); }
 }
 function cmDuaProof(){
@@ -14250,11 +14328,16 @@ var VM_BG = [
   { id:"sky",      n:"Звёздный дождь",  ink:"#EEF0FF", ru:"rgba(238,240,255,.88)", acc:"#E8C56A" }
 ];
 /* Мекка и Медина - фото Unsplash (лицензия Unsplash), 1080x1920 в www/vm-fon. */
-var VM_PH = [["kaaba-bashnya", "Кааба и часовая башня"], ["kaaba-krupno", "Кааба крупно"], ["mekka-zakat", "Мекка на закате"],
-  ["kaaba-dver", "Дверь Каабы"], ["kaaba-den", "Кааба днём"], ["medina-kupol", "Зелёный купол"], ["medina-minaret", "Минарет Медины"],
-  ["medina-arki", "Арки мечети Пророка"], ["medina-mechet", "Мечеть Пророка"], ["medina-zonty", "Зонты Медины"]];
+var VM_PH = [["kaaba-bashnya", "Кааба и часовая башня", "mekka"], ["kaaba-noch-zvezdy", "Кааба под звёздами", "mekka"], ["kaaba-arka", "Кааба сквозь арку", "mekka"], ["kiswa-noch", "Кисва ночью", "mekka"], ["kaaba-u-dveri", "У двери Каабы", "mekka"], ["kaaba-krupno", "Кааба крупно", "mekka"], ["haram-noch", "Аль-Харам ночью", "mekka"], ["haram-den", "Аль-Харам днём", "mekka"], ["mekka-zakat", "Мекка на закате", "mekka"], ["kaaba-dver", "Дверь Каабы", "mekka"], ["kaaba-den", "Кааба днём", "mekka"], ["kaaba-bashnya-den", "Башня днём", "mekka"], ["bashnya-noch", "Часовая башня ночью", "mekka"], ["bashnya-sumerki", "Башня в сумерках", "mekka"],
+  ["medina-kupol", "Зелёный купол", "medina"], ["medina-kupol-krupno", "Купол крупно", "medina"], ["medina-noch", "Медина ночью", "medina"], ["medina-reshetka", "Купол сквозь решётку", "medina"], ["medina-vrata", "Врата мечети Пророка", "medina"], ["medina-minaret", "Минарет Медины", "medina"], ["medina-kupol-minaret", "Купол и минарет", "medina"], ["medina-zakat", "Закат в Медине", "medina"], ["medina-zakat2", "Медина вечером", "medina"], ["medina-arki", "Арки мечети Пророка", "medina"], ["medina-minaret-zonty", "Минарет и зонты", "medina"], ["medina-dozhd", "Медина после дождя", "medina"], ["medina-mechet", "Мечеть Пророка", "medina"], ["medina-gorod", "Купол среди города", "medina"], ["medina-dvor", "Двор мечети Пророка", "medina"], ["medina-zonty", "Зонты Медины", "medina"],
+  ["hadzh-arafat", "Арафат", "hadzh"], ["hadzh-dzhabal-rahma", "Гора Милости", "hadzh"], ["hadzh-sai", "Сай между Сафой и Марвой", "hadzh"], ["hadzh-ihram", "Паломники в ихраме", "hadzh"], ["hadzh-kiswa", "У Каабы", "hadzh"], ["hadzh-kaaba-bashnya", "Кааба и башня", "hadzh"], ["hadzh-palomniki", "Паломники", "hadzh"], ["hadzh-gory", "Горы Мекки", "hadzh"],
+  ["sudzhud", "Суджуд", "namaz"], ["namaz-ryady", "Ряды молящихся", "namaz"], ["namaz-zal", "Молитвенный зал", "namaz"], ["namaz-mechet", "В мечети", "namaz"], ["kovrik-mihrab", "Коврик у михраба", "namaz"], ["zal-mecheti", "Зал мечети", "namaz"], ["arki-mecheti", "Арки мечети", "namaz"], ["kupol-mecheti", "Купол мечети", "namaz"], ["kupol-zoloto", "Золотой купол", "namaz"], ["minaret-arka", "Минарет в арке", "namaz"], ["belaya-mechet", "Белая мечеть", "namaz"], ["namaz-minaret", "Минарет", "namaz"], ["namaz-ruki", "Руки в дуа", "namaz"],
+  ["koran-otkryt", "Открытый Коран", "koran"], ["koran-kniga", "Коран", "koran"], ["koran-podstavka", "Коран на подставке", "koran"], ["rehal-okno", "Рехаль у окна", "koran"], ["tasbih-koran", "Чётки и Коран", "koran"],
+  ["post-iftar", "Ифтар", "post"], ["post-iftar-stol", "Стол ифтара", "post"], ["post-iftar-kovyor", "Ифтар на ковре", "post"], ["post-finiki", "Финики", "post"], ["koran-finiki", "Коран и финики", "post"], ["post-zakat-mechet", "Закат над мечетью", "post"], ["post-fonar", "Фонарь Рамадана", "post"], ["post-fonar-noch", "Фонарь ночью", "post"], ["post-fonar-zelyonyj", "Кованый фонарь", "post"], ["post-fonari-rynok", "Фонари на рынке", "post"], ["fonar", "Фонарь", "post"], ["fonar-zakat", "Фонарь на закате", "post"],
+  ["bahur", "Бахур", "atmo"], ["tasbih", "Чётки", "atmo"], ["dua-ruki", "Руки в мольбе", "atmo"], ["ornament", "Орнамент", "atmo"]];
+var VM_FOLD = [["mekka","Мекка"],["medina","Медина"],["hadzh","Хадж и умра"],["namaz","Намаз и мечети"],["koran","Коран"],["post","Пост и Рамадан"],["atmo","Атмосфера"],["uzory","Узоры"]];
 VM_BG = VM_PH.map(function(p){
-  return { id:"ph-" + p[0], n:p[1], photo:"vm-fon/" + p[0] + ".jpg", thumb:"vm-fon/t-" + p[0] + ".jpg", ink:"#FFFFFF", ru:"rgba(255,255,255,.92)", acc:"#F2CD72" };
+  return { id:"ph-" + p[0], n:p[1], f:p[2], photo:"vm-fon/" + p[0] + ".jpg", thumb:"vm-fon/t-" + p[0] + ".jpg", ink:"#FFFFFF", ru:"rgba(255,255,255,.92)", acc:"#F2CD72" };
 }).concat(VM_BG);
 VM.bg = "ph-kaaba-bashnya"; VM.img = {};
 function vmPhoto(b){
@@ -14407,7 +14490,10 @@ function vmBgDraw(ctx, id, W, H, t){
       var dw = im.width * sc, dh = im.height * sc;
       ctx.drawImage(im, (W - dw) / 2, (H - dh) / 2, dw, dh);
     } else { vmGrad(ctx, W, H, [[0, "#1A1512"], [1, "#0B0907"]]); }
-    ctx.fillStyle = "rgba(8,6,4,.48)"; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "rgba(8,6,4,.58)"; ctx.fillRect(0, 0, W, H);
+    var cgr = ctx.createRadialGradient(W / 2, H * 0.5, W * 0.1, W / 2, H * 0.5, W * 0.9);
+    cgr.addColorStop(0, "rgba(0,0,0,.22)"); cgr.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = cgr; ctx.fillRect(0, 0, W, H);
     var vg = ctx.createLinearGradient(0, 0, 0, H);
     vg.addColorStop(0, "rgba(0,0,0,.45)"); vg.addColorStop(0.3, "rgba(0,0,0,0)"); vg.addColorStop(0.7, "rgba(0,0,0,0)"); vg.addColorStop(1, "rgba(0,0,0,.55)");
     ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
@@ -14458,7 +14544,13 @@ function vmWrap(ctx, words, maxW, gap){
 function vmWords(txt){ return String(txt || "").split(String.fromCharCode(10)).join(" ").split(" ").filter(Boolean).map(function(x){ return { x:x, w:0 }; }); }
 /* раскладка сегмента: размер арабского и перевода подбирается, чтобы влезло */
 function vmLayout(ctx, sg, W, H){
+  if(sg.card) return vmCardLayout(ctx, sg, W, H);
   var u = W / 1080, top = H * (VM.fmt === "9x16" ? 0.25 : 0.23), bot = H * (VM.fmt === "9x16" ? 0.84 : 0.88);
+  var hkL = [], hkS = 62 * u;
+  if(sg.hook){
+    for(var ht = 0; ht < 8; ht++){ ctx.font = "700 " + hkS + "px Montserrat,Inter,sans-serif"; hkL = vmWrap(ctx, vmWords(sg.hook), W - 160 * u, hkS * 0.28); if(hkL.length <= 3) break; hkS *= 0.9; }
+    sg.hkL = hkL; sg.hkS = hkS; sg.hkY = top; top += hkL.length * hkS * 1.22 + 40 * u;
+  }
   var avail = bot - top, maxW = W - 170 * u, ar, ru, arS = (VM.fmt === "1x1" ? 76 : VM.fmt === "4x5" ? 88 : 104) * u, ruS = (VM.fmt === "1x1" ? 36 : VM.fmt === "4x5" ? 40 : 46) * u;
   for(var tries = 0; tries < 22; tries++){
     ctx.font = arS + 'px "Amiri Quran","Noto Naskh Arabic",serif';
@@ -14490,6 +14582,14 @@ function vmSpaced(ctx, txt, cx, y, sp){
   Array.from(txt).forEach(function(ch, k){ ctx.fillText(ch, x, y); x += ws[k] + sp; });
   ctx.textAlign = "center";
 }
+/* низ кадра: это приложение RIZQ - на каждом кадре (реклама, просьба Заиры) */
+function vmRizqLine(ctx, W, H, b){
+  var u = W / 1080, y = H - (VM.fmt === "9x16" ? 0.085 : 0.055) * H;
+  ctx.textAlign = "center"; ctx.fillStyle = b.acc; ctx.font = "700 " + (34 * u) + "px Montserrat,Inter,sans-serif";
+  ctx.fillText("Приложение RIZQ · бесплатно", W / 2, y);
+  ctx.fillStyle = b.ru; ctx.font = "500 " + (24 * u) + "px Montserrat,Inter,sans-serif";
+  ctx.fillText("rizq.javattigroup.ru", W / 2, y + 38 * u);
+}
 function vmFrame(ctx, W, H, t, segs){
   var b = vmBgOf(VM.bg), u = W / 1080;
   vmBgDraw(ctx, VM.bg, W, H, t);
@@ -14509,6 +14609,13 @@ function vmFrame(ctx, W, H, t, segs){
   if(sg.who){ ctx.font = "500 " + (26 * u) + "px Montserrat,Inter,sans-serif"; ctx.fillStyle = b.acc; ctx.fillText(sg.who, W / 2, ly + 172 * u); }
   ctx.globalAlpha = a;
   if(!b.light){ ctx.shadowColor = "rgba(0,0,0,.45)"; ctx.shadowBlur = 18 * u; }
+  if(sg.lay && sg.lay.card){ vmCardDraw(ctx, sg, W, H, b); ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+    ctx.fillStyle = b.ru; ctx.font = "500 " + (24 * u) + "px Montserrat,Inter,sans-serif";
+    vmRizqLine(ctx, W, H, b); return; }
+  if(sg.hkL && sg.hkL.length){
+    ctx.fillStyle = b.acc; ctx.font = "700 " + sg.hkS + "px Montserrat,Inter,sans-serif"; ctx.textAlign = "center";
+    sg.hkL.forEach(function(line, li){ ctx.fillText(line.items.map(function(o){ return o.x; }).join(" "), W / 2, sg.hkY + sg.hkS * (li + 1) * 1.22 - sg.hkS * 0.22); });
+  }
   var L1 = sg.lay, hw = -1;
   if(sg.seg){ var ms = (t - sg.t0) * 1000; for(var q = 0; q < sg.seg.length; q++) if(ms >= sg.seg[q][1] - 40) hw = sg.seg[q][0]; }
   ctx.font = L1.arS + 'px "Amiri Quran","Noto Naskh Arabic",serif';
@@ -14527,7 +14634,7 @@ function vmFrame(ctx, W, H, t, segs){
   }
   ctx.shadowBlur = 0; ctx.globalAlpha = 1;
   ctx.fillStyle = b.ru; ctx.font = "500 " + (24 * u) + "px Montserrat,Inter,sans-serif";
-  ctx.fillText("приложение RIZQ · rizq.javattigroup.ru", W / 2, H - (VM.fmt === "9x16" ? 0.075 : 0.05) * H);
+  vmRizqLine(ctx, W, H, b);
 }
 
 /* ---------- что показываем ---------- */
@@ -14560,10 +14667,64 @@ function vmQdList(q){
     return '<button class="vm-it'+(x.k === VM.qd ? " on" : "")+'" data-vm="qsel:'+x.k+'"><b>'+esc(String(x.d.ru || "").slice(0, 70))+(String(x.d.ru || "").length > 70 ? "..." : "")+'</b><span>'+esc(x.d.src || "")+(x.d.who ? " · " + esc(x.d.who) : "")+'</span></button>';
   }).join("") || '<p class="note">Ничего не нашлось</p>';
 }
+/* слова аята для кадра: без басмалы в начале, со знаком конца аята и номером */
+function vmAyWords(i){
+  var w = qTokens(i).filter(function(o){ return !o.b; }), n = ayahInSurah(i);
+  if(n) w.push({ x:"﴿" + arNum(n) + "﴾", w:0 });
+  return w;
+}
+/* азкар, который на самом деле аят или сура: «Сура 114», «Сура «Аль-Бакара», 255», «65:2-3» */
+function vmDuaQuran(d){
+  var src = String(d && d.src || "").trim();
+  if(!/^(Сура|сура|Аят Корана)/.test(src)) return null;
+  var m = src.match(/([0-9]+):([0-9]+)(-([0-9]+))?/), sura = 0, a = 0, to = 0, whole = false;
+  if(m){ sura = +m[1]; a = +m[2]; to = m[4] ? +m[4] : a; }
+  else if((m = src.match(/^Сура ([0-9]+)$/))){ sura = +m[1]; whole = true; }
+  else {
+    var nm = src.match(/«([^»]+)»/) || src.match(/^Сура ([^,0-9]+),/);
+    if(nm){
+      var key = String(nm[1]).toLowerCase().split("-").join(" ").trim();
+      for(var k = 0; k < QSUR.length && !sura; k++) if(String(QSUR[k][2]).toLowerCase().split("-").join(" ") === key) sura = k + 1;
+      var n2 = src.slice(src.indexOf(nm[1]) + nm[1].length).match(/([0-9]+)(-([0-9]+))?/);
+      if(n2){ a = +n2[1]; to = n2[3] ? +n2[3] : a; }
+    }
+  }
+  if(!sura || !QSUR[sura - 1]) return null;
+  var cnt = surahAyatCount(sura - 1);
+  if(whole){ if(cnt > 12) return null; a = 1; to = cnt; }
+  if(!a || a > cnt) return null;
+  return { sura:sura, from:a, to:Math.min(to, a + 11, cnt), whole: whole || (a === 1 && to >= cnt) };
+}
+/* текст из Корана приложения: по аятам, со знаком конца и номером; целая сура - с басмалой */
+function quranText(sura, from, to, withBasm){
+  var parts = [];
+  if(withBasm && sura !== 9) parts.push(QA[0]);
+  for(var a = from; a <= to; a++){
+    var i = ayahGlobal(sura, a);
+    parts.push(qTokens(i).filter(function(o){ return !o.b; }).map(function(o){ return o.x; }).join(" ") + " ﴿" + arNum(ayahInSurah(i)) + "﴾");
+  }
+  return parts.join(" ");
+}
+/* в азкарах и «Дуа из Корана» аяты и суры целиком - из Корана, по аятам.
+   Одиночный аят заменяем, только если в тексте весь аят, а не его часть. */
+function quranTextsFix(){
+  function arLen(t){ return String(t || "").split(" ").join("").length; }
+  function fix(d, q){
+    if(!q || !d || !d.ar) return;
+    if(q.to > q.from || q.whole){ d.ar = quranText(q.sura, q.from, q.to, q.whole && q.from === 1); return; }
+    var i = ayahGlobal(q.sura, q.from), full = qTokens(i).filter(function(o){ return !o.b; }).map(function(o){ return o.x; }).join(" ");
+    if(arLen(d.ar) >= arLen(full) * 0.92) d.ar = full + " ﴿" + arNum(ayahInSurah(i)) + "﴾";
+  }
+  try{
+    DUAS.forEach(function(d){ fix(d, vmDuaQuran(d)); });
+    QURAN.forEach(function(d){ var q = vmQdAyahs(d); if(q) fix(d, { sura:q.sura, from:q.from, to:q.to, whole:false }); });
+  }catch(e){}
+}
 function vmDuaObj(){ return DUAS.filter(function(d){ return d.id === VM.dua; })[0] || null; }
 /* сегменты без звука: текст, ссылка, длительность по длине текста */
 function vmSegs(){
   var out = [];
+  if(VM.kind === "post" || VM.kind === "guide" || VM.kind === "custom") return vmTopicSegs();
   if(VM.kind === "qdua"){
     var qd = vmQdObj(); if(!qd) return out;
     var qa = vmQdAyahs(qd), who = String(qd.who || "").replace(/[.]$/, "");
@@ -14574,13 +14735,20 @@ function vmSegs(){
     }
     for(var qa1 = qa.from; qa1 <= qa.to; qa1++){
       var qi = ayahGlobal(qa.sura, qa1);
-      out.push({ i:qi, ref:"Дуа из Корана · «" + QSUR[qa.sura - 1][2] + "», " + qa1, who:who, words:qTokens(qi).filter(function(o){ return !o.b; }),
+      out.push({ i:qi, ref:"Дуа из Корана · «" + QSUR[qa.sura - 1][2] + "», " + qa1, who:who, words:vmAyWords(qi),
         ru: VM.tr && HAS_TR ? QR[qi] : "", url: vmUrl(qi), dur:6 });
     }
     return out;
   }
   if(VM.kind === "dua"){
     var d = vmDuaObj(); if(!d) return out;
+    var dq = vmDuaQuran(d);
+    if(dq){
+      var ds = dq.sura - 1;
+      if(dq.whole && dq.from === 1 && ds !== 8 && VM.basm)
+        out.push({ ref:d.n, words:vmWords(QA[0]), ru: VM.tr && HAS_TR ? QR[0] : "", url: vmBase() + "001001.mp3", dur:5 });
+      return out.concat(vmAyahSegs({ sura:dq.sura, from:dq.from, to:dq.to })).map(function(sg){ if(sg.i !== undefined) sg.ref = (String(d.n).indexOf(QSUR[ds][2]) > -1 ? "Сура «" + QSUR[ds][2] + "»" : d.n + " · «" + QSUR[ds][2] + "»") + ", " + ayahInSurah(sg.i); return sg; });
+    }
     var dur = Math.min(60, Math.max(8, 4 + String(d.ar).length * 0.07 + String(d.ru || "").length * 0.025)) * VM.len;
     out.push({ ref:d.n + (d.src ? " · " + d.src : ""), words:vmWords(d.ar), ru: VM.tr ? String(d.ru || "").split(String.fromCharCode(10)).join(" ") : "", dur:dur });
     return out;
@@ -14591,7 +14759,7 @@ function vmSegs(){
     out.push({ ref:"Сура «" + name + "»", words:vmWords(QA[0]), ru: VM.tr && HAS_TR ? QR[0] : "", url: vmBase() + "001001.mp3", dur:5 });
   for(var a = VM.from; a <= VM.to; a++){
     var i = ayahGlobal(VM.sura, a);
-    out.push({ i:i, ref:"Сура «" + name + "», " + a, words:qTokens(i).filter(function(o){ return !o.b; }), ru: VM.tr && HAS_TR ? QR[i] : "", url: vmUrl(i), dur:6 });
+    out.push({ i:i, ref:"Сура «" + name + "», " + a, words:vmAyWords(i), ru: VM.tr && HAS_TR ? QR[i] : "", url: vmUrl(i), dur:6 });
   }
   return out;
 }
@@ -14602,12 +14770,14 @@ function vmFonts(){
 }
 /* кадр для предпросмотра - без звука и без сети */
 function vmPreview(){
+  var ce = document.getElementById("vmCap"); if(ce) ce.value = vmCaption();
   var cv = document.getElementById("vmCanvas"); if(!cv) return;
   var f = VM_FMT[VM.fmt]; if(cv.width !== f[0] || cv.height !== f[1]){ cv.width = f[0]; cv.height = f[1]; }
   var segs = vmSegs(), ctx = cv.getContext("2d");
   if(!segs.length){ vmBgDraw(ctx, VM.bg, cv.width, cv.height, 1); return; }
   vmTimes(segs);
   var sg = segs[VM.kind === "ayah" && segs.length > 1 && !segs[0].i ? 1 : 0];
+  if(VM.prevIdx && segs[VM.prevIdx]) sg = segs[VM.prevIdx];
   Promise.all([vmFonts(), vmPhoto(vmBgOf(VM.bg))]).then(function(){ vmLayout(ctx, sg, cv.width, cv.height); vmFrame(ctx, cv.width, cv.height, sg.t0 + 1, [sg]); });
 }
 function vmThumb(id){
@@ -14639,7 +14809,7 @@ function vmStat(t){ VM.stat = t; var e = document.getElementById("vmStat"); if(e
 function vmBuild(W, H){
   var segs = vmSegs();
   if(!segs.length) return Promise.reject(new Error("Выберите, что показать"));
-  if((VM.kind === "ayah" || VM.kind === "qdua") && segs.some(function(x){ return x.url; }) && !vmBase()) return Promise.reject(new Error("У этого чтеца звук нельзя записать в ролик. Выберите другого чтеца в настройках Корана"));
+  if(segs.some(function(x){ return x.url; }) && !vmBase()) return Promise.reject(new Error("У этого чтеца звук нельзя записать в ролик. Выберите другого чтеца в настройках Корана"));
   var n = 0, ctx = vmCanvas(10, 10).getContext("2d");
   return vmFonts().then(function(){ return vmPhoto(vmBgOf(VM.bg)); }).then(function(){
     return segs.reduce(function(p, sg){
@@ -14685,7 +14855,7 @@ function vmRun(record){
     if(record){
       var stream = cv.captureStream(30);
       dest.stream.getAudioTracks().forEach(function(tr){ stream.addTrack(tr); });
-      try{ rec = new MediaRecorder(stream, { mimeType:mime, videoBitsPerSecond:6000000, audioBitsPerSecond:128000 }); }
+      try{ rec = new MediaRecorder(stream, { mimeType:mime, videoBitsPerSecond:3500000, audioBitsPerSecond:128000 }); }
       catch(e){ rec = new MediaRecorder(stream); }
       rec.ondataavailable = function(e){ if(e.data && e.data.size) chunks.push(e.data); };
       rec.onstop = function(){ vmDone(new Blob(chunks, { type:(rec.mimeType || mime).split(";")[0] }), res); };
@@ -14723,54 +14893,88 @@ function vmPaintBtns(){
 }
 
 /* ---------- «Мои ролики»: последние 8 - только на этом телефоне ---------- */
+/* «Мои роликы»: описания - в хранилище meta, видео - в clips и достаётся по одному.
+   Версия 1 держала всё вместе, и список грузил в память все видео сразу. */
+var VM_KEEP = 6;
 function vmDb(){
   return new Promise(function(ok, no){
     if(!window.indexedDB) return no(new Error("нет хранилища"));
-    var rq = indexedDB.open("rizq-video", 1);
-    rq.onupgradeneeded = function(){ rq.result.createObjectStore("clips", { keyPath:"id" }); };
+    var rq = indexedDB.open("rizq-video", 2);
+    rq.onupgradeneeded = function(ev){
+      var db = rq.result;
+      if(!db.objectStoreNames.contains("clips")) db.createObjectStore("clips", { keyPath:"id" });
+      else if(ev.oldVersion < 2){ try{ rq.transaction.objectStore("clips").clear(); }catch(e){} }
+      if(!db.objectStoreNames.contains("meta")) db.createObjectStore("meta", { keyPath:"id" });
+    };
     rq.onsuccess = function(){ ok(rq.result); }; rq.onerror = function(){ no(rq.error); };
   });
 }
 function vmClipsLoad(){
   return vmDb().then(function(db){
     return new Promise(function(ok){
-      var out = [], cur = db.transaction("clips").objectStore("clips").openCursor();
-      cur.onsuccess = function(){ var c = cur.result; if(c){ out.push(c.value); c.continue(); } else ok(out.sort(function(a, b){ return b.at - a.at; })); };
-      cur.onerror = function(){ ok([]); };
+      var rq = db.transaction("meta").objectStore("meta").getAll();
+      rq.onsuccess = function(){ ok((rq.result || []).sort(function(x, y){ return y.at - x.at; })); };
+      rq.onerror = function(){ ok([]); };
     });
   }).catch(function(){ return []; });
 }
-function vmClipPut(rec){
+function vmClipGet(id){
   return vmDb().then(function(db){
-    return vmClipsLoad().then(function(list){
-      var tx = db.transaction("clips", "readwrite"), st = tx.objectStore("clips");
-      st.put(rec);
-      list.slice(7).forEach(function(o){ st.delete(o.id); });
-      return new Promise(function(ok){ tx.oncomplete = ok; tx.onerror = ok; });
+    return new Promise(function(ok){
+      var rq = db.transaction("clips").objectStore("clips").get(id);
+      rq.onsuccess = function(){ ok(rq.result || null); }; rq.onerror = function(){ ok(null); };
     });
-  }).catch(function(){});
+  }).catch(function(){ return null; });
+}
+function vmClipPut(rec){
+  var meta = {}; for(var k in rec) if(k !== "blob") meta[k] = rec[k];
+  return vmClipsLoad().then(function(list){
+    return vmDb().then(function(db){
+      var tx = db.transaction(["clips", "meta"], "readwrite");
+      tx.objectStore("clips").put({ id:rec.id, blob:rec.blob });
+      tx.objectStore("meta").put(meta);
+      list.slice(VM_KEEP - 1).forEach(function(o){ tx.objectStore("clips").delete(o.id); tx.objectStore("meta").delete(o.id); });
+      return new Promise(function(ok){ tx.oncomplete = function(){ ok(true); }; tx.onerror = function(){ ok(false); }; tx.onabort = function(){ ok(false); }; });
+    });
+  }).catch(function(){ return false; });
 }
 function vmClipDel(id){
-  return vmDb().then(function(db){ var tx = db.transaction("clips", "readwrite"); tx.objectStore("clips").delete(id); return new Promise(function(ok){ tx.oncomplete = ok; tx.onerror = ok; }); }).catch(function(){});
+  return vmDb().then(function(db){
+    var tx = db.transaction(["clips", "meta"], "readwrite");
+    tx.objectStore("clips").delete(id); tx.objectStore("meta").delete(id);
+    return new Promise(function(ok){ tx.oncomplete = ok; tx.onerror = ok; });
+  }).catch(function(){});
 }
 function vmExt(type){ return String(type).indexOf("mp4") > -1 ? "mp4" : "webm"; }
 function vmDone(blob, res){
   var name = res.segs[0].ref.replace(/[«»,]/g, "").trim();
   if(VM.kind === "ayah") name = QSUR[VM.sura - 1][2] + " " + VM.from + (VM.to > VM.from ? "-" + VM.to : "");
+  if(VM.kind === "post" || VM.kind === "guide" || VM.kind === "custom"){ var ntp = vmTopic(); name = "Рилс: " + (ntp ? String(ntp.n).slice(0, 40) : ""); }
   if(VM.kind === "qdua"){ var nq = vmQdObj(), nqa = nq ? vmQdAyahs(nq) : null; name = "Дуа из Корана" + (nqa ? ", " + QSUR[nqa.sura - 1][2] + " " + nqa.from : ""); }
-  var rec = { id:"c" + Date.now(), at:Date.now(), name:name, type:blob.type, size:blob.size, dur:Math.round(res.total), blob:blob };
-  vmClipPut(rec).then(function(){ VM.clips = null; vmStat("Готово: ролик сохранён в «Моих роликах»"); if(V.view === "vmake") renderInPlace(); sheetClip(rec); });
+  if(VM.kind === "dua"){ var nd = vmDuaObj(); if(nd) name = nd.n; }
+  if(!blob || !blob.size){ vmStat("Запись не получилась: браузер не отдал видео. Попробуйте ещё раз или откройте RIZQ в Safari или Chrome"); return; }
+  var capEl = document.getElementById("vmCap");
+  var rec = { id:"c" + Date.now(), at:Date.now(), name:name, caption: capEl ? capEl.value : vmCaption(), type:blob.type, size:blob.size, dur:Math.round(res.total), blob:blob };
+  /* сразу показываем ролик; в «Мои ролики» он пишется в фоне */
+  vmStat("Готово. Сохраните ролик в галерею");
+  sheetClip(rec);
+  vmClipPut(rec).then(function(ok){
+    VM.clips = null;
+    var e = document.getElementById("vmClips"); if(e) e.innerHTML = vmClipsHtml();
+    if(!ok) toast("В «Мои ролики» не поместилось - сохраните ролик в галерею сейчас");
+  });
 }
 function sheetClip(rec){
   var url = URL.createObjectURL(rec.blob), ext = vmExt(rec.type);
-  VM.cur = rec;
+  VM.cur = rec; VM.curUrl = url;
   sheet('<h3>'+esc(rec.name)+'</h3>'+
-    '<video src="'+url+'" controls playsinline style="width:100%;max-height:55vh;border-radius:14px;background:#000"></video>'+
-    '<button class="btn" style="margin-top:12px" data-vm="cshare">Отправить в Instagram, WhatsApp...</button>'+
-    '<a class="btn sec" style="display:block;text-align:center;text-decoration:none;margin-top:8px" href="'+url+'" download="rizq-'+rec.id+'.'+ext+'">Сохранить на телефон</a>'+
+    '<video src="'+url+'" controls playsinline style="width:100%;max-height:50vh;border-radius:14px;background:#000"></video>'+
+    '<button class="btn" style="margin-top:12px" data-vm="csave">Сохранить в галерею</button>'+
+    '<p class="note" style="margin:6px 0 0">Откроется меню телефона: на iPhone выберите «Сохранить видео», на Android - «Галерея» или «Сохранить». Оттуда же можно сразу отправить в Instagram или WhatsApp.</p>'+
+    (rec.caption ? '<button class="btn sec" style="margin-top:10px" data-vm="capcopy">Скопировать текст поста</button>' : '')+
+    '<a class="btn ghost sm" style="display:block;text-align:center;text-decoration:none;margin-top:8px" href="'+url+'" download="rizq-'+rec.id+'.'+ext+'">Скачать файлом</a>'+
     (ext === "webm" ? '<p class="note" style="margin:10px 0 0">Этот браузер записал ролик в формате WebM. Instagram его может не принять: откройте RIZQ в Safari или свежем Chrome - там ролик будет в MP4.</p>' : '')+
-    '<p class="note" style="margin:10px 0 0">В подписи к ролику укажите суру и аят или источник дуа - так правильно по отношению к тексту.</p>'+
-    '<button class="btn ghost" style="margin-top:8px" data-vm="cdel:'+rec.id+'">Удалить ролик</button>'+
+    '<button class="btn ghost sm" style="margin-top:8px" data-vm="cdel:'+rec.id+'">Удалить ролик</button>'+
     '<button class="btn ghost" style="margin-top:4px" data-scrim="1">Закрыть</button>');
 }
 function vmShareCur(){
@@ -14778,11 +14982,242 @@ function vmShareCur(){
   var file = null;
   try{ file = new File([rec.blob], "rizq-" + rec.id + "." + vmExt(rec.type), { type:rec.type }); }catch(e){}
   if(file && navigator.canShare && navigator.canShare({ files:[file] })){
-    navigator.share({ files:[file], title:rec.name }).catch(function(){});
-  } else toast("Этот телефон не умеет отправлять видео напрямую - нажмите «Сохранить на телефон»");
+    navigator.share({ files:[file] }).catch(function(){});
+    return;
+  }
+  /* где меню «поделиться» файлом нет - скачиваем */
+  try{ var aEl = document.createElement("a"); aEl.href = VM.curUrl || URL.createObjectURL(rec.blob); aEl.download = "rizq-" + rec.id + "." + vmExt(rec.type); document.body.appendChild(aEl); aEl.click(); aEl.remove();
+    toast("Ролик скачан в «Загрузки». Откройте его и сохраните в галерею"); }catch(e){ toast("Не получилось сохранить"); }
 }
 
 /* ---------- экран ---------- */
+/* ---------- рилс по теме: журнал, «Знания», своя тема (30.09.2026) ---------- */
+function vmTopic(){
+  if(VM.kind === "post"){
+    var p = postsAll().filter(function(x){ return x.id === VM.post; })[0];
+    return p ? { n:p.n, s:p.s, sum:p.sum || [], body:p.body || [], from:"Журнал RIZQ" } : null;
+  }
+  if(VM.kind === "guide"){
+    var g = GUIDES[VM.guide];
+    return g ? { n:g.n, s:g.sub, sum:[], body:g.blocks || [], from:"RIZQ · Знания" } : null;
+  }
+  if(VM.kind === "custom") return VM.custom || null;
+  return null;
+}
+function vmCut(t, n){
+  t = String(t || "").split(String.fromCharCode(10)).join(" ");
+  if(t.length <= n) return t;
+  var c = t.slice(0, n), k = Math.max(c.lastIndexOf(". "), c.lastIndexOf("! "), c.lastIndexOf("? "));
+  if(k > n * 0.5) return c.slice(0, k + 1);
+  return c.replace(/ [^ ]*$/, "") + "...";
+}
+function vmQuoteAyah(b){
+  var src = String(b.src || "");
+  if(!/Сура|сура|Коран/.test(src)) return null;
+  var m = src.match(/([0-9]+):([0-9]+)(-([0-9]+))?/);
+  if(!m || !QSUR[+m[1] - 1]) return null;
+  var a = +m[2], to = m[4] ? +m[4] : a;
+  return { sura:+m[1], from:a, to:Math.min(to, a + 2, surahAyatCount(+m[1] - 1)) };
+}
+/* источник хадиса: без передатчика, только сборники и степень */
+function vmHadSrc(src){
+  var t = String(src || ""), m = t.match(/(аль-Бухари|Аль-Бухари|Муслим|Абу Дауд|ат-Тирмизи|Ат-Тирмизи|ан-Насаи|Ан-Насаи|Ибн Маджа|Ахмад)( [(][0-9]+[)])?/g);
+  if(m && m.length){ var seen = {}; t = m.filter(function(x){ if(seen[x]) return false; seen[x] = 1; return true; }).slice(0, 2).join(", ");
+    if(/достоверн|сахих|хасан/i.test(String(src))) t += " · достоверный"; return t; }
+  var k = t.indexOf(". "); if(k > -1 && k < 80) t = t.slice(k + 2); return vmCut(t, 48);
+}
+/* сценарий: заголовок поверх первого аята, мысли вперемешку с аятами и хадисами, финал */
+function vmAyEst(q){
+  var qa = vmQuoteAyah(q); if(!qa) return 99;
+  var t = 0;
+  for(var a = qa.from; a <= qa.to; a++) t += String(QA[ayahGlobal(qa.sura, a)] || "").length * 0.08 + 1;
+  return t;
+}
+function vmScript(){
+  var tp = vmTopic(); if(!tp) return [];
+  var quotes = (tp.body || []).filter(function(b){ return b && b.ar && b.src; });
+  var ay = quotes.filter(function(b){ return vmQuoteAyah(b) && vmAyEst(b) <= 22; }).sort(function(a, b){ return vmAyEst(a) - vmAyEst(b); });
+  var had = quotes.filter(function(b){ return !vmQuoteAyah(b) && String(b.ru || "").length <= 320; });
+  var pts = (tp.sum || []).slice(0, 3).map(function(x){ return { h:"", p:x }; });
+  if(!pts.length) (tp.body || []).forEach(function(b){
+    if(pts.length < 3 && b && b.t && b.p && !b.ar && !/имам|читайте/i.test(b.t)) pts.push({ h:b.t, p:vmCut(b.p, 170) });
+  });
+  var out = [{ type:"hook", q:ay[0] || null }];
+  var rest = ay.slice(1).filter(function(b){ return vmAyEst(b) <= 18; }).slice(0, 2).concat(had.slice(0, 2)), mix = [];
+  for(var k = 0; k < Math.max(pts.length, rest.length); k++){
+    if(pts[k]) mix.push({ type:"card", h:pts[k].h, p:pts[k].p });
+    if(rest[k]) mix.push(vmQuoteAyah(rest[k]) ? { type:"ayah", q:rest[k] } : { type:"hadith", q:rest[k] });
+  }
+  mix = mix.slice(0, 7);
+  /* рилс - до минуты: считаем примерно и убираем лишнее с конца */
+  function est(it){ return it.type === "ayah" ? vmAyEst(it.q) : it.type === "hadith" ? vmCardDur(it.q.ru) + 1.5 : vmCardDur((it.h || "") + " " + it.p); }
+  var total = (out[0].q ? vmAyEst(out[0].q) : 5) + 4.5;
+  mix.forEach(function(it){ total += est(it); });
+  while(total > 60 && mix.length > 1){ total -= est(mix.pop()); }
+  out = out.concat(mix);
+  out.push({ type:"cta" });
+  return out;
+}
+function vmScriptLabel(it){
+  var tp = vmTopic() || {};
+  if(it.type === "hook"){ var qa = it.q ? vmQuoteAyah(it.q) : null; return ["Заголовок и Коран", (VM.hook || tp.n) + " · " + (qa ? "«" + QSUR[qa.sura - 1][2] + "», " + qa.from + (qa.to > qa.from ? "-" + qa.to : "") : "басмала")]; }
+  if(it.type === "card") return ["Мысль", (it.h ? it.h + ": " : "") + it.p];
+  if(it.type === "ayah"){ var q2 = vmQuoteAyah(it.q); return ["Аят голосом чтеца", "«" + QSUR[q2.sura - 1][2] + "», " + q2.from + (q2.to > q2.from ? "-" + q2.to : "")]; }
+  if(it.type === "hadith") return ["Хадис текстом", vmCut(it.q.ru, 90) + " · " + vmHadSrc(it.q.src)];
+  return ["Финал", "Напишите РИЗК в комментариях"];
+}
+function vmCardDur(txt){ var w = String(txt || "").split(" ").length; return Math.min(11, Math.max(3.5, 2.2 + w / 2.7)) * VM.len; }
+function vmAyahSegs(qa, extra){
+  var out = [];
+  for(var a = qa.from; a <= qa.to; a++){
+    var i = ayahGlobal(qa.sura, a), sg = { i:i, ref:"Сура «" + QSUR[qa.sura - 1][2] + "», " + a, words:vmAyWords(i),
+      ru: VM.tr && HAS_TR ? QR[i] : "", url: vmUrl(i), dur:6 };
+    if(extra && a === qa.from) for(var k in extra) sg[k] = extra[k];
+    out.push(sg);
+  }
+  return out;
+}
+function vmTopicSegs(){
+  var tp = vmTopic(); if(!tp) return [];
+  var out = [], hook = String(VM.hook || tp.n || "").trim();
+  vmScript().forEach(function(it, idx){
+    if(idx > 0 && VM.off && VM.off[idx]) return;
+    if(it.type === "hook"){
+      var qa = it.q ? vmQuoteAyah(it.q) : null;
+      if(qa) out = out.concat(vmAyahSegs(qa, { hook:hook }));
+      else out.push({ ref:tp.from, hook:hook, words:vmWords(QA[0]), ru: VM.tr && HAS_TR ? QR[0] : "", url: vmBase() + "001001.mp3", dur:5 });
+    } else if(it.type === "ayah") out = out.concat(vmAyahSegs(vmQuoteAyah(it.q)));
+    else if(it.type === "card") out.push({ ref:tp.from, card:{ k:it.h ? "" : "Главное", h:it.h, p:it.p }, dur:vmCardDur((it.h || "") + " " + it.p) });
+    else if(it.type === "hadith") out.push({ ref:tp.from, card:{ k:"Пророк ﷺ сказал", ar: String(it.q.ar).length <= 140 ? it.q.ar : "", p:it.q.ru, src:vmHadSrc(it.q.src) },
+      dur:vmCardDur(it.q.ru) + (String(it.q.ar).length <= 140 ? 1.5 : 0) });
+    else out.push({ ref:"RIZQ", card:{ k:"Приложение RIZQ", h:"Подробнее - в приложении RIZQ", p:"Напишите РИЗК в комментариях - пришлю ссылку. Это бесплатно." }, dur:4.5 });
+  });
+  return out;
+}
+/* раскладка карточки текста: надзаголовок, заголовок, арабский (хадис), текст, источник */
+function vmCardLayout(ctx, sg, W, H){
+  var u = W / 1080, top = H * (VM.fmt === "9x16" ? 0.25 : 0.23), bot = H * (VM.fmt === "9x16" ? 0.84 : 0.88), avail = bot - top;
+  var c = sg.card, hS = 66 * u, pS = 50 * u, aS = 58 * u, maxW = W - 180 * u, hL, pL, aL, hh;
+  for(var tries = 0; tries < 20; tries++){
+    ctx.font = "700 " + hS + "px Montserrat,Inter,sans-serif"; hL = c.h ? vmWrap(ctx, vmWords(c.h), maxW, hS * 0.28) : [];
+    ctx.font = aS + 'px "Amiri Quran","Noto Naskh Arabic",serif'; aL = c.ar ? vmWrap(ctx, vmWords(c.ar), maxW, aS * 0.3) : [];
+    ctx.font = "500 " + pS + "px Montserrat,Inter,sans-serif"; pL = c.p ? vmWrap(ctx, vmWords(c.p), maxW, pS * 0.28) : [];
+    hh = (c.k ? 70 * u : 0) + hL.length * hS * 1.25 + (hL.length ? 30 * u : 0) + aL.length * aS * 1.9 + (aL.length ? 20 * u : 0) + pL.length * pS * 1.42 + (c.src ? 70 * u : 0);
+    if(hh <= avail) break;
+    hS *= 0.93; pS *= 0.94; aS *= 0.93;
+  }
+  sg.lay = { card:true, hL:hL, hS:hS, aL:aL, aS:aS, pL:pL, pS:pS, y0: top + (avail - hh) / 2 };
+}
+function vmCardDraw(ctx, sg, W, H, b){
+  var u = W / 1080, L1 = sg.lay, c = sg.card, y = L1.y0;
+  ctx.textAlign = "center";
+  if(c.k){ ctx.fillStyle = b.acc; ctx.font = "700 " + (30 * u) + "px Montserrat,Inter,sans-serif"; vmSpaced(ctx, c.k.toUpperCase(), W / 2, y + 34 * u, 5 * u); y += 70 * u; }
+  ctx.fillStyle = b.ink; ctx.font = "700 " + L1.hS + "px Montserrat,Inter,sans-serif";
+  L1.hL.forEach(function(line){ y += L1.hS * 1.25; ctx.fillText(line.items.map(function(o){ return o.x; }).join(" "), W / 2, y - L1.hS * 0.25); });
+  if(L1.hL.length) y += 30 * u;
+  if(L1.aL.length){
+    ctx.font = L1.aS + 'px "Amiri Quran","Noto Naskh Arabic",serif'; ctx.direction = "rtl"; ctx.fillStyle = b.acc;
+    L1.aL.forEach(function(line){ y += L1.aS * 1.9; ctx.fillText(line.items.map(function(o){ return o.x; }).join(" "), W / 2, y - L1.aS * 0.5); });
+    ctx.direction = "ltr"; y += 20 * u;
+  }
+  ctx.fillStyle = L1.hL.length ? b.ru : b.ink; ctx.font = "500 " + L1.pS + "px Montserrat,Inter,sans-serif";
+  L1.pL.forEach(function(line){ y += L1.pS * 1.42; ctx.fillText(line.items.map(function(o){ return o.x; }).join(" "), W / 2, y - L1.pS * 0.35); });
+  if(c.src){ ctx.fillStyle = b.acc; ctx.font = "500 " + (30 * u) + "px Montserrat,Inter,sans-serif"; ctx.fillText(c.src, W / 2, y + 60 * u); }
+}
+function vmPostList(q){
+  var nq = String(q || "").toLowerCase().trim();
+  return postsAll().filter(function(p){ return !nq || (p.n + " " + (p.s || "")).toLowerCase().indexOf(nq) > -1; }).slice(0, 40).map(function(p){
+    return '<button class="vm-it'+(p.id === VM.post ? " on" : "")+'" data-vm="psel:'+esc(p.id)+'"><b>'+esc(p.n)+'</b><span>'+esc(p.s || "")+'</span></button>';
+  }).join("") || '<p class="note">Ничего не нашлось</p>';
+}
+function vmScriptHtml(){
+  var sc = vmScript();
+  if(!sc.length) return "";
+  return '<div class="vm-l" style="margin-top:10px">Заголовок в первом кадре</div>'+
+    '<input id="vmHook" class="search" maxlength="90" value="'+esc(VM.hook || (vmTopic() || {}).n || "")+'">'+
+    '<div class="vm-l" style="margin-top:10px">Сценарий - уберите лишнее</div><div class="vm-script">'+sc.map(function(it, idx){
+      var lb = vmScriptLabel(it);
+      return '<label class="vm-sc"><input type="checkbox" id="vmOff-'+idx+'"'+(idx === 0 ? " disabled" : "")+(VM.off && VM.off[idx] ? "" : " checked")+'>'+
+        '<span><b>'+esc(lb[0])+'</b>'+esc(vmCut(lb[1], 110))+'</span></label>';
+    }).join("")+'</div>';
+}
+
+/* ---------- текст поста к ролику и выбор чтеца (30.09.2026) ---------- */
+var VM_CTA = "Ролик сделан в приложении RIZQ от JAVATTI - там можно сделать такой же с любым аятом, азкаром или дуа. Напишите РИЗК в комментариях - пришлю ссылку, это бесплатно.";
+function vmCaption(){
+  var NL = String.fromCharCode(10), out = [];
+  if(VM.kind === "ayah"){
+    vmFix();
+    var s0 = VM.sura - 1;
+    out.push("Сура «" + QSUR[s0][2] + "» (" + QSUR[s0][3] + "), " + (VM.to > VM.from ? "аяты " + VM.from + "-" + VM.to : "аят " + VM.from));
+    if(HAS_TR) for(var a = VM.from; a <= VM.to; a++) out.push("(" + a + ") " + QR[ayahGlobal(VM.sura, a)]);
+    out.push("Сура «" + QSUR[s0][2] + "» - " + (QSUR[s0][5] === "meccan" ? "мекканская, ниспослана в Мекке до переселения" : "мединская, ниспослана в Медине после переселения") + ", в ней " + plural(surahAyatCount(s0), "аят", "аята", "аятов") + ".");
+    out.push("Перевод смыслов: Эльмир Кулиев.");
+    out.push(VM_CTA); out.push("#Коран #аяты #ислам #RIZQ #JAVATTI");
+  } else if(VM.kind === "qdua"){
+    var qd = vmQdObj(); if(!qd) return "";
+    out.push("«" + String(qd.ru || "").trim() + "»");
+    if(qd.who) out.push("Кто так просил: " + String(qd.who).trim());
+    if(qd.note) out.push(String(qd.note).trim());
+    out.push("Источник: " + (qd.src || "Коран"));
+    out.push(VM_CTA); out.push("#дуа #Коран #ислам #RIZQ #JAVATTI");
+  } else if(VM.kind === "dua"){
+    var d = vmDuaObj(); if(!d) return "";
+    out.push(d.n);
+    if(d.ru) out.push("«" + String(d.ru).split(NL).join(" ").trim() + "»");
+    if(d.why) out.push("Откуда это: " + String(d.why).trim());
+    if(d.src) out.push("Источник: " + d.src);
+    if(d.rep > 1) out.push("Повторять " + d.rep + " " + (typeof timesWord === "function" ? timesWord(d.rep) : "раз") + ".");
+    out.push(VM_CTA); out.push("#азкары #дуа #ислам #RIZQ #JAVATTI");
+  } else {
+    var tp = vmTopic(); if(!tp) return "";
+    out.push(VM.hook || tp.n);
+    if(tp.s) out.push(tp.s);
+    (tp.sum || []).forEach(function(x){ out.push("- " + x); });
+    out.push("Подробно, с аятами и хадисами - в " + (VM.kind === "guide" ? "разделе «Знания»" : "журнале") + " приложения RIZQ.");
+    out.push(VM_CTA); out.push("#ислам #RIZQ #JAVATTI");
+  }
+  return out.join(NL + NL);
+}
+/* выбор фона: свёрнут - одна строка с текущим фоном; раскрыт - папки и сетка */
+function vmBgPicker(){
+  var cur = vmBgOf(VM.bg), fold = VM.bgf || cur.f || "uzory";
+  var head = '<button class="vm-bgrow" data-vm="bgopen"><img alt="" src="'+(cur.thumb || vmThumb(cur.id))+'"><span><em>Фон</em><b>'+esc(cur.n)+'</b></span><i>'+(VM.bgOpen ? "Свернуть ▴" : "Сменить ▾")+'</i></button>';
+  if(!VM.bgOpen) return '<section class="card vm-bgcard">'+head+'</section>';
+  var list = VM_BG.filter(function(b){ return (b.f || "uzory") === fold; });
+  return '<section class="card vm-bgcard">'+head+
+    '<div class="vm-folds">'+VM_FOLD.map(function(f){
+      var n = VM_BG.filter(function(b){ return (b.f || "uzory") === f[0]; }).length;
+      return '<button class="pill'+(fold === f[0] ? " on" : "")+'" data-vm="bgf:'+f[0]+'">'+esc(f[1])+' · '+n+'</button>'; }).join("")+'</div>'+
+    '<div class="vm-bgs">'+list.map(function(b){
+      return '<button class="vm-bg'+(VM.bg === b.id ? " on" : "")+'" data-vm="bg:'+b.id+'"><img alt="" loading="lazy" src="'+(b.thumb || vmThumb(b.id))+'"><span>'+esc(b.n)+'</span></button>'; }).join("")+'</div></section>';
+}
+function vmCapHtml(){
+  var c = vmCaption(); if(!c) return "";
+  return '<section class="card vm-box"><div class="vm-l">Текст для поста - готов, его можно поправить</div>'+
+    '<textarea id="vmCap" class="vm-cap" rows="9">'+esc(c)+'</textarea>'+
+    '<button class="btn sec sm" data-vm="capcopy">Скопировать текст</button></section>';
+}
+function vmCopy(t){
+  try{ navigator.clipboard.writeText(t).then(function(){ toast("Текст скопирован - вставьте его в подпись к ролику"); }, function(){ toast("Не получилось скопировать"); }); }
+  catch(e){ toast("Не получилось скопировать"); }
+}
+function sheetVmRec(){
+  var cur = vmRec().id;
+  sheet('<h3>Чтец</h3><p class="note" style="margin:0 0 10px">Чей голос будет в ролике. Подсветка слов - у чтецов с отметкой «слова».</p><div class="rows">'+
+    RECITERS.filter(function(r){ return !r.hide && (r.vb || VM_VB[r.id]); }).map(function(r){
+      return '<button class="row" data-vm="setrec:'+esc(r.id)+'"><span style="flex:1">'+esc(r.n)+(r.qc ? ' <span style="font-size:11px;color:var(--emerald)">слова</span>' : '')+'</span>'+
+        (r.id === cur ? '<span class="val" style="color:var(--emerald)">✓</span>' : '')+'</button>';
+    }).join("")+'</div><button class="btn ghost" style="margin-top:10px" data-scrim="1">Закрыть</button>');
+}
+/* главная: заметная плашка студии */
+function vmHomePlate(){
+  return '<button class="vm-home" data-open="vmake"><span class="vm-home-k">Студия аятов</span>'+
+    '<b>Ролик с Кораном - за минуту</b>'+
+    '<span class="vm-home-s">Голос чтеца, фон Каабы или Медины, готовый текст для поста</span>'+
+    '<span class="vm-home-go">Создать ролик ›</span></button>';
+}
+
 function viewVmake(){
   qrLoad();
   var h = ['<div class="stack">'];
@@ -14790,7 +15225,9 @@ function viewVmake(){
   h.push('<div class="pill-row" style="justify-content:flex-start">'+
     '<button class="pill'+(VM.kind === "ayah" ? " on" : "")+'" data-vm="kind:ayah">Аяты</button>'+
     '<button class="pill'+(VM.kind === "qdua" ? " on" : "")+'" data-vm="kind:qdua">Дуа из Корана</button>'+
-    '<button class="pill'+(VM.kind === "dua" ? " on" : "")+'" data-vm="kind:dua">Азкары и дуа</button></div>');
+    '<button class="pill'+(VM.kind === "dua" ? " on" : "")+'" data-vm="kind:dua">Азкары и дуа</button>'+
+    '<button class="pill'+(VM.kind === "post" ? " on" : "")+'" data-vm="kind:post">Тема из журнала</button>'+
+    '<button class="pill'+(VM.kind === "guide" ? " on" : "")+'" data-vm="kind:guide">Тема из «Знаний»</button></div>');
   if(VM.kind === "ayah"){
     vmFix();
     h.push('<section class="card vm-box">'+
@@ -14799,10 +15236,23 @@ function viewVmake(){
       '<div class="vm-row"><label class="vm-l">С аята<input id="vmFrom" class="search" type="number" min="1" max="'+vmSuraMax()+'" value="'+VM.from+'"></label>'+
       '<label class="vm-l">По аят<input id="vmTo" class="search" type="number" min="1" max="'+vmSuraMax()+'" value="'+VM.to+'"></label></div>'+
       '<div class="note" style="margin-top:6px">В суре '+plural(vmSuraMax(), "аят", "аята", "аятов")+'. В ролике - до 20 аятов и до трёх минут.</div>'+
-      '<div class="rows" style="margin-top:10px"><button class="row" data-open="qsettings"><span class="ic">♪</span><span style="flex:1">Чтец</span><span class="val">'+esc(vmRec().n)+'</span></button></div>'+
+      '<div class="rows" style="margin-top:10px"><button class="row" data-vm="reciter"><span class="ic">♪</span><span style="flex:1">Чтец</span><span class="val">'+esc(vmRec().n)+'</span></button></div>'+
       '<label class="dm-anon" style="margin:10px 0 0"><input type="checkbox" id="vmBasm"'+(VM.basm ? " checked" : "")+'> Басмала в начале суры - голосом чтеца</label>'+
       '<label class="dm-anon" style="margin:6px 0 0"><input type="checkbox" id="vmTr"'+(VM.tr ? " checked" : "")+'> Перевод смыслов (Кулиев)</label>'+
       '</section>');
+  } else if(VM.kind === "post" || VM.kind === "guide" || VM.kind === "custom"){
+    var tpc = vmTopic();
+    h.push('<section class="card vm-box">'+
+      (tpc ? '<div class="vm-sel"><b>'+esc(tpc.n)+'</b><span>'+esc(tpc.from)+'</span></div>' : '<p class="note" style="margin:0 0 8px">Выберите тему:</p>')+
+      (VM.kind === "post" ? '<input id="vmPostQ" class="search" placeholder="Найти тему журнала..." value="'+esc(VM.pq || "")+'"><div id="vmPostList" class="vm-list">'+vmPostList(VM.pq)+'</div>'
+        : VM.kind === "guide" ? '<div class="vm-list">'+Object.keys(GUIDES).filter(function(k){ return GUIDES[k] && GUIDES[k].n && (GUIDES[k].blocks || []).length; }).map(function(k){
+            return '<button class="vm-it'+(k === VM.guide ? " on" : "")+'" data-vm="gsel:'+k+'"><b>'+esc(GUIDES[k].n)+'</b><span>'+esc(GUIDES[k].sub || "")+'</span></button>'; }).join("")+'</div>' : '')+
+      vmScriptHtml()+
+      '<div class="rows" style="margin-top:10px"><button class="row" data-vm="reciter"><span class="ic">♪</span><span style="flex:1">Чтец аятов</span><span class="val">'+esc(vmRec().n)+'</span></button></div>'+
+      '<label class="dm-anon" style="margin:10px 0 0"><input type="checkbox" id="vmTr"'+(VM.tr ? " checked" : "")+'> Перевод смыслов под аятами</label>'+
+      '<div class="pill-row" style="justify-content:flex-start;margin-top:8px">'+[[0.8, "Быстрее"], [1, "Обычно"], [1.25, "Медленнее"]].map(function(x){
+        return '<button class="pill'+(VM.len === x[0] ? " on" : "")+'" data-vm="len:'+x[0]+'">'+x[1]+'</button>'; }).join("")+'</div>'+
+      '<p class="note" style="margin:8px 0 0">Коран звучит голосом чтеца на аятах; мысли и хадисы идут текстом. Аяты и хадисы - из самой записи, они проверены при публикации.</p></section>');
   } else if(VM.kind === "qdua"){
     var qd = vmQdObj(), qa = qd ? vmQdAyahs(qd) : null;
     h.push('<section class="card vm-box">'+
@@ -14810,22 +15260,23 @@ function viewVmake(){
       (qa ? '<p class="note" style="margin:0 0 6px">Прозвучит голосом чтеца: «'+esc(QSUR[qa.sura - 1][2])+'», '+(qa.to > qa.from ? "аяты " + qa.from + "-" + qa.to : "аят " + qa.from)+' целиком, как в Коране.</p>' : (qd ? '<p class="note" style="margin:0 0 6px">У этой дуа нет номера аята - ролик будет без звука.</p>' : ''))+
       '<input id="vmQdQ" class="search" placeholder="Найти: Юнус, прощение, дети, знания..." value="'+esc(VM.qq || "")+'">'+
       '<div id="vmQdList" class="vm-list">'+vmQdList(VM.qq)+'</div>'+
-      '<div class="rows" style="margin-top:10px"><button class="row" data-open="qsettings"><span class="ic">♪</span><span style="flex:1">Чтец</span><span class="val">'+esc(vmRec().n)+'</span></button></div>'+
+      '<div class="rows" style="margin-top:10px"><button class="row" data-vm="reciter"><span class="ic">♪</span><span style="flex:1">Чтец</span><span class="val">'+esc(vmRec().n)+'</span></button></div>'+
       '<label class="dm-anon" style="margin:10px 0 0"><input type="checkbox" id="vmTr"'+(VM.tr ? " checked" : "")+'> Перевод смыслов (Кулиев)</label></section>');
   } else {
     var d = vmDuaObj();
     h.push('<section class="card vm-box">'+
       (d ? '<div class="vm-sel"><b>'+esc(d.n)+'</b><span>'+esc(d.src || "")+'</span></div>' : '<p class="note" style="margin:0 0 8px">Выберите азкар или дуа:</p>')+
-      '<input id="vmDuaQ" class="search" placeholder="Найти: утренние, аят аль-Курси, дуа путника..." value="'+esc(VM.dq)+'">'+
+      '<div class="pill-row" style="justify-content:flex-start;flex-wrap:wrap;gap:6px;margin:4px 0 8px">'+CATS.filter(function(c){ return DUAS.some(function(d){ return d.c === c.id && d.ar; }); }).map(function(c){
+        return '<button class="pill'+((VM.dc || "morning") === c.id && !VM.dq ? " on" : "")+'" data-vm="dcat:'+c.id+'">'+esc(c.n.split(" ")[0] === "Рукъия" ? "Рукъия" : c.n)+'</button>'; }).join("")+'</div>'+
+      '<input id="vmDuaQ" class="search" placeholder="Или найдите: аят аль-Курси, дуа путника..." value="'+esc(VM.dq)+'">'+
       '<div id="vmDuaList" class="vm-list">'+vmDuaList(VM.dq)+'</div>'+
       '<label class="dm-anon" style="margin:10px 0 0"><input type="checkbox" id="vmTr"'+(VM.tr ? " checked" : "")+'> Перевод</label>'+
       '<div class="pill-row" style="justify-content:flex-start;margin-top:8px">'+[[0.7, "Быстрее"], [1, "Обычно"], [1.4, "Медленнее"]].map(function(x){
         return '<button class="pill'+(VM.len === x[0] ? " on" : "")+'" data-vm="len:'+x[0]+'">'+x[1]+'</button>'; }).join("")+'</div>'+
-      '<p class="note" style="margin:8px 0 0">Дуа идут без звука: голос или нашид без музыки можно добавить в самом Instagram.</p></section>');
+      (d && vmDuaQuran(d) ? '<p class="note" style="margin:8px 0 0">Это аяты Корана - прозвучат голосом чтеца, по аятам, как в мусхафе.</p>' : '<p class="note" style="margin:8px 0 0">Дуа из Сунны идут без звука: голос можно добавить в самом Instagram.</p>')+'</section>');
   }
-  function bgBtn(b){ return '<button class="vm-bg'+(VM.bg === b.id ? " on" : "")+'" data-vm="bg:'+b.id+'"><img alt="" loading="lazy" src="'+(b.thumb || vmThumb(b.id))+'"><span>'+esc(b.n)+'</span></button>'; }
-  h.push('<div class="sec-h" style="margin-top:4px"><h3>Фон: Мекка и Медина</h3></div><div class="vm-bgs">'+VM_BG.filter(function(b){ return b.photo; }).map(bgBtn).join("")+'</div>');
-  h.push('<div class="sec-h"><h3>Фон: узоры</h3></div><div class="vm-bgs">'+VM_BG.filter(function(b){ return !b.photo; }).map(bgBtn).join("")+'</div>');
+  h.push(vmCapHtml());
+  h.push(vmBgPicker());
   h.push('<div class="pill-row" style="justify-content:flex-start">'+Object.keys(VM_FMT).map(function(k){
     return '<button class="pill'+(VM.fmt === k ? " on" : "")+'" data-vm="fmt:'+k+'">'+k.replace("x", ":")+' · '+VM_FMT[k][2]+'</button>'; }).join("")+'</div>');
   var f = VM_FMT[VM.fmt];
@@ -14842,7 +15293,8 @@ function viewVmake(){
 function vmDuaList(q){
   var nq = String(q || "").toLowerCase().trim(), list = DUAS.filter(function(d){ return d.ar && d.n; });
   if(nq) list = list.filter(function(d){ return (d.n + " " + (d.src || "") + " " + (d.ru || "")).toLowerCase().indexOf(nq) > -1; });
-  return list.slice(0, 25).map(function(d){
+  else list = list.filter(function(d){ return d.c === (VM.dc || "morning"); });
+  return list.slice(0, 60).map(function(d){
     return '<button class="vm-it'+(d.id === VM.dua ? " on" : "")+'" data-vm="dsel:'+d.id+'"><b>'+esc(d.n)+'</b><span>'+esc(d.src || "")+'</span></button>';
   }).join("") || '<p class="note">Ничего не нашлось</p>';
 }
@@ -14856,16 +15308,29 @@ function vmClipsHtml(){
 }
 function vmCmd(c){
   var p = c.split(":"), k = p[0], v = p.slice(1).join(":");
-  if(k === "kind"){ vmStop(); VM.kind = v; if(v === "qdua" && VM.qd === undefined) VM.qd = 0; if(v === "dua" && !VM.dua){ var first = DUAS.filter(function(d){ return d.ar; })[0]; if(first) VM.dua = first.id; } renderInPlace(); return; }
-  if(k === "bg"){ VM.bg = v; var bs = document.querySelectorAll(".vm-bg"); for(var q = 0; q < bs.length; q++) bs[q].classList.toggle("on", bs[q].getAttribute("data-vm") === c); vmPreview(); return; }
+  if(k === "kind"){ vmStop(); VM.kind = v; if(v === "qdua" && VM.qd === undefined) VM.qd = 0; VM.off = {}; VM.hook = "";
+    if(v === "post" && !VM.post){ var pf = postsAll()[0]; if(pf) VM.post = pf.id; }
+    if(v === "guide" && !VM.guide) VM.guide = "salah"; if(v === "dua" && !VM.dua){ var first = DUAS.filter(function(d){ return d.ar; })[0]; if(first) VM.dua = first.id; } renderInPlace(); return; }
+  if(k === "bgopen"){ VM.bgOpen = !VM.bgOpen; renderInPlace(); return; }
+  if(k === "bgf"){ VM.bgf = v; renderInPlace(); return; }
+  if(k === "bg"){ VM.bg = v; var hb = document.querySelector(".vm-bgrow"); if(hb){ var cb = vmBgOf(v); hb.querySelector("img").src = cb.thumb || vmThumb(cb.id); hb.querySelector("b").textContent = cb.n; } var bs = document.querySelectorAll(".vm-bg"); for(var q = 0; q < bs.length; q++) bs[q].classList.toggle("on", bs[q].getAttribute("data-vm") === c); vmPreview(); return; }
   if(k === "fmt"){ VM.fmt = v; renderInPlace(); return; }
   if(k === "len"){ VM.len = parseFloat(v); renderInPlace(); return; }
   if(k === "dsel"){ VM.dua = v; renderInPlace(); return; }
+  if(k === "dcat"){ VM.dc = v; VM.dq = ""; renderInPlace(); return; }
+  if(k === "reciter"){ sheetVmRec(); return; }
+  if(k === "setrec"){ S.qReciter = v; save(); closeSheet(); renderInPlace(); toast("Чтец: " + vmRec().n); return; }
+  if(k === "capcopy"){ var cpe = document.getElementById("vmCap"); vmCopy(document.querySelector(".scrim") && VM.cur && VM.cur.caption ? VM.cur.caption : (cpe ? cpe.value : vmCaption())); return; }
   if(k === "qsel"){ VM.qd = parseInt(v, 10); renderInPlace(); return; }
+  if(k === "psel"){ VM.post = v; VM.hook = ""; VM.off = {}; renderInPlace(); return; }
+  if(k === "gsel"){ VM.guide = v; VM.hook = ""; VM.off = {}; renderInPlace(); return; }
+  if(k === "post"){ VM.kind = "post"; VM.post = v; VM.hook = ""; VM.off = {}; VM.len = 1; closeSheet(); open("vmake", null); return; }
+  if(k === "guide"){ VM.kind = "guide"; VM.guide = v; VM.hook = ""; VM.off = {}; VM.len = 1; closeSheet(); open("vmake", null); return; }
   if(k === "play"){ VM.recording = false; vmRun(false); return; }
   if(k === "rec"){ if(VM.busy){ vmStop(); return; } VM.recording = true; vmRun(true); return; }
-  if(k === "clip"){ var cl = (VM.clips || []).filter(function(x){ return x.id === v; })[0]; if(cl) sheetClip(cl); return; }
-  if(k === "cshare"){ vmShareCur(); return; }
+  if(k === "clip"){ var cl = (VM.clips || []).filter(function(x){ return x.id === v; })[0]; if(!cl) return;
+    vmClipGet(v).then(function(o){ if(!o || !o.blob){ toast("Видео этого ролика не сохранилось"); return; } var full = {}; for(var kk in cl) full[kk] = cl[kk]; full.blob = o.blob; sheetClip(full); }); return; }
+  if(k === "cshare" || k === "csave"){ vmShareCur(); return; }
   if(k === "cdel"){ if(!confirm("Удалить ролик с телефона?")) return; vmClipDel(v).then(function(){ closeSheet(); VM.clips = null; if(V.view === "vmake") renderInPlace(); toast("Ролик удалён"); }); return; }
   if(k === "ayah"){ var ai = parseInt(v, 10), as = surahOf(ai); VM.kind = "ayah"; VM.sura = as + 1; VM.from = Math.max(1, ayahInSurah(ai)); VM.to = Math.min(surahAyatCount(as), VM.from + 2); closeSheet(); V.tab = "quran"; open("vmake", null); return; }
   if(k === "dua"){ VM.kind = "dua"; VM.dua = v; closeSheet(); open("vmake", null); return; }
@@ -14884,10 +15349,227 @@ document.addEventListener("input", function(ev){
   var t = ev.target; if(!t || t.id !== "vmDuaQ") return;
   VM.dq = t.value; var l = document.getElementById("vmDuaList"); if(l) l.innerHTML = vmDuaList(t.value);
 });
+document.addEventListener("change", function(ev){
+  var t = ev.target; if(!t || !t.id) return;
+  if(t.id.indexOf("vmOff-") === 0){ if(!VM.off) VM.off = {}; var oi = parseInt(t.id.slice(6), 10); VM.off[oi] = !t.checked; VM.prevIdx = 0; vmPreview(); }
+  if(t.id === "vmHook"){ VM.hook = t.value.trim(); vmPreview(); }
+});
+document.addEventListener("input", function(ev){
+  var t = ev.target; if(!t || t.id !== "vmPostQ") return;
+  VM.pq = t.value; var l = document.getElementById("vmPostList"); if(l) l.innerHTML = vmPostList(t.value);
+});
 document.addEventListener("input", function(ev){
   var t = ev.target; if(!t || t.id !== "vmQdQ") return;
   VM.qq = t.value; var l = document.getElementById("vmQdList"); if(l) l.innerHTML = vmQdList(t.value);
 });
+
+/* ---------- переписка: чат круга и личные сообщения (30.09.2026) ---------- */
+var CH = { chat:null, dmc:null, dml:null, busy:false, timer:0 };
+function chTime(t){
+  var d = new Date(String(t).replace(" ", "T") + "Z"), now = new Date();
+  var hm = ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+  return d.toDateString() === now.toDateString() ? hm : d.toLocaleDateString("ru-RU", { day:"numeric", month:"short" }) + " " + hm;
+}
+function chPoll(){
+  if(CH.timer) return;
+  CH.timer = setInterval(function(){
+    if(document.hidden) return;
+    if(V.view === "kchat") kcLoad(); else if(V.view === "dm") dmLoad(); else { clearInterval(CH.timer); CH.timer = 0; }
+  }, 8000);
+}
+function chNearBottom(){ return $screen.scrollHeight - $screen.scrollTop - $screen.clientHeight < 160; }
+function chToBottom(){ setTimeout(function(){ $screen.scrollTop = $screen.scrollHeight; }, 30); }
+function chMsgHtml(m, kind){
+  return '<div class="msg'+(m.mine ? " me" : "")+'"><div class="msg-b">'+
+    (!m.mine && m.name ? '<b>'+esc(m.name)+(m.lead ? ' · ведущая' : '')+'</b>' : '')+
+    '<span>'+esc(m.text)+'</span><i>'+esc(chTime(m.at))+(m.mine && kind === "dm" ? (m.read ? " · прочитано" : "") : "")+'</i></div>'+
+    '<button class="msg-m" data-chm="'+kind+':'+m.id+'" aria-label="Действия с сообщением">⋯</button></div>';
+}
+function chRules(txt){ return '<p class="note chat-rules">'+txt+'</p>'; }
+
+/* ---------- А. чат круга ---------- */
+function kcLoad(first){
+  var code = String(V.p || ""), c = CH.chat;
+  if(!c || c.code !== code) c = CH.chat = { code:code, items:[], last:0, loaded:false };
+  if(CH.busy) return;
+  CH.busy = true;
+  cmFetch("/khatm/" + encodeURIComponent(code) + "/chat" + (c.last ? "?after=" + c.last : "")).then(function(r){
+    CH.busy = false;
+    if(!r.ok){ c.err = r.status === 404 ? "Чат видят только участницы круга" : (r.j.error || CM_NET); c.loaded = true; kcPaint(); return; }
+    var bottom = chNearBottom(), gone = r.j.gone || [], added = 0;
+    if(gone.length) c.items = c.items.filter(function(m){ return gone.indexOf(m.id) < 0; });
+    (r.j.items || []).forEach(function(m){ if(!c.items.some(function(x){ return x.id === m.id; })){ c.items.push(m); added++; } if(m.id > c.last) c.last = m.id; });
+    c.canWrite = r.j.canWrite; c.why = r.j.why; c.owner = r.j.owner; c.err = ""; var was = c.loaded; c.loaded = true;
+    kcPaint();
+    if(!was || (added && bottom)) chToBottom();
+  }).catch(function(){ CH.busy = false; c.err = CM_NET; c.loaded = true; kcPaint(); });
+}
+function kcBoxHtml(){
+  var c = CH.chat;
+  if(!c || !c.loaded) return '<p class="note" style="text-align:center;padding:20px 0">Загружаем...</p>';
+  if(c.err && !c.items.length) return '<p class="note" style="text-align:center;padding:20px 0">'+esc(c.err)+'</p>';
+  if(!c.items.length) return '<p class="note" style="text-align:center;padding:20px 0">Здесь пока тихо. Поприветствуйте сестёр: «Ассаляму алейкум!»</p>';
+  return c.items.map(function(m){ return chMsgHtml(m, "kc"); }).join("");
+}
+function kcPaint(){
+  var box = document.getElementById("chatBox"); if(box) box.innerHTML = kcBoxHtml();
+  var inp = document.getElementById("chatIn"), c = CH.chat;
+  if(inp && c && c.loaded) inp.style.display = c.canWrite === false ? "none" : "";
+  var w = document.getElementById("chatWhy"); if(w) w.textContent = c && c.canWrite === false ? (c.why || "") : "";
+}
+function viewKchat(){
+  var code = String(V.p || "");
+  if(!accOn()) return '<div class="stack">'+cmLoginCard("Чат круга")+'</div>';
+  if(!CH.chat || CH.chat.code !== code){ CH.chat = null; }
+  kcLoad(); chPoll();
+  var ci = CM.circle && CM.circle.code === code ? CM.circle : null;
+  return '<div class="stack chat-wrap">'+
+    chRules((ci ? "«" + esc(ci.title) + "»: " : "")+'пишут только участницы круга. Только текст - ссылки, телефоны и ники не отправляются. Сообщения хранятся 30 дней. Будьте бережны друг к другу.')+
+    '<div id="chatBox" class="chat-box">'+kcBoxHtml()+'</div>'+
+    '<p class="note" id="chatWhy" style="text-align:center"></p>'+
+    '<div class="chat-in" id="chatIn"><textarea id="chatText" rows="1" maxlength="500" placeholder="Сообщение сёстрам..."></textarea>'+
+    '<button class="btn sm" data-cm="kcsend" aria-label="Отправить">➤</button></div></div>';
+}
+function kcSend(){
+  var ta = document.getElementById("chatText"), t = ta ? ta.value.trim() : "", code = String(V.p || "");
+  if(!t) return;
+  cmFetch("/khatm/" + encodeURIComponent(code) + "/chat", { text:t }).then(function(r){
+    if(!cmOk(r, kcSend)) return;
+    if(ta) ta.value = "";
+    var c = CH.chat; if(c && !c.items.some(function(x){ return x.id === r.j.id; })){ c.items.push(r.j); if(r.j.id > c.last) c.last = r.j.id; }
+    kcPaint(); chToBottom();
+  }).catch(function(){ toast(CM_NET); });
+}
+
+/* ---------- Б. личные сообщения ---------- */
+function dmListLoad(){
+  cmFetch("/dm").then(function(r){
+    if(!r.ok){ CH.dml = { err: r.j.error || CM_NET, items:[] }; cmRedraw(); return; }
+    CH.dml = r.j; if(CM.me){ CM.me.dm = r.j.dm; CM.me.dmUnread = r.j.unread; } cmRedraw();
+  }).catch(function(){ CH.dml = { err:CM_NET, items:[] }; cmRedraw(); });
+}
+function viewDms(){
+  var h = ['<div class="stack">'];
+  if(!accOn()){ h.push(cmLoginCard("Личные сообщения")); h.push('</div>'); return h.join(""); }
+  if(!CH.dml){ dmListLoad(); h.push(cmWait("", "")); h.push('</div>'); return h.join(""); }
+  var on = !!CH.dml.dm;
+  h.push(chRules('Писать друг другу могут только участницы одного круга хатма - и только тем, кто сам это разрешил. Только текст, без ссылок и телефонов. Сообщения хранятся 90 дней.'));
+  h.push('<div class="rows"><button class="row" data-cm="dmtog"><span class="ic">✉</span><span style="flex:1">Разрешить сёстрам из моих кругов писать мне</span><span class="val">'+(on ? "вкл" : "выкл")+'</span></button></div>');
+  if(CH.dml.banned) h.push('<p class="note" style="color:#C0392B">Модератор закрыл вам переписку. Если это ошибка - напишите в «Отзывы».</p>');
+  var items = CH.dml.items || [];
+  if(!items.length) h.push('<p class="note">Бесед пока нет. Написать можно участнице своего круга: откройте круг и нажмите на её имя.</p>');
+  else h.push('<div class="rows">'+items.map(function(d){
+    return '<button class="row" data-cm="dmopen:'+esc(d.pub)+'"><span class="ic">'+(d.unread ? "●" : "✉")+'</span><span style="flex:1;min-width:0"><b style="font-weight:600">'+esc(d.name)+'</b>'+
+      '<span style="display:block;font-size:12.5px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(d.last ? (d.last.mine ? "Вы: " : "")+esc(d.last.text) : "")+'</span></span>'+
+      (d.unread ? '<span class="val" style="color:var(--emerald);font-weight:700">'+d.unread+'</span>' : '')+'</button>';
+  }).join("")+'</div>');
+  h.push('</div>');
+  return h.join("");
+}
+function dmLoad(){
+  var pub = String(V.p || "");
+  if(!CH.dmc || CH.dmc.pub !== pub) CH.dmc = { pub:pub, items:[], loaded:false };
+  if(CH.busy) return;
+  CH.busy = true;
+  var c = CH.dmc;
+  cmFetch("/dm/" + encodeURIComponent(pub)).then(function(r){
+    CH.busy = false;
+    if(!r.ok){ c.err = r.status === 404 ? "Беседа недоступна" : (r.j.error || CM_NET); c.loaded = true; dmPaint(); return; }
+    var bottom = chNearBottom(), was = c.loaded, n0 = c.items.length;
+    c.items = r.j.items || []; c.name = r.j.name; c.canWrite = r.j.canWrite; c.why = r.j.why; c.blocked = r.j.blocked; c.err = ""; c.loaded = true;
+    var t = document.querySelector(".hdr-title"); if(t && c.name && V.view === "dm") t.textContent = c.name;
+    dmPaint();
+    if(!was || (c.items.length > n0 && bottom)) chToBottom();
+  }).catch(function(){ CH.busy = false; c.err = CM_NET; c.loaded = true; dmPaint(); });
+}
+function dmBoxHtml(){
+  var c = CH.dmc;
+  if(!c || !c.loaded) return '<p class="note" style="text-align:center;padding:20px 0">Загружаем...</p>';
+  if(c.err) return '<p class="note" style="text-align:center;padding:20px 0">'+esc(c.err)+'</p>';
+  if(!c.items.length) return '<p class="note" style="text-align:center;padding:20px 0">Напишите первой. Пока сестра не ответила, можно отправить не больше трёх сообщений.</p>';
+  return c.items.map(function(m){ return chMsgHtml(m, "dm"); }).join("");
+}
+function dmPaint(){
+  var box = document.getElementById("chatBox"); if(box) box.innerHTML = dmBoxHtml();
+  var c = CH.dmc, inp = document.getElementById("chatIn"), w = document.getElementById("chatWhy"), bl = document.getElementById("dmBlockBtn");
+  if(inp && c && c.loaded) inp.style.display = c.canWrite === false ? "none" : "";
+  if(w) w.textContent = c && c.canWrite === false ? (c.why || "") : "";
+  if(bl && c) bl.textContent = c.blocked ? "Разблокировать" : "Заблокировать";
+}
+function viewDm(){
+  if(!accOn()) return '<div class="stack">'+cmLoginCard("Личные сообщения")+'</div>';
+  dmLoad(); chPoll();
+  var c = CH.dmc || {};
+  return '<div class="stack chat-wrap">'+
+    chRules('Только текст, без ссылок и телефонов. Не отправляйте деньги и не сообщайте личные данные. Что-то не так - нажмите ⋯ у сообщения и «Пожаловаться».')+
+    '<div id="chatBox" class="chat-box">'+dmBoxHtml()+'</div>'+
+    '<p class="note" id="chatWhy" style="text-align:center"></p>'+
+    '<div class="chat-in" id="chatIn"><textarea id="chatText" rows="1" maxlength="500" placeholder="Сообщение..."></textarea>'+
+    '<button class="btn sm" data-cm="dmsend" aria-label="Отправить">➤</button></div>'+
+    '<button class="btn ghost sm" id="dmBlockBtn" data-cm="dmblock">'+(c.blocked ? "Разблокировать" : "Заблокировать")+'</button></div>';
+}
+function dmSend(){
+  var ta = document.getElementById("chatText"), t = ta ? ta.value.trim() : "", pub = String(V.p || "");
+  if(!t) return;
+  cmFetch("/dm/" + encodeURIComponent(pub), { text:t }).then(function(r){
+    if(!cmOk(r, dmSend)) return;
+    if(ta) ta.value = "";
+    if(CH.dmc) CH.dmc.items.push(r.j);
+    dmPaint(); chToBottom();
+  }).catch(function(){ toast(CM_NET); });
+}
+
+/* ---------- действия с сообщением и с участницей ---------- */
+function sheetChMsg(kind, id){
+  var list = kind === "kc" ? (CH.chat && CH.chat.items) : (CH.dmc && CH.dmc.items), m = (list || []).filter(function(x){ return x.id === id; })[0];
+  if(!m) return;
+  var b = [];
+  if(!m.mine) b.push('<button class="btn sec" data-cm="chrep:'+kind+':'+id+'">Пожаловаться</button>');
+  if(kind === "kc" && m.canDelete) b.push('<button class="btn ghost" data-cm="kcdel:'+id+'">Удалить сообщение</button>');
+  if(kind === "kc" && !m.mine && m.pub) b.push('<button class="btn ghost" data-cm="dmopen:'+esc(m.pub)+'">Написать лично</button>');
+  if(!b.length){ toast("Это ваше сообщение"); return; }
+  sheet('<h3>Сообщение</h3><p class="note" style="margin:0 0 12px;white-space:pre-wrap">'+esc(m.text)+'</p>'+
+    b.join('<div style="height:8px"></div>')+'<button class="btn ghost" style="margin-top:8px" data-scrim="1">Закрыть</button>');
+}
+function sheetMember(pub){
+  var c = CM.circle, m = c && (c.members || []).filter(function(x){ return x.pub === pub; })[0];
+  if(!m) return;
+  if(m.me){ sheetCmName(); return; }
+  sheet('<h3>'+esc(m.name)+(m.lead ? ' · ведущая' : '')+'</h3>'+
+    '<button class="btn" data-cm="dmopen:'+esc(pub)+'">Написать лично</button>'+
+    '<p class="note" style="margin:8px 0 0">Написать можно, если сестра разрешила личные сообщения.</p>'+
+    (c.owner ? '<button class="btn ghost" style="margin-top:10px;color:#C0392B" data-cm="kick:'+esc(pub)+'">Убрать из круга</button>' : '')+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Закрыть</button>');
+}
+function chCmd(c){
+  var p = c.split(":"), k = p[0];
+  if(k === "dmopen"){ closeSheet(); CH.dmc = null; V.tab = "quran"; open("dm", p[1]); return true; }
+  if(k === "kcdel"){
+    if(!confirm("Удалить сообщение?")) return true;
+    cmFetch("/khatm/chat/" + p[1] + "/delete", {}).then(function(r){ if(!cmOk(r)) return; closeSheet();
+      if(CH.chat) CH.chat.items = CH.chat.items.filter(function(x){ return x.id !== +p[1]; }); kcPaint(); toast("Удалено"); }).catch(function(){ toast(CM_NET); });
+    return true;
+  }
+  if(k === "chrep"){
+    if(!confirm(p[1] === "dm" ? "Пожаловаться? Сообщение скроется, а отправитель будет заблокирован для вас." : "Пожаловаться на сообщение? У вас оно сразу пропадёт, модератор проверит.")) return true;
+    cmFetch(p[1] === "dm" ? "/dm/msg/" + p[2] + "/report" : "/khatm/chat/" + p[2] + "/report", {}).then(function(r){
+      if(!cmOk(r)) return; closeSheet();
+      if(p[1] === "kc" && CH.chat) CH.chat.items = CH.chat.items.filter(function(x){ return x.id !== +p[2]; });
+      if(p[1] === "dm" && CH.dmc){ CH.dmc.items = CH.dmc.items.filter(function(x){ return x.id !== +p[2]; }); CH.dmc.blocked = true; }
+      if(p[1] === "kc") kcPaint(); else dmPaint();
+      toast("Спасибо. Модератор проверит");
+    }).catch(function(){ toast(CM_NET); });
+    return true;
+  }
+  if(k === "kick"){
+    if(!confirm("Убрать сестру из круга? По этой ссылке она больше не вступит, её непрочитанные джузы освободятся.")) return true;
+    cmFetch("/khatm/" + encodeURIComponent(String(V.p || "")) + "/kick", { pub:p[1] }).then(function(r){
+      if(!cmOk(r)) return; closeSheet(); CM.circle = r.j; cmMe(true); toast("Убрана из круга"); cmRedraw(); }).catch(function(){ toast(CM_NET); });
+    return true;
+  }
+  if(k === "kchat"){ V.tab = "quran"; open("kchat", p[1]); return true; }
+  return false;
+}
 
 function viewQSettings(){
   return '<div class="stack">'+
@@ -19601,7 +20283,7 @@ function chkToggle(id, key){
   return on;
 }
 /* сколько баллов даёт каждое действие */
-var POINTS = { fard:1, sunnah:1, daily:2, azkar:1, tasbih:1, name:2, quiz:1 };
+var POINTS = { fard:1, sunnah:1, daily:2, azkar:1, tasbih:1, name:2, quiz:1, duasis:3 };
 
 /* баллы всегда идут с категорией - только так можно построить отчёт по направлениям */
 function addPoints(n, cat){
@@ -19633,7 +20315,7 @@ function periodDays(period){
 }
 var CAT_LABELS = {
   namaz:"Намаз", quran:"Коран", sadaqa:"Садака", shukr:"Шукр",
-  azkar:"Азкары", zikr:"Зикр", names:"Имена", self:"Самоанализ", arabic:"Арабский"
+  azkar:"Азкары", zikr:"Зикр", names:"Имена", self:"Самоанализ", arabic:"Арабский", duasis:"Дуа за сестёр"
 };
 function catTotals(period){
   var days = periodDays(period), out = {};
@@ -20547,7 +21229,8 @@ function viewGuide(){
     '<h3 style="font-family:var(--f-display);font-size:20px;font-weight:600;margin:8px 0 0;line-height:1.3">' + esc(g.n) + '</h3>' +
     '<p style="font-size:13px;line-height:1.6;color:var(--ink-3);margin:12px 0 0">' + esc(g.madhab) + '</p>' +
     '<button class="btn ghost sm" style="width:100%;margin-top:13px" data-fav="' + key + '">' +
-      (isFav(key) ? "★ Сохранено" : "☆ Сохранить") + '</button></section>');
+      (isFav(key) ? "★ Сохранено" : "☆ Сохранить") + '</button>' +
+    ((g.blocks || []).length ? '<button class="btn ghost sm" style="width:100%;margin-top:6px" data-vm="guide:' + V.p + '">▣ Рилс по этой теме</button>' : '') + '</section>');
 
   if(GUIDE_VIS[V.p]){
     h.push('<div class="vk-head"><span>Главное за 30 секунд</span><i></i></div>');
@@ -21429,7 +22112,7 @@ function jrShare(id){
   var p = postsAll().filter(function(x){ return x.id === id; })[0]; if(!p) return;
   var url = APP_URL + "?post=" + encodeURIComponent(p.id) + "&utm_source=share&utm_medium=journal";
   var text = p.n + (p.s ? " - " + p.s : "");
-  if(navigator.share) navigator.share({ title: p.n, text: text, url: url }).catch(function(){});
+  if(navigator.share) navigator.share({ title: p.n, text: text + String.fromCharCode(10) + url }).catch(function(){});
   else { copyText(text + "\n" + url); toast("Ссылка скопирована"); }
 }
 function jrProgress(){
@@ -21511,7 +22194,8 @@ function viewPost(){
     '<span class="jr-meta">'+esc(r ? r.n : "Журнал")+' <i>· '+esc(postDate(p.d))+' · '+jrMinutes(p)+' мин чтения</i></span>'+
     '<h2>'+esc(p.n)+'</h2>'+(p.s ? '<p class="jr-lead">'+esc(p.s)+'</p>' : '')+
     '<div class="jr-acts"><button class="btn sec sm" data-fav="'+key+'">'+(isFav(key) ? "★ Сохранено" : "☆ Сохранить")+'</button>'+
-    '<button class="btn sec sm" data-pshare="'+esc(p.id)+'">Поделиться</button></div></div></section>');
+    '<button class="btn sec sm" data-pshare="'+esc(p.id)+'">Поделиться</button>'+
+    '<button class="btn sec sm" data-vm="post:'+esc(p.id)+'">▣ Рилс по теме</button></div></div></section>');
   if(p.sum && p.sum.length){
     h.push('<section class="jr-sum"><h4>Главное за 30 секунд</h4><ol>'+p.sum.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ol></section>');
   }
@@ -27541,6 +28225,9 @@ function renderCore(){
   else if(V.view==="khatms") html = viewKhatms();
   else if(V.view==="khatm") html = viewKhatm();
   else if(V.view==="duas") html = viewDuas();
+  else if(V.view==="kchat") html = viewKchat();
+  else if(V.view==="dms") html = viewDms();
+  else if(V.view==="dm") html = viewDm();
   else if(V.view==="trread") html = viewTrRead();
   else if(V.view==="vmake") html = viewVmake();
   else if(V.view==="sadaqa") html = viewSadaqa();
@@ -27702,7 +28389,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -28520,6 +29207,8 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.b1gift !== undefined){ sheetGift(); return; }
   if(d.trs !== undefined){ var trn = parseInt(d.trs, 10); S.trLast = trn; save(); V.tab = "quran"; open("trread", trn); return; }
   if(d.trayah !== undefined){ var tra = parseInt(d.trayah, 10), trs2 = surahOf(tra); openReader(QSUR[trs2][6], QSUR[trs2][6] + QSUR[trs2][4] - 1, "surah", tra); return; }
+  if(d.chm){ var chp = d.chm.split(":"); sheetChMsg(chp[0], parseInt(chp[1], 10)); return; }
+  if(d.kmem !== undefined){ if(d.kmem) sheetMember(d.kmem); return; }
   if(d.vm){ vmCmd(d.vm); return; }
   if(d.cm){ cmCmd(d.cm); return; }
   if(d.kopen){ open("khatm", d.kopen); return; }
@@ -28844,6 +29533,7 @@ deepOpen();
 postsLoad();
 sadaqaLoad();
 signupFlush();
+quranTextsFix();
 accBoot();
 pushSync(false);
 setTimeout(qrLoad, 6000);

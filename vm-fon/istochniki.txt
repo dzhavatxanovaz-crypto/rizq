@@ -9,3 +9,66 @@ medina-minaret.jpg  https://unsplash.com/photos/c1QVYdg5_io  (photo-172419107879
 medina-arki.jpg     https://unsplash.com/photos/GSXeIGXxgyw  (photo-1584186028062-637e3e77318d)
 medina-mechet.jpg   https://unsplash.com/photos/RJjHsurofj8  (photo-1711261817080-8f064416206c)
 medina-zonty.jpg    https://unsplash.com/photos/hhqkN9w-LRo  (photo-1677835214504-9648944c3e50)
+Добавлены 30.09.2026 (та же лицензия Unsplash):
+kaaba-noch-zvezdy.jpg    photo-1513072064285-240f87fa81e8
+bashnya-noch.jpg         photo-1778567090660-6becd8b28312
+haram-noch.jpg           photo-1780265861345-a787b955b505
+kiswa-noch.jpg           photo-1771170983433-1576bc4a7eec
+kaaba-arka.jpg           photo-1716361897615-08458b7b3078
+kaaba-u-dveri.jpg        photo-1691566264354-88491ba17f15
+bashnya-sumerki.jpg      photo-1693217683336-517b249e3541
+medina-minaret-zonty.jpg photo-1551041777-ed277b8dd348
+medina-kupol-krupno.jpg  photo-1667456416191-43ba057635c1
+medina-dozhd.jpg         photo-1605976528013-638e49b6599f
+medina-kupol-minaret.jpg photo-1707986266196-161cccf565b2
+medina-vrata.jpg         photo-1716017967242-28ff52539ffe
+medina-noch.jpg          photo-1720745133759-1f61ce704079
+medina-zakat.jpg         photo-1602769490455-36cf9734dbcb
+medina-reshetka.jpg      photo-1667454496584-9838026037af
++ kovrik-mihrab photo-1600814832809-579119f47045
++ ornament photo-1594847915592-2a7ef568e2b6
++ sudzhud photo-1637518026117-9d1ac5e73f07
++ koran-kniga photo-1609599006353-e629aaabfeae
++ koran-finiki photo-1587617425953-9075d28b8c46
++ koran-podstavka photo-1596125160970-6f02eeba00d3
++ koran-otkryt photo-1616422840391-fa670d4b2ae7
++ rehal-okno photo-1586767003402-8ade266deb64
++ bahur photo-1777361988778-6e918aaa2e26
++ kupol-mecheti photo-1670514862391-df20ad00b330
++ zal-mecheti photo-1690015845844-8af5f7911911
++ arki-mecheti photo-1736425620502-8386e8e7de1b
++ kupol-zoloto photo-1606981693736-62d6c4954ba5
++ minaret-arka photo-1720173438331-f2ff521886f9
++ belaya-mechet photo-1590075865003-e48277faa558
++ fonar photo-1639918065925-eb39272edda2
++ fonar-zakat photo-1596093019686-550d740a2870
++ tasbih-koran photo-1771758266506-c7002e6487af
++ dua-ruki photo-1762013728442-c6cdde57371e
++ tasbih photo-1682761794593-9687dcfd1d1c
++ kaaba-bashnya-den photo-1720549973451-018d3623b55a
++ haram-den photo-1605553378313-22d0dc541393
++ medina-zakat2 photo-1591604129939-f1efa4d9f7fa
++ medina-gorod photo-1692566123227-0f68f1b9dac6
++ medina-dvor photo-1572358899655-f63ece97bfa5
++ hadzh-kaaba-bashnya photo-1627728734379-a5f8c099763e
++ hadzh-kiswa photo-1564769625905-50e93615e769
++ hadzh-sai photo-1720195899208-d5555176d1d9
++ hadzh-arafat photo-1650446647986-ed369e2dd507
++ hadzh-dzhabal-rahma photo-1650446647974-451d05d2136d
++ hadzh-gory photo-1652119439392-9b60b29158f7
++ hadzh-palomniki photo-1511652019870-fbd8713560bf
++ hadzh-ihram photo-1589827577276-65d717348780
++ post-iftar photo-1661994215679-cde7c2c5c060
++ post-iftar-stol photo-1647772809798-f34d785c981c
++ post-iftar-kovyor photo-1661081988119-58e40ee39201
++ post-finiki photo-1633677658580-2535af0cfb00
++ post-fonar photo-1612176894219-8493bf9b9b1c
++ post-fonar-zelyonyj photo-1584650605024-7344812fa167
++ post-fonari-rynok photo-1577214407836-1f3a0604ecb2
++ post-fonar-noch photo-1622202210251-09d7df95a01a
++ post-zakat-mechet photo-1563300365-9c77e472e7a5
++ namaz-zal photo-1574246604907-db69e30ddb97
++ namaz-ryady photo-1575751639353-e292e76daca3
++ namaz-mechet photo-1526677504211-233c8477c61b
++ namaz-ruki photo-1645579954839-9a91874deb4d
++ namaz-minaret photo-1618336800395-ff018c7c649e
