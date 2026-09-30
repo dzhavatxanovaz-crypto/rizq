@@ -6919,6 +6919,219 @@ function clubStartBanner(){
     '<p style="font-size:13.5px;color:var(--ink-2);margin:0 0 12px;line-height:1.5">Онлайн, среда и пятница в 13:00 по Москве. Каждая встреча - один новый диалог, между встречами - словарик и тест в приложении.</p>'+
     '<button class="btn" data-ar="club">Подробнее о клубе</button></section>';
 }
+/* ============================================================
+   ПРЕДЛОЖЕНИЯ ПРОДУКТОВ ШКОЛЫ (01.10.2026)
+   Спокойная карточка «что дальше» в четырёх местах: главная, конец записи
+   журнала, закрытый день трекера и конец упражнения по арабскому.
+   Как она устроена и почему:
+   - цены на карточке нет: она на странице продукта. Карточка рассказывает о
+     своём продукте, а не выставляет цену на видном месте (38-ФЗ, ст. 5, 18.1);
+   - предложение меняется: на главной - по неделям, в журнале - по теме записи.
+     Один и тот же товар не висит баннером месяцами;
+   - кто уже купил, предложение не видит;
+   - на главной карточка закрывается крестиком и не возвращается 21 день,
+     и первые три дня пользования её нет совсем;
+   - каждый показ (когда карточка действительно попала на экран) и каждое
+     нажатие уходят в CRM: offer_show и offer_click с пометкой места.
+     Уходит только случайный номер устройства, как и у остальных шагов.
+   Тексты взяты из описаний продуктов, которые уже есть в приложении.
+   ============================================================ */
+var OFFERS = [
+  { id:"club", ic:"◇", n:"Клуб JAVATTI", home:true,
+    s:"Приложение JAVATTI: готовые решения на нейросетях, эфиры школы и сообщество предпринимателей.",
+    cta:"Посмотреть клуб",
+    has:function(){ return bought("club"); },
+    go:function(){ V.tab = "income"; open("courses", null); } },
+  { id:"arabclub", ic:"◈", n:"Разговорный клуб арабского", home:true,
+    s:"Две живые встречи в неделю с преподавателем, по часу. Между встречами говорите с приложением.",
+    cta:"Узнать о клубе",
+    has:function(){ return clubHas(); },
+    go:function(){ open("arabic", "club"); } },
+  { id:"sunnah", ic:"❖", n:"Управление бизнесом по Сунне", home:true,
+    s:"Полная программа управленца: личная эффективность, маркетинг, продажи, процессы, команда и финансы.",
+    cta:"Посмотреть программу",
+    has:function(){ return bought("sunnah"); },
+    go:function(){ V.tab = "income"; open("course", "sunnah"); } },
+  { id:"dtd", ic:"❁", n:"Душа. Тело. Дело", home:true,
+    s:"Восстановить ресурс и найти баланс между здоровьем, семьёй и делом.",
+    cta:"Посмотреть курс",
+    has:function(){ return bought("dtd"); },
+    go:function(){ V.tab = "income"; open("course", "dtd"); } },
+  /* книги на главной уже показывает bookNudge - здесь они только в журнале,
+     после дня и после урока, чтобы не было двух книжных карточек подряд */
+  { id:"book1", ic:"✧", n:"Женщина, которая верит", home:false,
+    s:"Роман Заиры Джаватхановой: путь сердца через 99 Имён Аллаха. Первые главы открыты бесплатно.",
+    cta:"Открыть книгу",
+    has:function(){ return b1Owned(); },
+    go:function(){ open("book1", null); } },
+  { id:"book2", ic:"✦", n:"Девушка, которая смогла", home:false,
+    s:"Бизнес-роман о деле, построенном с нуля. Начало книги открыто бесплатно.",
+    cta:"Открыть книгу",
+    has:function(){ return b2Owned(); },
+    go:function(){ open("book2", null); } }
+];
+function offerById(id){
+  for(var i = 0; i < OFFERS.length; i++){ if(OFFERS[i].id === id) return OFFERS[i]; }
+  return null;
+}
+function offerHas(o){ try{ return !!o.has(); }catch(e){ return false; } }
+function offerHidden(id){
+  var m = S.offHide || {};
+  return !!(m[id] && Date.now() - m[id] < 21 * 86400000);
+}
+function offerLeft(place){
+  return OFFERS.filter(function(o){
+    if(place === "home" && o.home === false) return false;
+    return !offerHas(o) && !offerHidden(o.id);
+  });
+}
+/* номер недели: предложение на главной меняется само, без нашего участия */
+function offerWeek(){ return Math.floor(Date.now() / 604800000); }
+/* На главной карточка ровно одна: что попалось первым по странице, то и
+   показываем. Сброс - в начале отрисовки главной. */
+var OFF_HOME_ONE = false;
+function offerOnce(html){
+  if(!html || OFF_HOME_ONE) return "";
+  OFF_HOME_ONE = true;
+  return html;
+}
+
+/* ---------- сама карточка ---------- */
+function offerCard(o, place, note){
+  if(!o) return "";
+  var x = place === "home"
+    ? '<button data-offerx="' + esc(o.id) + '" aria-label="Скрыть" style="position:absolute;top:4px;right:6px;border:0;background:none;font-size:20px;line-height:1;color:var(--ink-3);padding:6px">×</button>'
+    : "";
+  return '<section class="card" data-offshow="' + esc(o.id + ":" + place) + '" style="position:relative;border-color:rgba(212,175,55,.45);' +
+    'background:linear-gradient(140deg,rgba(212,175,55,.11),rgba(212,175,55,.02))">' + x +
+    '<div class="eyebrow" style="color:var(--accent-ink);margin-right:28px">' + esc(note || "Школа JAVATTI") + '</div>' +
+    '<div style="display:flex;gap:12px;align-items:flex-start;margin-top:8px">' +
+      '<span style="flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:18px;' +
+      'color:var(--accent-ink);border:1px solid rgba(212,175,55,.45)">' + o.ic + '</span>' +
+      '<span style="flex:1;min-width:0">' +
+        '<b style="display:block;font-family:var(--f-display);font-size:16px;font-weight:600;line-height:1.3">' + esc(o.n) + '</b>' +
+        '<span style="display:block;font-size:13.5px;color:var(--ink-2);line-height:1.5;margin-top:4px">' + esc(o.s) + '</span>' +
+      '</span></div>' +
+    '<button class="btn sec" style="width:100%;margin-top:12px" data-offer="' + esc(o.id + ":" + place) + '">' + esc(o.cta) + ' ›</button>' +
+    '</section>';
+}
+
+/* ---------- главная ----------
+   Два места, но карточка всё равно одна (offerOnce):
+   1) верхняя полоса сезонных карточек - последней в очереди, чтобы не спорить
+      с пятницей, отчётом месяца и уведомлениями;
+   2) блок «Читать и учиться» - если верхнюю полосу занял кто-то другой.
+   Первые три дня пользования не предлагаем ничего. */
+function offerWeekly(){
+  if(Date.now() - sinceInit() < 3 * 86400000) return null;
+  /* закрыли крестиком - неделю на главной тихо, и только потом другое */
+  if(S.offQuiet && Date.now() - S.offQuiet < 7 * 86400000) return null;
+  var list = offerLeft("home");
+  return list.length ? list[offerWeek() % list.length] : null;
+}
+function offerHomeCard(){
+  return offerOnce(offerCard(offerWeekly(), "home", "Школа JAVATTI"));
+}
+function offerLearnCard(){
+  return offerOnce(offerCard(offerWeekly(), "learn", "Школа JAVATTI"));
+}
+
+/* ---------- конец записи журнала: продукт по теме записи ---------- */
+/* По рубрике - если в записи не указано поле offer. */
+var OFFER_BY_RUBRIC = { imya:"book1", zhenskoe:"dtd", delo:"sunnah", vopros:"club", kalendar:"club", sahaba:"book1", novoe:"club" };
+/* По словам в заголовке и в подзаголовке - точнее рубрики, поэтому сначала.
+   Корни намеренно длинные: короткое «дел» ловило «сделать» и «неделя». */
+var OFFER_BY_WORD = [
+  ["арабск", "arabclub"], ["по-арабски", "arabclub"],
+  ["бизнес", "sunnah"], ["деньг", "sunnah"], ["торгов", "sunnah"], ["прибыл", "sunnah"],
+  ["закят", "sunnah"], ["риба", "sunnah"], ["долг", "sunnah"], ["договор", "sunnah"],
+  ["работник", "sunnah"], ["работодател", "sunnah"], ["партнёр", "sunnah"], ["заработ", "sunnah"],
+  ["здоров", "dtd"], ["устал", "dtd"], ["выгоран", "dtd"], ["отдых", "dtd"], ["питани", "dtd"],
+  ["имён аллаха", "book1"], ["имена аллаха", "book1"]
+];
+function offerForPost(p){
+  var txt = ((p.n || "") + " " + (p.s || "")).toLowerCase(), id = p.offer || "";
+  if(!id){
+    for(var i = 0; i < OFFER_BY_WORD.length; i++){
+      if(txt.indexOf(OFFER_BY_WORD[i][0]) > -1){ id = OFFER_BY_WORD[i][1]; break; }
+    }
+  }
+  if(!id) id = OFFER_BY_RUBRIC[p.r] || "club";
+  var o = offerById(id);
+  if(o && !offerHas(o)) return o;
+  /* куплено или такого продукта нет - берём любой другой, но у одной записи
+     всегда один и тот же, чтобы карточка не прыгала при каждом открытии */
+  var left = offerLeft("post");
+  if(!left.length) return null;
+  var k = 0, key = String(p.id || "");
+  for(var j = 0; j < key.length; j++){ k += key.charCodeAt(j); }
+  return left[k % left.length];
+}
+function offerPostCard(p){
+  return offerCard(offerForPost(p), "post", "Продолжение темы");
+}
+
+/* ---------- день закрыт: 5 из 5 ---------- */
+function offerDayCard(done){
+  if(done < 5) return "";
+  var list = offerLeft("day");
+  if(!list.length) return "";
+  return offerOnce(offerCard(list[dayIndex() % list.length], "day", "День закрыт: 5 из 5"));
+}
+
+/* ---------- конец упражнения по арабскому ---------- */
+function offerLessonCard(pct){
+  if(pct < 80) return "";
+  var o = offerById("arabclub");
+  if(!o || offerHas(o) || offerHidden("arabclub")){
+    var list = offerLeft("lesson");
+    o = list.length ? list[dayIndex() % list.length] : null;
+  }
+  return offerCard(o, "lesson", "Следующий шаг");
+}
+
+/* ---------- показы и нажатия ---------- */
+/* Показ считаем, только когда карточка действительно попала на экран, а не
+   когда её нарисовали ниже сгиба. Одно событие на одно открытие приложения.
+   Считаем сами по размерам, а не IntersectionObserver: наблюдатель молчит,
+   когда страница не на виду, и проверить его без телефона нечем. */
+var OFF_T = 0;
+function offerKey(v){ return String(v || "").replace(":", "_").replace(/[^a-z0-9_]/g, "").slice(0, 20); }
+function offerShown(v){
+  if(!v || S.statOn === false) return;
+  if(typeof rTrackOnce === "function") rTrackOnce("offer_show", offerKey(v));
+}
+function offerVisible(el){
+  var r = el.getBoundingClientRect();
+  if(!r.height) return false;
+  var vh = window.innerHeight || document.documentElement.clientHeight || 0;
+  return Math.min(r.bottom, vh) - Math.max(r.top, 0) > r.height * 0.4;
+}
+function offerWatch(){
+  if(document.visibilityState === "hidden" && !window.OFF_TEST) return;
+  var nodes = document.querySelectorAll("[data-offshow]");
+  for(var i = 0; i < nodes.length; i++){
+    if(offerVisible(nodes[i])) offerShown(nodes[i].getAttribute("data-offshow"));
+  }
+}
+/* при прокрутке - не чаще раза в 400 мс */
+function offerSoon(){
+  if(OFF_T) return;
+  OFF_T = setTimeout(function(){ OFF_T = 0; offerWatch(); }, 400);
+}
+function offerClick(v){
+  var o = offerById(String(v || "").split(":")[0]);
+  if(S.statOn !== false && typeof rTrack === "function") rTrack("offer_click", offerKey(v));
+  if(!o) return;
+  try{ o.go(); }catch(e){}
+}
+function offerDismiss(id){
+  if(!S.offHide) S.offHide = {};
+  S.offHide[id] = Date.now();
+  S.offQuiet = Date.now();
+  save(); render();
+}
+
 /* ---------- ритм дня на главной (30.09.2026) ---------- */
 var AYAT_DAY = [[2,152],[94,5],[13,28],[2,186],[39,53],[65,3],[93,3],[2,153],[14,7],[50,16],[3,139],[40,60],[93,5],[33,41],[9,51],
   [16,97],[35,15],[2,45],[49,13],[55,13],[18,10],[21,87],[25,74],[28,24],[3,8],[14,40],[17,80],[2,201],[3,173],[3,200],[7,56],[8,46],
@@ -7037,7 +7250,7 @@ function hbEvening(){
 
 /* сезонная карточка на главной - одна, первая по важности (главная 30.09.2026) */
 function homeCtx(vault){
-  var list = [jumuaHourCard, mrHomeCard, kahfCard, fridaySadaqaCard, function(){ return vault || ""; }, pushCardHome, a2hsCard, clubStartBanner];
+  var list = [jumuaHourCard, mrHomeCard, kahfCard, fridaySadaqaCard, function(){ return vault || ""; }, pushCardHome, a2hsCard, clubStartBanner, offerHomeCard];
   for(var i = 0; i < list.length; i++){
     var x = ""; try{ x = list[i]() || ""; }catch(e){}
     if(x) return x;
@@ -7045,6 +7258,7 @@ function homeCtx(vault){
   return "";
 }
 function viewHomeMain(){
+  OFF_HOME_ONE = false; /* одна карточка предложения на всю главную */
   var h = ['<div class="stack">'];
   /* шапка - дуа дня (решение Заиры 30.09.2026); сезонные карточки - одна, под намазом (homeCtx) */
   var d = duaOfDay(), a = ayatOfDay();
@@ -7219,6 +7433,7 @@ function viewHomeMain(){
       (pz ? '' : '<button class="btn ghost sm" style="flex:1" data-pauseopen="1" aria-label="Пауза в трекере">Пауза</button>')+
       '<button class="btn ghost sm" style="flex:1" data-open="report">Отчёт за месяц</button>'+
     '</div></section>');
+  h.push(offerDayCard(done));
   /* благодарность - всегда на виду, а не спрятана за галочкой шукра */
   shukrMigrate();
   var shukrToday = shukrOf(tk);
@@ -7306,6 +7521,7 @@ function viewHomeMain(){
       '<span class="azkar-go">›</span></button>');
   })();
   if(!bkNudge) h.push(charityLine());
+  h.push(offerLearnCard());
   /* понимать Коран, арабский, рейтинг, халяль - плитками 2x2 (главная 30.09.2026) */
   (function(){
     var qp = qwPct(), qn = qwLearned().length, scH = scoreState(), scMe = S.scoreMe;
@@ -11652,7 +11868,7 @@ function viewArEx(){
       '<b>'+pct+'% верно</b><p>'+x.ok+' из '+x.t.length+'. '+(pct >= 80 ? "Отлично, машаа Аллах." : "Повторите ещё раз - с каждым кругом легче.")+
       (x.wrong && x.u !== "abc" && x.u !== "pron" && x.u.indexOf("rd") !== 0 ? ' Слова с ошибками вернутся в карточки сегодня.' : '')+'</p>'+
       '<div class="ar-cta"><button class="btn sec" data-ar="ex:'+x.u+'">Ещё раз</button>'+
-      '<button class="btn" data-ar="'+(x.u === "abc" || x.u === "pron" ? x.u : x.u.indexOf("rd") === 0 ? "rdl:" + x.u.slice(2) : "unit:" + x.u)+'">Готово</button></div></section></div>');
+      '<button class="btn" data-ar="'+(x.u === "abc" || x.u === "pron" ? x.u : x.u.indexOf("rd") === 0 ? "rdl:" + x.u.slice(2) : "unit:" + x.u)+'">Готово</button></div></section>' + offerLessonCard(pct) + '</div>');
     return h.join("");
   }
   var t = x.t[x.i];
@@ -22970,6 +23186,7 @@ function viewPost(){
     h.push('<button class="jr-next" data-post="'+esc(nxp.id)+'"><span class="jr-mini">'+jrCover(nxp, "mini")+'</span>'+
       '<span style="flex:1;min-width:0"><span class="jr-meta">'+esc(r ? r.n : "")+' <i>· '+jrMinutes(nxp)+' мин</i></span><b>'+esc(nxp.n)+'</b></span><span style="color:var(--accent-ink);font-size:20px">›</span></button>');
   }
+  h.push(offerPostCard(p));
   h.push('<button class="btn'+(isFav(key)?" sec":"")+'" style="width:100%" data-fav="'+key+'">'+
     (isFav(key) ? "★ Запись в избранном" : "☆ Сохранить запись в избранное")+'</button>');
   h.push('</div>');
@@ -29139,6 +29356,7 @@ function renderCore(){
   if(aq && ADM.q){ aq.focus(); aq.setSelectionRange(aq.value.length, aq.value.length); }
   /* открытку рисуем после вставки разметки: раньше canvas ещё нет на экране */
   if(V.view==="name" && typeof V.p === "number") nameCardRender(V.p);
+  offerWatch();
   navSave();
 }
 
@@ -29270,7 +29488,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -29283,6 +29501,8 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.stop!==undefined) return;
 
   if(d.back!==undefined){ back(); return; }
+  if(d.offer){ offerClick(d.offer); return; }
+  if(d.offerx!==undefined){ offerDismiss(d.offerx); return; }
   if(d.go){ go(d.go); return; }
   if(d.open==="account"){ sheetAccount(); return; }
   if(d.open==="qsettings"){ qsRetSave(); open("qsettings", null); return; }
@@ -30281,7 +30501,7 @@ setInterval(function(){
 }, 60000);
 
 /* запоминаем, до какого аята дочитали при прокрутке */
-$screen.addEventListener("scroll", function(){ if(V.view === "post") jrProgress(); }, {passive:true});
+$screen.addEventListener("scroll", function(){ if(V.view === "post") jrProgress(); offerSoon(); }, {passive:true});
 $screen.addEventListener("scroll", function(){ if(V.view === "book2ch") b2Scroll(); else if(V.view === "book1ch") b1Scroll(); if(V.view === "book2ch" || V.view === "book1ch") fabScroll(); }, {passive:true});
 var FAB_Y = 0;
 function fabScroll(){
