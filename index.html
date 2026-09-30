@@ -1802,6 +1802,9 @@ details.more[open]>summary:after{content:"⌄"}
   transition:background .3s ease;border-radius:12px;
 }
 .ayah.now{background:rgba(212,175,55,.12)}
+/* аят, к которому перешли по закладке или ссылке: заметно две секунды */
+.ayah.jump{animation:ayjump 2.6s ease}
+@keyframes ayjump{0%,45%{background:rgba(212,175,55,.22);box-shadow:inset 3px 0 0 #D4AF37}100%{background:transparent;box-shadow:inset 3px 0 0 transparent}}
 .ay-acts{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:8px;margin-top:10px}
 .ay-a{display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px 6px;border-radius:14px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font-size:13px;font-weight:600}
 .ay-a i{font-style:normal;font-size:18px;line-height:1;color:var(--accent-ink)}
@@ -5880,6 +5883,43 @@ function paintPlayer(){
     }
   }
 }
+/* ---------- место чтения держится на аяте (30.09.2026) ----------
+   При крупном шрифте экран увеличен (zoom): прокрутка меряется в его
+   собственных точках, а положение на экране - в увеличенных, отсюда qZoom. */
+function qZoom(){ var z = parseFloat(getComputedStyle($screen).zoom); return z > 0 ? z : 1; }
+function qBarBottom(){ var b = document.querySelector(".qbar"); return b ? b.getBoundingClientRect().bottom : $screen.getBoundingClientRect().top; }
+var QANCH = { i: -1, top: 0, until: 0 };
+function qAnchorKeep(){
+  if(QANCH.i < 0 || V.view !== "reader" || Date.now() > QANCH.until){ QANCH.i = -1; return; }
+  var el = document.querySelector('.ayah[data-i="' + QANCH.i + '"]');
+  if(el){ var d = el.getBoundingClientRect().top - QANCH.top; if(Math.abs(d) > 2) $screen.scrollTop += d / qZoom(); }
+  setTimeout(qAnchorKeep, 120);
+}
+/* Переход к аяту: сразу, под панель, с подсветкой; держим 3 секунды. */
+function qJumpTo(i){
+  var el = document.querySelector('.ayah[data-i="' + i + '"]');
+  if(!el){ scrollToAyah(i); return; }
+  $screen.scrollTop += (el.getBoundingClientRect().top - (qBarBottom() + 10)) / qZoom();
+  var first = QANCH.i < 0;
+  QANCH.i = i; QANCH.top = el.getBoundingClientRect().top; QANCH.until = Date.now() + 3000;
+  el.classList.remove("jump"); void el.offsetWidth; el.classList.add("jump");
+  setTimeout(function(){ var e2 = document.querySelector('.ayah[data-i="' + i + '"]'); if(e2) e2.classList.remove("jump"); }, 2600);
+  if(first) setTimeout(qAnchorKeep, 120);
+}
+/* Тихая перерисовка экрана чтения: верхний видимый аят остаётся на своём месте. */
+function readerKeepPlace(fn){
+  if(V.view !== "reader" || qBookOn()){ fn(); return; }
+  var bb = qBarBottom(), idx = null, top = 0, list = document.querySelectorAll(".ayah[data-i]");
+  for(var k = 0; k < list.length; k++){
+    var r = list[k].getBoundingClientRect();
+    if(r.bottom > bb + 4){ idx = list[k].getAttribute("data-i"); top = r.top; break; }
+  }
+  fn();
+  if(idx !== null){
+    var n = document.querySelector('.ayah[data-i="' + idx + '"]');
+    if(n) $screen.scrollTop += (n.getBoundingClientRect().top - top) / qZoom();
+  }
+}
 function scrollToAyah(i){
   var el = document.querySelector('.ayah[data-i="' + i + '"]') || document.querySelector('.mus-ayah[data-mayah="' + i + '"]') ||
     document.querySelector('.mdn-w[data-mayah="' + i + '"]');
@@ -5916,6 +5956,10 @@ function autoScrollOff(){
 
 var V = { tab:"home", view:null, p:null, q:"", rub:"", zikr:(S.zikrSel > 0 && S.zikrSel < ZIKRS.length ? S.zikrSel : 0), qmode:"surah", qFrom:0, qTo:0, repPeriod:"week" };
 var $screen = document.getElementById("screen");
+/* Человек сам взялся за экран Корана - удержание места после перехода снимаем (30.09.2026). */
+["touchstart", "wheel", "keydown", "mousedown"].forEach(function(ev){
+  $screen.addEventListener(ev, function(){ QANCH.i = -1; }, { passive: true });
+});
 var $hdr = document.getElementById("hdr");
 var $tabbar = document.getElementById("tabbar");
 
@@ -5947,7 +5991,7 @@ function openReader(from, to, kind, focus){
   save(); render(); applyQSize();
   requestAnimationFrame(function(){
     $screen.scrollTop = 0;
-    if(typeof focus === "number" && focus !== from) setTimeout(function(){ scrollToAyah(focus); }, 60);
+    if(typeof focus === "number" && focus !== from) qJumpTo(focus);
   });
 }
 function applyQSize(){
@@ -12821,7 +12865,7 @@ function tjdLoad(){
   if(TJD || TJD_BUSY || !window.fetch) return;
   TJD_BUSY = true;
   fetch("tajweed.json").then(function(r){ return r.ok ? r.json() : null; })
-    .then(function(j){ TJD_BUSY = false; if(j && j.a){ TJD = j; if(V.view === "reader") render();
+    .then(function(j){ TJD_BUSY = false; if(j && j.a){ TJD = j; if(V.view === "reader") readerKeepPlace(renderInPlace);
       /* окно аята уже открыто - дописываем разбор */
       var b = document.getElementById("tjx-body"); if(b) b.innerHTML = tjdExplain(+b.parentNode.getAttribute("data-tjx")); } })
     .catch(function(){ TJD_BUSY = false; });
@@ -12891,7 +12935,7 @@ var MDN = { pages:{}, fonts:{}, busy:{}, fbusy:{}, err:{} };
 function mdnPad(n){ return (n < 10 ? "00" : n < 100 ? "0" : "") + n; }
 function mdnFam(p){ return "QCF_P" + mdnPad(p); }
 function mdnReady(p){ return !!(MDN.pages[p] && MDN.fonts[p]); }
-function mdnDone(p){ if(V.view === "reader" && qBookOn() && qMadina() && mushafPage() === p) render(); }
+function mdnDone(p){ if(V.view === "reader" && qBookOn() && qMadina() && mushafPage() === p) renderInPlace(); }
 /* У каждой страницы мединского мусхафа свой шрифт. Если их копить, на телефонах со
    слабой памятью вкладка падает и раздел «Коран» перестаёт открываться. Держим только
    страницы рядом с открытой, остальные выгружаем. */
@@ -26193,7 +26237,7 @@ document.getElementById("app").addEventListener("click", function(ev){
     var mi = parseInt(d.qmark,10), mp = S.qMarks.indexOf(mi);
     if(mp > -1){ S.qMarks.splice(mp,1); toast("Закладка снята"); }
     else { S.qMarks.push(mi); toast("Закладка: "+qRef(mi)); }
-    save(); render(); scrollToAyah(mi);
+    save(); readerKeepPlace(renderInPlace);
     var am = document.querySelectorAll('.ay-a[data-qmark="'+mi+'"]'), on = S.qMarks.indexOf(mi) > -1;
     for(var ak = 0; ak < am.length; ak++){ am[ak].classList.toggle("on", on); am[ak].innerHTML = '<i>★</i>'+(on ? "В закладках" : "Закладка"); }
     return;
