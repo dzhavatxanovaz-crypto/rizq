@@ -2357,6 +2357,47 @@ details.more[open]>summary:after{content:"⌄"}
 .hb-push-t em{display:block;font-style:normal;font-size:12.5px;line-height:1.45;color:#E9C46A;margin-top:8px}
 .hb-push-a{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .hb-push .btn.ghost{color:#fff;border-color:rgba(255,255,255,.35)}
+.dd-hero,.mr-hero,.mr-card{padding:18px 16px;border-radius:22px;color:#EDEEE1;background:linear-gradient(150deg,#121A3C,#1E2A5A 58%,#2B2446);border:1px solid rgba(217,196,144,.28)}
+.dd-hero .hb-k,.mr-hero .hb-k,.mr-card .hb-k,.dd-memo .hb-k{color:#D9C490}
+.dd-count{font-family:var(--f-display);font-size:20px;line-height:1.35;color:#fff}
+.dd-count b{color:#D9C490;font-weight:700}
+.dd-hero p{font-size:14px;line-height:1.55;color:rgba(237,238,225,.84);margin:10px 0 0}
+.dd-hero .dd-priv{font-size:12.5px;color:rgba(237,238,225,.62);margin-top:6px}
+.dd-memo{padding:18px 16px;border-radius:22px;color:#F7E7B4;background:linear-gradient(150deg,#2A1F10,#5E4520 70%,#7A5C2A);border:1px solid rgba(217,196,144,.5)}
+.dd-memo-t{font-family:var(--f-display);font-size:18px;line-height:1.45;color:#fff;margin:4px 0 8px;white-space:pre-line;overflow-wrap:anywhere}
+.dd-memo-a{font-size:13.5px;color:#F7E7B4;margin-bottom:12px}
+.dd-list{display:flex;flex-direction:column;gap:10px}
+.dd-ans{padding:14px 15px;border-radius:18px;background:linear-gradient(150deg,rgba(212,175,55,.24),rgba(212,175,55,.07));border:1px solid rgba(212,175,55,.5)}
+.dd-ans-empty p{font-size:13.5px;line-height:1.55;color:var(--ink-2);margin:0}
+.dd-wait{padding:13px 15px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.dd-t{font-size:15px;line-height:1.5;color:var(--ink);white-space:pre-line;overflow-wrap:anywhere}
+.dd-meta{font-size:12px;color:var(--ink-3);margin-top:4px}
+.dd-ans .dd-meta{margin:0 0 6px;color:var(--accent-ink)}
+.dd-how{font-family:"PT Serif",serif;font-style:italic;font-size:14.5px;line-height:1.5;color:var(--ink-2);margin-top:8px;padding-left:10px;border-left:2px solid rgba(212,175,55,.6);white-space:pre-line;overflow-wrap:anywhere}
+.dd-acts{display:flex;gap:8px;margin-top:10px;align-items:center}
+.dd-acts .btn.ghost{flex:none}
+.dd-hd p{font-size:14px;line-height:1.6;color:var(--ink-2);margin:10px 0 0}
+.dd-hd .ar{font-family:var(--f-ar);direction:rtl;text-align:right;font-size:21px;line-height:2;color:var(--ink);margin-top:12px}
+.dd-src{font-size:12px;color:var(--ink-3);margin-top:4px}
+.dd-q{font-size:15px;line-height:1.5;padding:10px 12px;border-radius:12px;background:var(--surface-2);white-space:pre-line;overflow-wrap:anywhere}
+.dd-lb{display:block;font-size:13px;color:var(--ink-3);margin-top:12px}
+.dd-lb .search{margin-top:5px}
+.dd-sh-p{font-size:13.5px;line-height:1.5;color:var(--ink-2);margin:4px 0 8px}
+.st-cv{display:block;height:min(52vh,500px);width:auto;aspect-ratio:9/16;max-width:100%;margin:4px auto 12px;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.mr-m{display:block;font-family:var(--f-display);font-size:23px;font-weight:700;color:#fff;line-height:1.25}
+.mr-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.mr-t{padding:11px 12px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(217,196,144,.28)}
+.mr-t.wide{grid-column:1/-1}
+.mr-t b{display:block;font-family:var(--f-display);font-size:26px;line-height:1.1;color:#D9C490}
+.mr-t span{display:block;font-size:12.5px;line-height:1.35;color:rgba(237,238,225,.8);margin-top:3px}
+.mr-soft{font-size:14px;line-height:1.55;color:rgba(237,238,225,.86);margin:12px 0 0}
+.mr-goal{margin-top:10px;padding:11px 12px;border-radius:14px;border:1px dashed rgba(217,196,144,.6)}
+.mr-goal span{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#D9C490}
+.mr-goal b{display:block;font-size:15px;color:#fff;margin-top:3px;font-weight:600}
+.mr-btn{margin-top:14px;width:100%}
+.mr-card p{font-size:13.5px;color:rgba(237,238,225,.82);margin:6px 0 12px;line-height:1.5}
+.mr-card-a{display:flex;gap:8px}
+.mr-card .btn.ghost{color:#fff;border-color:rgba(255,255,255,.35);flex:none}
 .cm-stats{font-size:13px;color:var(--ink-2);padding:2px 4px}
 .cm-stats span{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:2px}
 .cm-today{font-size:13.5px;font-weight:600;color:var(--gold);padding:0 4px}
@@ -2885,7 +2926,7 @@ var HADITH_SRC = [{"num":1,"n":"Дела оцениваются по намер�
 var DEF = {
   fav:[], tasbih:{}, tasbihTotal:0, read:{}, dcnt:{}, practice:{}, readDay:"", bought:[], done:[], orders:[],
   theme:"", city:"mah", method:"auto", madhab:1,
-  name:"", email:"", notifPrayer:true, notifDua:true, notifAyat:true, notifTasks:true, notifScore:true, notifAzkar:true, notifJumua:true, notifKahf:true, statOn:true, notifCourse:false, notifAzan:true,
+  name:"", email:"", notifPrayer:true, notifDua:true, notifAyat:true, notifTasks:true, notifScore:true, notifAzkar:true, notifJumua:true, notifKahf:true, notifReport:true, statOn:true, notifCourse:false, notifAzan:true,
   salah:{}, myduas:[], goals:[], namesRead:{}, daily:{}, shukrNotes:{}, shukr:[], shukrMigrated:false, shukrOpen:false, salahOpen:false,
   checks:{}, sunnah:{}, sunnahOpen:false, health:{}, healthOpen:false, pauses:[],
   qada:{p:{}, done:{}, fast:0, fastDone:0, perDay:1, log:[]}, postSeen:"", points:0, pointsDay:{}, cat:{},
@@ -6921,6 +6962,7 @@ function viewHomeMain(){
   /* пятница после асра - карточка часа дуа, первой на главной (просьба Заиры 25.09) */
   h.push(hbAfterPrayer());
   h.push(pushCardHome());
+  h.push(mrHomeCard());
   h.push(jumuaHourCard());
   h.push(clubBigBtn());
   h.push(kahfCard());
@@ -17941,8 +17983,244 @@ function donateParts(){
 /* ============================================================
    ЭКРАН: ОТЧЁТ ЗА МЕСЯЦ
    ============================================================ */
+/* ---------- картинки для сторис 1080x1920 (дневник дуа, отчёт за месяц) ---------- */
+var ST = { blob:null, name:"", text:"" };
+var ST_W = 1080, ST_H = 1920, ST_GOLD = "#D9C490", ST_CREAM = "#EDEEE1", ST_SOFT = "rgba(237,238,225,0.74)";
+function stFonts(){
+  if(!document.fonts || !document.fonts.load) return Promise.resolve();
+  var list = [["700 60px Montserrat", "Аа"], ["500 30px Montserrat", "Аа"], ["600 30px Montserrat", "Аа"], ["40px Marcellus", "JAVATTI"],
+    ['60px "Amiri Quran"', "الحمد"], ['60px "Noto Naskh Arabic"', "الحمد"], ['italic 40px "PT Serif"', "Аа"]];
+  return Promise.all(list.map(function(f){ return document.fonts.load(f[0], f[1]).catch(function(){}); })).then(function(){}, function(){});
+}
+function stRound(ctx, x, y, w, h, r){
+  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h); ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r); ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath();
+}
+/* фон, арка, знак JAVATTI сверху и строка RIZQ снизу - вне зон, которые закрывает интерфейс сторис */
+function stBase(ctx){
+  var W = ST_W, H = ST_H;
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.direction = "ltr"; ctx.textBaseline = "alphabetic";
+  var g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, "#0B1130"); g.addColorStop(0.5, "#1A2455"); g.addColorStop(1, "#0D1330");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  var r = ctx.createRadialGradient(W / 2, 760, 40, W / 2, 760, 860);
+  r.addColorStop(0, "rgba(217,196,144,0.20)"); r.addColorStop(1, "rgba(217,196,144,0)");
+  ctx.fillStyle = r; ctx.fillRect(0, 0, W, H);
+  [[90, "rgba(217,196,144,0.36)", 3], [110, "rgba(217,196,144,0.14)", 1.5]].forEach(function(a){
+    var l = a[0], rr = W - a[0], top = 470 + (a[0] - 90), bot = 1550 - (a[0] - 90);
+    ctx.strokeStyle = a[1]; ctx.lineWidth = a[2];
+    ctx.beginPath(); ctx.moveTo(l, bot); ctx.lineTo(l, top + 230); ctx.bezierCurveTo(l, top - 60, rr, top - 60, rr, top + 230); ctx.lineTo(rr, bot); ctx.closePath(); ctx.stroke();
+  });
+  ctx.textAlign = "center";
+  vmZnak(ctx, W / 2, 290, 130, ST_GOLD);
+  ctx.fillStyle = ST_GOLD; ctx.font = "36px Marcellus,serif";
+  vmSpaced(ctx, "JAVATTI", W / 2, 385, 12);
+  ctx.fillStyle = ST_GOLD; ctx.font = "700 40px Montserrat,Inter,sans-serif";
+  ctx.fillText("Приложение RIZQ · бесплатно", W / 2, 1640);
+  ctx.fillStyle = ST_SOFT; ctx.font = "500 32px Montserrat,Inter,sans-serif";
+  ctx.fillText("rizq.javattigroup.ru", W / 2, 1690);
+}
+function stAr(ctx, txt, x, y){ ctx.direction = "rtl"; ctx.fillText(txt, x, y); ctx.direction = "ltr"; }
+/* начало аята 40:60 из корпуса приложения (текст Корана не набираем руками) */
+function stAyah(){
+  try{
+    var t = String(QA[ayahGlobal(40, 60)] || "").split(" ").filter(Boolean), out = [], n = 0;
+    for(var k = 0; k < t.length && n < 5; k++){ out.push(t[k]); if(!QW_MARK.test(t[k])) n++; }
+    return n === 5 ? out.join(" ") : "";
+  }catch(e){ return ""; }
+}
+/* блоки по высоте в окне от top до bot; не влезает - убираем с конца необязательные */
+function stStack(blocks, top, bot){
+  var sum = function(){ return blocks.reduce(function(a, b){ return a + b.h; }, 0); };
+  while(sum() > bot - top && blocks.length > 1 && blocks[blocks.length - 1].opt) blocks.pop();
+  var y = top + Math.max(0, (bot - top - sum()) / 2);
+  blocks.forEach(function(b){ b.d(y); y += b.h; });
+}
+function stDrawDua(cv, x){
+  var ctx = cv.getContext("2d"), cx = ST_W / 2, B = [];
+  stBase(ctx);
+  ctx.textAlign = "center";
+  B.push({ h:70, d:function(y){ ctx.fillStyle = ST_GOLD; ctx.font = "600 30px Montserrat,Inter,sans-serif"; vmSpaced(ctx, "ДНЕВНИК ДУА", cx, y + 34, 8); } });
+  B.push({ h:215, d:function(y){ ctx.fillStyle = ST_GOLD; ctx.font = '120px "Amiri Quran","Noto Naskh Arabic",serif'; stAr(ctx, "الْحَمْدُ لِلَّهِ", cx, y + 140); } });
+  ctx.font = "700 70px Montserrat,Inter,sans-serif";
+  var tl = cardWrap(ctx, "Аллах ответил на мою дуа", 780);
+  B.push({ h:tl.length * 86 + 16, d:function(y){ ctx.fillStyle = ST_CREAM; ctx.font = "700 70px Montserrat,Inter,sans-serif"; tl.forEach(function(v, k){ ctx.fillText(v, cx, y + 70 + k * 86); }); } });
+  if(DD.showT){
+    ctx.font = "500 42px Montserrat,Inter,sans-serif";
+    var ql = cardWrap(ctx, "«" + x.t + "»", 740);
+    if(ql.length > 6){ ql = ql.slice(0, 6); ql[5] = ql[5] + "..."; }
+    B.push({ h:ql.length * 58 + 34, d:function(y){ ctx.fillStyle = ST_SOFT; ctx.font = "500 42px Montserrat,Inter,sans-serif"; ql.forEach(function(v, k){ ctx.fillText(v, cx, y + 60 + k * 58); }); } });
+  }
+  if(DD.showH && x.how){
+    ctx.font = 'italic 40px "PT Serif",serif';
+    var hl = cardWrap(ctx, x.how, 720);
+    if(hl.length > 5){ hl = hl.slice(0, 5); hl[4] = hl[4] + "..."; }
+    B.push({ h:hl.length * 56 + 30, d:function(y){ ctx.fillStyle = ST_GOLD; ctx.font = 'italic 40px "PT Serif",serif'; hl.forEach(function(v, k){ ctx.fillText(v, cx, y + 54 + k * 56); }); } });
+  }
+  var dl = ["Просьба записана " + ddDate(x.ts, 1)];
+  if(x.doneTs) dl.push("Ответ пришёл " + ddDate(x.doneTs, 1));
+  B.push({ h:dl.length * 50 + 44, d:function(y){ ctx.fillStyle = ST_GOLD; ctx.font = "500 34px Montserrat,Inter,sans-serif"; dl.forEach(function(v, k){ ctx.fillText(v, cx, y + 62 + k * 50); }); } });
+  var ay = stAyah();
+  if(ay) B.push({ opt:1, h:260, d:function(y){
+    ctx.strokeStyle = "rgba(217,196,144,0.45)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx - 70, y + 30); ctx.lineTo(cx + 70, y + 30); ctx.stroke();
+    ctx.fillStyle = ST_CREAM; ctx.font = '60px "Amiri Quran","Noto Naskh Arabic",serif'; stAr(ctx, ay, cx, y + 118);
+    ctx.fillStyle = ST_SOFT; ctx.font = "500 32px Montserrat,Inter,sans-serif"; ctx.fillText("«Взывайте ко Мне, и Я отвечу вам»", cx, y + 196);
+    ctx.font = "500 26px Montserrat,Inter,sans-serif"; ctx.fillText("сура «Гафир», 40:60 · перевод смыслов Э. Кулиева", cx, y + 236);
+  } });
+  stStack(B, 560, 1520);
+}
+function stReady(cv){
+  try{ cv.toBlob(function(b){ ST.blob = b; }, "image/jpeg", 0.92); }catch(e){ ST.blob = null; }
+}
+/* «Поделиться»: системное окно с файлом (оттуда - в сторис Instagram, WhatsApp, Telegram);
+   если браузер так не умеет - файл скачивается в галерею. Blob готов заранее: на iPhone
+   share работает только прямо в нажатии. */
+function stGo(dl){
+  var b = ST.blob;
+  if(!b){ toast("Картинка ещё рисуется, секунду"); return; }
+  if(!dl){
+    var f = null; try{ f = new File([b], ST.name, { type:"image/jpeg" }); }catch(e){}
+    if(f && navigator.share && navigator.canShare && navigator.canShare({ files:[f] })){ navigator.share({ files:[f], text:ST.text }).catch(function(){}); return; }
+  }
+  var url = URL.createObjectURL(b), a = document.createElement("a");
+  a.href = url; a.download = ST.name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+  toast(dl ? "Картинка сохранена" : "Картинка сохранена - отправьте её из галереи");
+}
+
+/* ---------- отчёт барака за месяц (30.09.2026) ----------
+   Только то, что приложение реально считает: отметки фардов (S.salah), честно прочитанные
+   страницы (S.qRead - дата по странице) и минуты чтения (S.qTime), азкары и дуа за сестёр
+   (баллы по категориям S.cat: азкар = 1, дуа за сестру = POINTS.duasis), дни садаки
+   (S.daily), лучшая серия дней со всеми пятью намазами внутри месяца. Без сравнения с людьми. */
+function mrMonth(){
+  if(V.repMonth) return V.repMonth;
+  var n = new Date();
+  return n.getDate() === 1 ? monthKey(new Date(n.getFullYear(), n.getMonth() - 1, 1)) : monthKey(n);
+}
+function mrStats(mk){
+  var y = parseInt(mk.slice(0, 4), 10), m = parseInt(mk.slice(5, 7), 10) - 1, now = new Date();
+  var daysIn = new Date(y, m + 1, 0).getDate(), today = todayKey(), cur = monthKey(now), pre = y + "-" + pad(m + 1);
+  var o = { mk:mk, y:y, m:m, namaz:0, pages:0, qmin:0, azkar:0, sisters:0, sadaqa:0, best:0, active:0,
+    done: mk < cur || (mk === cur && now.getDate() === daysIn) };
+  var run = 0;
+  for(var d = 1; d <= daysIn; d++){
+    var k = pre + "-" + pad(d);
+    if(k > today) break;
+    var sd = salahDone(k), c = (S.cat || {})[k] || {};
+    o.namaz += sd;
+    o.azkar += c.azkar || 0;
+    o.sisters += Math.round((c.duasis || 0) / POINTS.duasis);
+    if(dayRec(k).sadaqa) o.sadaqa++;
+    if(((S.pointsDay || {})[k] || 0) > 0 || sd) o.active++;
+    if(!isPaused(k)){ if(sd === 5){ run++; if(run > o.best) o.best = run; } else if(k !== today) run = 0; }
+  }
+  var r = S.qRead || {}; for(var p in r) if(String(r[p]).indexOf(pre) === 0) o.pages++;
+  var qt = S.qTime || {}, sec = 0; for(var q in qt) if(q.indexOf(pre) === 0) sec += qt[q] || 0;
+  o.qmin = Math.round(sec / 60);
+  o.little = o.active < 5;
+  return o;
+}
+function mrTiles(o){
+  var t = [];
+  if(o.namaz) t.push({ n:o.namaz, l:"намазы отмечены", s:plural(o.namaz, "намаз", "намаза", "намазов") });
+  if(o.pages || o.qmin) t.push({ n:o.pages || o.qmin, l:o.pages ? "страницы Корана" + (o.qmin ? " · " + o.qmin + " мин чтения" : "") : "минуты с Кораном",
+    s:o.pages ? plural(o.pages, "страница Корана", "страницы Корана", "страниц Корана") : o.qmin + " мин с Кораном" });
+  if(o.azkar) t.push({ n:o.azkar, l:"азкары прочитаны", s:plural(o.azkar, "азкар", "азкара", "азкаров") });
+  if(o.sisters) t.push({ n:o.sisters, l:"дуа за сестёр", s:o.sisters + " дуа за сестёр" });
+  if(o.sadaqa) t.push({ n:o.sadaqa, l:"дни с садакой", s:plural(o.sadaqa, "день садаки", "дня садаки", "дней садаки") });
+  if(o.best >= 2) t.push({ n:o.best, l:"лучшая серия: дни с пятью намазами", s:"серия " + plural(o.best, "день", "дня", "дней") });
+  return t;
+}
+function mrNextName(o){ return MONTHS_RU[(o.m + 1) % 12].toLowerCase(); }
+/* одна цель - то, чего в месяце не было совсем, по порядку от самого простого */
+function mrGoal(o){
+  if(!o.pages) return "читать хотя бы одну страницу Корана в день";
+  if(!o.azkar) return "утренние азкары после фаджра - три раза в неделю";
+  if(!o.namaz) return "отмечать пять намазов в приложении каждый день";
+  if(!o.sisters) return "одно дуа за сестру каждую неделю";
+  return "одна страница Корана в день";
+}
+function mrHero(){
+  var o = mrStats(mrMonth()), t = mrTiles(o);
+  var h = '<section class="mr-hero"><div class="hb-k">Ваш месяц с RIZQ</div>'+
+    '<div class="mr-m">'+MONTHS_RU[o.m]+' '+o.y+'</div>';
+  if(t.length) h += '<div class="mr-grid">'+t.map(function(x, k){
+    return '<div class="mr-t'+(k === t.length - 1 && t.length % 2 ? ' wide' : '')+'"><b>'+x.n+'</b><span>'+esc(x.l)+'</span></div>';
+  }).join("")+'</div>';
+  if(!o.done) h += '<p class="mr-soft">Месяц ещё идёт. Итог соберётся в последний день - заходите посмотреть.</p>';
+  else if(o.little) h += '<p class="mr-soft">Этот месяц был тихим - так бывает у каждого. Хорошо, что вы здесь: новый месяц - новая страница.</p>'+
+    '<div class="mr-goal"><span>Одна цель на '+esc(mrNextName(o))+'</span><b>'+esc(ddCap(mrGoal(o)))+'</b></div>';
+  else h += '<p class="mr-soft">Машаа Аллах! Пусть Аллах примет каждое из этих дел.</p>';
+  h += '<button class="btn mr-btn" data-mr="story">Поделиться в сторис</button></section>';
+  return h;
+}
+/* главная: в последний день месяца - текущий, 1-го числа - прошлый */
+function mrHomeCard(){
+  var n = new Date(), last = new Date(n.getFullYear(), n.getMonth() + 1, 0).getDate(), mk = "";
+  if(n.getDate() === last) mk = monthKey(n);
+  else if(n.getDate() === 1) mk = monthKey(new Date(n.getFullYear(), n.getMonth() - 1, 1));
+  else if(window.MR_TEST) mk = monthKey(n);
+  if(!mk || S.mrHide === mk || !((S.points || 0) > 0)) return "";
+  var o = mrStats(mk), t = mrTiles(o).slice(0, 3);
+  return '<section class="mr-card"><div class="hb-k">'+MONTHS_RU[o.m]+' '+o.y+'</div>'+
+    '<b class="mr-m">Ваш месяц с RIZQ готов</b>'+
+    '<p>'+(t.length ? esc(t.map(function(x){ return x.s; }).join(" · ")) + '. И картинка для сторис' : 'Посмотрите, каким был месяц, и выберите одну цель на следующий')+'</p>'+
+    '<div class="mr-card-a"><button class="btn sm" style="flex:1" data-mr="open:'+mk+'">Открыть отчёт</button>'+
+    '<button class="btn ghost sm" data-mr="hide:'+mk+'" aria-label="Скрыть">×</button></div></section>';
+}
+function sheetMrStory(){
+  var o = mrStats(mrMonth());
+  sheet('<div class="hb-k">Картинка для сторис</div>'+
+    '<p class="dd-sh-p">Только ваши цифры за месяц - без сравнения с другими.</p>'+
+    '<canvas id="stCv" class="st-cv" width="1080" height="1920"></canvas>'+
+    '<div class="dd-acts"><button class="btn" style="flex:1" data-st="go">Поделиться в сторис</button><button class="btn sec" style="flex:1" data-st="dl">Сохранить</button></div>');
+  var cv = document.getElementById("stCv");
+  ST.blob = null; ST.name = "rizq-mesyac-" + o.mk + ".jpg";
+  ST.text = "Мой " + MONTHS_RU[o.m].toLowerCase() + " с RIZQ" + String.fromCharCode(10) + APP_URL;
+  stFonts().then(function(){ stDrawMonth(cv, o); stReady(cv); });
+}
+function stDrawMonth(cv, o){
+  var ctx = cv.getContext("2d"), W = ST_W, cx = W / 2;
+  stBase(ctx);
+  ctx.textAlign = "center";
+  ctx.fillStyle = ST_GOLD; ctx.font = "600 30px Montserrat,Inter,sans-serif"; vmSpaced(ctx, "МОЙ МЕСЯЦ С RIZQ", cx, 600, 8);
+  ctx.fillStyle = ST_CREAM; ctx.font = "700 80px Montserrat,Inter,sans-serif"; ctx.fillText(MONTHS_RU[o.m] + " " + o.y, cx, 700);
+  var t = mrTiles(o), top = 745, Lx = 150, gap = 18, tw = (W - 2 * Lx - gap) / 2, th = 166;
+  t.forEach(function(it, k){
+    var col = k % 2, row = Math.floor(k / 2), wide = k === t.length - 1 && t.length % 2 === 1;
+    var x = wide ? Lx : Lx + col * (tw + gap), w = wide ? W - 2 * Lx : tw, ty = top + row * (th + gap);
+    stRound(ctx, x, ty, w, th, 22); ctx.fillStyle = "rgba(255,255,255,0.06)"; ctx.fill();
+    ctx.strokeStyle = "rgba(217,196,144,0.40)"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = ST_GOLD; ctx.font = "700 78px Montserrat,Inter,sans-serif"; ctx.fillText(String(it.n), x + w / 2, ty + 86);
+    ctx.fillStyle = ST_SOFT; ctx.font = "500 27px Montserrat,Inter,sans-serif";
+    var lw = cardWrap(ctx, it.l, w - 36).slice(0, 2);
+    lw.forEach(function(v, j){ ctx.fillText(v, x + w / 2, ty + (lw.length > 1 ? 122 : 130) + j * 32); });
+  });
+  var yb = top + Math.ceil(t.length / 2) * (th + gap) + (t.length ? 30 : 60);
+  if(o.done && o.little){
+    ctx.fillStyle = ST_CREAM; ctx.font = "700 50px Montserrat,Inter,sans-serif";
+    cardWrap(ctx, "Новый месяц - новая страница", 760).forEach(function(v, j){ ctx.fillText(v, cx, yb + 50 + j * 62); });
+    var gy = yb + 50 + cardWrap(ctx, "Новый месяц - новая страница", 760).length * 62 + 30;
+    ctx.fillStyle = ST_GOLD; ctx.font = "600 30px Montserrat,Inter,sans-serif"; vmSpaced(ctx, ("Моя цель на " + mrNextName(o)).toUpperCase(), cx, gy, 4);
+    ctx.fillStyle = ST_CREAM; ctx.font = "500 42px Montserrat,Inter,sans-serif";
+    cardWrap(ctx, ddCap(mrGoal(o)), 740).slice(0, 3).forEach(function(v, j){ ctx.fillText(v, cx, gy + 64 + j * 56); });
+  } else {
+    ctx.fillStyle = ST_GOLD; ctx.font = '80px "Amiri Quran","Noto Naskh Arabic",serif'; stAr(ctx, "الْحَمْدُ لِلَّهِ", cx, Math.min(yb + 80, 1400));
+    ctx.fillStyle = ST_SOFT; ctx.font = "500 34px Montserrat,Inter,sans-serif"; ctx.fillText("Альхамду лиЛлях за каждый шаг", cx, Math.min(yb + 165, 1485));
+  }
+}
+function mrAct(a){
+  var i = a.indexOf(":"), k = i < 0 ? a : a.slice(0, i), mk = i < 0 ? "" : a.slice(i + 1);
+  if(k === "open"){ V.repMonth = mk; V.repDay = null; open("report", null); return; }
+  if(k === "hide"){ S.mrHide = mk; save(); renderInPlace(); return; }
+  if(k === "story"){ sheetMrStory(); return; }
+}
+
 function viewReport(){
   var h0 = ['<div class="stack">'];
+  h0.push(mrHero());
 
   /* уровень и баллы */
   var lv = levelOf(S.points||0);
@@ -18025,7 +18303,7 @@ function viewReport(){
   h0.push('<p class="disclaimer">Значки считаются по всему времени в приложении, а не только за этот месяц.</p>');
   h0.push('<hr class="hr" style="margin:6px 0 4px">');
 
-  var mk = V.repMonth || monthKey(new Date());
+  var mk = mrMonth();
   var y = parseInt(mk.split("-")[0], 10), m = parseInt(mk.split("-")[1], 10) - 1;
   var first = new Date(y, m, 1), daysIn = new Date(y, m+1, 0).getDate();
   var todayK = todayKey();
@@ -24361,35 +24639,161 @@ function viewZakat(){
 /* ============================================================
    ЭКРАН: МОИ ДУА
    ============================================================ */
+/* ============================================================
+   ЭКРАН: МОИ ДУА - дневник принятых дуа (30.09.2026)
+   Поля записи: t, ts (когда записана), done, doneTs (когда Аллах ответил),
+   how (как это случилось, необязательно). Всё внутри S.myduas - в копии и в аккаунте.
+   Про просьбы без ответа - ни слова о том, что они «не приняты».
+   ============================================================ */
+var DD = { id:"", showT:false, showH:false };
+var DD_HALF = 182 * 86400000;
+function ddFind(id){ return (S.myduas || []).filter(function(x){ return x.id === id; })[0]; }
+/* «12 марта», год - только если не текущий (или y для картинки); без «г.», иначе выходит «2026 г.. Альхамду» */
+function ddDate(ts, y){
+  var d = new Date(ts), t = d.toLocaleDateString("ru-RU", { day:"numeric", month:"long" });
+  return (y || d.getFullYear() !== new Date().getFullYear()) ? t + " " + d.getFullYear() : t;
+}
+function ddAgo(ts){
+  var days = Math.floor((Date.now() - ts) / 86400000);
+  if(days < 1) return "сегодня";
+  if(days < 30) return plural(days, "день", "дня", "дней") + " назад";
+  var m = Math.floor(days / 30.44);
+  if(m < 12) return m === 6 ? "полгода назад" : plural(m, "месяц", "месяца", "месяцев") + " назад";
+  var y = Math.floor(m / 12);
+  return y === 1 ? "год назад" : plural(y, "год", "года", "лет") + " назад";
+}
+function ddCap(x){ return x.charAt(0).toUpperCase() + x.slice(1); }
+function ddOne(n){ return n % 10 === 1 && n % 100 !== 11; }
+function ddCount(n, m){
+  return (ddOne(n) ? "Записана " : "Записано ") + '<b>' + plural(n, "просьба", "просьбы", "просьб") + '</b> · ' +
+    (ddOne(m) ? "исполнилась " : "исполнилось ") + '<b>' + m + '</b>';
+}
 function viewMyDua(){
+  var all = S.myduas || [];
+  var wait = all.filter(function(x){ return !x.done; });
+  var done = all.filter(function(x){ return x.done; }).sort(function(a, b){ return (b.doneTs || b.ts) - (a.doneTs || a.ts); });
   var h = ['<div class="stack">'];
-  h.push('<div class="card flat" style="padding:13px 15px;font-size:14px;color:var(--ink-2);line-height:1.55">'+
-    'Записывайте, о чём просите. Когда Аллах ответит - отметьте. Со временем этот список становится летописью Его милости к вам.</div>');
+  h.push('<section class="dd-hero"><div class="hb-k">Дневник дуа</div>'+
+    '<div class="dd-count">'+ddCount(all.length, done.length)+'</div>'+
+    '<p>Записывайте, о чём просите Аллаха. Когда просьба исполнится - отметьте «Аллах ответил». Со временем здесь соберётся летопись Его милости к вам.</p>'+
+    '<p class="dd-priv">Это личный дневник: записи не уходят в сообщество и видны только в вашем приложении.</p></section>');
   h.push('<section class="card"><textarea class="search" id="duaInput" rows="3" style="resize:none;font-family:var(--f-body)" placeholder="О чём вы просите Аллаха?"></textarea>'+
     '<button class="btn" style="margin-top:10px" data-addmydua="1">Записать</button></section>');
-  if(!S.myduas.length){
+  if(!all.length){
     h.push('<div class="empty"><div class="ic">◈</div><b>Записей пока нет</b><p>Первая просьба появится здесь.</p></div>');
+    h.push('</div>');
+    return h.join("");
+  }
+  /* самое тёплое место экрана: давняя просьба, на которую Аллах уже ответил */
+  var old = done.filter(function(x){ return Date.now() - x.ts >= DD_HALF; });
+  if(old.length){
+    var mo = old[dayIndex() % old.length];
+    h.push('<section class="dd-memo"><div class="hb-k">'+esc(ddCap(ddAgo(mo.ts)))+' вы просили</div>'+
+      '<div class="dd-memo-t">«'+esc(mo.t)+'»</div>'+
+      '<div class="dd-memo-a">'+(mo.doneTs ? 'Аллах ответил '+esc(ddDate(mo.doneTs)) : 'Аллах ответил')+'. Альхамду лиЛлях</div>'+
+      '<button class="btn sm" data-dd="share:'+mo.id+'">Поделиться радостью</button></section>');
+  }
+  if(done.length){
+    h.push('<div class="sec-h"><h3>Исполнилось</h3><span class="more" style="color:var(--ink-3)">'+done.length+'</span></div>');
+    h.push('<div class="dd-list">'+done.map(ddAnsCard).join("")+'</div>');
   } else {
-    var open = S.myduas.filter(function(d){return !d.done;});
-    var done = S.myduas.filter(function(d){return d.done;});
-    if(open.length){
-      h.push('<div class="sec-h"><h3>В ожидании ответа</h3><span class="more" style="color:var(--ink-3)">'+open.length+'</span></div>');
-      h.push('<div class="rows">'+ open.map(function(d){ return myDuaRow(d); }).join("") +'</div>');
-    }
-    if(done.length){
-      h.push('<div class="sec-h"><h3>Отвечено - альхамду лиЛлях</h3><span class="more" style="color:var(--ink-3)">'+done.length+'</span></div>');
-      h.push('<div class="rows">'+ done.map(function(d){ return myDuaRow(d); }).join("") +'</div>');
-    }
+    h.push('<section class="dd-ans dd-ans-empty"><div class="hb-k">Исполнилось</div><p>Здесь соберутся просьбы, на которые Аллах ответил. Отмечайте их - перечитывать такие записи потом особенно радостно.</p></section>');
+  }
+  if(wait.length){
+    h.push('<div class="sec-h"><h3>Ждут ответа</h3><span class="more" style="color:var(--ink-3)">'+wait.length+'</span></div>');
+    h.push('<div class="dd-list">'+wait.map(ddWaitRow).join("")+'</div>');
+    h.push(ddHadith());
   }
   h.push('</div>');
   return h.join("");
 }
-function myDuaRow(d){
-  return '<div class="lesson'+(d.done?" done":"")+'" style="align-items:flex-start">'+
-    '<button class="tick" data-mydua="'+d.id+'" style="margin-top:2px">✓</button>'+
-    '<div style="min-width:0;flex:1"><b style="font-weight:400;font-size:14.5px;line-height:1.5">'+esc(d.t)+'</b>'+
-    '<span>'+new Date(d.ts).toLocaleDateString("ru-RU",{day:"numeric",month:"long",year:"numeric"})+'</span></div>'+
-    '<button class="lock" data-delmydua="'+d.id+'" style="color:var(--ink-3)">✕</button></div>';
+function ddAnsCard(x){
+  return '<article class="dd-ans">'+
+    '<div class="dd-meta">'+(Date.now() - x.ts >= DD_HALF ? esc(ddCap(ddAgo(x.ts)))+' вы просили' : 'Записано '+esc(ddDate(x.ts)))+
+      (x.doneTs ? ' · ответ '+esc(ddDate(x.doneTs)) : '')+'</div>'+
+    '<div class="dd-t">'+esc(x.t)+'</div>'+
+    (x.how ? '<div class="dd-how">'+esc(x.how)+'</div>' : '')+
+    '<div class="dd-acts"><button class="btn sec sm" data-dd="share:'+x.id+'">↗ Поделиться</button>'+
+    '<button class="btn ghost sm" data-dd="ans:'+x.id+'" aria-label="Изменить">✎</button></div></article>';
+}
+function ddWaitRow(x){
+  return '<article class="dd-wait"><div class="dd-t">'+esc(x.t)+'</div>'+
+    '<div class="dd-meta">записано '+esc(ddDate(x.ts))+'</div>'+
+    '<div class="dd-acts"><button class="btn sec sm" style="flex:1" data-dd="ans:'+x.id+'">Аллах ответил ✓</button>'+
+    '<button class="btn ghost sm" data-dd="del:'+x.id+'" aria-label="Удалить запись">✕</button></div></article>';
+}
+/* хадисы сверены 30.09.2026: аль-Бухари 6340 (Муслим 2735 - книга 48, хадис 125 в базе); ат-Тирмизи 3573 - хасан сахих */
+function ddHadith(){
+  return '<details class="card fold dd-hd"><summary>Когда ответ ещё в пути</summary>'+
+    '<p>Ответ на дуа бывает не таким и не тогда, как мы ждём. Просьба остаётся в дневнике - продолжайте просить.</p>'+
+    '<div class="ar" dir="rtl" lang="ar">يُسْتَجَابُ لأَحَدِكُمْ مَا لَمْ يَعْجَلْ، يَقُولُ: دَعَوْتُ فَلَمْ يُسْتَجَبْ لِي</div>'+
+    '<p>Пророк ﷺ сказал: «Каждому из вас отвечают, пока он не станет торопиться и говорить: „Я просил, а мне не ответили“».</p>'+
+    '<div class="dd-src">аль-Бухари 6340, Муслим 2735</div>'+
+    '<div class="ar" dir="rtl" lang="ar">مَا عَلَى الأَرْضِ مُسْلِمٌ يَدْعُو اللَّهَ بِدَعْوَةٍ إِلاَّ آتَاهُ اللَّهُ إِيَّاهَا أَوْ صَرَفَ عَنْهُ مِنَ السُّوءِ مِثْلَهَا مَا لَمْ يَدْعُ بِمَأْثَمٍ أَوْ قَطِيعَةِ رَحِمٍ</div>'+
+    '<p>«Нет на земле мусульманина, который обратится к Аллаху с мольбой, чтобы Аллах не дал ему просимого или не отвёл от него равное этому зло, пока он не просит о греховном или о разрыве родственных связей». Кто-то сказал: «Тогда мы будем просить больше». Он ответил: «У Аллаха - больше».</p>'+
+    '<div class="dd-src">ат-Тирмизи 3573, хасан сахих</div></details>';
+}
+function sheetDdAnswer(id){
+  var x = ddFind(id); if(!x) return;
+  var dv = dayKey(new Date(x.doneTs || Date.now()));
+  sheet('<div class="hb-k">Дневник дуа</div>'+
+    '<h3 style="margin:4px 0 10px">'+(x.done ? 'Аллах ответил на просьбу' : 'Альхамду лиЛлях! Аллах ответил')+'</h3>'+
+    '<div class="dd-q">«'+esc(x.t)+'»</div>'+
+    '<label class="dd-lb">Когда<input class="search" type="date" id="ddWhen" value="'+dv+'" min="'+dayKey(new Date(x.ts))+'" max="'+todayKey()+'"></label>'+
+    '<label class="dd-lb">Как это случилось <span>- необязательно, видно только вам</span>'+
+      '<textarea class="search" id="ddHow" rows="3" maxlength="400" style="resize:none;font-family:var(--f-body)" placeholder="Например: пришло не так, как ожидалось, но лучше">'+esc(x.how || "")+'</textarea></label>'+
+    '<button class="btn" style="width:100%;margin-top:14px" data-dd="save:'+x.id+'">Сохранить</button>'+
+    (x.done ? '<button class="btn sec" style="width:100%;margin-top:8px" data-dd="undo:'+x.id+'">Вернуть в «Ждут ответа»</button>' : '')+
+    '<button class="btn ghost" style="width:100%;margin-top:8px" data-scrim="1">Отмена</button>');
+}
+function ddSave(id){
+  var x = ddFind(id); if(!x) return;
+  var w = (document.getElementById("ddWhen") || {}).value || "";
+  var how = ((document.getElementById("ddHow") || {}).value || "").trim().slice(0, 400);
+  var ts = w ? new Date(w + "T12:00:00").getTime() : Date.now();
+  if(isNaN(ts) || ts > Date.now() + 86400000) ts = Date.now();
+  if(ts < x.ts - 86400000) ts = x.ts;
+  var was = x.done;
+  x.done = true; x.doneTs = ts;
+  if(how) x.how = how; else delete x.how;
+  save(); closeSheet(); renderInPlace();
+  toast(was ? "Сохранено" : "Альхамду лиЛлях! Просьба - в «Исполнилось»");
+}
+function sheetDdShare(id){
+  var x = ddFind(id); if(!x) return;
+  DD.id = id; DD.showT = false; DD.showH = false;
+  sheet('<div class="hb-k">Поделиться радостью</div>'+
+    '<p class="dd-sh-p">Картинка для сторис. Текста вашей просьбы на ней нет - включите, если хотите его показать.</p>'+
+    '<canvas id="stCv" class="st-cv" width="1080" height="1920"></canvas>'+
+    '<div class="rows">'+
+      '<button class="row" data-dd="tgT"><span class="ic">✎</span>Показать текст просьбы<span class="sw" id="ddSwT"></span></button>'+
+      (x.how ? '<button class="row" data-dd="tgH"><span class="ic">✦</span>Показать, как это случилось<span class="sw" id="ddSwH"></span></button>' : '')+
+    '</div>'+
+    '<div class="dd-acts" style="margin-top:12px"><button class="btn" style="flex:1" data-st="go">Поделиться</button><button class="btn sec" style="flex:1" data-st="dl">Сохранить</button></div>');
+  ddDraw();
+}
+function ddDraw(){
+  var x = ddFind(DD.id), cv = document.getElementById("stCv"); if(!x || !cv) return;
+  ST.blob = null;
+  ST.name = "rizq-dua-" + dayKey(new Date(x.doneTs || Date.now())) + ".jpg";
+  ST.text = "Аллах ответил на мою дуа. Альхамду лиЛлях" + String.fromCharCode(10) + "Дневник дуа в приложении RIZQ: " + APP_URL;
+  stFonts().then(function(){ stDrawDua(cv, x); stReady(cv); });
+}
+function ddAct(a){
+  var i = a.indexOf(":"), k = i < 0 ? a : a.slice(0, i), id = i < 0 ? "" : a.slice(i + 1);
+  if(k === "ans"){ sheetDdAnswer(id); return; }
+  if(k === "save"){ ddSave(id); return; }
+  if(k === "undo"){ var x = ddFind(id); if(x){ x.done = false; delete x.doneTs; save(); } closeSheet(); renderInPlace(); toast("Вернули в «Ждут ответа»"); return; }
+  if(k === "del"){
+    if(!confirm("Удалить эту просьбу из дневника?")) return;
+    S.myduas = (S.myduas || []).filter(function(x){ return x.id !== id; }); save(); renderInPlace(); return;
+  }
+  if(k === "share"){ sheetDdShare(id); return; }
+  if(k === "tgT" || k === "tgH"){
+    var f = k === "tgT" ? "showT" : "showH"; DD[f] = !DD[f];
+    var sw = document.getElementById(k === "tgT" ? "ddSwT" : "ddSwH"); if(sw) sw.classList.toggle("on", DD[f]);
+    ddDraw(); return;
+  }
 }
 /* ---------- дневник благодарности ---------- */
 /* Раньше благодарность жила одной строкой на день и нигде не показывалась,
@@ -26013,6 +26417,17 @@ function pushItems(){
         body:"Нажмите, чтобы сразу открыть суру 18 в Коране", tag:"kahf" });
     }
   }
+  /* Отчёт за месяц: одно уведомление 1-го числа в 10:00 (30.09.2026). По нажатию sw.js открывает ?open=report,
+     а отчёт 1-го числа сам показывает прошлый месяц. */
+  if(S.notifReport !== false){
+    for(var km = 0; km < 9; km++){
+      var dm = new Date(); dm.setDate(dm.getDate() + km);
+      if(dm.getDate() !== 1) continue;
+      var atR = new Date(dm.getFullYear(), dm.getMonth(), 1, 10, 0, 0).getTime(), pmR = new Date(dm.getFullYear(), dm.getMonth() - 1, 1);
+      if(atR > now) items.push({ at:new Date(atR).toISOString(), title:"Ваш месяц с RIZQ готов",
+        body:"Намазы, Коран, азкары и садака за " + MONTHS_RU[pmR.getMonth()].toLowerCase() + " - и картинка для сторис", tag:"open-report" });
+    }
+  }
   /* сервер берёт не больше 80 пунктов, иначе отказывает целиком - оставляем ближайшие */
   items.sort(function(a, b){ return a.at < b.at ? -1 : a.at > b.at ? 1 : 0; });
   return items.slice(0, 80);
@@ -26026,7 +26441,7 @@ function pushSig(){
     (S.debts || []).filter(function(x){ return !x.closed && x.due; })
     .map(function(x){ return x.due + x.id; }).join(",");
   return [c.lat, c.lng, c.tz, S.method, S.madhab, S.notifPrayer ? 1 : 0, S.notifDua ? 1 : 0, S.notifAyat === false ? 0 : 1, HAS_TR ? 1 : 0,
-          S.notifTasks === false ? 0 : 1, S.notifScore === false ? 0 : 1, scoreState().on ? 1 : 0, S.notifAzkar === false ? 0 : 1, S.notifJumua === false ? 0 : 1, S.notifKahf === false ? 0 : 1, JSON.stringify(S.ptAdj || {}), (S.kahf && S.kahf[todayKey()]) ? 1 : 0,
+          S.notifTasks === false ? 0 : 1, S.notifScore === false ? 0 : 1, scoreState().on ? 1 : 0, S.notifAzkar === false ? 0 : 1, S.notifJumua === false ? 0 : 1, S.notifKahf === false ? 0 : 1, S.notifReport === false ? 0 : 1, JSON.stringify(S.ptAdj || {}), (S.kahf && S.kahf[todayKey()]) ? 1 : 0,
           (S.scoreMe && S.scoreMe.place) || 0, pauseNow() ? 1 : 0, todayKey(), tasks,
           S.ar ? (S.ar.start ? 1 : 0) + ":" + (S.ar.remind || "9") + ":" + (arDayDone(arToday()) ? 1 : 0) : ""].join("|");
 }
@@ -26637,6 +27052,7 @@ function viewProf(){
     swRow("notifAzkar", "☀", "Утренние и вечерние азкары") +
     swRow("notifKahf", "۞", "Пятница: сура аль-Кахф утром") +
     swRow("notifJumua", "☾", "Пятница: последний час для дуа") +
+    swRow("notifReport", "◷", "Отчёт за месяц: 1-го числа в 10:00") +
     swRow("notifTasks", "✓", "Задачи со временем") +
     swRow("notifScore", "◈", "Итоги недели в рейтинге") +
     swRow("statOn", "◔", "Обезличенная статистика") +
@@ -27015,7 +27431,7 @@ function accFetch(p, method, body){
 var SY_KEYS = (function(){
   var a = BK_KEYS.concat(["phone","email","qTime","qtGoal","nameMark","scoreGoal","scoreBest","score","qrmdOff","qFont",
     "qTajweed","qBook","mdnSize","qContinue","qFollow","madhabPicked","bought","leads","hlCity",
-    "notifPrayer","notifDua","notifAyat","notifTasks","notifScore","notifAzkar","notifJumua","notifKahf","notifCourse","notifAzan"]), seen = {}, out = [];
+    "notifPrayer","notifDua","notifAyat","notifTasks","notifScore","notifAzkar","notifJumua","notifKahf","notifReport","notifCourse","notifAzan"]), seen = {}, out = [];
   for(var i = 0; i < a.length; i++) if(!seen[a[i]]){ seen[a[i]] = 1; out.push(a[i]); }
   return out;
 })();
@@ -27025,7 +27441,7 @@ var SY_ADD = { points:1, pointsDay:1, tasbihTotal:1, azkarLifetime:1, tasbih:1 }
 var SY_SET = {};
 ["name","email","phone","city","method","madhab","madhabPicked","ptAdj","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll",
  "qContinue","qFollow","fontSize","qFont","qFontSafe","qTajweed","qBook","mdnSize","qtGoal","qrmdOff","scoreGoal","score",
- "qLast","hlCity","zakat","notifPrayer","notifDua","notifAyat","notifTasks","notifScore","notifAzkar","notifJumua","notifKahf","notifCourse","notifAzan"]
+ "qLast","hlCity","zakat","notifPrayer","notifDua","notifAyat","notifTasks","notifScore","notifAzkar","notifJumua","notifKahf","notifReport","notifCourse","notifAzan"]
   .forEach(function(k){ SY_SET[k] = 1; });
 
 function syHash(s){ var h = 5381, i = s.length; while(i) h = ((h << 5) + h) ^ s.charCodeAt(--i); return (h >>> 0).toString(36) + "." + s.length; }
@@ -28713,7 +29129,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-pushcard],[data-hb],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -29476,7 +29892,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.pushtoggle!==undefined){ if(pushOn()) pushDisable(); else pushEnable(); return; }
   if(d.sw){
     S[d.sw] = !S[d.sw]; save(); render();
-    if(d.sw === "notifAyat" || d.sw === "notifPrayer" || d.sw === "notifDua" || d.sw === "notifTasks" || d.sw === "notifScore" || d.sw === "notifAzkar" || d.sw === "notifJumua" || d.sw === "notifKahf") pushSync(true);
+    if(d.sw === "notifAyat" || d.sw === "notifPrayer" || d.sw === "notifDua" || d.sw === "notifTasks" || d.sw === "notifScore" || d.sw === "notifAzkar" || d.sw === "notifJumua" || d.sw === "notifKahf" || d.sw === "notifReport") pushSync(true);
     if(S[d.sw] && (d.sw === "notifPrayer" || d.sw === "notifDua")){
       notifAsk().then(function(r){
         if(r === "granted"){ toast("Напоминания включены"); }
@@ -29532,6 +29948,9 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.b1gift !== undefined){ sheetGift(); return; }
   if(d.trs !== undefined){ var trn = parseInt(d.trs, 10); S.trLast = trn; save(); V.tab = "quran"; open("trread", trn); return; }
   if(d.trayah !== undefined){ var tra = parseInt(d.trayah, 10), trs2 = surahOf(tra); openReader(QSUR[trs2][6], QSUR[trs2][6] + QSUR[trs2][4] - 1, "surah", tra); return; }
+  if(d.dd){ ddAct(d.dd); return; }
+  if(d.mr){ mrAct(d.mr); return; }
+  if(d.st){ stGo(d.st === "dl"); return; }
   if(d.hb){
     if(d.hb === "play"){ hbPlay(); return; }
     if(d.hb === "share"){ hbShare(); return; }
