@@ -1752,8 +1752,26 @@ details.more[open]>summary:after{content:"⌄"}
 .row .val{margin-left:auto;font-size:14px;color:var(--ink-3)}
 /* Размер текста: увеличиваем содержимое экрана и шторок, шапка и нижняя
    панель остаются прежними - иначе на маленьком телефоне не хватит высоты. */
-:root[data-fs="l"] #screen, :root[data-fs="l"] .sheet{zoom:1.14}
-:root[data-fs="xl"] #screen, :root[data-fs="xl"] .sheet{zoom:1.26}
+:root[data-fs="l"] #screen, :root[data-fs="l"] .sheet{zoom:1.15}
+:root[data-fs="xl"] #screen, :root[data-fs="xl"] .sheet{zoom:1.3}
+:root[data-fs="xxl"] #screen, :root[data-fs="xxl"] .sheet{zoom:1.5}
+/* fs-wrap-fix: при крупном шрифте длинное значение в строке переносится, а не уезжает за край */
+:root[data-fs] .row .val{min-width:0;overflow-wrap:anywhere;text-align:right}
+:root[data-fs="xl"] .fs-pick, :root[data-fs="xxl"] .fs-pick{grid-template-columns:repeat(2,minmax(0,1fr))}
+/* шапка и подписи нижней панели - тоже крупнее, но умеренно: им нужна высота */
+:root[data-fs="xl"] .hdr{zoom:1.1}
+:root[data-fs="xxl"] .hdr{zoom:1.18}
+:root[data-fs="l"] .tab span{font-size:11px}
+:root[data-fs="xl"] .tab span, :root[data-fs="xxl"] .tab span{font-size:12px;font-weight:600}
+/* выбор размера в «Настройках»: буква растёт вместе с размером */
+.fs-pick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.fs-pick button{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;min-height:74px;padding:8px 4px;
+  border-radius:14px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink)}
+.fs-pick button b{font-family:var(--f-display);line-height:1}
+.fs-pick button span{font-size:11px;color:var(--ink-3);line-height:1.2;text-align:center}
+.fs-pick button.on{border-color:var(--gold);background:rgba(212,175,55,.16)}
+.fs-pick button.on span{color:var(--accent-ink)}
+.fs-sample{margin:12px 0 0;font-size:15px;line-height:1.6;color:var(--ink-2)}
 :root[data-fs] .pcell .n{font-size:10.5px}
 :root[data-fs] .pcell .t{font-size:13px}
 :root[data-fs] .btn.sm{padding-left:10px;padding-right:10px}
@@ -2917,14 +2935,16 @@ function applyTheme(){
 applyTheme();
 
 /* ---------- размер текста ---------- */
-var FS_OPTS = [["","Обычный","как в системе"],["l","Крупнее","на 14% больше"],["xl","Самый крупный","на 28% больше"]];
+/* Размеры текста. xxl - для слабого зрения: в полтора раза крупнее.
+   Проверка перед выпуском проходит все экраны и в этом размере. */
+var FS_OPTS = [["","Обычный","как задумано"],["l","Крупнее","на 15% больше"],["xl","Крупный","на 30% больше"],["xxl","Очень крупный","в полтора раза больше - для слабого зрения"]];
 function fsName(){
   for(var i=0;i<FS_OPTS.length;i++){ if(FS_OPTS[i][0] === (S.fontSize||"")) return FS_OPTS[i][1]; }
   return "Обычный";
 }
 function applyFontSize(){
   var f = S.fontSize;
-  if(f === "l" || f === "xl") document.documentElement.setAttribute("data-fs", f);
+  if(f === "l" || f === "xl" || f === "xxl") document.documentElement.setAttribute("data-fs", f);
   else document.documentElement.removeAttribute("data-fs");
 }
 applyFontSize();
@@ -5627,7 +5647,8 @@ function fbDoneCheck(){
 
 /* «Что нового» - один раз после обновления. Новым пользователям не показываем:
    для них всё новое. Чтобы показать снова, поменять WN.id и пункты. */
-var WN = { id:"2026-09-29", items:[
+var WN = { id:"2026-09-29-fs", items:[
+  ["Aa", "Крупный текст", "⚙ Настройки → Размер текста: теперь до полутора раз, крупнее и шапка, и подписи внизу"],
   ["⚖", "Намаз в разных мазхабах", "чем отличается намаз у шафиитов и ханафитов - в разделе «Намаз»"],
   ["✦", "Счёт от лёгкого касания", "в азкарах и тасбихе касание засчитывается сразу, кнопка счёта в азкарах стала цветной"],
   ["۞", "Басмала в Коране", "стоит отдельной строкой перед сурой; в «Аль-Фатихе» счёт аятов начинается с «Аль-хамду лилляхи»"],
@@ -7143,7 +7164,7 @@ function buildIndex(){
    ["Хадж и умра в пути","чек-лист по шагам, счёт кругов","open:hajjtrip","хадж умра чек-лист чеклист таваф сай круги ихрам мекка паломничество камни джамарат арафат муздалифа мина сборы"],
    ["Детям","истории пророков, перед сном, дуа, имена","open:kids","дети детям ребенок ребёнок истории пророков сказки перед сном на ночь дуа для детей имена имя для ребенка мальчику девочке"],
    ["Исламская рассрочка","партнёры и покупка товара в рассрочку","open:installment","рассрочка исламская халяль мурабаха кредит без процентов частями взносы купить в рассрочку партнерское финансирование"],
-   ["Размер текста","крупный шрифт для чтения","go:prof","шрифт размер крупный текст мелко зрение увеличить"],
+   ["Размер текста","крупный шрифт для чтения","open:settings","шрифт размер крупный текст мелко зрение увеличить плохо вижу буквы"],
    ["Умра - малый хадж","путеводитель: сезоны, вещи, ихрам, таваф, са'й","open:umrah","умра умру малый хадж паломничество мекка медина ихрам микат таваф сай сафа марва кааба путеводитель чек-лист вещи виза нусук"],
    ["Девушка, которая смогла","книга Заиры Джаватхановой, бизнес-роман","open:book2","книга девушка которая смогла бизнес роман амина читать купить книгу"],
    ["Восполнение","пропущенные намазы и посты","open:qada","каза восполнение пропущенный намаз пост долг восполнить казаа qada"],
@@ -15252,7 +15273,7 @@ function viewReport(){
   var ct = catTotals(V.repPeriod);
   var ctMax = Math.max(1, Math.max.apply(null, Object.keys(ct).map(function(c){return ct[c];})));
   h0.push('<section class="card">'+
-    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">'+
+    '<div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:14px">'+
       '<b style="font-family:var(--f-display);font-size:15px">По направлениям</b>'+
       '<div style="margin-left:auto;display:flex;gap:4px;background:var(--surface-2);border-radius:999px;padding:3px">'+
         [["day","День"],["week","Неделя"],["month","Месяц"]].map(function(p){
@@ -18066,14 +18087,14 @@ function viewPractice(){
     var st = 'display:grid;place-items:center;height:44px;border-radius:10px;font-size:12.5px;font-weight:600;'+
       (on ? 'background:var(--emerald);color:#fff;' : 'background:var(--surface-2);color:var(--ink-3);')+
       (k === 0 ? 'border:1.5px solid var(--accent);' : 'border:1.5px solid transparent;');
-    var label = key.slice(8,10) + '.' + key.slice(5,7);
+    var label = key.slice(8,10) + '.<wbr>' + key.slice(5,7);
     cells.push(k === 0 ? '<button data-ptad="1" aria-label="Отметить тадаббур сегодня" style="'+st+'cursor:pointer">'+label+'</button>' : '<span style="'+st+'">'+label+'</span>');
   }
   h.push('<section class="card">'+
     '<b style="font-family:var(--f-display);font-size:15.5px">1. Пятнадцать минут тадаббура</b>'+
     '<p style="font-size:14px;line-height:1.65;color:var(--ink-2);margin:8px 0 0">Ввести ежедневные 15 минут тадаббура: небольшой отрывок Корана с остановками и размышлением, не чтение объёмом. Семь дней подряд.</p>'+
     practiceAyah(38, 29, "Это - благословенное Писание, которое Мы ниспослали тебе, чтобы они размышляли над его аятами и чтобы обладающие разумом помянули назидание.", "Сура «Сад», 29")+
-    '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:14px">'+cells.join('')+'</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:14px;line-height:1.1;text-align:center">'+cells.join('')+'</div>'+
     '<div style="display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap">'+
       '<button class="btn sm" data-ptad="1">'+(today ? 'Сегодня отмечено ✓' : 'Отметить сегодня')+'</button>'+
       '<span style="font-size:13.5px;color:'+(streak >= 7 ? 'var(--emerald)' : 'var(--ink-3)')+'">'+(streak >= 7 ? 'Семь дней подряд - машаа Аллах' : 'Подряд: ' + streak + ' из 7')+'</span>'+
@@ -18867,7 +18888,7 @@ function renderBlocks(blocks, idp){
   blocks.forEach(function(b, i){
     if(b.div){
       h.push('<div style="display:flex;align-items:center;gap:10px;margin:22px 2px 4px' + (i===0?';margin-top:2px':'') + '">' +
-        '<span style="font-family:var(--f-display);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink);white-space:nowrap">' + esc(b.div) + '</span>' +
+        '<span style="font-family:var(--f-display);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink);min-width:0;overflow-wrap:anywhere">' + esc(b.div) + '</span>' +
         '<span style="flex:1;height:1px;background:var(--line)"></span></div>');
       return;
     }
@@ -23929,6 +23950,15 @@ function swRow(key,ic,label){
 function viewSettings(){
   var c = currentCity();
   var h = ['<div class="stack">'];
+  /* Размер текста - первым: его ищут именно здесь, под значком ⚙ (29.09.2026). */
+  h.push('<section class="card"><div class="eyebrow">Размер текста</div>'+
+    '<div class="fs-pick">'+FS_OPTS.map(function(o, i){
+      var on = (S.fontSize || "") === o[0];
+      return '<button class="'+(on ? 'on' : '')+'" data-fsset="'+(o[0] || "n")+'" aria-pressed="'+on+'" aria-label="'+esc(o[1])+'">'+
+        '<b style="font-size:'+[15, 18, 21, 25][i]+'px">А</b><span>'+esc(o[1])+'</span></button>';
+    }).join("")+'</div>'+
+    '<p class="fs-sample">Так выглядит текст в разделах: аяты, дуа, азкары, записи журнала. Размер меняется сразу во всём приложении.</p>'+
+  '</section>');
   h.push('<section class="card"><div class="eyebrow">Город</div>'+
     '<div style="font-family:var(--f-display);font-size:20px;font-weight:600;margin:6px 0 2px">'+esc(c.n)+'</div>'+
     '<div style="font-size:13.5px;color:var(--ink-3)">'+c.lat.toFixed(3)+'°, '+c.lng.toFixed(3)+'° · UTC+'+c.tz+'</div>'+
@@ -25468,7 +25498,7 @@ function sheetWeekGift(lap){
 
 /* Выбор размера: сразу видно на самом окне, каким станет текст. */
 function sheetFontSize(){
-  sheet('<h3>Размер текста</h3>'+
+  sheet('<h3>Размер текста</h3><p class="fs-sample" style="margin:0 0 10px">Размер меняется сразу во всём приложении. Самый крупный - в полтора раза больше обычного.</p>'+
     '<p class="note" style="margin:0 0 14px">Крупнее станут тексты внутри разделов: аяты, дуа, записи. Ещё текст можно увеличить двумя пальцами прямо на экране.</p>'+
     '<div class="rows">'+FS_OPTS.map(function(o){
       var on = (S.fontSize||"") === o[0];
@@ -26715,7 +26745,9 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.fsopen!==undefined){ sheetFontSize(); return; }
   if(d.fsset){
     S.fontSize = d.fsset === "n" ? "" : d.fsset;
-    save(); applyFontSize(); sheetFontSize(); render();
+    var fsInSheet = !!(node.closest && node.closest(".sheet"));
+    save(); applyFontSize();
+    if(fsInSheet){ sheetFontSize(); render(); } else { renderInPlace(); toast("Размер текста: " + fsName()); }
     return;
   }
   if(d.umopen!==undefined){ V.tab = "dua"; V.umSec = ""; open("umrah", null); return; }
