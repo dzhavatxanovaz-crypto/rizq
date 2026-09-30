@@ -2229,6 +2229,25 @@ details.more[open]>summary:after{content:"⌄"}
 .dm-hadith b{color:var(--gold);font-size:17px}
 .dm-hadith cite{display:block;font-style:normal;font-size:12.5px;color:var(--ink-3);margin-top:6px}
 .dm-plate{border-color:var(--gold)}
+.vm-box{display:flex;flex-direction:column;gap:6px}
+.vm-l{display:block;font-size:12.5px;color:var(--ink-3);flex:1}
+.vm-l input{margin-top:4px}
+.vm-row{display:flex;gap:10px}
+.vm-sel{display:flex;flex-direction:column;gap:2px;padding:4px 2px 8px}
+.vm-sel b{font-size:15.5px}
+.vm-sel span{font-size:12.5px;color:var(--ink-3)}
+.vm-list{max-height:260px;overflow:auto;display:flex;flex-direction:column;gap:4px;margin-top:6px}
+.vm-it{display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface)}
+.vm-it b{font-size:14px;font-weight:600}
+.vm-it span{font-size:12px;color:var(--ink-3)}
+.vm-it.on{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.vm-bgs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.vm-bg{display:flex;flex-direction:column;gap:4px;padding:0;background:none;border:0;color:var(--ink-2);font-size:11px;text-align:center;min-width:0}
+.vm-bg img{width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:10px;border:2px solid transparent}
+.vm-bg.on img{border-color:var(--gold)}
+.vm-bg span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vm-prev{display:flex;justify-content:center}
+.vm-prev canvas{width:min(100%,300px);height:auto;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
 .cm-stats{font-size:13px;color:var(--ink-2);padding:2px 4px}
 .cm-stats span{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:2px}
 .cm-today{font-size:13.5px;font-weight:600;color:var(--gold);padding:0 4px}
@@ -5852,19 +5871,13 @@ function fbDoneCheck(){
 
 /* «Что нового» - один раз после обновления. Новым пользователям не показываем:
    для них всё новое. Чтобы показать снова, поменять WN.id и пункты. */
-var WN = { id:"2026-10-01c", items:[
+var WN = { id:"2026-10-01d", items:[
+  ["▣", "Видео из аятов, азкаров и дуа", "ролик для Reels с чтецом, подсветкой слов и восточным фоном - «Коран» → «Видео из аятов»"],
   ["♡", "Дуа друг за друга - на главной", "попросите сестёр сделать дуа за вас - просьбу увидят все сёстры в RIZQ"],
   ["Ru", "Перевод смыслов целиком", "сура за сурой, как книгу - «Коран», под плеером сур"],
   ["◎", "Как устроен круг хатма", "объяснение прямо в круге и доводы: как читали Коран при Пророке ﷺ"],
   ["🔔", "Сообщество напомнит", "за вас сделали дуа, ваш джуз ждёт, хатм завершён - и срок хатма к нужной дате"],
-  ["◎", "Хатм вместе", "читайте Коран кругом с подругами: 30 джузов на всех, приглашение ссылкой - вкладка «Коран»"],
-  ["♡", "Дуа друг за друга", "попросите сестёр сделать за вас дуа и сделайте дуа за них - вкладка «Знания»"],
-  ["ru", "Перевод смыслов Корана", "перевод Эльмира Кулиева под каждым аятом и поиск по нему; кнопка «Ru» в чтении"],
-  ["☁", "Погода к каждому намазу", "на главной под временем намаза; выключается в ⚙ Настройках"],
-  ["▶", "Плеер сур", "больше 200 чтецов, суры целиком, поиск по имени - на вкладке «Коран»"],
-  ["●", "Цветные метки закладок", "поставьте звёздочку у аята - сразу выберете метку; все метки и фильтр - в «Закладках»"],
-  ["🔖", "Переход по закладке", "аят сразу встаёт вверху экрана и больше не уплывает"],
-  ["Aa", "Крупный текст", "⚙ Настройки → Размер текста: до полутора раз"]
+  ["◎", "Хатм вместе", "читайте Коран кругом с подругами: 30 джузов на всех, приглашение ссылкой - вкладка «Коран»"]
 ]};
 function wnCheck(){
   if(S.wnSeen === WN.id) return;
@@ -6174,6 +6187,7 @@ var $hdr = document.getElementById("hdr");
 var $tabbar = document.getElementById("tabbar");
 
 function go(tab){
+  if(V.view === "vmake" && VM.busy) vmStop();
   if(tab === "quran" && V.view === "qsettings" && V.qsRet){ qsRetBack(); return; }
   V.ret = null; V.b1ret = null; if(V.view==="arabic") arStop();
   if(V.view==="reader"){ qStop(); autoScrollOff(); }
@@ -6258,6 +6272,7 @@ function qsRetBack(){
   });
 }
 function back(){
+  if(V.view === "vmake" && VM.busy) vmStop();
   hdrShow(); tabbarShow();
   if(V.view==="qsettings" && V.qsRet){ qsRetBack(); return; }
   if(V.view==="notes" && V.p){ var nb = noteById(V.p); if(nb && noteEmpty(nb)) notesClean(); V.p = null; render(); $screen.scrollTop = 0; return; }
@@ -6506,6 +6521,7 @@ function renderHdr(){
         : V.view==="khatms" ? "Хатм вместе"
         : V.view==="khatm" ? "Круг хатма"
         : V.view==="duas" ? "Дуа друг за друга"
+        : V.view==="vmake" ? "Видео из аятов"
         : V.view==="trread" ? (V.p !== null && V.p !== undefined && V.p !== "" && QSUR[V.p] ? QSUR[V.p][2] : "Перевод смыслов") : "";
     $hdr.innerHTML = '<header class="hdr"><div class="hdr-row">'+
       '<button class="back" data-back="1" aria-label="Назад">‹</button>'+
@@ -7432,6 +7448,7 @@ function buildIndex(){
    ["Хадж и умра в пути","чек-лист по шагам, счёт кругов","open:hajjtrip","хадж умра чек-лист чеклист таваф сай круги ихрам мекка паломничество камни джамарат арафат муздалифа мина сборы"],
    ["Детям","истории пророков, перед сном, дуа, имена","open:kids","дети детям ребенок ребёнок истории пророков сказки перед сном на ночь дуа для детей имена имя для ребенка мальчику девочке"],
    ["Исламская рассрочка","партнёры и покупка товара в рассрочку","open:installment","рассрочка исламская халяль мурабаха кредит без процентов частями взносы купить в рассрочку партнерское финансирование"],
+   ["Видео из аятов","ролик для Reels: аяты, азкары, дуа","open:vmake","видео ролик рилс reels shorts tiktok аяты азкары дуа фон контент инстаграм"],
    ["Перевод смыслов","перевод Кулиева целиком, сура за сурой","open:trread","перевод смыслов кулиев тафсир читать по-русски текст корана целиком"],
    ["Хатм вместе","читать Коран кругом","open:khatms","хатм вместе круг джуз подруги сёстры сообщество читать коран вместе"],
    ["Дуа друг за друга","попросить дуа, сделать дуа за сестёр","open:duas","дуа просьба помолиться сообщество сёстры друг за друга"],
@@ -7747,6 +7764,7 @@ function duaCard(d){
     '<div class="dua-f">'+
       '<button class="fav'+(isFav(k)?" on":"")+'" data-fav="'+k+'" aria-label="В избранное">'+(isFav(k)?"★":"☆")+'</button>'+
       '<button class="fav" data-dshare="'+d.id+'" aria-label="Поделиться" title="Поделиться">⤴</button>'+
+      (d.ar ? '<button class="fav" data-vm="dua:'+d.id+'" aria-label="Сделать ролик" title="Сделать ролик">▣</button>' : '')+
       '<button class="dua-cnt'+(fin?' done':'')+'" data-count="'+d.id+'" data-c="'+Math.min(cnt,need)+'" data-n="'+need+'" style="--p:'+Math.round(Math.min(cnt,need)*100/need)+'%" aria-label="Прочитал: '+cnt+' из '+need+'">'+(fin?'✓ ':'Прочитал · ')+'<b>'+cnt+'</b> / '+need+'<i></i></button>'+
       (need>1 ? '<button class="fav" data-dset="'+d.id+'" aria-label="Вписать число" title="Вписать число">✎</button>' : '')+
       '<span class="rep">'+(fin ? "✓ сегодня" : d.rep>1 ? (cnt ? "осталось "+(d.rep-cnt) : "повторить "+d.rep+" "+timesWord(d.rep)) : "")+'</span>'+
@@ -12848,6 +12866,8 @@ function viewQuranHome(){
     '<span class="cw-t"><b>Плеер сур</b><span>Больше 200 чтецов, суры целиком, поиск по имени</span></span><span class="cw-go">›</span></button>');
   h.push('<button class="cat-wide" data-open="trread" style="margin-top:10px"><span class="cw-ic">Ru</span>'+
     '<span class="cw-t"><b>Перевод смыслов</b><span>перевод Кулиева целиком, сура за сурой - как книгу</span></span><span class="cw-go">›</span></button>');
+  h.push('<button class="cat-wide" data-open="vmake" style="margin-top:10px"><span class="cw-ic">▣</span>'+
+    '<span class="cw-t"><b>Видео из аятов</b><span>ролик для Reels: аяты, азкары и дуа на красивом фоне</span></span><span class="cw-go">›</span></button>');
   h.push('<button class="cat-wide" data-open="khatms" style="margin-top:10px"><span class="cw-ic">◎</span>'+
     '<span class="cw-t"><b>Хатм вместе</b><span>читайте Коран кругом: 30 джузов на всех</span></span><span class="cw-go">›</span></button>');
   h.push('<div class="sec-h"><h3>Мой путь</h3></div>');
@@ -12990,6 +13010,7 @@ function ayahInner(i, withSurah){
       '<button class="qbtn'+(isMark(i)?" on":"")+'" data-qmark="'+i+'">★</button>'+
       '<button class="qbtn" data-qcopy="'+i+'">⧉</button>'+
       '<button class="qbtn" data-qshare="'+i+'" aria-label="Поделиться аятом" title="Поделиться аятом">↗</button>'+
+      '<button class="qbtn" data-vm="ayah:'+i+'" aria-label="Сделать ролик" title="Сделать ролик">▣</button>'+
       hifzActs(i)+
     '</div>';
 }
@@ -13400,6 +13421,7 @@ function sheetAyah(i){
       '<button class="ay-a main" data-qplay="'+i+'"><i>▶</i>Слушать аят</button>'+
       '<button class="ay-a'+(isMark(i) ? ' on' : '')+'" data-qmark="'+i+'"><i>★</i>'+(isMark(i) ? "В закладках" : "Закладка")+'</button>'+
       '<button class="ay-a" data-qcopy="'+i+'"><i>⧉</i>Копировать</button>'+
+      '<button class="ay-a" data-vm="ayah:'+i+'"><i>▣</i>Ролик</button>'+
     '</div>'+
     qBasmRow(i)+'<div class="ayah-ar" style="margin-top:14px">'+(TJD ? tjdRender(i, true) : esc(qaShow(i)))+'</div>'+
     (HAS_TR ? '<div class="ayah-ru" style="margin-top:10px">'+esc(QR[i])+'</div>' : '')+
@@ -14212,6 +14234,574 @@ function viewTrRead(){
   h.push('</div>');
   return h.join("");
 }
+
+/* ---------- видео из аятов, азкаров и дуа (30.09.2026) ---------- */
+var VM = { kind:"ayah", sura:18, from:1, to:3, dua:"", dq:"", len:1, bg:"night", fmt:"9x16", tr:true, basm:true,
+  busy:false, playing:false, stop:null, ac:null, clips:null, th:{}, cache:{}, stat:"" };
+var VM_FMT = { "9x16":[1080, 1920, "Reels, Shorts, TikTok"], "4x5":[1080, 1350, "пост в ленте"], "1x1":[1080, 1080, "квадрат"] };
+var VM_BG = [
+  { id:"night",    n:"Ночная мечеть",   ink:"#F7F0DC", ru:"rgba(247,240,220,.88)", acc:"#E3BD62" },
+  { id:"arch",     n:"Золотая арка",    ink:"#F3EAD3", ru:"rgba(243,234,211,.88)", acc:"#D2B26B" },
+  { id:"emerald",  n:"Изумрудные звёзды", ink:"#F4EEDC", ru:"rgba(244,238,220,.88)", acc:"#E6C66F" },
+  { id:"desert",   n:"Закат в пустыне", ink:"#FFF6EA", ru:"rgba(255,246,234,.92)", acc:"#FFD58A" },
+  { id:"lanterns", n:"Фонари",          ink:"#FBEFD9", ru:"rgba(251,239,217,.9)",  acc:"#F2C46B" },
+  { id:"tiles",    n:"Изразцы",         ink:"#F4F1E6", ru:"rgba(244,241,230,.9)",  acc:"#F0D08A" },
+  { id:"cream",    n:"Крем и золото",   ink:"#2B1F1B", ru:"#4A3B32",               acc:"#9C7A2E", light:1 },
+  { id:"sky",      n:"Звёздный дождь",  ink:"#EEF0FF", ru:"rgba(238,240,255,.88)", acc:"#E8C56A" }
+];
+var VM_VB = { "ar.alafasy":"https://mirrors.quranicaudio.com/everyayah/Alafasy_128kbps/",
+  "ar.mahermuaiqly":"https://mirrors.quranicaudio.com/everyayah/MaherAlMuaiqly128kbps/" };
+var VM_ZNAK = ["M176.113,62.595h-68.762L76.267,96.393v5.411h19.675l23.734-9.013c2.186-10.173,11.229-17.799,22.056-17.799c10.826,0,19.87,7.626,22.056,17.799l23.734,9.013h19.676v-5.411L176.113,62.595z",
+  "M136.117,93.557c0.03-0.443,0.045-0.888,0.045-1.328c0-4.271-1.401-8.449-3.962-11.859c2.895-1.612,6.174-2.461,9.533-2.461c3.36,0,6.638,0.849,9.534,2.461c-2.561,3.41-3.962,7.588-3.962,11.859c0,0.441,0.015,0.885,0.045,1.328H136.117z"];
+function vmBgOf(id){ return VM_BG.filter(function(b){ return b.id === id; })[0] || VM_BG[0]; }
+function vmRnd(seed){ return function(){ seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+function vmCanvas(w, h){ var c = document.createElement("canvas"); c.width = w; c.height = h; return c; }
+
+/* ---------- фоны: неподвижная часть рисуется один раз, живое - каждый кадр ---------- */
+function vmStar8(ctx, x, y, r){
+  ctx.beginPath();
+  for(var k = 0; k < 16; k++){
+    var a = Math.PI / 8 * k - Math.PI / 2, rr = k % 2 ? r * 0.62 : r;
+    ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr);
+  }
+  ctx.closePath();
+}
+function vmGrad(ctx, W, H, stops){
+  var g = ctx.createLinearGradient(0, 0, 0, H);
+  stops.forEach(function(st){ g.addColorStop(st[0], st[1]); });
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+}
+function vmStatic(id, W, H){
+  var key = id + ":" + W + "x" + H;
+  if(VM.cache[key]) return VM.cache[key];
+  var c = vmCanvas(W, H), x = c.getContext("2d"), u = W / 1080, i, k, rnd = vmRnd(7);
+  if(id === "night"){
+    vmGrad(x, W, H, [[0, "#070C22"], [0.55, "#152452"], [1, "#2A3B74"]]);
+    var cc = vmCanvas(Math.round(220 * u), Math.round(220 * u)), cx = cc.getContext("2d"), R = 90 * u;
+    cx.fillStyle = "#EBC66B"; cx.beginPath(); cx.arc(110 * u, 110 * u, R, 0, Math.PI * 2); cx.fill();
+    cx.globalCompositeOperation = "destination-out"; cx.beginPath(); cx.arc(146 * u, 88 * u, R * 0.86, 0, Math.PI * 2); cx.fill();
+    x.shadowColor = "rgba(235,198,107,.6)"; x.shadowBlur = 40 * u; x.drawImage(cc, W - 300 * u, H * 0.13); x.shadowBlur = 0;
+    var gy = H * 0.965, sil = "#050A1C";
+    x.fillStyle = sil;
+    x.fillRect(0, gy, W, H - gy);
+    x.beginPath(); x.ellipse(W / 2, gy - 60 * u, 170 * u, 150 * u, 0, Math.PI, 0); x.fill();
+    x.fillRect(W / 2 - 230 * u, gy - 70 * u, 460 * u, 70 * u);
+    x.beginPath(); x.moveTo(W / 2 - 14 * u, gy - 205 * u); x.lineTo(W / 2, gy - 250 * u); x.lineTo(W / 2 + 14 * u, gy - 205 * u); x.fill();
+    [0.2, 0.8].forEach(function(p){
+      var mx = W * p; x.fillRect(mx - 20 * u, gy - 330 * u, 40 * u, 330 * u);
+      x.fillRect(mx - 30 * u, gy - 250 * u, 60 * u, 14 * u);
+      x.beginPath(); x.moveTo(mx - 22 * u, gy - 330 * u); x.lineTo(mx, gy - 390 * u); x.lineTo(mx + 22 * u, gy - 330 * u); x.fill();
+    });
+  } else if(id === "arch"){
+    vmGrad(x, W, H, [[0, "#5B4B40"], [0.5, "#3E2E27"], [1, "#241814"]]);
+    var m = 70 * u, top = H * 0.16;
+    var arch = function(off, lw){
+      x.beginPath();
+      x.moveTo(m + off, H - m - off); x.lineTo(m + off, top + 260 * u);
+      x.quadraticCurveTo(m + off, top + off * 0.5, W / 2, top - 40 * u + off);
+      x.quadraticCurveTo(W - m - off, top + off * 0.5, W - m - off, top + 260 * u);
+      x.lineTo(W - m - off, H - m - off); x.closePath();
+      x.lineWidth = lw * u; x.stroke();
+    };
+    x.strokeStyle = "rgba(210,178,107,.85)"; arch(0, 4);
+    x.strokeStyle = "rgba(210,178,107,.4)"; arch(22 * u, 1.5);
+    x.strokeStyle = "rgba(210,178,107,.5)"; x.lineWidth = 2 * u;
+    vmStar8(x, W / 2, top + 40 * u, 28 * u); x.stroke();
+  } else if(id === "emerald"){
+    vmGrad(x, W, H, [[0, "#0B3327"], [1, "#051C15"]]);
+    var st = W / 6;
+    x.strokeStyle = "rgba(230,198,111,.17)"; x.lineWidth = 2 * u;
+    for(i = -1; i <= Math.ceil(H / st) + 1; i++) for(k = 0; k <= 6; k++){ vmStar8(x, k * st + (i % 2 ? st / 2 : 0), i * st, st * 0.42); x.stroke(); }
+    var rg = x.createRadialGradient(W / 2, H * 0.5, 50 * u, W / 2, H * 0.5, H * 0.55);
+    rg.addColorStop(0, "rgba(3,20,15,.72)"); rg.addColorStop(1, "rgba(3,20,15,0)");
+    x.fillStyle = rg; x.fillRect(0, 0, W, H);
+  } else if(id === "desert"){
+    vmGrad(x, W, H, [[0, "#23123A"], [0.42, "#6E2C5C"], [0.7, "#D5704A"], [0.8, "#F2AE66"], [1, "#F2AE66"]]);
+    x.fillStyle = "rgba(255,213,138,.95)"; x.beginPath(); x.arc(W / 2, H * 0.81, 150 * u, 0, Math.PI * 2); x.fill();
+    [["#8A4230", 0.8, 0.83], ["#62291F", 0.86, 0.9], ["#3B1814", 0.92, 0.95]].forEach(function(d, j){
+      x.fillStyle = d[0]; x.beginPath(); x.moveTo(0, H * d[1]);
+      x.bezierCurveTo(W * 0.3, H * (d[1] - 0.04), W * 0.55, H * (d[2] + 0.02), W, H * (d[1] - 0.01 * j));
+      x.lineTo(W, H); x.lineTo(0, H); x.closePath(); x.fill();
+    });
+  } else if(id === "lanterns"){
+    vmGrad(x, W, H, [[0, "#1B0812"], [0.6, "#3A1024"], [1, "#240A17"]]);
+    x.fillStyle = "rgba(242,196,107,.05)";
+    for(i = 0; i < 140; i++){ vmStar8(x, rnd() * W, rnd() * H, (6 + rnd() * 10) * u); x.fill(); }
+  } else if(id === "tiles"){
+    x.fillStyle = "#0B4F5C"; x.fillRect(0, 0, W, H);
+    var ts = W / 5;
+    for(i = 0; i <= Math.ceil(H / ts); i++) for(k = 0; k <= 5; k++){
+      var tx = k * ts + ts / 2, ty = i * ts + ts / 2;
+      x.fillStyle = (i + k) % 2 ? "#0E6676" : "#0A5563"; vmStar8(x, tx, ty, ts * 0.46); x.fill();
+      x.strokeStyle = "rgba(244,241,230,.28)"; x.lineWidth = 2 * u; x.stroke();
+      x.fillStyle = "rgba(240,208,138,.35)"; vmStar8(x, tx, ty, ts * 0.12); x.fill();
+    }
+    var pad = 70 * u;
+    x.fillStyle = "rgba(3,32,38,.78)"; x.strokeStyle = "rgba(244,241,230,.45)"; x.lineWidth = 3 * u;
+    x.beginPath();
+    if(x.roundRect) x.roundRect(pad, H * 0.12, W - pad * 2, H * 0.8, 40 * u); else x.rect(pad, H * 0.12, W - pad * 2, H * 0.8);
+    x.fill(); x.stroke();
+  } else if(id === "cream"){
+    x.fillStyle = "#F5EFE0"; x.fillRect(0, 0, W, H);
+    var cg = x.createRadialGradient(W / 2, H / 2, 10, W / 2, H / 2, H * 0.7);
+    cg.addColorStop(0, "rgba(255,255,255,.7)"); cg.addColorStop(1, "rgba(215,196,150,.35)");
+    x.fillStyle = cg; x.fillRect(0, 0, W, H);
+    x.strokeStyle = "#B08F45"; x.lineWidth = 4 * u; x.strokeRect(40 * u, 40 * u, W - 80 * u, H - 80 * u);
+    x.lineWidth = 1.5 * u; x.strokeRect(60 * u, 60 * u, W - 120 * u, H - 120 * u);
+    [[60, 60, 0], [W / u - 60, 60, 1], [60, H / u - 60, 3], [W / u - 60, H / u - 60, 2]].forEach(function(p){
+      x.beginPath(); x.arc(p[0] * u, p[1] * u, 70 * u, Math.PI / 2 * p[2], Math.PI / 2 * (p[2] + 1)); x.stroke();
+      vmStar8(x, p[0] * u, p[1] * u, 22 * u); x.fillStyle = "#B08F45"; x.fill();
+    });
+  } else {
+    vmGrad(x, W, H, [[0, "#02040B"], [0.6, "#0D1433"], [1, "#1B2450"]]);
+  }
+  VM.cache[key] = c;
+  return c;
+}
+function vmLantern(ctx, x0, len, sz, ang, glow){
+  ctx.save(); ctx.translate(x0, 0); ctx.rotate(ang);
+  ctx.strokeStyle = "rgba(242,196,107,.55)"; ctx.lineWidth = sz * 0.03;
+  ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, len); ctx.stroke();
+  ctx.translate(0, len);
+  var g = ctx.createRadialGradient(0, sz * 0.9, 1, 0, sz * 0.9, sz * 1.6);
+  g.addColorStop(0, "rgba(255,210,122," + (0.45 * glow) + ")"); g.addColorStop(1, "rgba(255,210,122,0)");
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, sz * 0.9, sz * 1.6, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#6E4516";
+  ctx.beginPath(); ctx.moveTo(-sz * 0.18, sz * 0.05); ctx.lineTo(0, -sz * 0.12); ctx.lineTo(sz * 0.18, sz * 0.05); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(-sz * 0.35, sz * 0.2); ctx.lineTo(sz * 0.35, sz * 0.2); ctx.lineTo(sz * 0.5, sz * 0.55);
+  ctx.lineTo(sz * 0.42, sz * 1.35); ctx.lineTo(-sz * 0.42, sz * 1.35); ctx.lineTo(-sz * 0.5, sz * 0.55); ctx.closePath();
+  ctx.fillStyle = "rgba(255,200,110," + (0.55 + 0.35 * glow) + ")"; ctx.fill();
+  ctx.strokeStyle = "#6E4516"; ctx.lineWidth = sz * 0.06; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, sz * 0.2); ctx.lineTo(0, sz * 1.35); ctx.moveTo(-sz * 0.5, sz * 0.55); ctx.lineTo(sz * 0.5, sz * 0.55); ctx.stroke();
+  ctx.fillStyle = "#6E4516"; ctx.fillRect(-sz * 0.3, sz * 1.35, sz * 0.6, sz * 0.14);
+  ctx.restore();
+}
+function vmBgDraw(ctx, id, W, H, t){
+  ctx.drawImage(vmStatic(id, W, H), 0, 0);
+  var u = W / 1080, rnd, i;
+  if(id === "night" || id === "sky"){
+    rnd = vmRnd(id === "night" ? 11 : 29);
+    for(i = 0; i < (id === "night" ? 130 : 90); i++){
+      var sx = rnd() * W, sy = rnd() * H * (id === "night" ? 0.8 : 1), ph = rnd() * 6.3, sr = (1 + rnd() * 2.4) * u;
+      if(id === "sky") sy = (sy + t * (20 + rnd() * 50) * u) % H;
+      ctx.globalAlpha = 0.35 + 0.65 * Math.abs(Math.sin(t * 0.9 + ph));
+      ctx.fillStyle = id === "sky" && i % 3 === 0 ? "#E8C56A" : "#FFFFFF";
+      ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  } else if(id === "arch"){
+    var gx = W / 2 + Math.sin(t / 3) * W * 0.2, gg = ctx.createRadialGradient(gx, H * 0.45, 10, gx, H * 0.45, W * 0.7);
+    gg.addColorStop(0, "rgba(255,220,150,.10)"); gg.addColorStop(1, "rgba(255,220,150,0)");
+    ctx.fillStyle = gg; ctx.fillRect(0, 0, W, H);
+  } else if(id === "emerald"){
+    var bx = ((t * 120 * u) % (W * 2.4)) - W * 0.7, sh = ctx.createLinearGradient(bx, 0, bx + W * 0.5, H * 0.4);
+    sh.addColorStop(0, "rgba(255,255,255,0)"); sh.addColorStop(0.5, "rgba(255,240,200,.06)"); sh.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = sh; ctx.fillRect(0, 0, W, H);
+  } else if(id === "desert"){
+    var sg = ctx.createRadialGradient(W / 2, H * 0.81, 100 * u, W / 2, H * 0.81, (330 + Math.sin(t) * 20) * u);
+    sg.addColorStop(0, "rgba(255,220,150,.35)"); sg.addColorStop(1, "rgba(255,220,150,0)");
+    ctx.fillStyle = sg; ctx.fillRect(0, H * 0.5, W, H * 0.5);
+  } else if(id === "lanterns"){
+    [[0.09, 0.2, 95], [0.21, 0.06, 62], [0.79, 0.06, 62], [0.91, 0.2, 95]].forEach(function(p, k){
+      vmLantern(ctx, W * p[0], H * p[1], p[2] * u, Math.sin(t * 0.9 + k * 1.7) * 0.05, 0.7 + 0.3 * Math.sin(t * 6 + k * 2.1));
+    });
+  }
+}
+
+/* ---------- текст на кадре ---------- */
+function vmWrap(ctx, words, maxW, gap){
+  var lines = [], cur = [], w = 0;
+  words.forEach(function(o){
+    var ww = ctx.measureText(o.x).width;
+    if(cur.length && w + gap + ww > maxW){ lines.push({ items:cur, w:w }); cur = []; w = 0; }
+    o.ww = ww; w += (cur.length ? gap : 0) + ww; cur.push(o);
+  });
+  if(cur.length) lines.push({ items:cur, w:w });
+  return lines;
+}
+function vmWords(txt){ return String(txt || "").split(String.fromCharCode(10)).join(" ").split(" ").filter(Boolean).map(function(x){ return { x:x, w:0 }; }); }
+/* раскладка сегмента: размер арабского и перевода подбирается, чтобы влезло */
+function vmLayout(ctx, sg, W, H){
+  var u = W / 1080, top = H * (VM.fmt === "9x16" ? 0.2 : 0.2), bot = H * (VM.fmt === "9x16" ? 0.84 : 0.86);
+  var avail = bot - top, maxW = W - 170 * u, ar, ru, arS = (VM.fmt === "1x1" ? 76 : VM.fmt === "4x5" ? 88 : 104) * u, ruS = (VM.fmt === "1x1" ? 36 : VM.fmt === "4x5" ? 40 : 46) * u;
+  for(var tries = 0; tries < 22; tries++){
+    ctx.font = arS + 'px "Amiri Quran","Noto Naskh Arabic",serif';
+    ar = vmWrap(ctx, sg.words.map(function(o){ return { x:o.x, w:o.w }; }), maxW, arS * 0.32);
+    var arH = ar.length * arS * 1.95;
+    ru = [];
+    var ruH = 0;
+    if(sg.ru){
+      ctx.font = "500 " + ruS + "px Montserrat,Inter,sans-serif";
+      ru = vmWrap(ctx, vmWords(sg.ru), W - 200 * u, ruS * 0.28);
+      ruH = ru.length * ruS * 1.42 + 50 * u;
+    }
+    if(arH + ruH <= avail) break;
+    arS *= 0.93; ruS *= 0.95;
+  }
+  var total = arH + ruH, y0 = top + (avail - total) / 2;
+  sg.lay = { ar:ar, arS:arS, ru:ru, ruS:ruS, yAr:y0, yRu:y0 + arH + 50 * u };
+}
+function vmZnak(ctx, cx, y, w, color){
+  var sc = w / 132;
+  ctx.save(); ctx.translate(cx - w / 2 - 76 * sc, y - 62 * sc); ctx.scale(sc, sc); ctx.fillStyle = color;
+  VM_ZNAK.forEach(function(p){ try{ ctx.fill(new Path2D(p)); }catch(e){} });
+  ctx.restore();
+}
+function vmSpaced(ctx, txt, cx, y, sp){
+  var ws = Array.from(txt).map(function(ch){ return ctx.measureText(ch).width; });
+  var tw = ws.reduce(function(a, b){ return a + b; }, 0) + sp * (ws.length - 1), x = cx - tw / 2;
+  ctx.textAlign = "left";
+  Array.from(txt).forEach(function(ch, k){ ctx.fillText(ch, x, y); x += ws[k] + sp; });
+  ctx.textAlign = "center";
+}
+function vmFrame(ctx, W, H, t, segs){
+  var b = vmBgOf(VM.bg), u = W / 1080;
+  vmBgDraw(ctx, VM.bg, W, H, t);
+  var sg = segs[0];
+  for(var k = 0; k < segs.length; k++) if(t >= segs[k].t0) sg = segs[k];
+  var a = Math.min(1, Math.max(0, (t - sg.t0) / 0.35));
+  if(sg !== segs[segs.length - 1]) a = Math.min(a, Math.max(0, (sg.t1 - t) / 0.3));
+  if(sg === segs[0] && t < 0.05) a = 1;
+  ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+  /* знак JAVATTI - всегда */
+  var ly = H * (VM.fmt === "9x16" ? 0.06 : 0.055);
+  vmZnak(ctx, W / 2, ly, 96 * u, b.acc);
+  ctx.fillStyle = b.acc; ctx.font = (26 * u) + "px Marcellus,serif";
+  vmSpaced(ctx, "JAVATTI", W / 2, ly + 66 * u, 9 * u);
+  ctx.fillStyle = b.ru; ctx.font = "600 " + (30 * u) + "px Montserrat,Inter,sans-serif";
+  ctx.fillText(sg.ref, W / 2, ly + 128 * u);
+  ctx.globalAlpha = a;
+  if(!b.light){ ctx.shadowColor = "rgba(0,0,0,.45)"; ctx.shadowBlur = 18 * u; }
+  var L1 = sg.lay, hw = -1;
+  if(sg.seg){ var ms = (t - sg.t0) * 1000; for(var q = 0; q < sg.seg.length; q++) if(ms >= sg.seg[q][1] - 40) hw = sg.seg[q][0]; }
+  ctx.font = L1.arS + 'px "Amiri Quran","Noto Naskh Arabic",serif';
+  ctx.direction = "rtl"; ctx.textAlign = "right";
+  L1.ar.forEach(function(line, li){
+    var x = (W + line.w) / 2, y = L1.yAr + L1.arS * 1.45 + li * L1.arS * 1.95;
+    line.items.forEach(function(o){
+      ctx.fillStyle = hw > 0 && o.w === hw ? b.acc : b.ink;
+      ctx.fillText(o.x, x, y); x -= o.ww + L1.arS * 0.32;
+    });
+  });
+  ctx.direction = "ltr"; ctx.textAlign = "center";
+  if(L1.ru.length){
+    ctx.fillStyle = b.ru; ctx.font = "500 " + L1.ruS + "px Montserrat,Inter,sans-serif";
+    L1.ru.forEach(function(line, li){ ctx.fillText(line.items.map(function(o){ return o.x; }).join(" "), W / 2, L1.yRu + L1.ruS + li * L1.ruS * 1.42); });
+  }
+  ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+  ctx.fillStyle = b.ru; ctx.font = "500 " + (24 * u) + "px Montserrat,Inter,sans-serif";
+  ctx.fillText("приложение RIZQ · rizq.javattigroup.ru", W / 2, H - (VM.fmt === "9x16" ? 0.075 : 0.05) * H);
+}
+
+/* ---------- что показываем ---------- */
+function vmRec(){ return qRec(); }
+function vmBase(){ var r = vmRec(); return r.vb || VM_VB[r.id] || ""; }
+function vmUrl(i){
+  var s = surahOf(i), a = i - QSUR[s][6] + 1;
+  return vmBase() + ("00" + (s + 1)).slice(-3) + ("00" + a).slice(-3) + ".mp3";
+}
+function vmSuraMax(){ return surahAyatCount(VM.sura - 1); }
+function vmFix(){
+  VM.sura = Math.max(1, Math.min(114, VM.sura | 0));
+  var mx = vmSuraMax();
+  VM.from = Math.max(1, Math.min(mx, VM.from | 0)); VM.to = Math.max(VM.from, Math.min(mx, VM.to | 0, VM.from + 19));
+}
+function vmDuaObj(){ return DUAS.filter(function(d){ return d.id === VM.dua; })[0] || null; }
+/* сегменты без звука: текст, ссылка, длительность по длине текста */
+function vmSegs(){
+  var out = [];
+  if(VM.kind === "dua"){
+    var d = vmDuaObj(); if(!d) return out;
+    var dur = Math.min(60, Math.max(8, 4 + String(d.ar).length * 0.07 + String(d.ru || "").length * 0.025)) * VM.len;
+    out.push({ ref:d.n + (d.src ? " · " + d.src : ""), words:vmWords(d.ar), ru: VM.tr ? String(d.ru || "").split(String.fromCharCode(10)).join(" ") : "", dur:dur });
+    return out;
+  }
+  vmFix();
+  var s = VM.sura - 1, name = QSUR[s][2];
+  if(VM.basm && VM.from === 1 && s !== 0 && s !== 8)
+    out.push({ ref:"Сура «" + name + "»", words:vmWords(QA[0]), ru: VM.tr && HAS_TR ? QR[0] : "", url: vmBase() + "001001.mp3", dur:5 });
+  for(var a = VM.from; a <= VM.to; a++){
+    var i = ayahGlobal(VM.sura, a);
+    out.push({ i:i, ref:"Сура «" + name + "», " + a, words:qTokens(i).filter(function(o){ return !o.b; }), ru: VM.tr && HAS_TR ? QR[i] : "", url: vmUrl(i), dur:6 });
+  }
+  return out;
+}
+function vmTimes(segs){ var t = 0; segs.forEach(function(sg){ sg.t0 = t; t += sg.dur; sg.t1 = t; }); return t; }
+function vmFonts(){
+  if(!document.fonts || !document.fonts.load) return Promise.resolve();
+  return Promise.all(['76px "Amiri Quran"', "500 40px Montserrat", "26px Marcellus"].map(function(f){ return document.fonts.load(f).catch(function(){}); }));
+}
+/* кадр для предпросмотра - без звука и без сети */
+function vmPreview(){
+  var cv = document.getElementById("vmCanvas"); if(!cv) return;
+  var f = VM_FMT[VM.fmt]; if(cv.width !== f[0] || cv.height !== f[1]){ cv.width = f[0]; cv.height = f[1]; }
+  var segs = vmSegs(), ctx = cv.getContext("2d");
+  if(!segs.length){ vmBgDraw(ctx, VM.bg, cv.width, cv.height, 1); return; }
+  vmTimes(segs);
+  var sg = segs[VM.kind === "ayah" && segs.length > 1 && !segs[0].i ? 1 : 0];
+  vmFonts().then(function(){ vmLayout(ctx, sg, cv.width, cv.height); vmFrame(ctx, cv.width, cv.height, sg.t0 + 1, [sg]); });
+}
+function vmThumb(id){
+  if(VM.th[id]) return VM.th[id];
+  try{ var c = vmCanvas(180, 320); vmBgDraw(c.getContext("2d"), id, 180, 320, 1.3); VM.th[id] = c.toDataURL("image/jpeg", 0.8); }catch(e){ VM.th[id] = ""; }
+  return VM.th[id];
+}
+
+/* ---------- звук: чтец через AudioContext, чтобы записать его в ролик ---------- */
+function vmAudio(url){
+  function dec(buf){ return new Promise(function(ok, no){ VM.ac.decodeAudioData(buf, ok, no); }); }
+  var hit = window.caches ? caches.open("rizq-audio").then(function(c){ return c.match(url); }).catch(function(){ return null; }) : Promise.resolve(null);
+  return hit.then(function(r){
+    if(r && r.type !== "opaque") return r.arrayBuffer();
+    return fetch(url, { mode:"cors" }).then(function(r2){ if(!r2.ok) throw new Error("audio " + r2.status); return r2.arrayBuffer(); });
+  }).then(dec);
+}
+function vmSegWait(i){
+  var r = vmRec(); if(!r.qc) return Promise.resolve(null);
+  var s = surahOf(i), key = r.qc + ":" + s;
+  qSegLoad(r.qc, s);
+  return new Promise(function(ok){
+    var n = 0;
+    (function poll(){ if(QSEG[key]) return ok(QSEG[key][i] || null); if(++n > 40) return ok(null); setTimeout(poll, 100); })();
+  });
+}
+function vmStat(t){ VM.stat = t; var e = document.getElementById("vmStat"); if(e) e.textContent = t; }
+/* всё для ролика: звук каждого аята, разметка слов, раскладка текста */
+function vmBuild(W, H){
+  var segs = vmSegs();
+  if(!segs.length) return Promise.reject(new Error("Выберите, что показать"));
+  if(VM.kind === "ayah" && !vmBase()) return Promise.reject(new Error("У этого чтеца звук нельзя записать в ролик. Выберите другого чтеца в настройках Корана"));
+  var n = 0, ctx = vmCanvas(10, 10).getContext("2d");
+  return vmFonts().then(function(){
+    return segs.reduce(function(p, sg){
+      return p.then(function(){
+        if(!sg.url) return;
+        vmStat("Загружаем чтение: " + (++n) + " из " + segs.filter(function(x){ return x.url; }).length);
+        return vmAudio(sg.url).then(function(buf){ sg.buf = buf; sg.dur = buf.duration + 0.25; })
+          .then(function(){ return sg.i !== undefined ? vmSegWait(sg.i).then(function(z){ sg.seg = z; }) : null; });
+      });
+    }, Promise.resolve());
+  }).then(function(){
+    var total = vmTimes(segs);
+    if(total > 180) throw new Error("Больше трёх минут - столько соцсети не примут. Выберите меньше аятов");
+    segs.forEach(function(sg){ vmLayout(ctx, sg, W, H); });
+    return { segs:segs, total:total };
+  });
+}
+function vmMime(){
+  if(!window.MediaRecorder || !MediaRecorder.isTypeSupported) return "";
+  var c = ['video/mp4;codecs="avc1.42E01F,mp4a.40.2"', "video/mp4;codecs=avc1,mp4a.40.2", "video/mp4", "video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"];
+  for(var k = 0; k < c.length; k++) if(MediaRecorder.isTypeSupported(c[k])) return c[k];
+  return "";
+}
+function vmStop(){ if(VM.stop) VM.stop(); }
+/* просмотр (record = false) или запись ролика */
+function vmRun(record){
+  if(VM.busy){ vmStop(); return; }
+  var cv = document.getElementById("vmCanvas"); if(!cv) return;
+  var mime = record ? vmMime() : "";
+  if(record && (!mime || !cv.captureStream)){ toast("Этот браузер не умеет записывать видео. Откройте RIZQ в свежем Chrome или Safari"); return; }
+  try{ if(!VM.ac) VM.ac = new (window.AudioContext || window.webkitAudioContext)(); VM.ac.resume(); }catch(e){ toast("Звук недоступен в этом браузере"); return; }
+  try{ if(QP.audio && QP.playing){ QP.audio.pause(); QP.playing = false; } if(SPL.audio && SPL.playing){ SPL.audio.pause(); SPL.playing = false; } }catch(e){}
+  var f = VM_FMT[VM.fmt]; cv.width = f[0]; cv.height = f[1];
+  VM.busy = true; vmPaintBtns();
+  vmBuild(cv.width, cv.height).then(function(res){
+    var ac = VM.ac, ctx = cv.getContext("2d"), dest = ac.createMediaStreamDestination(), srcs = [];
+    var start = ac.currentTime + 0.4, rec = null, chunks = [], done = false;
+    res.segs.forEach(function(sg){
+      if(!sg.buf) return;
+      var b = ac.createBufferSource(); b.buffer = sg.buf; b.connect(dest); b.connect(ac.destination);
+      b.start(start + sg.t0); srcs.push(b);
+    });
+    if(record){
+      var stream = cv.captureStream(30);
+      dest.stream.getAudioTracks().forEach(function(tr){ stream.addTrack(tr); });
+      try{ rec = new MediaRecorder(stream, { mimeType:mime, videoBitsPerSecond:6000000, audioBitsPerSecond:128000 }); }
+      catch(e){ rec = new MediaRecorder(stream); }
+      rec.ondataavailable = function(e){ if(e.data && e.data.size) chunks.push(e.data); };
+      rec.onstop = function(){ vmDone(new Blob(chunks, { type:(rec.mimeType || mime).split(";")[0] }), res); };
+      rec.start(500);
+    }
+    VM.playing = true; VM.playAt = start;
+    function finish(cancel){
+      if(done) return; done = true;
+      VM.busy = false; VM.playing = false; VM.stop = null;
+      srcs.forEach(function(b){ try{ b.stop(); }catch(e){} });
+      if(rec && rec.state !== "inactive"){ if(cancel){ rec.onstop = null; } rec.stop(); }
+      vmPaintBtns();
+      vmStat(cancel ? "Остановлено" : record ? "Сохраняем ролик..." : "");
+      if(!record || cancel) setTimeout(vmPreview, 50);
+    }
+    VM.stop = function(){ finish(true); };
+    (function tick(){
+      if(done) return;
+      var t = ac.currentTime - start;
+      vmFrame(ctx, cv.width, cv.height, Math.max(0, t), res.segs);
+      if(record) vmStat("Запись: " + Math.max(0, Math.floor(t)) + " из " + Math.ceil(res.total) + " с. Не сворачивайте приложение");
+      if(t > res.total + 0.5) return finish(false);
+      if(document.hidden){ toast("Запись прервалась: приложение свернули"); return finish(true); }
+      requestAnimationFrame(tick);
+    })();
+  }).catch(function(e){
+    VM.busy = false; vmPaintBtns();
+    vmStat(e && e.message && e.message.indexOf("audio") !== 0 ? e.message : "Не удалось загрузить чтение. Нужен интернет");
+  });
+}
+function vmPaintBtns(){
+  var p = document.getElementById("vmPlay"), r = document.getElementById("vmRecB");
+  if(p) p.textContent = VM.busy && !VM.recording ? "■ Стоп" : "▶ Просмотр";
+  if(r) r.textContent = VM.busy ? "■ Остановить" : "● Создать ролик";
+}
+
+/* ---------- «Мои ролики»: последние 8 - только на этом телефоне ---------- */
+function vmDb(){
+  return new Promise(function(ok, no){
+    if(!window.indexedDB) return no(new Error("нет хранилища"));
+    var rq = indexedDB.open("rizq-video", 1);
+    rq.onupgradeneeded = function(){ rq.result.createObjectStore("clips", { keyPath:"id" }); };
+    rq.onsuccess = function(){ ok(rq.result); }; rq.onerror = function(){ no(rq.error); };
+  });
+}
+function vmClipsLoad(){
+  return vmDb().then(function(db){
+    return new Promise(function(ok){
+      var out = [], cur = db.transaction("clips").objectStore("clips").openCursor();
+      cur.onsuccess = function(){ var c = cur.result; if(c){ out.push(c.value); c.continue(); } else ok(out.sort(function(a, b){ return b.at - a.at; })); };
+      cur.onerror = function(){ ok([]); };
+    });
+  }).catch(function(){ return []; });
+}
+function vmClipPut(rec){
+  return vmDb().then(function(db){
+    return vmClipsLoad().then(function(list){
+      var tx = db.transaction("clips", "readwrite"), st = tx.objectStore("clips");
+      st.put(rec);
+      list.slice(7).forEach(function(o){ st.delete(o.id); });
+      return new Promise(function(ok){ tx.oncomplete = ok; tx.onerror = ok; });
+    });
+  }).catch(function(){});
+}
+function vmClipDel(id){
+  return vmDb().then(function(db){ var tx = db.transaction("clips", "readwrite"); tx.objectStore("clips").delete(id); return new Promise(function(ok){ tx.oncomplete = ok; tx.onerror = ok; }); }).catch(function(){});
+}
+function vmExt(type){ return String(type).indexOf("mp4") > -1 ? "mp4" : "webm"; }
+function vmDone(blob, res){
+  var name = res.segs[0].ref.replace(/[«»,]/g, "").trim();
+  if(VM.kind === "ayah") name = QSUR[VM.sura - 1][2] + " " + VM.from + (VM.to > VM.from ? "-" + VM.to : "");
+  var rec = { id:"c" + Date.now(), at:Date.now(), name:name, type:blob.type, size:blob.size, dur:Math.round(res.total), blob:blob };
+  vmClipPut(rec).then(function(){ VM.clips = null; vmStat("Готово: ролик сохранён в «Моих роликах»"); if(V.view === "vmake") renderInPlace(); sheetClip(rec); });
+}
+function sheetClip(rec){
+  var url = URL.createObjectURL(rec.blob), ext = vmExt(rec.type);
+  VM.cur = rec;
+  sheet('<h3>'+esc(rec.name)+'</h3>'+
+    '<video src="'+url+'" controls playsinline style="width:100%;max-height:55vh;border-radius:14px;background:#000"></video>'+
+    '<button class="btn" style="margin-top:12px" data-vm="cshare">Отправить в Instagram, WhatsApp...</button>'+
+    '<a class="btn sec" style="display:block;text-align:center;text-decoration:none;margin-top:8px" href="'+url+'" download="rizq-'+rec.id+'.'+ext+'">Сохранить на телефон</a>'+
+    (ext === "webm" ? '<p class="note" style="margin:10px 0 0">Этот браузер записал ролик в формате WebM. Instagram его может не принять: откройте RIZQ в Safari или свежем Chrome - там ролик будет в MP4.</p>' : '')+
+    '<p class="note" style="margin:10px 0 0">В подписи к ролику укажите суру и аят или источник дуа - так правильно по отношению к тексту.</p>'+
+    '<button class="btn ghost" style="margin-top:8px" data-vm="cdel:'+rec.id+'">Удалить ролик</button>'+
+    '<button class="btn ghost" style="margin-top:4px" data-scrim="1">Закрыть</button>');
+}
+function vmShareCur(){
+  var rec = VM.cur; if(!rec) return;
+  var file = null;
+  try{ file = new File([rec.blob], "rizq-" + rec.id + "." + vmExt(rec.type), { type:rec.type }); }catch(e){}
+  if(file && navigator.canShare && navigator.canShare({ files:[file] })){
+    navigator.share({ files:[file], title:rec.name }).catch(function(){});
+  } else toast("Этот телефон не умеет отправлять видео напрямую - нажмите «Сохранить на телефон»");
+}
+
+/* ---------- экран ---------- */
+function viewVmake(){
+  qrLoad();
+  var h = ['<div class="stack">'];
+  h.push('<p class="note" style="margin:0">Ролик для Reels, Shorts и TikTok: аяты голосом чтеца с подсветкой слов, азкары и дуа - на красивом фоне, со знаком JAVATTI.</p>');
+  h.push('<div class="pill-row" style="justify-content:flex-start">'+
+    '<button class="pill'+(VM.kind === "ayah" ? " on" : "")+'" data-vm="kind:ayah">Аяты</button>'+
+    '<button class="pill'+(VM.kind === "dua" ? " on" : "")+'" data-vm="kind:dua">Азкары и дуа</button></div>');
+  if(VM.kind === "ayah"){
+    vmFix();
+    h.push('<section class="card vm-box">'+
+      '<label class="vm-l" for="vmSura">Сура</label><select id="vmSura" class="search">'+QSUR.map(function(q, k){
+        return '<option value="'+(k + 1)+'"'+(k + 1 === VM.sura ? " selected" : "")+'>'+q[0]+'. '+esc(q[2])+'</option>'; }).join("")+'</select>'+
+      '<div class="vm-row"><label class="vm-l">С аята<input id="vmFrom" class="search" type="number" min="1" max="'+vmSuraMax()+'" value="'+VM.from+'"></label>'+
+      '<label class="vm-l">По аят<input id="vmTo" class="search" type="number" min="1" max="'+vmSuraMax()+'" value="'+VM.to+'"></label></div>'+
+      '<div class="note" style="margin-top:6px">В суре '+plural(vmSuraMax(), "аят", "аята", "аятов")+'. В ролике - до 20 аятов и до трёх минут.</div>'+
+      '<div class="rows" style="margin-top:10px"><button class="row" data-open="qsettings"><span class="ic">♪</span><span style="flex:1">Чтец</span><span class="val">'+esc(vmRec().n)+'</span></button></div>'+
+      '<label class="dm-anon" style="margin:10px 0 0"><input type="checkbox" id="vmBasm"'+(VM.basm ? " checked" : "")+'> Басмала в начале суры - голосом чтеца</label>'+
+      '<label class="dm-anon" style="margin:6px 0 0"><input type="checkbox" id="vmTr"'+(VM.tr ? " checked" : "")+'> Перевод смыслов (Кулиев)</label>'+
+      '</section>');
+  } else {
+    var d = vmDuaObj();
+    h.push('<section class="card vm-box">'+
+      (d ? '<div class="vm-sel"><b>'+esc(d.n)+'</b><span>'+esc(d.src || "")+'</span></div>' : '<p class="note" style="margin:0 0 8px">Выберите азкар или дуа:</p>')+
+      '<input id="vmDuaQ" class="search" placeholder="Найти: утренние, аят аль-Курси, дуа путника..." value="'+esc(VM.dq)+'">'+
+      '<div id="vmDuaList" class="vm-list">'+vmDuaList(VM.dq)+'</div>'+
+      '<label class="dm-anon" style="margin:10px 0 0"><input type="checkbox" id="vmTr"'+(VM.tr ? " checked" : "")+'> Перевод</label>'+
+      '<div class="pill-row" style="justify-content:flex-start;margin-top:8px">'+[[0.7, "Быстрее"], [1, "Обычно"], [1.4, "Медленнее"]].map(function(x){
+        return '<button class="pill'+(VM.len === x[0] ? " on" : "")+'" data-vm="len:'+x[0]+'">'+x[1]+'</button>'; }).join("")+'</div>'+
+      '<p class="note" style="margin:8px 0 0">Дуа идут без звука: голос или нашид без музыки можно добавить в самом Instagram.</p></section>');
+  }
+  h.push('<div class="sec-h" style="margin-top:4px"><h3>Фон</h3></div><div class="vm-bgs">'+VM_BG.map(function(b){
+    return '<button class="vm-bg'+(VM.bg === b.id ? " on" : "")+'" data-vm="bg:'+b.id+'"><img alt="" src="'+vmThumb(b.id)+'"><span>'+esc(b.n)+'</span></button>'; }).join("")+'</div>');
+  h.push('<div class="pill-row" style="justify-content:flex-start">'+Object.keys(VM_FMT).map(function(k){
+    return '<button class="pill'+(VM.fmt === k ? " on" : "")+'" data-vm="fmt:'+k+'">'+k.replace("x", ":")+' · '+VM_FMT[k][2]+'</button>'; }).join("")+'</div>');
+  var f = VM_FMT[VM.fmt];
+  h.push('<div class="vm-prev"><canvas id="vmCanvas" width="'+f[0]+'" height="'+f[1]+'"></canvas></div>');
+  h.push('<div style="display:flex;gap:8px"><button class="btn sec" id="vmPlay" style="flex:1" data-vm="play">▶ Просмотр</button>'+
+    '<button class="btn" id="vmRecB" style="flex:1.4" data-vm="rec">● Создать ролик</button></div>');
+  h.push('<div class="note" id="vmStat" style="min-height:18px;text-align:center">'+esc(VM.stat)+'</div>');
+  h.push('<p class="disclaimer" style="text-align:left;padding:0 2px">Ролик записывается в реальном времени: минута чтения - минута записи. Не сворачивайте приложение, пока идёт запись. Звук чтецов - с everyayah.com и quran.com.</p>');
+  h.push('<div class="sec-h"><h3>Мои ролики</h3></div><div id="vmClips">'+vmClipsHtml()+'</div>');
+  h.push('</div>');
+  setTimeout(vmPreview, 30);
+  return h.join("");
+}
+function vmDuaList(q){
+  var nq = String(q || "").toLowerCase().trim(), list = DUAS.filter(function(d){ return d.ar && d.n; });
+  if(nq) list = list.filter(function(d){ return (d.n + " " + (d.src || "") + " " + (d.ru || "")).toLowerCase().indexOf(nq) > -1; });
+  return list.slice(0, 25).map(function(d){
+    return '<button class="vm-it'+(d.id === VM.dua ? " on" : "")+'" data-vm="dsel:'+d.id+'"><b>'+esc(d.n)+'</b><span>'+esc(d.src || "")+'</span></button>';
+  }).join("") || '<p class="note">Ничего не нашлось</p>';
+}
+function vmClipsHtml(){
+  if(!VM.clips){ vmClipsLoad().then(function(l){ VM.clips = l; var e = document.getElementById("vmClips"); if(e) e.innerHTML = vmClipsHtml(); }); return '<p class="note">...</p>'; }
+  if(!VM.clips.length) return '<p class="note">Здесь появятся ваши ролики. Хранятся только на этом телефоне.</p>';
+  return '<div class="rows">'+VM.clips.map(function(c){
+    return '<button class="row" data-vm="clip:'+c.id+'"><span class="ic">▶</span><span style="flex:1">'+esc(c.name)+
+      '<span style="display:block;font-size:12px;color:var(--ink-3)">'+new Date(c.at).toLocaleDateString("ru-RU", { day:"numeric", month:"long" })+' · '+c.dur+' с · '+vmExt(c.type).toUpperCase()+'</span></span></button>';
+  }).join("")+'</div>';
+}
+function vmCmd(c){
+  var p = c.split(":"), k = p[0], v = p.slice(1).join(":");
+  if(k === "kind"){ vmStop(); VM.kind = v; if(v === "dua" && !VM.dua){ var first = DUAS.filter(function(d){ return d.ar; })[0]; if(first) VM.dua = first.id; } renderInPlace(); return; }
+  if(k === "bg"){ VM.bg = v; var bs = document.querySelectorAll(".vm-bg"); for(var q = 0; q < bs.length; q++) bs[q].classList.toggle("on", bs[q].getAttribute("data-vm") === c); vmPreview(); return; }
+  if(k === "fmt"){ VM.fmt = v; renderInPlace(); return; }
+  if(k === "len"){ VM.len = parseFloat(v); renderInPlace(); return; }
+  if(k === "dsel"){ VM.dua = v; renderInPlace(); return; }
+  if(k === "play"){ VM.recording = false; vmRun(false); return; }
+  if(k === "rec"){ if(VM.busy){ vmStop(); return; } VM.recording = true; vmRun(true); return; }
+  if(k === "clip"){ var cl = (VM.clips || []).filter(function(x){ return x.id === v; })[0]; if(cl) sheetClip(cl); return; }
+  if(k === "cshare"){ vmShareCur(); return; }
+  if(k === "cdel"){ if(!confirm("Удалить ролик с телефона?")) return; vmClipDel(v).then(function(){ closeSheet(); VM.clips = null; if(V.view === "vmake") renderInPlace(); toast("Ролик удалён"); }); return; }
+  if(k === "ayah"){ var ai = parseInt(v, 10), as = surahOf(ai); VM.kind = "ayah"; VM.sura = as + 1; VM.from = Math.max(1, ayahInSurah(ai)); VM.to = Math.min(surahAyatCount(as), VM.from + 2); closeSheet(); V.tab = "quran"; open("vmake", null); return; }
+  if(k === "dua"){ VM.kind = "dua"; VM.dua = v; closeSheet(); open("vmake", null); return; }
+}
+/* поля экрана: без перерисовки всего экрана, чтобы не терять фокус */
+document.addEventListener("change", function(ev){
+  var t = ev.target; if(!t || !t.id || t.id.indexOf("vm") !== 0) return;
+  if(t.id === "vmSura"){ VM.sura = parseInt(t.value, 10); VM.from = 1; VM.to = Math.min(3, surahAyatCount(VM.sura - 1)); renderInPlace(); return; }
+  if(t.id === "vmFrom"){ VM.from = parseInt(t.value, 10) || 1; if(VM.to < VM.from) VM.to = VM.from; vmFix(); var tt = document.getElementById("vmTo"); if(tt) tt.value = VM.to; t.value = VM.from; }
+  if(t.id === "vmTo"){ VM.to = parseInt(t.value, 10) || VM.from; vmFix(); t.value = VM.to; }
+  if(t.id === "vmBasm") VM.basm = t.checked;
+  if(t.id === "vmTr") VM.tr = t.checked;
+  vmPreview();
+});
+document.addEventListener("input", function(ev){
+  var t = ev.target; if(!t || t.id !== "vmDuaQ") return;
+  VM.dq = t.value; var l = document.getElementById("vmDuaList"); if(l) l.innerHTML = vmDuaList(t.value);
+});
 
 function viewQSettings(){
   return '<div class="stack">'+
@@ -26866,6 +27456,7 @@ function renderCore(){
   else if(V.view==="khatm") html = viewKhatm();
   else if(V.view==="duas") html = viewDuas();
   else if(V.view==="trread") html = viewTrRead();
+  else if(V.view==="vmake") html = viewVmake();
   else if(V.view==="sadaqa") html = viewSadaqa();
   else if(V.view==="qada") html = viewQada();
   else if(V.view==="salahpics") html = viewSalahPics();
@@ -27025,7 +27616,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -27843,6 +28434,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.b1gift !== undefined){ sheetGift(); return; }
   if(d.trs !== undefined){ var trn = parseInt(d.trs, 10); S.trLast = trn; save(); V.tab = "quran"; open("trread", trn); return; }
   if(d.trayah !== undefined){ var tra = parseInt(d.trayah, 10), trs2 = surahOf(tra); openReader(QSUR[trs2][6], QSUR[trs2][6] + QSUR[trs2][4] - 1, "surah", tra); return; }
+  if(d.vm){ vmCmd(d.vm); return; }
   if(d.cm){ cmCmd(d.cm); return; }
   if(d.kopen){ open("khatm", d.kopen); return; }
   if(d.kj){ sheetJuz(parseInt(d.kj, 10)); return; }
