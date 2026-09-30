@@ -14518,7 +14518,7 @@ function vmSegs(){
   }
   vmFix();
   var s = VM.sura - 1, name = QSUR[s][2];
-  if(VM.basm && VM.from === 1 && s !== 0 && s !== 8)
+  if(VM.basm && VM.from === 1 && s !== 8)
     out.push({ ref:"Сура «" + name + "»", words:vmWords(QA[0]), ru: VM.tr && HAS_TR ? QR[0] : "", url: vmBase() + "001001.mp3", dur:5 });
   for(var a = VM.from; a <= VM.to; a++){
     var i = ayahGlobal(VM.sura, a);
