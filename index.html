@@ -2205,6 +2205,33 @@ details.more[open]>summary:after{content:"⌄"}
 .qrow b{display:block;font-family:var(--f-display);font-size:15px;font-weight:600}
 .qrow span{font-size:13px;color:var(--ink-3)}
 .qrow .qar{margin-left:auto;font-family:var(--f-ar);font-size:21px;color:var(--accent-ink);direction:rtl;flex:none}
+.km-card{display:flex;flex-direction:column;gap:6px;text-align:left;width:100%}
+.km-card b,.km-title{font-family:var(--f-display);font-size:17px;color:var(--ink)}
+.km-left{font-size:12.5px;font-weight:600;color:var(--emerald)}
+.km-bar{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin:4px 0}
+.km-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--emerald),var(--gold));border-radius:99px}
+.km-head{display:flex;flex-direction:column;gap:4px}
+.km-done{border-color:var(--gold)}
+.km-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.km-j{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:9px 10px;border-radius:12px;border:1px solid var(--line);background:var(--surface);text-align:left;min-width:0}
+.km-j b{font-size:15px;color:var(--ink)}
+.km-j span{font-size:11.5px;color:var(--ink-3);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.km-j.me{border-color:var(--emerald);box-shadow:inset 0 0 0 1px var(--emerald)}
+.km-j.me span{color:var(--emerald);font-weight:600}
+.km-j.busy{background:var(--surface-2)}
+.km-j.done{background:var(--surface-2);border-color:var(--gold)}
+.km-j.done b{color:var(--gold)}
+.km-read{display:flex;flex-direction:column;gap:8px;border-color:var(--emerald)}
+.dm-mine{display:flex;flex-direction:column;gap:4px;border-color:var(--gold)}
+.dm-mine b{font-family:var(--f-display);font-size:17px}
+.dm-n{font-size:14.5px;font-weight:600;color:var(--emerald);margin-top:4px}
+.dm-it{display:flex;flex-direction:column;gap:6px}
+.dm-h{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.dm-h b{font-size:15px}
+.dm-h span{font-size:13px;color:var(--ink-2)}
+.dm-note{font-size:14px;line-height:1.5;color:var(--ink);font-style:italic}
+.dm-f{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.dm-ok{font-size:13px;font-weight:600;color:var(--emerald)}
 .qm-dot{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;box-shadow:0 0 0 2px rgba(255,255,255,.14)}
 .qm-tag{display:inline-flex;align-items:center;gap:6px;margin-left:8px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);
   background:var(--surface-2);color:var(--ink-2);font-size:11.5px;font-weight:600}
@@ -5787,7 +5814,9 @@ function fbDoneCheck(){
 
 /* «Что нового» - один раз после обновления. Новым пользователям не показываем:
    для них всё новое. Чтобы показать снова, поменять WN.id и пункты. */
-var WN = { id:"2026-09-30c", items:[
+var WN = { id:"2026-10-01", items:[
+  ["◎", "Хатм вместе", "читайте Коран кругом с подругами: 30 джузов на всех, приглашение ссылкой - вкладка «Коран»"],
+  ["♡", "Дуа друг за друга", "попросите сестёр сделать за вас дуа и сделайте дуа за них - вкладка «Знания»"],
   ["ru", "Перевод смыслов Корана", "перевод Эльмира Кулиева под каждым аятом и поиск по нему; кнопка «Ru» в чтении"],
   ["☁", "Погода к каждому намазу", "на главной под временем намаза; выключается в ⚙ Настройках"],
   ["▶", "Плеер сур", "больше 200 чтецов, суры целиком, поиск по имени - на вкладке «Коран»"],
@@ -6196,6 +6225,7 @@ function back(){
   if(V.view==="reader" || V.view==="qsettings" || V.view==="qsearch"){ qStop(); autoScrollOff(); }
   if(V.view==="qsettings" || V.view==="qsearch"){ V.view=null; V.p=null; V.q=""; render(); return; }
   if(V.view==="name"){ V.view="names"; V.p=null; V.q=""; render(); return; }
+  if(V.view==="khatm"){ V.view="khatms"; V.p=null; render(); return; }
   if(V.view==="hadithOne"){ V.view="hadith"; V.p=null; V.q=""; render(); return; }
   if(V.view==="course"){ V.view="courses"; V.p=null; render(); return; }
   if(V.view==="kidstory"){ kidStop(); V.view="kids"; V.p=null; render(); return; }
@@ -6429,7 +6459,10 @@ function renderHdr(){
         : V.view==="book2" ? "Девушка, которая смогла"
         : V.view==="book2ch" ? "Девушка, которая смогла"
         : V.view==="settings" ? "Настройки"
-        : V.view==="spl" ? "Плеер сур" : "";
+        : V.view==="spl" ? "Плеер сур"
+        : V.view==="khatms" ? "Хатм вместе"
+        : V.view==="khatm" ? "Круг хатма"
+        : V.view==="duas" ? "Дуа друг за друга" : "";
     $hdr.innerHTML = '<header class="hdr"><div class="hdr-row">'+
       '<button class="back" data-back="1" aria-label="Назад">‹</button>'+
       '<div><h2 class="hdr-title">'+esc(t)+'</h2></div></div></header>';
@@ -7030,6 +7063,8 @@ function deepOpen(qArg){
     var mpo = q.match(/[?&]post=([a-z0-9_-]+)/);
     if(mpo){ S.welcomed = 1; save(); V.tab = "journal"; open("post", decodeURIComponent(mpo[1])); return true; }
     /* ?login=<код> - личная ссылка входа от школы */
+    var mkh = q.match(/[?&]khatm=([a-z0-9]{6,16})/);
+    if(mkh){ S.welcomed = 1; save(); try{ history.replaceState(null, "", location.pathname); }catch(e){} V.tab = "quran"; open("khatm", mkh[1]); return true; }
     var mlg = q.match(/[?&]login=([a-f0-9]{40})/);
     if(mlg){ S.welcomed = 1; save(); setTimeout(function(){ accLinkLogin(mlg[1]); }, 300); return true; }
     var mg = q.match(/[?&]go=([a-zA-Z0-9_]+)/);
@@ -7349,6 +7384,8 @@ function buildIndex(){
    ["Хадж и умра в пути","чек-лист по шагам, счёт кругов","open:hajjtrip","хадж умра чек-лист чеклист таваф сай круги ихрам мекка паломничество камни джамарат арафат муздалифа мина сборы"],
    ["Детям","истории пророков, перед сном, дуа, имена","open:kids","дети детям ребенок ребёнок истории пророков сказки перед сном на ночь дуа для детей имена имя для ребенка мальчику девочке"],
    ["Исламская рассрочка","партнёры и покупка товара в рассрочку","open:installment","рассрочка исламская халяль мурабаха кредит без процентов частями взносы купить в рассрочку партнерское финансирование"],
+   ["Хатм вместе","читать Коран кругом","open:khatms","хатм вместе круг джуз подруги сёстры сообщество читать коран вместе"],
+   ["Дуа друг за друга","попросить дуа, сделать дуа за сестёр","open:duas","дуа просьба помолиться сообщество сёстры друг за друга"],
    ["Плеер сур","больше 200 чтецов, суры целиком","open:spl","плеер сура чтец слушать коран целиком аудио афаси судайс гамиди мп3"],
    ["Размер текста","крупный шрифт для чтения","open:settings","шрифт размер крупный текст мелко зрение увеличить плохо вижу буквы"],
    ["Умра - малый хадж","путеводитель: сезоны, вещи, ихрам, таваф, са'й","open:umrah","умра умру малый хадж паломничество мекка медина ихрам микат таваф сай сафа марва кааба путеводитель чек-лист вещи виза нусук"],
@@ -7521,6 +7558,10 @@ function viewDua(){
   h.push('<button class="cat-wide gold" data-open="kids">'+
     '<span class="cw-ic">✧</span>'+
     '<span class="cw-t"><b>Детям</b><span>истории пророков, перед сном, дуа, имена</span></span>'+
+    '<span class="cw-go">›</span></button>');
+  h.push('<button class="cat-wide" data-open="duas">'+
+    '<span class="cw-ic">♡</span>'+
+    '<span class="cw-t"><b>Дуа друг за друга</b><span>попросите дуа и сделайте дуа за сестёр</span></span>'+
     '<span class="cw-go">›</span></button>');
 
   KNOW.forEach(function(k){
@@ -12756,6 +12797,8 @@ function viewQuranHome(){
     '<button data-open="qoffline"><span>⤓</span>Офлайн'+(qoffN ? '<em>'+qoffN+'</em>' : '')+'</button></div>');
   h.push('<button class="cat-wide gold" data-open="spl" style="margin-top:10px"><span class="cw-ic">▶</span>'+
     '<span class="cw-t"><b>Плеер сур</b><span>Больше 200 чтецов, суры целиком, поиск по имени</span></span><span class="cw-go">›</span></button>');
+  h.push('<button class="cat-wide" data-open="khatms" style="margin-top:10px"><span class="cw-ic">◎</span>'+
+    '<span class="cw-t"><b>Хатм вместе</b><span>читайте Коран кругом: 30 джузов на всех</span></span><span class="cw-go">›</span></button>');
   h.push('<div class="sec-h"><h3>Мой путь</h3></div>');
   h.push(qtCard());
   h.push('<div class="qgroup">');
@@ -13358,6 +13401,7 @@ function viewReader(){
     h.push('<article class="ayah" data-i="'+i+'">'+ayahInner(i, false)+'</article>');
   }
 
+  h.push(cmReaderCard(from));
   /* переходы */
   var prevStart = null, nextStart = null;
   if(V.qkind === "page"){
@@ -13514,6 +13558,393 @@ function viewSpl(){
   }).join("")+'</div>');
   h.push('<p class="disclaimer">Записи - mp3quran.net, риваят Хафс от Асыма. Нужен интернет.</p></div>');
   return h.join("");
+}
+
+/* ---------- сообщество: хатм вместе и дуа друг за друга (30.09.2026) ----------
+   Сервер - CRM (community.js), только с аккаунтом RIZQ. Другим людям видно лишь
+   имя, выбранное для сообщества. Без личных сообщений, фото и лайков. */
+var CM = { tok:"", me:null, meBusy:false, meErr:"", circle:null, cCode:"", cBusy:false, cErr:"", dua:null, dBusy:false, dErr:"", after:null, topic:"" };
+var DUA_TOPICS = [
+  ["health", "Здоровье и исцеление"], ["family", "Мир и любовь в семье"], ["children", "Дети"],
+  ["marriage", "Благой брак"], ["rizq", "Работа и ризк"], ["debt", "Избавление от долгов"],
+  ["study", "Учёба и экзамены"], ["forgive", "Прощение грехов"], ["iman", "Стойкость в вере"],
+  ["deceased", "Умершие родные"]
+];
+function duaTopic(k){ var t = DUA_TOPICS.filter(function(x){ return x[0] === k; })[0]; return t ? t[1] : "Благое"; }
+function cmFresh(){ if(CM.tok !== AC.tok){ CM.tok = AC.tok; CM.me = null; CM.circle = null; CM.cCode = ""; CM.dua = null; } }
+function cmFetch(p, body){
+  return fetch(crmApi() + "/api/public/community" + p, { method: body ? "POST" : "GET", headers: accHdr(), cache:"no-store",
+    body: body ? JSON.stringify(body) : undefined })
+    .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return { status:r.status, ok:r.ok, j:j || {} }; }); });
+}
+function cmHere(){ return V.view === "khatms" || V.view === "khatm" || V.view === "duas"; }
+function cmRedraw(){ if(cmHere() && !document.querySelector(".scrim")) renderInPlace(); }
+var CM_NET = "Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.";
+/* Общий разбор ответа: вышел ключ - просим войти; нет имени - просим имя и повторяем. */
+function cmOk(r, again){
+  if(r.status === 401){ toast("Войдите в аккаунт заново"); accCmd("login"); return false; }
+  if(r.status === 409 && r.j.needName){ sheetCmName(again); return false; }
+  if(!r.ok){ toast(r.j.error || "Не получилось, попробуйте ещё раз"); return false; }
+  return true;
+}
+function cmMe(force){
+  cmFresh();
+  if(!accOn() || CM.meBusy || ((CM.me || CM.meErr) && !force)) return;
+  CM.meBusy = true;
+  cmFetch("/me").then(function(r){
+    CM.meBusy = false;
+    if(r.status === 401){ CM.meErr = "Войдите в аккаунт заново"; cmRedraw(); return; }
+    if(!r.ok){ CM.meErr = r.j.error || CM_NET; cmRedraw(); return; }
+    CM.meErr = ""; CM.me = r.j;
+    if(V.view === "reader" && V.qkind === "juz" && !document.querySelector(".scrim")) readerKeepPlace(renderInPlace); else cmRedraw();
+  }).catch(function(){ CM.meBusy = false; CM.meErr = CM_NET; cmRedraw(); });
+}
+function cmCircle(code, force){
+  cmFresh();
+  if(!accOn() || CM.cBusy || (CM.cCode === code && (CM.circle || CM.cErr) && !force)) return;
+  if(CM.cCode !== code){ CM.circle = null; CM.cErr = ""; }
+  CM.cBusy = true; CM.cCode = code;
+  cmFetch("/khatm/" + encodeURIComponent(code)).then(function(r){
+    CM.cBusy = false;
+    if(!r.ok){ CM.circle = null; CM.cErr = r.status === 404 ? "Круг не найден или уже закрыт. Попросите новую ссылку у той, кто его ведёт." : (r.j.error || CM_NET); cmRedraw(); return; }
+    CM.cErr = ""; CM.circle = r.j; cmRedraw();
+  }).catch(function(){ CM.cBusy = false; CM.cErr = CM_NET; cmRedraw(); });
+}
+function cmDua(force){
+  cmFresh();
+  if(!accOn() || CM.dBusy || ((CM.dua || CM.dErr) && !force)) return;
+  CM.dBusy = true;
+  cmFetch("/dua").then(function(r){
+    CM.dBusy = false;
+    if(!r.ok){ CM.dErr = r.status === 401 ? "Войдите в аккаунт заново" : (r.j.error || CM_NET); cmRedraw(); return; }
+    CM.dErr = ""; CM.dua = r.j; if(CM.me) CM.me.dua = r.j.mine; cmRedraw();
+  }).catch(function(){ CM.dBusy = false; CM.dErr = CM_NET; cmRedraw(); });
+}
+function cmLink(code){ return APP_URL + "?khatm=" + code; }
+function cmCodeOf(v){
+  var m = String(v || "").toLowerCase().match(/khatm=([a-z0-9]{6,16})/);
+  if(m) return m[1];
+  var t = String(v || "").toLowerCase().trim();
+  return /^[a-z0-9]{6,16}$/.test(t) ? t : "";
+}
+/* Не вошла - объясняем, зачем аккаунт, и ведём ко входу; после входа вернёмся сюда. */
+function cmLoginCard(what){
+  CM.after = [V.tab, V.view, V.p];
+  return '<section class="card" style="text-align:center">'+
+    '<div style="font-size:30px">☾</div>'+
+    '<h3 style="margin:6px 0 8px">'+esc(what)+'</h3>'+
+    '<p class="note" style="margin:0 0 14px">Это общее с другими сёстрами, поэтому нужен вход в аккаунт RIZQ: так ваши отметки видны на всех устройствах, а чужие люди не выдают себя за вас. Другим показываем только имя, которое вы сами выберете.</p>'+
+    '<button class="btn" data-acc="login">Войти или зарегистрироваться</button></section>';
+}
+function cmNameRow(){
+  var n = CM.me && CM.me.name;
+  return '<div class="rows"><button class="row" data-cm="name"><span class="ic">☺</span>'+
+    '<span style="flex:1">Имя в сообществе</span><span class="val">'+(n ? esc(n) : "выбрать")+'</span></button></div>';
+}
+function cmWait(err, retry){
+  if(err) return '<section class="card"><p class="note" style="margin:0 0 10px">'+esc(err)+'</p><button class="btn sec sm" data-cm="'+retry+'">Повторить</button></section>';
+  return '<p class="note" style="text-align:center;padding:24px 0">Загружаем...</p>';
+}
+function cmBar(done){
+  return '<div class="km-bar"><i style="width:'+Math.round(done / 30 * 100)+'%"></i></div>';
+}
+
+/* ---------- экран «Хатм вместе»: мои круги ---------- */
+function viewKhatms(){
+  var h = ['<div class="stack">'];
+  h.push('<p class="note" style="margin:0">Прочитайте Коран целиком вместе с подругами, семьёй или сёстрами из мечети: круг делит 30 джузов, каждая берёт свои и отмечает прочитанное. Позвать в круг можно только ссылкой.</p>');
+  if(!accOn()){ h.push(cmLoginCard("Хатм вместе")); h.push('</div>'); return h.join(""); }
+  cmMe();
+  if(!CM.me){ h.push(cmWait(CM.meErr, "reme")); h.push('</div>'); return h.join(""); }
+  h.push(cmNameRow());
+  var cs = CM.me.circles || [];
+  if(!cs.length) h.push('<section class="card"><p class="note" style="margin:0">Вы пока ни в одном круге. Создайте свой и отправьте ссылку подругам - или откройте ссылку, которую прислали вам.</p></section>');
+  cs.forEach(function(c){
+    var mine = c.mine || [], left = mine.filter(function(x){ return !x.done; });
+    h.push('<button class="card km-card" data-kopen="'+esc(c.code)+'">'+
+      '<b>'+esc(c.title)+'</b>'+
+      '<span class="note">'+plural(c.members, "участница", "участницы", "участниц")+' · хатм №'+c.round+(c.roundsDone ? ' · завершено: '+c.roundsDone : '')+'</span>'+
+      cmBar(c.done)+
+      '<span class="note">Прочитано '+c.done+' из 30'+(mine.length ? ' · ваши: '+mine.map(function(x){ return x.n + (x.done ? " ✓" : ""); }).join(", ") : ' · вы ещё не взяли джуз')+'</span>'+
+      (left.length ? '<span class="km-left">Осталось прочитать вам: '+left.length+'</span>' : '')+
+      '</button>');
+  });
+  h.push('<button class="btn" data-cm="new">Создать круг</button>');
+  h.push('<button class="btn sec" data-cm="join">Вступить по ссылке</button>');
+  h.push('<p class="disclaimer" style="text-align:left;padding:0 2px">В кругах нет переписки и фото - только имена и отметки о чтении. Круг видят лишь те, у кого есть ссылка.</p>');
+  h.push('</div>');
+  return h.join("");
+}
+
+/* ---------- круг хатма ---------- */
+function viewKhatm(){
+  var code = String(V.p || "");
+  var h = ['<div class="stack">'];
+  if(!accOn()){ h.push(cmLoginCard("Вас пригласили в круг хатма")); h.push('</div>'); return h.join(""); }
+  cmCircle(code);
+  var c = CM.cCode === code ? CM.circle : null;
+  if(!c){ h.push(cmWait(CM.cErr, "recircle")); h.push('</div>'); return h.join(""); }
+  h.push('<section class="card km-head"><div class="km-title">'+esc(c.title)+'</div>'+
+    '<div class="note">Хатм №'+c.round+(c.roundsDone ? ' · круг уже завершил '+plural(c.roundsDone, "хатм", "хатма", "хатмов") : '')+'</div>'+
+    cmBar(c.done)+
+    '<div class="note">Прочитано '+c.done+' из 30 · взято '+c.taken+'</div></section>');
+  if(!c.member){
+    h.push('<button class="btn" data-cm="joinnow">Вступить в круг</button>');
+    h.push('<p class="note" style="margin:0">После вступления вы увидите, кто какой джуз читает, и сможете взять свой.</p>');
+  }
+  if(c.complete){
+    h.push('<section class="card km-done"><b>Хатм завершён. Машаллах!</b>'+
+      '<p class="note" style="margin:6px 0 10px">Круг прочитал Коран целиком. Сделайте дуа - и можно начинать следующий хатм.</p>'+
+      (c.member ? '<button class="btn" data-cm="next">Начать новый хатм</button>' : '')+'</section>');
+  }
+  if(c.member) h.push('<button class="btn sec" data-cm="invite">Пригласить в круг</button>');
+  h.push('<div class="km-grid">'+c.juz.map(function(j){
+    var cls = j.done ? "done" : (j.me ? "me" : ((j.name || j.taken) ? "busy" : "free"));
+    var who = j.done ? (j.name ? esc(j.name) : "прочитан") : (j.name ? esc(j.name) : (j.taken ? "взят" : "свободен"));
+    return '<button class="km-j '+cls+'" data-kj="'+j.n+'" aria-label="Джуз '+j.n+': '+who+'">'+
+      '<b>'+j.n+(j.done ? ' ✓' : '')+'</b><span>'+who+'</span></button>';
+  }).join("")+'</div>');
+  if(c.member){
+    h.push('<div class="note">В круге: '+c.members.map(function(m){ return esc(m.name) + (m.me ? " (вы)" : ""); }).join(", ")+'</div>');
+    h.push('<button class="btn ghost sm" data-cm="leave">Выйти из круга</button>');
+    if(c.owner) h.push('<button class="btn ghost sm" style="color:#C0392B" data-cm="close">Закрыть круг</button>');
+  }
+  h.push('</div>');
+  return h.join("");
+}
+function sheetJuz(n){
+  var c = CM.circle; if(!c) return;
+  var j = c.juz[n - 1] || {};
+  if(!c.member){ toast("Сначала вступите в круг"); return; }
+  var read = '<button class="btn sec" data-kread="'+n+'">Открыть джуз '+n+' и читать</button>';
+  var body;
+  if(j.me && j.done) body = '<p class="note">Вы прочитали этот джуз. Машаллах!</p>'+read+
+    '<button class="btn ghost" style="margin-top:8px" data-kact="undo:'+n+'">Снять отметку «прочитала»</button>';
+  else if(j.me) body = '<p class="note">Этот джуз читаете вы.</p>'+
+    '<button class="btn" data-kact="done:'+n+'">Прочитала</button>'+
+    '<div style="margin-top:8px">'+read+'</div>'+
+    '<button class="btn ghost" style="margin-top:8px" data-kact="release:'+n+'">Вернуть в общий список</button>';
+  else if(j.name) body = '<p class="note">'+(j.done ? 'Прочитала' : 'Читает')+': '+esc(j.name)+'.</p>'+read;
+  else body = '<p class="note">Джуз свободен. Возьмите его - и в круге будут знать, что он за вами.</p>'+
+    '<button class="btn" data-kact="take:'+n+'">Беру этот джуз</button>'+
+    '<button class="btn sec" style="margin-top:8px" data-kact="done:'+n+'">Уже прочитала</button>'+
+    '<div style="margin-top:8px">'+read+'</div>';
+  sheet('<h3>Джуз '+n+'</h3>'+body+'<button class="btn ghost" style="margin-top:8px" data-scrim="1">Закрыть</button>');
+}
+function cmJuz(code, n, act){
+  cmFetch("/khatm/" + encodeURIComponent(code) + "/juz", { juz:n, act:act }).then(function(r){
+    if(r.status === 409 && r.j.state){ CM.circle = r.j.state; CM.cCode = code; closeSheet(); cmRedraw(); toast(r.j.error); return; }
+    if(!cmOk(r, function(){ cmJuz(code, n, act); })) return;
+    closeSheet();
+    CM.circle = r.j; CM.cCode = code;
+    toast(act === "take" ? "Джуз " + n + " за вами" : act === "done" ? "Отмечено: джуз " + n + " прочитан" : act === "undo" ? "Отметка снята" : "Джуз вернулся в общий список");
+    if(r.j.justCompleted) sheet('<h3>Хатм завершён</h3><p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 12px">Круг «'+esc(r.j.title)+'» прочитал Коран целиком. Машаллах! Да примет Аллах от всех, кто читал.</p><button class="btn" data-scrim="1">Амин</button>');
+    cmMe(true);
+    if(V.view === "reader") readerKeepPlace(renderInPlace); else cmRedraw();
+  }).catch(function(){ toast(CM_NET); });
+}
+/* Отметка из самого чтения: открыт джуз, который вы взяли в круге. */
+function cmReaderCard(from){
+  if(V.qkind !== "juz" || !accOn()) return "";
+  if(!CM.me){ cmMe(); return ""; }
+  var n = juzOf(from), out = "";
+  (CM.me.circles || []).forEach(function(c){
+    (c.mine || []).forEach(function(x){
+      if(x.n !== n || out) return;
+      out = '<section class="card km-read"><span class="note">Джуз '+n+' - ваш в круге «'+esc(c.title)+'»</span>'+
+        (x.done ? '<b>Прочитан ✓</b>' : '<button class="btn sm" data-kact="done:'+n+'" data-kcode="'+esc(c.code)+'">Прочитала джуз '+n+'</button>')+'</section>';
+    });
+  });
+  return out;
+}
+
+/* ---------- дуа друг за друга ---------- */
+function viewDuas(){
+  var h = ['<div class="stack">'];
+  h.push('<p class="note" style="margin:0">Попросите сестёр сделать за вас дуа - и сделайте дуа за них. Пророк ﷺ сказал: «Нет такого мусульманина, который обратился бы к Аллаху с мольбой за своего брата в его отсутствие, чтобы ангел не сказал: „И тебе того же“» (Муслим, 2732).</p>');
+  if(!accOn()){ h.push(cmLoginCard("Дуа друг за друга")); h.push('</div>'); return h.join(""); }
+  cmMe(); cmDua();
+  if(!CM.dua){ h.push(cmWait(CM.dErr, "redua")); h.push('</div>'); return h.join(""); }
+  h.push(cmNameRow());
+  var m = CM.dua.mine;
+  if(m){
+    var st = m.note ? (m.noteStatus === "ok" ? "Ваши слова видны всем" : m.noteStatus === "pending" ? "Ваши слова ждут проверки - пока их видите только вы" : "Ваши слова не прошли проверку - просьба видна без них") : "";
+    var days = Math.max(0, Math.ceil((Date.parse(String(m.expires).replace(" ", "T") + "Z") - Date.now()) / 86400000));
+    h.push('<section class="card dm-mine"><span class="note">Ваша просьба</span>'+
+      '<b>'+esc(duaTopic(m.topic))+'</b>'+
+      (m.note ? '<div class="dm-note">«'+esc(m.note)+'»</div><span class="note">'+st+'</span>' : '')+
+      '<div class="dm-n">'+(m.n ? 'За вас сделали дуа '+plural(m.n, "раз", "раза", "раз")+(m.people > 1 ? ' ('+plural(m.people, "сестра", "сестры", "сестёр")+')' : '') : 'Скоро за вас сделают дуа, ин ша Аллах')+'</div>'+
+      '<span class="note">Просьба видна ещё '+plural(days, "день", "дня", "дней")+'</span>'+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">'+
+        '<button class="btn sec sm" data-cm="duaask">Изменить</button>'+
+        (days < 10 ? '<button class="btn sec sm" data-cm="duarenew">Продлить на 30 дней</button>' : '')+
+        '<button class="btn ghost sm" data-cm="duadel">Удалить</button></div></section>');
+  } else {
+    h.push('<button class="btn" data-cm="duaask">Попросить дуа</button>');
+  }
+  var items = CM.dua.items || [];
+  h.push('<div class="sec-h" style="margin-top:6px"><h3>Просят сделать дуа</h3></div>');
+  if(!items.length) h.push('<p class="note">Пока никто не просил. Будьте первой - и сделайте дуа за всех мусульман.</p>');
+  items.forEach(function(x){
+    h.push('<section class="card dm-it"><div class="dm-h"><b>'+esc(x.name)+'</b><span>'+esc(duaTopic(x.topic))+'</span></div>'+
+      (x.note ? '<div class="dm-note">«'+esc(x.note)+'»</div>' : '')+
+      '<div class="dm-f">'+(x.done ? '<span class="dm-ok">✓ Вы сделали дуа сегодня</span>' : '<button class="btn sm" data-duamade="'+x.id+'">Я сделала дуа</button>')+
+      '<span class="note">'+(x.n ? 'дуа сделали '+plural(x.n, "раз", "раза", "раз") : '')+'</span></div></section>');
+  });
+  h.push('<p class="disclaimer" style="text-align:left;padding:0 2px">Здесь нет переписки и фото. Свои слова в просьбе появляются после проверки - без ссылок, телефонов и подробностей, по которым можно узнать человека.</p>');
+  h.push('</div>');
+  return h.join("");
+}
+function sheetDuaAsk(){
+  var m = CM.dua && CM.dua.mine;
+  CM.topic = m ? m.topic : (CM.topic || "");
+  sheet('<h3>'+(m ? "Изменить просьбу" : "Попросить дуа")+'</h3>'+
+    '<p class="note" style="margin:0 0 10px">О чём сделать дуа за вас?</p>'+
+    '<div class="pill-row" id="dmTopics" style="justify-content:flex-start;flex-wrap:wrap;gap:6px">'+DUA_TOPICS.map(function(t){
+      return '<button class="pill'+(CM.topic === t[0] ? " on" : "")+'" data-dtopic="'+t[0]+'">'+esc(t[1])+'</button>';
+    }).join("")+'</div>'+
+    '<label class="note" style="display:block;margin:12px 0 6px" for="dmNote">Свои слова, если хотите (до 140 знаков). Их увидят после проверки.</label>'+
+    '<textarea id="dmNote" maxlength="140" rows="2" style="width:100%" placeholder="Например: за маму перед операцией">'+esc(m && m.note || "")+'</textarea>'+
+    '<p class="note" style="margin:6px 0 12px">Без имён, фамилий, телефонов и ссылок.</p>'+
+    '<button class="btn" data-cm="duasend">'+(m ? "Сохранить" : "Попросить")+'</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
+}
+function cmDuaSend(){
+  if(!CM.topic){ toast("Выберите тему"); return; }
+  var ta = document.getElementById("dmNote"), note = ta ? ta.value.trim() : "";
+  cmFetch("/dua", { topic:CM.topic, note:note }).then(function(r){
+    if(!cmOk(r, function(){ sheetDuaAsk(); })) return;
+    closeSheet();
+    if(CM.dua) CM.dua.mine = r.j.mine;
+    toast(r.j.mine && r.j.mine.noteStatus === "pending" ? "Просьба видна сёстрам, ваши слова - после проверки" : "Просьба видна сёстрам");
+    cmRedraw();
+  }).catch(function(){ toast(CM_NET); });
+}
+function sheetCmName(then){
+  var cur = (CM.me && CM.me.name) || String(S.name || AC.name || "").split(" ")[0];
+  sheet('<h3>Имя в сообществе</h3>'+
+    '<p class="note" style="margin:0 0 10px">Его увидят участницы ваших кругов и сёстры в «Дуа друг за друга». Телефон и почту не видит никто.</p>'+
+    '<input class="search" id="cmName" maxlength="24" value="'+esc(cur)+'" placeholder="Например: Амина">'+
+    '<p class="note" style="margin:6px 0 12px">Только буквы, от 2 до 24.</p>'+
+    '<button class="btn" data-cm="namesave">Сохранить</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
+  CM.nameThen = then || null;
+}
+function cmNameSave(){
+  var el2 = document.getElementById("cmName"), v = el2 ? el2.value.trim() : "";
+  cmFetch("/name", { name:v }).then(function(r){
+    if(!cmOk(r)) return;
+    closeSheet();
+    if(CM.me) CM.me.name = r.j.name;
+    if(CM.dua) CM.dua.name = r.j.name;
+    toast("Имя: " + r.j.name);
+    var t = CM.nameThen; CM.nameThen = null;
+    if(t) t(); else cmRedraw();
+  }).catch(function(){ toast(CM_NET); });
+}
+function sheetKhatmNew(){
+  sheet('<h3>Новый круг хатма</h3>'+
+    '<p class="note" style="margin:0 0 10px">Назовите круг - это название увидят те, кого вы пригласите.</p>'+
+    '<input class="search" id="kmTitle" maxlength="60" placeholder="Например: Хатм сестёр к Рамадану">'+
+    '<button class="btn" style="margin-top:12px" data-cm="newsave">Создать</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
+}
+function cmNewSave(){
+  var el2 = document.getElementById("kmTitle"), t = el2 ? el2.value.trim() : "";
+  if(t.length < 2){ toast("Напишите название круга"); return; }
+  cmFetch("/khatm", { title:t }).then(function(r){
+    if(!cmOk(r, function(){ sheetKhatmNew(); })) return;
+    closeSheet();
+    CM.circle = r.j; CM.cCode = r.j.code; cmMe(true);
+    open("khatm", r.j.code);
+    setTimeout(function(){ cmInvite(true); }, 300);
+  }).catch(function(){ toast(CM_NET); });
+}
+function sheetKhatmJoin(){
+  sheet('<h3>Вступить в круг</h3>'+
+    '<p class="note" style="margin:0 0 10px">Вставьте ссылку, которую вам прислали. Если ссылку открыть прямо на телефоне, круг откроется сам.</p>'+
+    '<input class="search" id="kmCode" placeholder="rizq.javattigroup.ru/?khatm=...">'+
+    '<button class="btn" style="margin-top:12px" data-cm="joinopen">Открыть круг</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
+}
+function cmInvite(fresh){
+  var c = CM.circle; if(!c) return;
+  var url = cmLink(c.code);
+  var text = "Приглашаю в круг хатма «" + c.title + "» в RIZQ: читаем Коран вместе, каждая берёт свой джуз.";
+  sheet('<h3>'+(fresh ? "Круг создан" : "Пригласить в круг")+'</h3>'+
+    '<p class="note" style="margin:0 0 10px">Отправьте ссылку тем, с кем хотите читать. Вступить смогут только те, у кого она есть.</p>'+
+    '<div class="card flat" style="padding:10px 12px;font-size:13.5px;word-break:break-all">'+esc(url)+'</div>'+
+    '<button class="btn" style="margin-top:12px" data-cm="share">Отправить ссылку</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Готово</button>');
+  CM.share = { url:url, text:text };
+}
+function cmShare(){
+  var x = CM.share; if(!x) return;
+  if(navigator.share){ navigator.share({ title:"Хатм вместе", text:x.text, url:x.url }).catch(function(){}); return; }
+  var t = x.text + " " + x.url;
+  try{ navigator.clipboard.writeText(t).then(function(){ toast("Ссылка скопирована"); }, function(){ toast(x.url); }); }catch(e){ toast(x.url); }
+}
+function cmCmd(c){
+  var code = String(V.p || "");
+  if(c === "reme"){ CM.meErr = ""; cmMe(true); renderInPlace(); return; }
+  if(c === "recircle"){ CM.cErr = ""; CM.circle = null; cmCircle(code, true); renderInPlace(); return; }
+  if(c === "redua"){ CM.dErr = ""; cmDua(true); renderInPlace(); return; }
+  if(c === "name"){ sheetCmName(); return; }
+  if(c === "namesave"){ cmNameSave(); return; }
+  if(c === "new"){ if(CM.me && !CM.me.name){ sheetCmName(sheetKhatmNew); return; } sheetKhatmNew(); return; }
+  if(c === "newsave"){ cmNewSave(); return; }
+  if(c === "join"){ sheetKhatmJoin(); return; }
+  if(c === "joinopen"){
+    var i2 = document.getElementById("kmCode"), k = cmCodeOf(i2 ? i2.value : "");
+    if(!k){ toast("Не похоже на ссылку круга"); return; }
+    closeSheet(); open("khatm", k); return;
+  }
+  if(c === "joinnow"){
+    cmFetch("/khatm/" + encodeURIComponent(code) + "/join", {}).then(function(r){
+      if(!cmOk(r, function(){ cmCmd("joinnow"); })) return;
+      CM.circle = r.j; CM.cCode = code; cmMe(true);
+      toast("Вы в круге. Возьмите свой джуз"); cmRedraw();
+    }).catch(function(){ toast(CM_NET); });
+    return;
+  }
+  if(c === "invite"){ cmInvite(false); return; }
+  if(c === "share"){ cmShare(); return; }
+  if(c === "next"){
+    cmFetch("/khatm/" + encodeURIComponent(code) + "/next", {}).then(function(r){
+      if(r.status === 409 && r.j.state){ CM.circle = r.j.state; cmRedraw(); return; }
+      if(!cmOk(r)) return;
+      CM.circle = r.j; cmMe(true); toast("Начали хатм №" + r.j.round + ". Бисмиллях!"); cmRedraw();
+    }).catch(function(){ toast(CM_NET); });
+    return;
+  }
+  if(c === "leave" || c === "close"){
+    if(!confirm(c === "leave" ? "Выйти из круга? Взятые, но не прочитанные джузы вернутся в общий список." : "Закрыть круг? Он пропадёт у всех участниц.")) return;
+    cmFetch("/khatm/" + encodeURIComponent(code) + "/" + c, {}).then(function(r){
+      if(!cmOk(r)) return;
+      CM.circle = null; CM.cCode = ""; cmMe(true);
+      toast(c === "leave" ? "Вы вышли из круга" : "Круг закрыт");
+      V.view = "khatms"; V.p = null; render();
+    }).catch(function(){ toast(CM_NET); });
+    return;
+  }
+  if(c === "duaask"){ if(CM.dua && !CM.dua.name){ sheetCmName(sheetDuaAsk); return; } sheetDuaAsk(); return; }
+  if(c === "duasend"){ cmDuaSend(); return; }
+  if(c === "duarenew" || c === "duadel"){
+    if(c === "duadel" && !confirm("Удалить вашу просьбу? Счёт дуа за неё тоже удалится.")) return;
+    cmFetch(c === "duarenew" ? "/dua/renew" : "/dua/delete", {}).then(function(r){
+      if(!cmOk(r)) return;
+      if(CM.dua) CM.dua.mine = c === "duarenew" ? r.j.mine : null;
+      toast(c === "duarenew" ? "Просьба продлена на 30 дней" : "Просьба удалена"); cmRedraw();
+    }).catch(function(){ toast(CM_NET); });
+    return;
+  }
+}
+function cmDuaMade(id){
+  cmFetch("/dua/" + id + "/made", {}).then(function(r){
+    if(!cmOk(r)) return;
+    (CM.dua && CM.dua.items || []).forEach(function(x){ if(x.id === id){ x.done = true; x.n = r.j.n; } });
+    toast("Амин. И вам того же, ин ша Аллах"); cmRedraw();
+  }).catch(function(){ toast(CM_NET); });
 }
 
 function viewQSettings(){
@@ -24988,7 +25419,8 @@ function accLoginDone(j){
   if(!S.email && AC.email) S.email = AC.email;
   if(!S.phone && AC.contact && !lgIsMail(AC.contact)) S.phone = AC.contact;
   if(!S.welcomed) S.welcomed = 1;
-  save(); closeSheet(); go("prof");
+  save(); closeSheet();
+  if(CM.after && (CM.after[1] === "khatms" || CM.after[1] === "khatm" || CM.after[1] === "duas")){ var cma = CM.after; CM.after = null; V.tab = cma[0]; open(cma[1], cma[2]); } else go("prof");
   toast(j.synced ? "Вы вошли. Подтягиваем записи из аккаунта..." : "Вы вошли. Записи этого устройства сохраним в аккаунт");
   scoreLink();
   syPull(true);
@@ -26164,6 +26596,9 @@ function renderCore(){
   else if(V.view==="planner") html = viewPlanner();
   else if(V.view==="settings") html = viewSettings();
   else if(V.view==="spl") html = viewSpl();
+  else if(V.view==="khatms") html = viewKhatms();
+  else if(V.view==="khatm") html = viewKhatm();
+  else if(V.view==="duas") html = viewDuas();
   else if(V.view==="sadaqa") html = viewSadaqa();
   else if(V.view==="qada") html = viewQada();
   else if(V.view==="salahpics") html = viewSalahPics();
@@ -26323,7 +26758,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-cm],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -27139,6 +27574,21 @@ document.getElementById("app").addEventListener("click", function(ev){
     var gA = ayahGlobal(+ay[0], +ay[1]); openReader(QSUR[sI][6], QSUR[sI][6] + QSUR[sI][4] - 1, "surah", gA); } return; }
   if(d.b1ret !== undefined){ b1Return(); return; }
   if(d.b1gift !== undefined){ sheetGift(); return; }
+  if(d.cm){ cmCmd(d.cm); return; }
+  if(d.kopen){ open("khatm", d.kopen); return; }
+  if(d.kj){ sheetJuz(parseInt(d.kj, 10)); return; }
+  if(d.kact){ var kap = d.kact.split(":"); cmJuz(d.kcode || String(V.p || ""), parseInt(kap[1], 10), kap[0]); return; }
+  if(d.kread){
+    var kr = parseInt(d.kread, 10) - 1;
+    closeSheet(); cmMe(); openReader(QJUZ[kr], (kr + 1 < QJUZ.length) ? QJUZ[kr + 1] - 1 : QTOTAL - 1, "juz"); return;
+  }
+  if(d.duamade){ cmDuaMade(parseInt(d.duamade, 10)); return; }
+  if(d.dtopic){
+    CM.topic = d.dtopic;
+    var dts = document.querySelectorAll("#dmTopics .pill");
+    for(var dti = 0; dti < dts.length; dti++) dts[dti].classList.toggle("on", dts[dti].getAttribute("data-dtopic") === d.dtopic);
+    return;
+  }
   if(d.qmcol !== undefined){ sheetMarkColor(parseInt(d.qmcol, 10)); return; }
   if(d.qmcolset !== undefined){
     var qmp = d.qmcolset.split(":"), qmi = parseInt(qmp[0], 10);
