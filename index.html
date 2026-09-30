@@ -5871,13 +5871,13 @@ function fbDoneCheck(){
 
 /* «Что нового» - один раз после обновления. Новым пользователям не показываем:
    для них всё новое. Чтобы показать снова, поменять WN.id и пункты. */
-var WN = { id:"2026-10-01d", items:[
+var WN = { id:"2026-10-01e", items:[
+  ["▣", "Фоны Мекки и Медины, дуа из Корана", "в «Видео из аятов»: Кааба, Зелёный купол и другие; дуа из Корана голосом чтеца"],
   ["▣", "Видео из аятов, азкаров и дуа", "ролик для Reels с чтецом, подсветкой слов и восточным фоном - «Коран» → «Видео из аятов»"],
   ["♡", "Дуа друг за друга - на главной", "попросите сестёр сделать дуа за вас - просьбу увидят все сёстры в RIZQ"],
   ["Ru", "Перевод смыслов целиком", "сура за сурой, как книгу - «Коран», под плеером сур"],
   ["◎", "Как устроен круг хатма", "объяснение прямо в круге и доводы: как читали Коран при Пророке ﷺ"],
-  ["🔔", "Сообщество напомнит", "за вас сделали дуа, ваш джуз ждёт, хатм завершён - и срок хатма к нужной дате"],
-  ["◎", "Хатм вместе", "читайте Коран кругом с подругами: 30 джузов на всех, приглашение ссылкой - вкладка «Коран»"]
+  ["🔔", "Сообщество напомнит", "за вас сделали дуа, ваш джуз ждёт, хатм завершён - и срок хатма к нужной дате"]
 ]};
 function wnCheck(){
   if(S.wnSeen === WN.id) return;
@@ -14249,6 +14249,27 @@ var VM_BG = [
   { id:"cream",    n:"Крем и золото",   ink:"#2B1F1B", ru:"#4A3B32",               acc:"#9C7A2E", light:1 },
   { id:"sky",      n:"Звёздный дождь",  ink:"#EEF0FF", ru:"rgba(238,240,255,.88)", acc:"#E8C56A" }
 ];
+/* Мекка и Медина - фото Unsplash (лицензия Unsplash), 1080x1920 в www/vm-fon. */
+var VM_PH = [["kaaba-bashnya", "Кааба и часовая башня"], ["kaaba-krupno", "Кааба крупно"], ["mekka-zakat", "Мекка на закате"],
+  ["kaaba-dver", "Дверь Каабы"], ["kaaba-den", "Кааба днём"], ["medina-kupol", "Зелёный купол"], ["medina-minaret", "Минарет Медины"],
+  ["medina-arki", "Арки мечети Пророка"], ["medina-mechet", "Мечеть Пророка"], ["medina-zonty", "Зонты Медины"]];
+VM_BG = VM_PH.map(function(p){
+  return { id:"ph-" + p[0], n:p[1], photo:"vm-fon/" + p[0] + ".jpg", thumb:"vm-fon/t-" + p[0] + ".jpg", ink:"#FFFFFF", ru:"rgba(255,255,255,.92)", acc:"#F2CD72" };
+}).concat(VM_BG);
+VM.bg = "ph-kaaba-bashnya"; VM.img = {};
+function vmPhoto(b){
+  if(!b || !b.photo) return Promise.resolve(null);
+  var o = VM.img[b.id];
+  if(o) return o.p;
+  var im = new Image();
+  o = VM.img[b.id] = { im:im, ok:false };
+  o.p = new Promise(function(ok){
+    im.onload = function(){ o.ok = true; ok(im); };
+    im.onerror = function(){ ok(null); };
+  });
+  im.src = b.photo;
+  return o.p;
+}
 var VM_VB = { "ar.alafasy":"https://mirrors.quranicaudio.com/everyayah/Alafasy_128kbps/",
   "ar.mahermuaiqly":"https://mirrors.quranicaudio.com/everyayah/MaherAlMuaiqly128kbps/" };
 var VM_ZNAK = ["M176.113,62.595h-68.762L76.267,96.393v5.411h19.675l23.734-9.013c2.186-10.173,11.229-17.799,22.056-17.799c10.826,0,19.87,7.626,22.056,17.799l23.734,9.013h19.676v-5.411L176.113,62.595z",
@@ -14294,7 +14315,7 @@ function vmStatic(id, W, H){
     });
   } else if(id === "arch"){
     vmGrad(x, W, H, [[0, "#5B4B40"], [0.5, "#3E2E27"], [1, "#241814"]]);
-    var m = 70 * u, top = H * 0.16;
+    var m = 70 * u, top = H * 0.23;
     var arch = function(off, lw){
       x.beginPath();
       x.moveTo(m + off, H - m - off); x.lineTo(m + off, top + 260 * u);
@@ -14377,6 +14398,21 @@ function vmLantern(ctx, x0, len, sz, ang, glow){
   ctx.restore();
 }
 function vmBgDraw(ctx, id, W, H, t){
+  var pb = vmBgOf(id);
+  if(pb.photo){
+    var o = VM.img[pb.id];
+    if(!o) vmPhoto(pb);
+    if(o && o.ok){
+      var im = o.im, sc = Math.max(W / im.width, H / im.height) * (1.02 + 0.05 * (0.5 - 0.5 * Math.cos(t / 9)));
+      var dw = im.width * sc, dh = im.height * sc;
+      ctx.drawImage(im, (W - dw) / 2, (H - dh) / 2, dw, dh);
+    } else { vmGrad(ctx, W, H, [[0, "#1A1512"], [1, "#0B0907"]]); }
+    ctx.fillStyle = "rgba(8,6,4,.48)"; ctx.fillRect(0, 0, W, H);
+    var vg = ctx.createLinearGradient(0, 0, 0, H);
+    vg.addColorStop(0, "rgba(0,0,0,.45)"); vg.addColorStop(0.3, "rgba(0,0,0,0)"); vg.addColorStop(0.7, "rgba(0,0,0,0)"); vg.addColorStop(1, "rgba(0,0,0,.55)");
+    ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+    return;
+  }
   ctx.drawImage(vmStatic(id, W, H), 0, 0);
   var u = W / 1080, rnd, i;
   if(id === "night" || id === "sky"){
@@ -14422,7 +14458,7 @@ function vmWrap(ctx, words, maxW, gap){
 function vmWords(txt){ return String(txt || "").split(String.fromCharCode(10)).join(" ").split(" ").filter(Boolean).map(function(x){ return { x:x, w:0 }; }); }
 /* раскладка сегмента: размер арабского и перевода подбирается, чтобы влезло */
 function vmLayout(ctx, sg, W, H){
-  var u = W / 1080, top = H * (VM.fmt === "9x16" ? 0.2 : 0.2), bot = H * (VM.fmt === "9x16" ? 0.84 : 0.86);
+  var u = W / 1080, top = H * (VM.fmt === "9x16" ? 0.25 : 0.23), bot = H * (VM.fmt === "9x16" ? 0.84 : 0.88);
   var avail = bot - top, maxW = W - 170 * u, ar, ru, arS = (VM.fmt === "1x1" ? 76 : VM.fmt === "4x5" ? 88 : 104) * u, ruS = (VM.fmt === "1x1" ? 36 : VM.fmt === "4x5" ? 40 : 46) * u;
   for(var tries = 0; tries < 22; tries++){
     ctx.font = arS + 'px "Amiri Quran","Noto Naskh Arabic",serif';
@@ -14464,12 +14500,13 @@ function vmFrame(ctx, W, H, t, segs){
   if(sg === segs[0] && t < 0.05) a = 1;
   ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
   /* знак JAVATTI - всегда */
-  var ly = H * (VM.fmt === "9x16" ? 0.06 : 0.055);
+  var ly = H * (VM.fmt === "9x16" ? 0.125 : 0.07);
   vmZnak(ctx, W / 2, ly, 96 * u, b.acc);
   ctx.fillStyle = b.acc; ctx.font = (26 * u) + "px Marcellus,serif";
   vmSpaced(ctx, "JAVATTI", W / 2, ly + 66 * u, 9 * u);
   ctx.fillStyle = b.ru; ctx.font = "600 " + (30 * u) + "px Montserrat,Inter,sans-serif";
   ctx.fillText(sg.ref, W / 2, ly + 128 * u);
+  if(sg.who){ ctx.font = "500 " + (26 * u) + "px Montserrat,Inter,sans-serif"; ctx.fillStyle = b.acc; ctx.fillText(sg.who, W / 2, ly + 172 * u); }
   ctx.globalAlpha = a;
   if(!b.light){ ctx.shadowColor = "rgba(0,0,0,.45)"; ctx.shadowBlur = 18 * u; }
   var L1 = sg.lay, hw = -1;
@@ -14506,10 +14543,42 @@ function vmFix(){
   var mx = vmSuraMax();
   VM.from = Math.max(1, Math.min(mx, VM.from | 0)); VM.to = Math.max(VM.from, Math.min(mx, VM.to | 0, VM.from + 19));
 }
+/* Дуа из Корана: сура и аяты - из полей или из подписи источника («2:201», «97-98»). */
+function vmQdAyahs(it){
+  var sura = it.sura, a = it.ayah, to = it.ayah, src = String(it.src || "");
+  if(!sura){ var m = src.match(/([0-9]+):([0-9]+)(-([0-9]+))?/); if(m){ sura = +m[1]; a = +m[2]; to = m[4] ? +m[4] : a; } }
+  else { var r = src.match(/([0-9]+)-([0-9]+)/); if(r && +r[1] === a && +r[2] > a) to = +r[2]; }
+  if(!sura || !a || !QSUR[sura - 1]) return null;
+  return { sura:sura, from:a, to:Math.min(to, a + 5, surahAyatCount(sura - 1)) };
+}
+function vmQdObj(){ return QURAN[VM.qd] || null; }
+function vmQdList(q){
+  var nq = String(q || "").toLowerCase().trim();
+  return QURAN.map(function(d, k){ return { d:d, k:k }; }).filter(function(x){
+    return !nq || (String(x.d.who || "") + " " + (x.d.src || "") + " " + (x.d.ru || "")).toLowerCase().indexOf(nq) > -1;
+  }).slice(0, 40).map(function(x){
+    return '<button class="vm-it'+(x.k === VM.qd ? " on" : "")+'" data-vm="qsel:'+x.k+'"><b>'+esc(String(x.d.ru || "").slice(0, 70))+(String(x.d.ru || "").length > 70 ? "..." : "")+'</b><span>'+esc(x.d.src || "")+(x.d.who ? " · " + esc(x.d.who) : "")+'</span></button>';
+  }).join("") || '<p class="note">Ничего не нашлось</p>';
+}
 function vmDuaObj(){ return DUAS.filter(function(d){ return d.id === VM.dua; })[0] || null; }
 /* сегменты без звука: текст, ссылка, длительность по длине текста */
 function vmSegs(){
   var out = [];
+  if(VM.kind === "qdua"){
+    var qd = vmQdObj(); if(!qd) return out;
+    var qa = vmQdAyahs(qd), who = String(qd.who || "").replace(/[.]$/, "");
+    if(who.length > 44) who = who.slice(0, 42).replace(/ [^ ]*$/, "") + "...";
+    if(!qa){
+      out.push({ ref:"Дуа из Корана · " + (qd.src || ""), who:who, words:vmWords(qd.ar), ru: VM.tr ? qd.ru : "", dur:Math.min(40, Math.max(8, 4 + String(qd.ar).length * 0.07)) });
+      return out;
+    }
+    for(var qa1 = qa.from; qa1 <= qa.to; qa1++){
+      var qi = ayahGlobal(qa.sura, qa1);
+      out.push({ i:qi, ref:"Дуа из Корана · «" + QSUR[qa.sura - 1][2] + "», " + qa1, who:who, words:qTokens(qi).filter(function(o){ return !o.b; }),
+        ru: VM.tr && HAS_TR ? QR[qi] : "", url: vmUrl(qi), dur:6 });
+    }
+    return out;
+  }
   if(VM.kind === "dua"){
     var d = vmDuaObj(); if(!d) return out;
     var dur = Math.min(60, Math.max(8, 4 + String(d.ar).length * 0.07 + String(d.ru || "").length * 0.025)) * VM.len;
@@ -14539,7 +14608,7 @@ function vmPreview(){
   if(!segs.length){ vmBgDraw(ctx, VM.bg, cv.width, cv.height, 1); return; }
   vmTimes(segs);
   var sg = segs[VM.kind === "ayah" && segs.length > 1 && !segs[0].i ? 1 : 0];
-  vmFonts().then(function(){ vmLayout(ctx, sg, cv.width, cv.height); vmFrame(ctx, cv.width, cv.height, sg.t0 + 1, [sg]); });
+  Promise.all([vmFonts(), vmPhoto(vmBgOf(VM.bg))]).then(function(){ vmLayout(ctx, sg, cv.width, cv.height); vmFrame(ctx, cv.width, cv.height, sg.t0 + 1, [sg]); });
 }
 function vmThumb(id){
   if(VM.th[id]) return VM.th[id];
@@ -14570,9 +14639,9 @@ function vmStat(t){ VM.stat = t; var e = document.getElementById("vmStat"); if(e
 function vmBuild(W, H){
   var segs = vmSegs();
   if(!segs.length) return Promise.reject(new Error("Выберите, что показать"));
-  if(VM.kind === "ayah" && !vmBase()) return Promise.reject(new Error("У этого чтеца звук нельзя записать в ролик. Выберите другого чтеца в настройках Корана"));
+  if((VM.kind === "ayah" || VM.kind === "qdua") && segs.some(function(x){ return x.url; }) && !vmBase()) return Promise.reject(new Error("У этого чтеца звук нельзя записать в ролик. Выберите другого чтеца в настройках Корана"));
   var n = 0, ctx = vmCanvas(10, 10).getContext("2d");
-  return vmFonts().then(function(){
+  return vmFonts().then(function(){ return vmPhoto(vmBgOf(VM.bg)); }).then(function(){
     return segs.reduce(function(p, sg){
       return p.then(function(){
         if(!sg.url) return;
@@ -14688,6 +14757,7 @@ function vmExt(type){ return String(type).indexOf("mp4") > -1 ? "mp4" : "webm"; 
 function vmDone(blob, res){
   var name = res.segs[0].ref.replace(/[«»,]/g, "").trim();
   if(VM.kind === "ayah") name = QSUR[VM.sura - 1][2] + " " + VM.from + (VM.to > VM.from ? "-" + VM.to : "");
+  if(VM.kind === "qdua"){ var nq = vmQdObj(), nqa = nq ? vmQdAyahs(nq) : null; name = "Дуа из Корана" + (nqa ? ", " + QSUR[nqa.sura - 1][2] + " " + nqa.from : ""); }
   var rec = { id:"c" + Date.now(), at:Date.now(), name:name, type:blob.type, size:blob.size, dur:Math.round(res.total), blob:blob };
   vmClipPut(rec).then(function(){ VM.clips = null; vmStat("Готово: ролик сохранён в «Моих роликах»"); if(V.view === "vmake") renderInPlace(); sheetClip(rec); });
 }
@@ -14719,6 +14789,7 @@ function viewVmake(){
   h.push('<p class="note" style="margin:0">Ролик для Reels, Shorts и TikTok: аяты голосом чтеца с подсветкой слов, азкары и дуа - на красивом фоне, со знаком JAVATTI.</p>');
   h.push('<div class="pill-row" style="justify-content:flex-start">'+
     '<button class="pill'+(VM.kind === "ayah" ? " on" : "")+'" data-vm="kind:ayah">Аяты</button>'+
+    '<button class="pill'+(VM.kind === "qdua" ? " on" : "")+'" data-vm="kind:qdua">Дуа из Корана</button>'+
     '<button class="pill'+(VM.kind === "dua" ? " on" : "")+'" data-vm="kind:dua">Азкары и дуа</button></div>');
   if(VM.kind === "ayah"){
     vmFix();
@@ -14732,6 +14803,15 @@ function viewVmake(){
       '<label class="dm-anon" style="margin:10px 0 0"><input type="checkbox" id="vmBasm"'+(VM.basm ? " checked" : "")+'> Басмала в начале суры - голосом чтеца</label>'+
       '<label class="dm-anon" style="margin:6px 0 0"><input type="checkbox" id="vmTr"'+(VM.tr ? " checked" : "")+'> Перевод смыслов (Кулиев)</label>'+
       '</section>');
+  } else if(VM.kind === "qdua"){
+    var qd = vmQdObj(), qa = qd ? vmQdAyahs(qd) : null;
+    h.push('<section class="card vm-box">'+
+      (qd ? '<div class="vm-sel"><b>'+esc(String(qd.ru || "").slice(0, 90))+(String(qd.ru || "").length > 90 ? "..." : "")+'</b><span>'+esc(qd.src || "")+(qd.who ? " · " + esc(qd.who) : "")+'</span></div>' : '')+
+      (qa ? '<p class="note" style="margin:0 0 6px">Прозвучит голосом чтеца: «'+esc(QSUR[qa.sura - 1][2])+'», '+(qa.to > qa.from ? "аяты " + qa.from + "-" + qa.to : "аят " + qa.from)+' целиком, как в Коране.</p>' : (qd ? '<p class="note" style="margin:0 0 6px">У этой дуа нет номера аята - ролик будет без звука.</p>' : ''))+
+      '<input id="vmQdQ" class="search" placeholder="Найти: Юнус, прощение, дети, знания..." value="'+esc(VM.qq || "")+'">'+
+      '<div id="vmQdList" class="vm-list">'+vmQdList(VM.qq)+'</div>'+
+      '<div class="rows" style="margin-top:10px"><button class="row" data-open="qsettings"><span class="ic">♪</span><span style="flex:1">Чтец</span><span class="val">'+esc(vmRec().n)+'</span></button></div>'+
+      '<label class="dm-anon" style="margin:10px 0 0"><input type="checkbox" id="vmTr"'+(VM.tr ? " checked" : "")+'> Перевод смыслов (Кулиев)</label></section>');
   } else {
     var d = vmDuaObj();
     h.push('<section class="card vm-box">'+
@@ -14743,8 +14823,9 @@ function viewVmake(){
         return '<button class="pill'+(VM.len === x[0] ? " on" : "")+'" data-vm="len:'+x[0]+'">'+x[1]+'</button>'; }).join("")+'</div>'+
       '<p class="note" style="margin:8px 0 0">Дуа идут без звука: голос или нашид без музыки можно добавить в самом Instagram.</p></section>');
   }
-  h.push('<div class="sec-h" style="margin-top:4px"><h3>Фон</h3></div><div class="vm-bgs">'+VM_BG.map(function(b){
-    return '<button class="vm-bg'+(VM.bg === b.id ? " on" : "")+'" data-vm="bg:'+b.id+'"><img alt="" src="'+vmThumb(b.id)+'"><span>'+esc(b.n)+'</span></button>'; }).join("")+'</div>');
+  function bgBtn(b){ return '<button class="vm-bg'+(VM.bg === b.id ? " on" : "")+'" data-vm="bg:'+b.id+'"><img alt="" loading="lazy" src="'+(b.thumb || vmThumb(b.id))+'"><span>'+esc(b.n)+'</span></button>'; }
+  h.push('<div class="sec-h" style="margin-top:4px"><h3>Фон: Мекка и Медина</h3></div><div class="vm-bgs">'+VM_BG.filter(function(b){ return b.photo; }).map(bgBtn).join("")+'</div>');
+  h.push('<div class="sec-h"><h3>Фон: узоры</h3></div><div class="vm-bgs">'+VM_BG.filter(function(b){ return !b.photo; }).map(bgBtn).join("")+'</div>');
   h.push('<div class="pill-row" style="justify-content:flex-start">'+Object.keys(VM_FMT).map(function(k){
     return '<button class="pill'+(VM.fmt === k ? " on" : "")+'" data-vm="fmt:'+k+'">'+k.replace("x", ":")+' · '+VM_FMT[k][2]+'</button>'; }).join("")+'</div>');
   var f = VM_FMT[VM.fmt];
@@ -14775,11 +14856,12 @@ function vmClipsHtml(){
 }
 function vmCmd(c){
   var p = c.split(":"), k = p[0], v = p.slice(1).join(":");
-  if(k === "kind"){ vmStop(); VM.kind = v; if(v === "dua" && !VM.dua){ var first = DUAS.filter(function(d){ return d.ar; })[0]; if(first) VM.dua = first.id; } renderInPlace(); return; }
+  if(k === "kind"){ vmStop(); VM.kind = v; if(v === "qdua" && VM.qd === undefined) VM.qd = 0; if(v === "dua" && !VM.dua){ var first = DUAS.filter(function(d){ return d.ar; })[0]; if(first) VM.dua = first.id; } renderInPlace(); return; }
   if(k === "bg"){ VM.bg = v; var bs = document.querySelectorAll(".vm-bg"); for(var q = 0; q < bs.length; q++) bs[q].classList.toggle("on", bs[q].getAttribute("data-vm") === c); vmPreview(); return; }
   if(k === "fmt"){ VM.fmt = v; renderInPlace(); return; }
   if(k === "len"){ VM.len = parseFloat(v); renderInPlace(); return; }
   if(k === "dsel"){ VM.dua = v; renderInPlace(); return; }
+  if(k === "qsel"){ VM.qd = parseInt(v, 10); renderInPlace(); return; }
   if(k === "play"){ VM.recording = false; vmRun(false); return; }
   if(k === "rec"){ if(VM.busy){ vmStop(); return; } VM.recording = true; vmRun(true); return; }
   if(k === "clip"){ var cl = (VM.clips || []).filter(function(x){ return x.id === v; })[0]; if(cl) sheetClip(cl); return; }
@@ -14801,6 +14883,10 @@ document.addEventListener("change", function(ev){
 document.addEventListener("input", function(ev){
   var t = ev.target; if(!t || t.id !== "vmDuaQ") return;
   VM.dq = t.value; var l = document.getElementById("vmDuaList"); if(l) l.innerHTML = vmDuaList(t.value);
+});
+document.addEventListener("input", function(ev){
+  var t = ev.target; if(!t || t.id !== "vmQdQ") return;
+  VM.qq = t.value; var l = document.getElementById("vmQdList"); if(l) l.innerHTML = vmQdList(t.value);
 });
 
 function viewQSettings(){
