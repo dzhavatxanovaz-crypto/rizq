@@ -2325,6 +2325,7 @@ details.more[open]>summary:after{content:"⌄"}
 .dm-amin{flex:1;padding:11px 14px;border-radius:14px;background:color-mix(in srgb,var(--gold) 16%,transparent);color:var(--ink);font-weight:600;font-size:13.5px}
 .dm-cnt{font-size:13px;font-weight:600;color:var(--ink-3);white-space:nowrap}
 .vm-sets{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.ar{white-space:pre-line}
 .cm-stats{font-size:13px;color:var(--ink-2);padding:2px 4px}
 .cm-stats span{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:2px}
 .cm-today{font-size:13.5px;font-weight:600;color:var(--gold);padding:0 4px}
@@ -14765,7 +14766,16 @@ function quranText(sura, from, to, withBasm){
     var i = ayahGlobal(sura, a);
     parts.push(qTokens(i).filter(function(o){ return !o.b; }).map(function(o){ return o.x; }).join(" ") + " ﴿" + arNum(ayahInSurah(i)) + "﴾");
   }
+  /* басмала - отдельной строкой над сурой */
+  if(withBasm && sura !== 9) return parts[0] + String.fromCharCode(10) + parts.slice(1).join(" ");
   return parts.join(" ");
+}
+/* «Короткие суры» и азкары: если текст начинается с басмалы - перенос строки после неё */
+function basmLine(t){
+  var w = String(t || "").split(" "), b = String(QA[0] || "").split(" ");
+  if(w.length <= 4 || w[4] === "" || w.slice(0, 4).map(arNorm).join(" ") !== b.slice(0, 4).map(arNorm).join(" ")) return t;
+  if(String(t).indexOf(String.fromCharCode(10)) > -1) return t;
+  return w.slice(0, 4).join(" ") + String.fromCharCode(10) + w.slice(4).join(" ");
 }
 /* в азкарах и «Дуа из Корана» аяты и суры целиком - из Корана, по аятам.
    Одиночный аят заменяем, только если в тексте весь аят, а не его часть. */
@@ -14778,7 +14788,8 @@ function quranTextsFix(){
     if(arLen(d.ar) >= arLen(full) * 0.92) d.ar = full + " ﴿" + arNum(ayahInSurah(i)) + "﴾";
   }
   try{
-    DUAS.forEach(function(d){ fix(d, vmDuaQuran(d)); });
+    DUAS.forEach(function(d){ fix(d, vmDuaQuran(d)); d.ar = basmLine(d.ar); });
+    if(typeof SURAS !== "undefined") SURAS.forEach(function(x){ if(x && x.ar) x.ar = basmLine(x.ar); });
     QURAN.forEach(function(d){ var q = vmQdAyahs(d); if(q) fix(d, { sura:q.sura, from:q.from, to:q.to, whole:false }); });
   }catch(e){}
 }
