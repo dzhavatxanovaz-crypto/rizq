@@ -2205,6 +2205,44 @@ details.more[open]>summary:after{content:"⌄"}
 .qrow b{display:block;font-family:var(--f-display);font-size:15px;font-weight:600}
 .qrow span{font-size:13px;color:var(--ink-3)}
 .qrow .qar{margin-left:auto;font-family:var(--f-ar);font-size:21px;color:var(--accent-ink);direction:rtl;flex:none}
+.km-help{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:10px 14px}
+.km-help summary{cursor:pointer;font-weight:600;font-size:14.5px;color:var(--ink);list-style:none;display:flex;align-items:center;gap:8px}
+.km-help summary::before{content:'?';flex:none;width:22px;height:22px;border-radius:50%;background:var(--gold);color:#fff;font-size:13px;display:grid;place-items:center}
+.km-help summary::-webkit-details-marker{display:none}
+.km-help ol,.km-help ul{margin:10px 0 2px;padding-left:20px;font-size:14px;line-height:1.55;color:var(--ink-2)}
+.km-help li{margin-bottom:6px}
+.km-proof p{font-size:14px;line-height:1.6;color:var(--ink-2);margin:10px 0 0}
+.km-proof cite{font-style:normal;color:var(--ink-3);font-size:12.5px}
+.km-proof-h{display:block;margin-top:12px;font-size:14px}
+.km-legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--ink-2);padding:0 2px}
+.km-legend span{display:inline-flex;align-items:center;gap:6px}
+.km-legend i{width:14px;height:14px;border-radius:4px;border:1px solid var(--line);background:var(--surface)}
+.km-legend i.busy{background:var(--surface-2)}
+.km-legend i.me{border:2px solid var(--emerald)}
+.km-legend i.done{border-color:var(--gold);background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--gold)}
+.km-j small{font-size:11px;color:var(--ink-3);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tr-text{font-size:17px;line-height:1.8;color:var(--ink);text-align:left}
+.tr-basm{display:block;text-align:center;font-style:italic;color:var(--ink-2);margin-bottom:10px}
+.tr-n{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 5px;margin:0 5px 0 2px;border-radius:12px;border:1px solid var(--gold);background:none;color:var(--gold);font-size:11.5px;font-weight:700;vertical-align:2px;line-height:1}
+.dm-hadith{margin:0;padding:14px 16px;border-radius:16px;border:1.5px solid var(--gold);background:var(--surface);font-size:15.5px;line-height:1.6;color:var(--ink)}
+.dm-hadith span{display:block;font-size:12.5px;color:var(--ink-3);margin-bottom:4px}
+.dm-hadith b{color:var(--gold);font-size:17px}
+.dm-hadith cite{display:block;font-style:normal;font-size:12.5px;color:var(--ink-3);margin-top:6px}
+.dm-plate{border-color:var(--gold)}
+.cm-stats{font-size:13px;color:var(--ink-2);padding:2px 4px}
+.cm-stats span{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:2px}
+.cm-today{font-size:13.5px;font-weight:600;color:var(--gold);padding:0 4px}
+.km-due{font-size:12.5px;font-weight:600;color:var(--gold)}
+.km-due.late{color:#C0392B}
+.dm-rep{margin-left:auto;background:none;border:0;padding:4px 0;font-size:11.5px;color:var(--ink-3);text-decoration:underline}
+.dm-anon{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-2);margin:0 0 12px}
+.cm-home{display:flex;flex-direction:column;gap:0;padding:4px 14px}
+.cm-home-row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px 0;background:none;border:0;color:inherit}
+.cm-home-row + .cm-home-row{border-top:1px solid var(--line-soft)}
+.cm-home-row .ic{font-size:20px;color:var(--gold);flex:none;width:26px;text-align:center}
+.cm-home-row b{display:block;font-size:14.5px}
+.cm-home-row em{display:block;font-style:normal;font-size:12.5px;color:var(--ink-3);margin-top:1px}
+.cm-home-row .go{margin-left:auto;font-size:13px;color:var(--emerald);white-space:nowrap}
 .km-card{display:flex;flex-direction:column;gap:6px;text-align:left;width:100%}
 .km-card b,.km-title{font-family:var(--f-display);font-size:17px;color:var(--ink)}
 .km-left{font-size:12.5px;font-weight:600;color:var(--emerald)}
@@ -5814,7 +5852,11 @@ function fbDoneCheck(){
 
 /* «Что нового» - один раз после обновления. Новым пользователям не показываем:
    для них всё новое. Чтобы показать снова, поменять WN.id и пункты. */
-var WN = { id:"2026-10-01", items:[
+var WN = { id:"2026-10-01c", items:[
+  ["♡", "Дуа друг за друга - на главной", "попросите сестёр сделать дуа за вас - просьбу увидят все сёстры в RIZQ"],
+  ["Ru", "Перевод смыслов целиком", "сура за сурой, как книгу - «Коран», под плеером сур"],
+  ["◎", "Как устроен круг хатма", "объяснение прямо в круге и доводы: как читали Коран при Пророке ﷺ"],
+  ["🔔", "Сообщество напомнит", "за вас сделали дуа, ваш джуз ждёт, хатм завершён - и срок хатма к нужной дате"],
   ["◎", "Хатм вместе", "читайте Коран кругом с подругами: 30 джузов на всех, приглашение ссылкой - вкладка «Коран»"],
   ["♡", "Дуа друг за друга", "попросите сестёр сделать за вас дуа и сделайте дуа за них - вкладка «Знания»"],
   ["ru", "Перевод смыслов Корана", "перевод Эльмира Кулиева под каждым аятом и поиск по нему; кнопка «Ru» в чтении"],
@@ -6226,6 +6268,7 @@ function back(){
   if(V.view==="qsettings" || V.view==="qsearch"){ V.view=null; V.p=null; V.q=""; render(); return; }
   if(V.view==="name"){ V.view="names"; V.p=null; V.q=""; render(); return; }
   if(V.view==="khatm"){ V.view="khatms"; V.p=null; render(); return; }
+  if(V.view==="trread" && V.p !== null && V.p !== undefined && V.p !== ""){ V.p=null; render(); $screen.scrollTop = 0; return; }
   if(V.view==="hadithOne"){ V.view="hadith"; V.p=null; V.q=""; render(); return; }
   if(V.view==="course"){ V.view="courses"; V.p=null; render(); return; }
   if(V.view==="kidstory"){ kidStop(); V.view="kids"; V.p=null; render(); return; }
@@ -6462,7 +6505,8 @@ function renderHdr(){
         : V.view==="spl" ? "Плеер сур"
         : V.view==="khatms" ? "Хатм вместе"
         : V.view==="khatm" ? "Круг хатма"
-        : V.view==="duas" ? "Дуа друг за друга" : "";
+        : V.view==="duas" ? "Дуа друг за друга"
+        : V.view==="trread" ? (V.p !== null && V.p !== undefined && V.p !== "" && QSUR[V.p] ? QSUR[V.p][2] : "Перевод смыслов") : "";
     $hdr.innerHTML = '<header class="hdr"><div class="hdr-row">'+
       '<button class="back" data-back="1" aria-label="Назад">‹</button>'+
       '<div><h2 class="hdr-title">'+esc(t)+'</h2></div></div></header>';
@@ -6705,6 +6749,8 @@ function viewHomeMain(){
 
   /* сегодня: то, что отмечают и читают каждый день */
   h.push('<div class="sec-h"><h3>Сегодня</h3></div>');
+  h.push(cmHomeCard());
+  h.push(cmDuaPlate());
   /* план чтения Корана: одна строка, если план идёт - сразу под временем намаза (просьба Заиры 21.09).
      На главной он нужен не для отчёта, а чтобы вспомнить о нём до вечера. */
   (function(){
@@ -7058,7 +7104,8 @@ function deepOpen(qArg){
        такой ссылке, сразу попадает туда, куда его звали, и его не встречает
        вопрос о городе: город он выберет, когда дойдёт до намаза. */
     var GO_LINKS = { qw:["arabic", "qw"], club:["arabic", "club"], arabic:["arabic", null],
-      quran:["quran", null], azkar:["azkar", null], kniga:["book1", null], book:["book1", null] };
+      quran:["quran", null], azkar:["azkar", null], kniga:["book1", null], book:["book1", null],
+      duas:["duas", null], khatms:["khatms", null] };
     /* ?post=<id> - открыть запись журнала (ссылка «Поделиться») */
     var mpo = q.match(/[?&]post=([a-z0-9_-]+)/);
     if(mpo){ S.welcomed = 1; save(); V.tab = "journal"; open("post", decodeURIComponent(mpo[1])); return true; }
@@ -7080,7 +7127,8 @@ function deepOpen(qArg){
     if(mg && GO_LINKS[mg[1]]){
       var g = GO_LINKS[mg[1]];
       S.welcomed = 1; save();
-      if(g[0] === "arabic") V.tab = "dua";
+      if(g[0] === "arabic" || g[0] === "duas") V.tab = "dua";
+      if(g[0] === "khatms") V.tab = "quran";
       open(g[0], g[1]);
       return true;
     }
@@ -7384,6 +7432,7 @@ function buildIndex(){
    ["Хадж и умра в пути","чек-лист по шагам, счёт кругов","open:hajjtrip","хадж умра чек-лист чеклист таваф сай круги ихрам мекка паломничество камни джамарат арафат муздалифа мина сборы"],
    ["Детям","истории пророков, перед сном, дуа, имена","open:kids","дети детям ребенок ребёнок истории пророков сказки перед сном на ночь дуа для детей имена имя для ребенка мальчику девочке"],
    ["Исламская рассрочка","партнёры и покупка товара в рассрочку","open:installment","рассрочка исламская халяль мурабаха кредит без процентов частями взносы купить в рассрочку партнерское финансирование"],
+   ["Перевод смыслов","перевод Кулиева целиком, сура за сурой","open:trread","перевод смыслов кулиев тафсир читать по-русски текст корана целиком"],
    ["Хатм вместе","читать Коран кругом","open:khatms","хатм вместе круг джуз подруги сёстры сообщество читать коран вместе"],
    ["Дуа друг за друга","попросить дуа, сделать дуа за сестёр","open:duas","дуа просьба помолиться сообщество сёстры друг за друга"],
    ["Плеер сур","больше 200 чтецов, суры целиком","open:spl","плеер сура чтец слушать коран целиком аудио афаси судайс гамиди мп3"],
@@ -12797,6 +12846,8 @@ function viewQuranHome(){
     '<button data-open="qoffline"><span>⤓</span>Офлайн'+(qoffN ? '<em>'+qoffN+'</em>' : '')+'</button></div>');
   h.push('<button class="cat-wide gold" data-open="spl" style="margin-top:10px"><span class="cw-ic">▶</span>'+
     '<span class="cw-t"><b>Плеер сур</b><span>Больше 200 чтецов, суры целиком, поиск по имени</span></span><span class="cw-go">›</span></button>');
+  h.push('<button class="cat-wide" data-open="trread" style="margin-top:10px"><span class="cw-ic">Ru</span>'+
+    '<span class="cw-t"><b>Перевод смыслов</b><span>перевод Кулиева целиком, сура за сурой - как книгу</span></span><span class="cw-go">›</span></button>');
   h.push('<button class="cat-wide" data-open="khatms" style="margin-top:10px"><span class="cw-ic">◎</span>'+
     '<span class="cw-t"><b>Хатм вместе</b><span>читайте Коран кругом: 30 джузов на всех</span></span><span class="cw-go">›</span></button>');
   h.push('<div class="sec-h"><h3>Мой путь</h3></div>');
@@ -12836,7 +12887,7 @@ function viewQuranHome(){
       h.push('<button class="qrow" data-qsurah="'+i+'">'+
         '<span class="qnum">'+s[0]+'</span>'+
         '<div class="qrow-t"><b>'+esc(s[2])+'</b>'+
-        '<span>'+esc(s[3])+' · '+s[4]+' аят'+(s[4]%10===1&&s[4]%100!==11?"":"ов")+' · '+(s[5]==="meccan"?"Мекка":"Медина")+'</span></div>'+
+        '<span>'+esc(s[3])+' · '+plural(surahAyatCount(i), "аят", "аята", "аятов")+' · '+(s[5]==="meccan"?"Мекка":"Медина")+'</span></div>'+
         '<span class="qar">'+esc(s[1])+'</span></button>');
     });
     h.push('</div>');
@@ -13315,7 +13366,7 @@ function viewMushaf(plain){
     var s = surahOf(i);
     if(i === QSUR[s][6]){
       body += '</div><div class="mus-sura"><i></i><b>'+esc(QSUR[s][1])+'</b><i></i></div>'+
-        '<div class="mus-sura-ru">'+esc(QSUR[s][2])+' · '+surahAyatCount(s)+' аятов</div>'+
+        '<div class="mus-sura-ru">'+esc(QSUR[s][2])+' · '+plural(surahAyatCount(s), "аят", "аята", "аятов")+'</div>'+
         (QSUR[s][0] !== 9 ? '<div class="mus-bism">'+esc("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ")+'</div>' : '')+
         '<div class="mus-text">';
     }
@@ -13385,7 +13436,7 @@ function viewReader(){
       '<div class="ar" style="font-size:28px;line-height:1.9">'+esc(QSUR[s][1])+'</div>'+
       '<div style="font-family:var(--f-display);font-size:16.5px;font-weight:600;margin-top:4px">'+esc(QSUR[s][2])+' - '+esc(QSUR[s][3])+'</div>'+
       (HAS_TR && S.qTr ? '<div class="ru" style="font-size:11.5px;color:rgba(255,255,255,.55);margin-bottom:2px">Перевод смыслов: Эльмир Кулиев</div>' : '')+
-      '<div class="ru" style="font-size:13px;color:rgba(255,255,255,.66)">'+surahAyatCount(s)+' аятов · '+(QSUR[s][5]==="meccan"?"мекканская":"мединская")+'</div>'+
+      '<div class="ru" style="font-size:13px;color:rgba(255,255,255,.66)">'+plural(surahAyatCount(s), "аят", "аята", "аятов")+' · '+(QSUR[s][5]==="meccan"?"мекканская":"мединская")+'</div>'+
       (QSUR[s][0]!==9 ? '<div class="ar" style="font-size:22px;margin-top:10px;color:var(--gold-soft)">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>' : '')+
       '</section>');
   }
@@ -13553,7 +13604,7 @@ function viewSpl(){
     var n = k + 1; if(!splHas(r, n)) return '';
     var on = n === cur;
     return '<button class="row" data-splplay="'+n+'"'+(on ? ' style="border-color:var(--gold)"' : '')+'><span class="ic">'+(on && SPL.playing ? "❚❚" : n)+'</span>'+
-      '<span style="flex:1;min-width:0">'+esc(q[2])+'<span style="display:block;font-size:12px;color:var(--ink-3)">'+surahAyatCount(k)+' аятов</span></span>'+
+      '<span style="flex:1;min-width:0">'+esc(q[2])+'<span style="display:block;font-size:12px;color:var(--ink-3)">'+plural(surahAyatCount(k), "аят", "аята", "аятов")+'</span></span>'+
       '<span class="val" style="font-family:var(--f-ar)">'+esc(q[1])+'</span></button>';
   }).join("")+'</div>');
   h.push('<p class="disclaimer">Записи - mp3quran.net, риваят Хафс от Асыма. Нужен интернет.</p></div>');
@@ -13578,7 +13629,7 @@ function cmFetch(p, body){
     .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return { status:r.status, ok:r.ok, j:j || {} }; }); });
 }
 function cmHere(){ return V.view === "khatms" || V.view === "khatm" || V.view === "duas"; }
-function cmRedraw(){ if(cmHere() && !document.querySelector(".scrim")) renderInPlace(); }
+function cmRedraw(){ if((cmHere() || (V.tab === "home" && !V.view)) && !document.querySelector(".scrim")) renderInPlace(); }
 var CM_NET = "Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.";
 /* Общий разбор ответа: вышел ключ - просим войти; нет имени - просим имя и повторяем. */
 function cmOk(r, again){
@@ -13589,8 +13640,9 @@ function cmOk(r, again){
 }
 function cmMe(force){
   cmFresh();
-  if(!accOn() || CM.meBusy || ((CM.me || CM.meErr) && !force)) return;
-  CM.meBusy = true;
+  if(!accOn() || CM.meBusy) return;
+  if(!force && (CM.me || CM.meErr) && Date.now() - (CM.meAt || 0) < 600000) return;
+  CM.meBusy = true; CM.meAt = Date.now();
   cmFetch("/me").then(function(r){
     CM.meBusy = false;
     if(r.status === 401){ CM.meErr = "Войдите в аккаунт заново"; cmRedraw(); return; }
@@ -13639,7 +13691,50 @@ function cmLoginCard(what){
 function cmNameRow(){
   var n = CM.me && CM.me.name;
   return '<div class="rows"><button class="row" data-cm="name"><span class="ic">☺</span>'+
-    '<span style="flex:1">Имя в сообществе</span><span class="val">'+(n ? esc(n) : "выбрать")+'</span></button></div>';
+    '<span style="flex:1">Имя в сообществе</span><span class="val">'+(n ? esc(n) : "выбрать")+'</span></button>'+
+    (n ? '<button class="row" data-cm="pushtog"><span class="ic">🔔</span><span style="flex:1">Уведомления сообщества'+
+      '<span style="display:block;font-size:12px;color:var(--ink-3)">за вас сделали дуа, ваш джуз ждёт, хатм завершён</span></span>'+
+      '<span class="val">'+(CM.me.push === false ? "выкл" : "вкл")+'</span></button>' : '')+'</div>';
+}
+/* Личный вклад - только себе: без рейтингов и сравнения с другими. */
+function cmStatsLine(){
+  var st = CM.me && CM.me.stats;
+  if(!st || !(st.juz || st.dua || st.khatms)) return "";
+  var parts = [];
+  if(st.juz) parts.push("прочитано " + plural(st.juz, "джуз", "джуза", "джузов"));
+  if(st.khatms) parts.push("хатмов вместе: " + st.khatms);
+  if(st.dua) parts.push("дуа за сестёр: " + st.dua);
+  return '<div class="cm-stats"><span>Ваш вклад</span>'+esc(parts.join(" · "))+'</div>';
+}
+/* Срок хатма: сколько дней осталось и сколько джузов в день. */
+function cmDueLine(c){
+  if(!c.due) return "";
+  var d = new Date(c.due + "T00:00:00"), now = new Date(); now.setHours(0, 0, 0, 0);
+  var days = Math.round((d - now) / 86400000), left = 30 - c.done;
+  var when = d.toLocaleDateString("ru-RU", { day:"numeric", month:"long" });
+  if(c.complete) return '<div class="km-due">Срок: до '+esc(when)+'</div>';
+  if(days < 0) return '<div class="km-due late">Срок '+esc(when)+' прошёл - дочитайте, ин ша Аллах</div>';
+  var per = days > 0 ? Math.ceil(left / days * 10) / 10 : left;
+  return '<div class="km-due">До '+esc(when)+' · '+(days === 0 ? "сегодня последний день" : "осталось "+plural(days, "день", "дня", "дней"))+
+    (left ? ' · нужно в день ≈ '+String(per).replace(".", ",")+' '+(per % 1 ? "джуза" : per === 1 ? "джуз" : per < 5 ? "джуза" : "джузов") : '')+'</div>';
+}
+/* Главная: одна карточка сообщества, только когда есть что сказать. */
+function cmHomeCard(){
+  if(!accOn()) return "";
+  cmMe();
+  var m = CM.me; if(!m) return "";
+  var rows = [];
+  (m.circles || []).forEach(function(c){
+    (c.mine || []).forEach(function(x){
+      if(!x.done && rows.length < 2) rows.push('<button class="cm-home-row" data-kread="'+x.n+'" data-kcode="'+esc(c.code)+'">'+
+        '<span class="ic">◎</span><span><b>Ваш джуз '+x.n+' ждёт</b><em>круг «'+esc(c.title)+'»'+(c.due ? ' · до '+esc(new Date(c.due + "T00:00:00").toLocaleDateString("ru-RU", { day:"numeric", month:"long" })) : '')+'</em></span><span class="go">Читать ›</span></button>');
+    });
+  });
+  var dn = m.dua ? (m.dua.n || 0) - (S.cmDuaSeen || 0) : 0;
+  if(dn > 0) rows.push('<button class="cm-home-row" data-open="duas"><span class="ic">♡</span><span><b>За вас сделали дуа ещё '+plural(dn, "раз", "раза", "раз")+'</b>'+
+    '<em>Да примет Аллах! Сделайте дуа и за сестёр</em></span><span class="go">›</span></button>');
+  if(!rows.length) return "";
+  return '<section class="card cm-home">'+rows.join("")+'</section>';
 }
 function cmWait(err, retry){
   if(err) return '<section class="card"><p class="note" style="margin:0 0 10px">'+esc(err)+'</p><button class="btn sec sm" data-cm="'+retry+'">Повторить</button></section>';
@@ -13653,10 +13748,11 @@ function cmBar(done){
 function viewKhatms(){
   var h = ['<div class="stack">'];
   h.push('<p class="note" style="margin:0">Прочитайте Коран целиком вместе с подругами, семьёй или сёстрами из мечети: круг делит 30 джузов, каждая берёт свои и отмечает прочитанное. Позвать в круг можно только ссылкой.</p>');
-  if(!accOn()){ h.push(cmLoginCard("Хатм вместе")); h.push('</div>'); return h.join(""); }
+  if(!accOn()){ h.push(cmKhatmHelp(true)); h.push(cmKhatmProof()); h.push(cmLoginCard("Хатм вместе")); h.push('</div>'); return h.join(""); }
   cmMe();
   if(!CM.me){ h.push(cmWait(CM.meErr, "reme")); h.push('</div>'); return h.join(""); }
   h.push(cmNameRow());
+  h.push(cmStatsLine());
   var cs = CM.me.circles || [];
   if(!cs.length) h.push('<section class="card"><p class="note" style="margin:0">Вы пока ни в одном круге. Создайте свой и отправьте ссылку подругам - или откройте ссылку, которую прислали вам.</p></section>');
   cs.forEach(function(c){
@@ -13664,6 +13760,7 @@ function viewKhatms(){
     h.push('<button class="card km-card" data-kopen="'+esc(c.code)+'">'+
       '<b>'+esc(c.title)+'</b>'+
       '<span class="note">'+plural(c.members, "участница", "участницы", "участниц")+' · хатм №'+c.round+(c.roundsDone ? ' · завершено: '+c.roundsDone : '')+'</span>'+
+      cmDueLine(c)+
       cmBar(c.done)+
       '<span class="note">Прочитано '+c.done+' из 30'+(mine.length ? ' · ваши: '+mine.map(function(x){ return x.n + (x.done ? " ✓" : ""); }).join(", ") : ' · вы ещё не взяли джуз')+'</span>'+
       (left.length ? '<span class="km-left">Осталось прочитать вам: '+left.length+'</span>' : '')+
@@ -13671,6 +13768,8 @@ function viewKhatms(){
   });
   h.push('<button class="btn" data-cm="new">Создать круг</button>');
   h.push('<button class="btn sec" data-cm="join">Вступить по ссылке</button>');
+  h.push(cmKhatmHelp(!cs.length));
+  h.push(cmKhatmProof());
   h.push('<p class="disclaimer" style="text-align:left;padding:0 2px">В кругах нет переписки и фото - только имена и отметки о чтении. Круг видят лишь те, у кого есть ссылка.</p>');
   h.push('</div>');
   return h.join("");
@@ -13685,9 +13784,10 @@ function viewKhatm(){
   var c = CM.cCode === code ? CM.circle : null;
   if(!c){ h.push(cmWait(CM.cErr, "recircle")); h.push('</div>'); return h.join(""); }
   h.push('<section class="card km-head"><div class="km-title">'+esc(c.title)+'</div>'+
-    '<div class="note">Хатм №'+c.round+(c.roundsDone ? ' · круг уже завершил '+plural(c.roundsDone, "хатм", "хатма", "хатмов") : '')+'</div>'+
+    '<div class="note">Идёт хатм №'+c.round+(c.roundsDone ? ' · круг уже завершил '+plural(c.roundsDone, "хатм", "хатма", "хатмов") : '')+'</div>'+
     cmBar(c.done)+
-    '<div class="note">Прочитано '+c.done+' из 30 · взято '+c.taken+'</div></section>');
+    '<div class="note">Прочитано '+c.done+' из 30 · взято '+c.taken+'</div>'+cmDueLine(c)+
+    (c.owner && !c.complete ? '<button class="btn ghost sm" style="align-self:flex-start;margin-top:4px" data-cm="due">'+(c.due ? "Изменить срок" : "Поставить срок хатма")+'</button>' : '')+'</section>');
   if(!c.member){
     h.push('<button class="btn" data-cm="joinnow">Вступить в круг</button>');
     h.push('<p class="note" style="margin:0">После вступления вы увидите, кто какой джуз читает, и сможете взять свой.</p>');
@@ -13697,13 +13797,16 @@ function viewKhatm(){
       '<p class="note" style="margin:6px 0 10px">Круг прочитал Коран целиком. Сделайте дуа - и можно начинать следующий хатм.</p>'+
       (c.member ? '<button class="btn" data-cm="next">Начать новый хатм</button>' : '')+'</section>');
   }
+  h.push(cmKhatmHelp(!c.member || c.taken === 0));
   if(c.member) h.push('<button class="btn sec" data-cm="invite">Пригласить в круг</button>');
+  h.push(cmKhatmLegend());
   h.push('<div class="km-grid">'+c.juz.map(function(j){
     var cls = j.done ? "done" : (j.me ? "me" : ((j.name || j.taken) ? "busy" : "free"));
     var who = j.done ? (j.name ? esc(j.name) : "прочитан") : (j.name ? esc(j.name) : (j.taken ? "взят" : "свободен"));
     return '<button class="km-j '+cls+'" data-kj="'+j.n+'" aria-label="Джуз '+j.n+': '+who+'">'+
-      '<b>'+j.n+(j.done ? ' ✓' : '')+'</b><span>'+who+'</span></button>';
+      '<b>Джуз '+j.n+(j.done ? ' ✓' : '')+'</b><small>'+esc(juzStartLbl(j.n))+'</small><span>'+who+'</span></button>';
   }).join("")+'</div>');
+  h.push(cmKhatmProof());
   if(c.member){
     h.push('<div class="note">В круге: '+c.members.map(function(m){ return esc(m.name) + (m.me ? " (вы)" : ""); }).join(", ")+'</div>');
     h.push('<button class="btn ghost sm" data-cm="leave">Выйти из круга</button>');
@@ -13761,17 +13864,23 @@ function cmReaderCard(from){
 /* ---------- дуа друг за друга ---------- */
 function viewDuas(){
   var h = ['<div class="stack">'];
-  h.push('<p class="note" style="margin:0">Попросите сестёр сделать за вас дуа - и сделайте дуа за них. Пророк ﷺ сказал: «Нет такого мусульманина, который обратился бы к Аллаху с мольбой за своего брата в его отсутствие, чтобы ангел не сказал: „И тебе того же“» (Муслим, 2732).</p>');
+  h.push('<p class="note" style="margin:0">Попросите сестёр сделать за вас дуа - вашу просьбу увидят все сёстры в RIZQ. И сделайте дуа за них.</p>');
+  h.push(cmHadithCard());
+  h.push(cmDuaProof());
   if(!accOn()){ h.push(cmLoginCard("Дуа друг за друга")); h.push('</div>'); return h.join(""); }
   cmMe(); cmDua();
   if(!CM.dua){ h.push(cmWait(CM.dErr, "redua")); h.push('</div>'); return h.join(""); }
   h.push(cmNameRow());
+  if(CM.dua.today) h.push('<div class="cm-today">Сегодня сёстры сделали дуа '+plural(CM.dua.today, "раз", "раза", "раз")+'</div>');
+  h.push(cmStatsLine());
   var m = CM.dua.mine;
+  if(m && (m.n || 0) > (S.cmDuaSeen || 0)){ S.cmDuaSeen = m.n; save(); }
   if(m){
     var st = m.note ? (m.noteStatus === "ok" ? "Ваши слова видны всем" : m.noteStatus === "pending" ? "Ваши слова ждут проверки - пока их видите только вы" : "Ваши слова не прошли проверку - просьба видна без них") : "";
     var days = Math.max(0, Math.ceil((Date.parse(String(m.expires).replace(" ", "T") + "Z") - Date.now()) / 86400000));
     h.push('<section class="card dm-mine"><span class="note">Ваша просьба</span>'+
       '<b>'+esc(duaTopic(m.topic))+'</b>'+
+      (m.anon ? '<span class="note">Сёстры видят вас как «Сестра»</span>' : '')+
       (m.note ? '<div class="dm-note">«'+esc(m.note)+'»</div><span class="note">'+st+'</span>' : '')+
       '<div class="dm-n">'+(m.n ? 'За вас сделали дуа '+plural(m.n, "раз", "раза", "раз")+(m.people > 1 ? ' ('+plural(m.people, "сестра", "сестры", "сестёр")+')' : '') : 'Скоро за вас сделают дуа, ин ша Аллах')+'</div>'+
       '<span class="note">Просьба видна ещё '+plural(days, "день", "дня", "дней")+'</span>'+
@@ -13789,8 +13898,10 @@ function viewDuas(){
     h.push('<section class="card dm-it"><div class="dm-h"><b>'+esc(x.name)+'</b><span>'+esc(duaTopic(x.topic))+'</span></div>'+
       (x.note ? '<div class="dm-note">«'+esc(x.note)+'»</div>' : '')+
       '<div class="dm-f">'+(x.done ? '<span class="dm-ok">✓ Вы сделали дуа сегодня</span>' : '<button class="btn sm" data-duamade="'+x.id+'">Я сделала дуа</button>')+
-      '<span class="note">'+(x.n ? 'дуа сделали '+plural(x.n, "раз", "раза", "раз") : '')+'</span></div></section>');
+      '<span class="note">'+(x.n ? 'дуа сделали '+plural(x.n, "раз", "раза", "раз") : '')+'</span>'+
+      '<button class="dm-rep" data-dreport="'+x.id+'" aria-label="Пожаловаться на просьбу">Пожаловаться</button></div></section>');
   });
+  h.push('<button class="btn sec" data-cm="shareduas">↗ Поделиться с подругами</button>');
   h.push('<p class="disclaimer" style="text-align:left;padding:0 2px">Здесь нет переписки и фото. Свои слова в просьбе появляются после проверки - без ссылок, телефонов и подробностей, по которым можно узнать человека.</p>');
   h.push('</div>');
   return h.join("");
@@ -13806,13 +13917,15 @@ function sheetDuaAsk(){
     '<label class="note" style="display:block;margin:12px 0 6px" for="dmNote">Свои слова, если хотите (до 140 знаков). Их увидят после проверки.</label>'+
     '<textarea id="dmNote" maxlength="140" rows="2" style="width:100%" placeholder="Например: за маму перед операцией">'+esc(m && m.note || "")+'</textarea>'+
     '<p class="note" style="margin:6px 0 12px">Без имён, фамилий, телефонов и ссылок.</p>'+
+    '<label class="dm-anon"><input type="checkbox" id="dmAnon"'+(m && m.anon ? ' checked' : '')+'> Не показывать моё имя - сёстры увидят «Сестра»</label>'+
     '<button class="btn" data-cm="duasend">'+(m ? "Сохранить" : "Попросить")+'</button>'+
     '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
 }
 function cmDuaSend(){
   if(!CM.topic){ toast("Выберите тему"); return; }
   var ta = document.getElementById("dmNote"), note = ta ? ta.value.trim() : "";
-  cmFetch("/dua", { topic:CM.topic, note:note }).then(function(r){
+  var an = document.getElementById("dmAnon");
+  cmFetch("/dua", { topic:CM.topic, note:note, anon: !!(an && an.checked) }).then(function(r){
     if(!cmOk(r, function(){ sheetDuaAsk(); })) return;
     closeSheet();
     if(CM.dua) CM.dua.mine = r.j.mine;
@@ -13846,13 +13959,16 @@ function sheetKhatmNew(){
   sheet('<h3>Новый круг хатма</h3>'+
     '<p class="note" style="margin:0 0 10px">Назовите круг - это название увидят те, кого вы пригласите.</p>'+
     '<input class="search" id="kmTitle" maxlength="60" placeholder="Например: Хатм сестёр к Рамадану">'+
+    '<label class="note" style="display:block;margin:12px 0 6px" for="kmDue">Дочитать к дате (по желанию)</label>'+
+    '<input class="search" id="kmDue" type="date" min="'+todayKey()+'">'+
     '<button class="btn" style="margin-top:12px" data-cm="newsave">Создать</button>'+
     '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
 }
 function cmNewSave(){
   var el2 = document.getElementById("kmTitle"), t = el2 ? el2.value.trim() : "";
   if(t.length < 2){ toast("Напишите название круга"); return; }
-  cmFetch("/khatm", { title:t }).then(function(r){
+  var dd = document.getElementById("kmDue"), due = dd && dd.value ? dd.value : null;
+  cmFetch("/khatm", { title:t, due:due }).then(function(r){
     if(!cmOk(r, function(){ sheetKhatmNew(); })) return;
     closeSheet();
     CM.circle = r.j; CM.cCode = r.j.code; cmMe(true);
@@ -13884,8 +14000,49 @@ function cmShare(){
   var t = x.text + " " + x.url;
   try{ navigator.clipboard.writeText(t).then(function(){ toast("Ссылка скопирована"); }, function(){ toast(x.url); }); }catch(e){ toast(x.url); }
 }
+function sheetDue(){
+  var c = CM.circle; if(!c) return;
+  sheet('<h3>Срок хатма</h3>'+
+    '<p class="note" style="margin:0 0 10px">К какой дате круг хочет дочитать Коран? Участницы увидят, сколько джузов в день нужно читать, а за три дня до срока получат напоминание.</p>'+
+    '<input class="search" id="kmDue2" type="date" min="'+todayKey()+'" value="'+esc(c.due || "")+'">'+
+    '<button class="btn" style="margin-top:12px" data-cm="duesave">Сохранить</button>'+
+    (c.due ? '<button class="btn ghost" style="margin-top:8px" data-cm="dueclear">Без срока</button>' : '')+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
+}
+function cmDueSave(clear){
+  var code = String(V.p || ""), el2 = document.getElementById("kmDue2");
+  var due = clear ? null : (el2 && el2.value ? el2.value : null);
+  if(!clear && !due){ toast("Выберите дату"); return; }
+  cmFetch("/khatm/" + encodeURIComponent(code) + "/due", { due:due }).then(function(r){
+    if(!cmOk(r)) return;
+    closeSheet(); CM.circle = r.j; cmMe(true);
+    toast(due ? "Срок поставлен" : "Срок снят"); cmRedraw();
+  }).catch(function(){ toast(CM_NET); });
+}
+function cmReport(id){
+  if(!confirm("Пожаловаться на эту просьбу? Она сразу пропадёт у вас, а мы её проверим.")) return;
+  cmFetch("/dua/" + id + "/report", {}).then(function(r){
+    if(!cmOk(r)) return;
+    if(CM.dua) CM.dua.items = (CM.dua.items || []).filter(function(x){ return x.id !== id; });
+    toast("Спасибо. Проверим сегодня"); cmRedraw();
+  }).catch(function(){ toast(CM_NET); });
+}
 function cmCmd(c){
   var code = String(V.p || "");
+  if(c === "shareduas"){ cmShareDuas(); return; }
+  if(c === "due"){ sheetDue(); return; }
+  if(c === "duesave"){ cmDueSave(false); return; }
+  if(c === "dueclear"){ cmDueSave(true); return; }
+  if(c === "pushtog"){
+    var on = !(CM.me && CM.me.push !== false);
+    cmFetch("/prefs", { push:on }).then(function(r){
+      if(!cmOk(r)) return;
+      if(CM.me) CM.me.push = r.j.push;
+      toast(r.j.push ? (S.push && S.push.on === false ? "Включено. Уведомления RIZQ тоже должны быть включены в Профиле" : "Уведомления сообщества включены") : "Уведомления сообщества выключены");
+      cmRedraw();
+    }).catch(function(){ toast(CM_NET); });
+    return;
+  }
   if(c === "reme"){ CM.meErr = ""; cmMe(true); renderInPlace(); return; }
   if(c === "recircle"){ CM.cErr = ""; CM.circle = null; cmCircle(code, true); renderInPlace(); return; }
   if(c === "redua"){ CM.dErr = ""; cmDua(true); renderInPlace(); return; }
@@ -13945,6 +14102,115 @@ function cmDuaMade(id){
     (CM.dua && CM.dua.items || []).forEach(function(x){ if(x.id === id){ x.done = true; x.n = r.j.n; } });
     toast("Амин. И вам того же, ин ша Аллах"); cmRedraw();
   }).catch(function(){ toast(CM_NET); });
+}
+
+/* ---------- круг хатма: объяснение и доводы (30.09.2026) ---------- */
+function juzStartLbl(n){
+  var i = QJUZ[n - 1], s = surahOf(i), a = ayahInSurah(i);
+  return QSUR[s][2] + (a > 1 ? " " + a : "");
+}
+function cmKhatmHelp(open){
+  return '<details class="km-help"'+(open ? ' open' : '')+'><summary>Как устроен круг хатма</summary><ol>'+
+    '<li>Коран разделён на 30 равных частей - <b>джузов</b>, в каждом около 20 страниц. В сетке - все 30: номер джуза и сура, с которой он начинается.</li>'+
+    '<li>Нажмите на <b>свободный</b> джуз и выберите «Беру этот джуз» - в круге увидят, что его читаете вы. Можно взять несколько.</li>'+
+    '<li>Прочитали - нажмите на свой джуз и «Прочитала». Или откройте его кнопкой «Открыть и читать»: в конце джуза будет та же кнопка.</li>'+
+    '<li>Когда прочитаны все 30, круг завершил <b>хатм</b> - прочитал Коран целиком. Можно начать следующий.</li>'+
+    '</ol></details>';
+}
+function cmKhatmLegend(){
+  return '<div class="km-legend"><span><i class="free"></i>свободен</span><span><i class="busy"></i>читает сестра</span>'+
+    '<span><i class="me"></i>ваш</span><span><i class="done"></i>прочитан</span></div>';
+}
+function cmKhatmProof(){
+  return '<details class="km-help"><summary>Доводы: как читали Коран при Пророке ﷺ</summary>'+
+    '<div class="km-proof">'+
+    '<p>Пророк ﷺ сказал Абдуллаху ибн Амру: «Читай Коран за месяц». Тот ответил, что в силах больше, и Пророк ﷺ сказал: «Тогда читай за семь дней и не больше этого» <cite>(аль-Бухари, 5054)</cite>. Деление на 30 джузов появилось позже как раз под такой ритм: джуз в день - хатм за месяц.</p>'+
+    '<p>Абдуллах ибн Амр читал свою часть Корана заранее, днём, чтобы ночью ему было легче <cite>(аль-Бухари, 5052)</cite>.</p>'+
+    '<p>Пророка ﷺ спросили, какие дела Аллах любит больше всего. Он ответил: «Самые постоянные, даже если их мало» <cite>(аль-Бухари, 6465)</cite>.</p>'+
+    '<p>«Кто прочитает одну букву из Книги Аллаха, тому - благое дело, а благое дело воздаётся десятикратно» <cite>(ат-Тирмизи, 2910, достоверный)</cite>.</p>'+
+    '<p>Аллах говорит: «Помогайте друг другу в благочестии и богобоязненности» <cite>(сура 5, аят 2)</cite>. Круг - такая помощь: вместе легче дойти до конца.</p>'+
+    '</div><b class="km-proof-h">Как лучше читать в круге</b><ul class="km-proof">'+
+    '<li>Берите столько, сколько точно прочитаете: джуз - обычно от получаса до часа чтения.</li>'+
+    '<li>Читайте понемногу каждый день, а не всё в последний вечер.</li>'+
+    '<li>Не успеваете - верните джуз в общий список, чтобы его взяла другая сестра.</li>'+
+    '<li>Награду каждая получает за то, что прочитала сама. Круг вместе завершает хатм, а прочитать Коран целиком лично - это все 30 джузов самой.</li>'+
+    '<li>Завершили хатм - сделайте дуа за себя и за сестёр.</li>'+
+    '</ul></details>';
+}
+/* Хадис об ангеле - на виду, а не мелким текстом (просьба Заиры). */
+function cmHadithCard(){
+  return '<blockquote class="dm-hadith"><span>Пророк ﷺ сказал:</span>'+
+    '«Кто делает дуа за брата в его отсутствие, ангел, приставленный к нему, говорит: <b>„Амин, и тебе того же“</b>»'+
+    '<cite>Муслим, 2732</cite></blockquote>';
+}
+/* Главная: плашка «Дуа друг за друга» - видна всегда. */
+function cmDuaPlate(){
+  var m = accOn() && CM.me ? CM.me.dua : null;
+  return '<button class="cat-wide dm-plate" data-open="duas"><span class="cw-ic">♡</span>'+
+    '<span class="cw-t"><b>Дуа друг за друга</b><span>'+(m
+      ? 'Ваша просьба видна сёстрам. Сделайте дуа и за них - ангел скажет: «И тебе того же»'
+      : 'Попросите сестёр сделать дуа за вас - просьбу увидят все сёстры в RIZQ')+'</span></span>'+
+    '<span class="cw-go">›</span></button>';
+}
+function cmShareDuas(){
+  var url = APP_URL + "?go=duas";
+  var text = "«Дуа друг за друга» в RIZQ: попросите сестёр сделать дуа за вас и сделайте дуа за них. Пророк ﷺ сказал: кто делает дуа за брата в его отсутствие, ангел говорит: «Амин, и тебе того же» (Муслим, 2732).";
+  if(navigator.share){ navigator.share({ title:"Дуа друг за друга", text:text, url:url }).catch(function(){}); return; }
+  try{ navigator.clipboard.writeText(text + " " + url).then(function(){ toast("Текст и ссылка скопированы"); }, function(){ toast(url); }); }catch(e){ toast(url); }
+}
+function cmDuaProof(){
+  return '<details class="km-help"><summary>Доводы и лучшее время для дуа</summary><div class="km-proof">'+
+    '<p>Верующие просят за братьев и сестёр в вере так: «Господь наш! Прости нас и наших братьев, которые уверовали раньше нас!» <cite>(сура 59, аят 10)</cite>.</p>'+
+    '<p>Пророк ﷺ сказал: «Каждую ночь, когда остаётся последняя треть ночи, наш Господь нисходит к нижнему небу и говорит: "Кто обратится ко Мне с мольбой, чтобы Я ответил ему? Кто попросит Меня, чтобы Я дал ему? Кто попросит прощения, чтобы Я простил его?"» <cite>(аль-Бухари, 1145)</cite>.</p>'+
+    '</div><b class="km-proof-h">Как лучше</b><ul class="km-proof">'+
+    '<li>Дуа можно делать своими словами и на русском языке.</li>'+
+    '<li>Имя сестры знать не нужно: Аллах знает, о ком вы просите.</li>'+
+    '<li>Попросите и для себя того же - за это ангел и говорит: «И тебе того же».</li>'+
+    '</ul></details>';
+}
+
+/* ---------- перевод смыслов сплошным текстом (30.09.2026) ----------
+   Просьба Заиры: «неудобно открывать каждый аят - перевод целиком под плеером
+   сур». Сура за сурой, как книга; номер аята открывает его с арабским текстом. */
+function viewTrRead(){
+  qrLoad();
+  var h = ['<div class="stack">'];
+  if(!HAS_TR){
+    h.push('<p class="note" style="text-align:center;padding:24px 0">Загружаем перевод... Интернет нужен один раз - дальше перевод работает и без него.</p></div>');
+    return h.join("");
+  }
+  var p = V.p;
+  if(p === null || p === undefined || p === ""){
+    h.push('<p class="note" style="margin:0">Перевод смыслов Корана Эльмира Кулиева сплошным текстом, сура за сурой - как книгу. Нажмите на номер аята, чтобы открыть его с арабским текстом и чтецом.</p>');
+    if(S.trLast != null && QSUR[S.trLast]) h.push('<button class="cat-wide gold" data-trs="'+S.trLast+'"><span class="cw-ic">↺</span>'+
+      '<span class="cw-t"><b>Продолжить</b><span>сура '+QSUR[S.trLast][0]+' · '+esc(QSUR[S.trLast][2])+'</span></span><span class="cw-go">›</span></button>');
+    h.push('<div class="qlist">'+QSUR.map(function(q, i){
+      return '<button class="qrow" data-trs="'+i+'"><span class="qnum">'+q[0]+'</span>'+
+        '<div class="qrow-t"><b>'+esc(q[2])+'</b><span>'+esc(q[3])+' · '+plural(surahAyatCount(i), "аят", "аята", "аятов")+'</span></div></button>';
+    }).join("")+'</div>');
+    h.push('<p class="disclaimer" style="text-align:left;padding:0 2px">Перевод смыслов - не сам Коран и не тафсир (толкование). Чтобы понимать глубже, читайте тафсир у знающих людей.</p>');
+    h.push('</div>');
+    return h.join("");
+  }
+  var s = parseInt(p, 10), from = QSUR[s][6], to = from + QSUR[s][4] - 1;
+  h.push('<section class="mihrab" style="border-radius:80px 80px var(--r-lg) var(--r-lg);padding:20px 18px 16px">'+
+    '<div class="ar" style="font-size:28px;line-height:1.9">'+esc(QSUR[s][1])+'</div>'+
+    '<div style="font-family:var(--f-display);font-size:16.5px;font-weight:600;margin-top:4px">'+QSUR[s][0]+'. '+esc(QSUR[s][2])+' - '+esc(QSUR[s][3])+'</div>'+
+    '<div class="ru" style="font-size:12px;color:rgba(255,255,255,.6);margin-top:2px">Перевод смыслов: Эльмир Кулиев · '+plural(surahAyatCount(s), "аят", "аята", "аятов")+'</div></section>');
+  var t = [];
+  if(s !== 0 && s !== 8) t.push('<span class="tr-basm">'+esc(QR[0])+'</span>');
+  for(var i = from; i <= to; i++){
+    var n = ayahInSurah(i);
+    if(!n){ t.push('<span class="tr-basm">'+esc(QR[i])+'</span>'); continue; }
+    t.push('<span class="tr-a"><button class="tr-n" data-trayah="'+i+'" aria-label="Аят '+n+' с арабским текстом">'+n+'</button>'+esc(QR[i])+'</span>');
+  }
+  h.push('<div class="tr-text">'+t.join(" ")+'</div>');
+  h.push('<button class="btn sec" data-qsurah="'+s+'">Читать суру с арабским текстом</button>');
+  h.push('<div style="display:flex;gap:8px">'+
+    (s > 0 ? '<button class="btn sec sm" style="flex:1" data-trs="'+(s - 1)+'">‹ '+esc(QSUR[s - 1][2])+'</button>' : '')+
+    (s < 113 ? '<button class="btn sm" style="flex:1" data-trs="'+(s + 1)+'">'+esc(QSUR[s + 1][2])+' ›</button>' : '')+'</div>');
+  h.push('</div>');
+  return h.join("");
 }
 
 function viewQSettings(){
@@ -24798,7 +25064,7 @@ function viewSettings(){
    ============================================================ */
 var BK_KEYS = ["fav","tasbih","tasbihTotal","read","dcnt","practice","orders","readDay","done","salah","myduas","goals",
   "namesRead","daily","shukrNotes","shukr","checks","sunnah","health","pauses","qada","points","pointsDay",
-  "fin","finLimits","debts","finRepeat","fontSize","todos","quiz","azkarLifetime","qLast","qMax","qRead","qFontSafe","notes","noteFolders","qMarks","qMarkCol","qplan","hifz","ar","zakat","trip","umrah","b2","b1","kids","finReqs","kahf","ptAdj",
+  "fin","finLimits","debts","finRepeat","fontSize","todos","quiz","azkarLifetime","qLast","qMax","qRead","qFontSafe","notes","noteFolders","qMarks","qMarkCol","trLast","qplan","hifz","ar","zakat","trip","umrah","b2","b1","kids","finReqs","kahf","ptAdj",
   "name","city","method","madhab","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll"];
 
 /* Что человек потеряет, если копии не будет. Считаем по тем же данным,
@@ -26599,6 +26865,7 @@ function renderCore(){
   else if(V.view==="khatms") html = viewKhatms();
   else if(V.view==="khatm") html = viewKhatm();
   else if(V.view==="duas") html = viewDuas();
+  else if(V.view==="trread") html = viewTrRead();
   else if(V.view==="sadaqa") html = viewSadaqa();
   else if(V.view==="qada") html = viewQada();
   else if(V.view==="salahpics") html = viewSalahPics();
@@ -26758,7 +27025,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-cm],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -27574,6 +27841,8 @@ document.getElementById("app").addEventListener("click", function(ev){
     var gA = ayahGlobal(+ay[0], +ay[1]); openReader(QSUR[sI][6], QSUR[sI][6] + QSUR[sI][4] - 1, "surah", gA); } return; }
   if(d.b1ret !== undefined){ b1Return(); return; }
   if(d.b1gift !== undefined){ sheetGift(); return; }
+  if(d.trs !== undefined){ var trn = parseInt(d.trs, 10); S.trLast = trn; save(); V.tab = "quran"; open("trread", trn); return; }
+  if(d.trayah !== undefined){ var tra = parseInt(d.trayah, 10), trs2 = surahOf(tra); openReader(QSUR[trs2][6], QSUR[trs2][6] + QSUR[trs2][4] - 1, "surah", tra); return; }
   if(d.cm){ cmCmd(d.cm); return; }
   if(d.kopen){ open("khatm", d.kopen); return; }
   if(d.kj){ sheetJuz(parseInt(d.kj, 10)); return; }
@@ -27583,6 +27852,7 @@ document.getElementById("app").addEventListener("click", function(ev){
     closeSheet(); cmMe(); openReader(QJUZ[kr], (kr + 1 < QJUZ.length) ? QJUZ[kr + 1] - 1 : QTOTAL - 1, "juz"); return;
   }
   if(d.duamade){ cmDuaMade(parseInt(d.duamade, 10)); return; }
+  if(d.dreport){ cmReport(parseInt(d.dreport, 10)); return; }
   if(d.dtopic){
     CM.topic = d.dtopic;
     var dts = document.querySelectorAll("#dmTopics .pill");
