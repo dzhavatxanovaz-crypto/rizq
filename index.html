@@ -369,6 +369,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .pcell.now{background:rgba(212,175,55,.16);border-color:rgba(212,175,55,.45)}
 .pcell.now .n{color:var(--accent-ink)}
 .pcell.past{opacity:.45}
+.pcell .wx{margin-top:4px;font-size:11.5px;color:var(--ink-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.pcell .wx span{margin-right:1px}
+.wx-now{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line-soft);font-size:13px;color:var(--ink-2);line-height:1.45}
+.wx-now b{font-family:var(--f-display);font-size:16px;color:var(--ink)}
+.wx-now small{flex-basis:100%;font-size:11px;color:var(--ink-3)}
 .city-row{display:flex;align-items:center;gap:6px;margin-top:12px;font-size:13.5px;color:var(--ink-2)}
 .city-row button{color:var(--accent-ink);font-weight:600;font-size:13.5px}
 
@@ -2693,7 +2698,7 @@ var DEF = {
   qada:{p:{}, done:{}, fast:0, fastDone:0, perDay:1, log:[]}, postSeen:"", points:0, pointsDay:{}, cat:{},
   fin:[], todos:[], leads:[], phone:"", quiz:{}, nav:{}, account:{registered:false, queued:false, at:0, ads:false},
   azkarLifetime:0, levelSeen:0, weekSeen:0, welcomed:0,
-  qLast:0, qMax:0, qMarks:[], qSize:28, qTr:true, qReciter:"ar.alafasy",
+  qLast:0, qMax:0, qMarks:[], qSize:28, qTr:true, qReciter:"ar.alafasy", wxOn:true,
   qSpeed:1, qRepeat:1, qContinue:true, qFollow:true, qScroll:20,
   hifz:{on:false, items:{}},
   push:{on:false, at:0, sig:""},
@@ -3534,6 +3539,81 @@ function ptAdjSet(k, v){
   if(v) S.ptAdj[k] = v; else delete S.ptAdj[k];
   var y = $screen.scrollTop; save(); render(); $screen.scrollTop = y;
 }
+/* ---------- погода рядом со временем намаза (30.09.2026) ---------- */
+var WX = { busy: false };
+/* Коды погоды WMO - значок и слово. */
+function wxWord(c){
+  c = Number(c);
+  if(c === 0) return ["☀", "ясно"];
+  if(c === 1) return ["🌤", "почти ясно"];
+  if(c === 2) return ["⛅", "переменная облачность"];
+  if(c === 3) return ["☁", "пасмурно"];
+  if(c === 45 || c === 48) return ["🌫", "туман"];
+  if(c >= 51 && c <= 57) return ["🌦", "морось"];
+  if(c === 61 || c === 80) return ["🌦", "небольшой дождь"];
+  if(c === 63 || c === 81) return ["🌧", "дождь"];
+  if(c === 65 || c === 82) return ["🌧", "сильный дождь"];
+  if(c === 66 || c === 67) return ["🌧", "ледяной дождь"];
+  if(c === 71 || c === 85) return ["🌨", "небольшой снег"];
+  if(c === 73 || c === 77) return ["🌨", "снег"];
+  if(c === 75 || c === 86) return ["❄", "сильный снег"];
+  if(c === 95) return ["⛈", "гроза"];
+  if(c === 96 || c === 99) return ["⛈", "гроза с градом"];
+  return ["☁", "облачно"];
+}
+function wxT(t){ var r = Math.round(t); return (r > 0 ? "+" : "") + r + "°"; }
+function wxKey(c){ return (Math.round(c.lat * 100) / 100) + "," + (Math.round(c.lng * 100) / 100); }
+/* Прогноз для города: раз в час, в фоне; экран перерисовывается тихо. */
+function wxLoad(){
+  if(!S.wxOn || WX.busy || !window.fetch) return;
+  var c = currentCity(), key = wxKey(c), w = S.wx;
+  if(w && w.key === key && Date.now() - w.at < 3600000) return;
+  WX.busy = true;
+  var p = key.split(",");
+  fetch("https://api.open-meteo.com/v1/forecast?latitude=" + p[0] + "&longitude=" + p[1] +
+    "&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m" +
+    "&hourly=temperature_2m,weather_code,precipitation_probability" +
+    "&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max" +
+    "&timezone=auto&forecast_days=2&wind_speed_unit=ms")
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      WX.busy = false;
+      if(!j || !j.hourly || !j.current) return;
+      S.wx = { key: key, at: Date.now(), cur: j.current, h: { t: j.hourly.time, tp: j.hourly.temperature_2m, c: j.hourly.weather_code, pp: j.hourly.precipitation_probability },
+        d: { mx: j.daily.temperature_2m_max, mn: j.daily.temperature_2m_min, pp: j.daily.precipitation_probability_max } };
+      save();
+      if(V.tab === "home" && !V.view) renderInPlace();
+    }).catch(function(){ WX.busy = false; });
+}
+/* Годен ли прогноз для показа: этот город и не старше 12 часов. */
+function wxOk(){ var w = S.wx; return !!(S.wxOn && w && w.key === wxKey(currentCity()) && Date.now() - w.at < 12 * 3600000 && w.h && w.h.t); }
+/* Погода к часу намаза: час по времени города, сегодня. */
+function wxAt(hours){
+  if(!wxOk() || isNaN(hours)) return null;
+  var w = S.wx, day = String(w.h.t[0]).slice(0, 10), hh = Math.round(hours);
+  var idx = w.h.t.indexOf(day + "T" + ("0" + Math.min(23, hh)).slice(-2) + ":00");
+  if(hh >= 24) idx = 24;
+  if(idx < 0 || w.h.tp[idx] == null) return null;
+  return { t: w.h.tp[idx], c: w.h.c[idx], pp: w.h.pp ? w.h.pp[idx] : null };
+}
+function wxCell(hours){
+  var x = wxAt(hours); if(!x) return '';
+  var ww = wxWord(x.c);
+  return '<div class="wx" title="'+esc(ww[1])+'"><span aria-hidden="true">'+ww[0]+'</span>'+wxT(x.t)+'</div>';
+}
+function wxNowRow(){
+  if(!wxOk()) return '';
+  var w = S.wx, c = w.cur, ww = wxWord(c.weather_code);
+  var old = Date.now() - w.at > 2 * 3600000;
+  var at = new Date(w.at);
+  return '<div class="wx-now"><b>'+ww[0]+' '+wxT(c.temperature_2m)+'</b><span>'+esc(ww[1])+
+    (Math.abs(c.apparent_temperature - c.temperature_2m) >= 2 ? ', ощущается '+wxT(c.apparent_temperature) : '')+
+    ', ветер '+Math.round(c.wind_speed_10m)+' м/с · днём '+wxT(w.d.mn[0])+'...'+wxT(w.d.mx[0])+
+    (w.d.pp && w.d.pp[0] >= 30 ? ', вероятность осадков '+w.d.pp[0]+'%' : '')+
+    (old ? ' · на '+("0" + at.getHours()).slice(-2)+':'+("0" + at.getMinutes()).slice(-2) : '')+
+    '</span><small>по данным Open-Meteo</small></div>';
+}
+
 function timesNow(){
   var c = currentCity();
   return { city:c, t: prayerTimesMy(new Date(), c.lat, c.lng, c.tz, S.method, S.madhab) };
@@ -5690,7 +5770,8 @@ function fbDoneCheck(){
 
 /* «Что нового» - один раз после обновления. Новым пользователям не показываем:
    для них всё новое. Чтобы показать снова, поменять WN.id и пункты. */
-var WN = { id:"2026-09-30", items:[
+var WN = { id:"2026-09-30b", items:[
+  ["☁", "Погода к каждому намазу", "на главной под временем намаза - температура и небо к этому часу; выключается в ⚙ Настройках"],
   ["▶", "Плеер сур", "больше 200 чтецов, суры целиком, поиск по имени - на вкладке «Коран»"],
   ["◉", "41 чтец для чтения по аятам", "в настройках чтения: поиск по имени, у пятерых подсвечивается каждое слово"],
   ["●", "Цветные метки закладок", "«Важное», «Выучить», «Размышлять», «Для дуа», «Перечитать» и фильтр по цвету"],
@@ -6553,6 +6634,7 @@ function viewHomeMain(){
     (V.q ? '<button class="hs-x" data-hsclear="1" aria-label="Очистить">×</button>' : '')+'</div>');
   if(V.q && V.q.trim().length > 1) return h.join("") + homeSearchResults(V.q) + '</div>';
 
+  wxLoad();
   /* намаз - сразу под дуа: ради него открывают приложение чаще всего */
   /* намаз */
   var order = ["fajr","sunrise","dhuhr","asr","maghrib","isha"];
@@ -6565,8 +6647,8 @@ function viewHomeMain(){
     '<div class="ptrack"><i style="width:'+pct.toFixed(1)+'%"></i></div>'+
     '<div class="plist">'+ order.map(function(k,i){
       var cls = k===np.key ? "now" : (tn.t[k] < nowH ? "past" : "");
-      return '<div class="pcell '+cls+'"><div class="n">'+PRAYERS[i].n+'</div><div class="t">'+hhmm(tn.t[k])+'</div>'+ptAdjTag(k)+'</div>';
-    }).join("") +'</div>'+
+      return '<div class="pcell '+cls+'"><div class="n">'+PRAYERS[i].n+'</div><div class="t">'+hhmm(tn.t[k])+'</div>'+ptAdjTag(k)+wxCell(tn.t[k])+'</div>';
+    }).join("") +'</div>'+ wxNowRow() +
     '<div class="city-row"><span>📍 '+esc(tn.city.n)+' · '+esc(METHODS[methodNow()].n)+(Math.abs(tn.city.lat) > 65 ? ' · по широте 65°, где солнце всходит и заходит круглый год' : '')+
     (methodNow() === "rt" ? ' · в мечетях зухр в 12:00, фаджр в '+hhmm(tn.t.sunrise - 91/60) : '')+(ptAdjAny() ? ' · время поправлено вручную' : '')+'</span>'+
     '<button data-open="settings" style="margin-left:auto">Изменить</button></div></section>');
@@ -24201,6 +24283,8 @@ function viewSettings(){
     }).join("")+'</div>'+
     '<p class="fs-sample">Так выглядит текст в разделах: аяты, дуа, азкары, записи журнала. Размер меняется сразу во всём приложении.</p>'+
   '</section>');
+  h.push('<div class="rows">'+swRow("wxOn", "☁", "Погода рядом со временем намаза")+'</div>'+
+    '<p class="disclaimer" style="text-align:left;padding:0 2px">Прогноз - по данным Open-Meteo для выбранного города. Сервису погоды уходят только координаты города, округлённые до километра.</p>');
   h.push('<section class="card"><div class="eyebrow">Город</div>'+
     '<div style="font-family:var(--f-display);font-size:20px;font-weight:600;margin:6px 0 2px">'+esc(c.n)+'</div>'+
     '<div style="font-size:13.5px;color:var(--ink-3)">'+c.lat.toFixed(3)+'°, '+c.lng.toFixed(3)+'° · UTC+'+c.tz+'</div>'+
@@ -27334,6 +27418,7 @@ if(ordersPending().length) ordersWatch();
 if(S.cal && S.cal.on) setTimeout(calPush, 3000);
 document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible" && S.cal && S.cal.on) calSoon(); });
 document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible") ordersCheck(); });
+document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible" && V.tab === "home") wxLoad(); });
 applyQSize();
 render();
 deepOpen();
