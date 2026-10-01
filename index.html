@@ -29807,6 +29807,7 @@ document.getElementById("app").addEventListener("click", function(ev){
     else if(j[0]==="name"){ V.q=""; V.tab="dua"; open("name", parseInt(j[1],10)); }
     else if(j[0]==="hadith"){ V.q=""; V.tab="dua"; open("hadithOne", parseInt(j[1],10)); }
     else if(j[0]==="post"){ V.q=""; V.tab="journal"; open("post", j[1]); }
+    else if(j[0]==="ext"){ var eu = j.slice(1).join(":"); if(/^[a-z0-9.-]+[.]ru[/?]/.test(eu)) window.open("https://" + eu, "_blank", "noopener"); }
     else if(j[0]==="sira"){ V.q=""; V.tab="dua"; open("siraOne", parseInt(j[1],10)); }
     else if(j[0]==="bookch"){ V.q=""; V.tab="income"; open("book1ch", parseInt(j[1],10)); setTimeout(b1Restore, 60); }
     else if(j[0]==="tjw"){ V.q=""; open("tajwid"); var tj = j[1]; setTimeout(function(){ var te = document.getElementById("gb-" + tj); if(te) te.scrollIntoView({block:"start"}); }, 60); }
