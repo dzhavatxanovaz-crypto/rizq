@@ -5478,6 +5478,11 @@ function isFastDay(date){
    КАЛЬКУЛЯТОР ЗАКЯТА
    ============================================================ */
 var NISAB_GOLD_G = 85, NISAB_SILVER_G = 595;
+/* Мазхаб расчёта закята: выбранный в калькуляторе, иначе - как в настройках намаза. */
+function zakatMzh(z){
+  if(z && (z.mzh === "shafii" || z.mzh === "hanafi")) return z.mzh;
+  return S.madhab === 2 ? "hanafi" : "shafii";
+}
 function zakatCalc(z){
   /* Минус в поле - всегда описка: имущество не бывает отрицательным, а долги
      для того и вынесены в отдельное поле. Знак отбрасываем, а не вычитаем. */
@@ -5485,7 +5490,8 @@ function zakatCalc(z){
   var goldPrice = num(z.goldPrice), silverPrice = num(z.silverPrice);
   var assets = num(z.cash) + num(z.bank) + num(z.goods) + num(z.debtsIn)
              + num(z.goldG)*goldPrice + num(z.silverG)*silverPrice;
-  var net = assets - num(z.debtsOut);
+  var shafii = zakatMzh(z) === "shafii";
+  var net = assets - (shafii ? 0 : num(z.debtsOut));
   var byS = z.nisab==="silver";
   var price = byS ? silverPrice : goldPrice;
   var nisab = (byS ? NISAB_SILVER_G : NISAB_GOLD_G) * price;
@@ -25111,6 +25117,7 @@ function zStep(n, title, sub, body){
 function viewZakat(){
   var r = zakatCalc(S.zakat);
   var z = S.zakat || {};
+  var mz = zakatMzh(z);
 
   /* Возраст цены. Молчим, пока цена свежая: подсказка на каждом экране
      перестаёт читаться. */
@@ -25157,11 +25164,23 @@ function viewZakat(){
         '<span>к выплате · 2,5% со всей суммы</span></div></section>'+
     '<div class="card flat" style="padding:12px 15px;font-size:13.5px;color:var(--ink-2);line-height:1.55">'+
       'Закят - 2,5% с имущества, которое пролежало у вас лунный год и превысило нисаб. Считается один раз в год.</div>'+
+    '<section class="card"><div class="eyebrow">Мазхаб расчёта</div>'+
+      '<div class="pill-row" style="justify-content:flex-start;margin-top:10px">'+
+        '<button class="pill'+(mz==="shafii"?" on":"")+'" data-zmzh="shafii">Шафиитский</button>'+
+        '<button class="pill'+(mz==="hanafi"?" on":"")+'" data-zmzh="hanafi">Ханафитский</button>'+
+      '</div>'+
+      '<div style="font-size:13.5px;color:var(--ink-2);margin-top:10px;line-height:1.55">'+
+        (mz==="shafii"
+          ? 'По шафиитскому мазхабу ваши долги закят не уменьшают: если имущество достигло нисаба и пролежало лунный год, закят считают со всей суммы, а долг отдают отдельно. Так написано в пособии Гаджиева М. П., одобренном ДУМ Дагестана.'
+          : 'По ханафитскому мазхабу долги, которые вы должны вернуть, вычитают из имущества до сравнения с нисабом.')+
+      '</div>'+
+      '<div style="font-size:12.5px;color:var(--ink-3);margin-top:8px;line-height:1.5">Сначала стоит мазхаб из настроек времени намаза. Если не знаете, какого мазхаба держаться, спросите имама своей мечети.</div>'+
+    '</section>'+
 
     zStep(1, "Что у вас есть", "деньги, товар и долги, которые вам вернут",
       zField("cash","Наличные, ₽")+
       zField("bank","Средства на счетах, ₽")+
-      zField("goods","Товар и запасы для продажи, ₽","По текущей цене продажи")+
+      zField("goods","Товар и запасы для продажи, ₽","По рыночной цене на день расчёта")+
       zField("debtsIn","Долги, которые вернут вам, ₽","Только те, в возврате которых вы уверены"))+
 
     zStep(2, "Золото и серебро", "вес и цена за грамм на сегодня",
@@ -25171,8 +25190,11 @@ function viewZakat(){
       zField("silverPrice","Цена серебра за грамм, ₽")+
       priceNote)+
 
-    zStep(3, "Что вычесть", "ваши долги",
-      zField("debtsOut","Ваши долги к выплате, ₽","Срочные обязательства на момент расчёта"))+
+    (mz === "shafii"
+      ? zStep(3, "Ваши долги", "по шафиитскому мазхабу не вычитаются",
+          '<div style="font-size:13.5px;color:var(--ink-2);margin-top:10px;line-height:1.55">Закят считают со всего имущества, которое у вас есть. Свои долги вы возвращаете отдельно. Чтобы увидеть расчёт по ханафитскому мазхабу, переключите выше.</div>')
+      : zStep(3, "Что вычесть", "ваши долги",
+          zField("debtsOut","Ваши долги к выплате, ₽","Срочные обязательства на момент расчёта")))+
 
     '<section class="card zk-step"><div class="zk-sh"><i>4</i><div><b>Порог - нисаб</b><span>с какого металла считать</span></div></div>'+
       '<div class="pill-row" style="justify-content:flex-start;margin-top:10px">'+
@@ -25185,7 +25207,7 @@ function viewZakat(){
     '<section class="card" style="border-color:rgba(212,175,55,.45)">'+
       '<div class="eyebrow" style="color:var(--accent-ink)">Итог</div>'+
       '<div class="rows" style="margin-top:10px">'+
-        '<div class="row"><span class="ic">Σ</span>Имущество за вычетом долгов<span class="val" id="zNet" style="color:var(--ink);font-weight:600">'+money(Math.round(r.net))+'</span></div>'+
+        '<div class="row"><span class="ic">Σ</span>'+(mz === "shafii" ? "Имущество для закята" : "Имущество за вычетом долгов")+'<span class="val" id="zNet" style="color:var(--ink);font-weight:600">'+money(Math.round(r.net))+'</span></div>'+
         '<div class="row"><span class="ic">◦</span>Нисаб<span class="val" id="zNisab" style="color:var(--ink)">'+(r.noPrice ? "-" : money(Math.round(r.nisab)))+'</span></div>'+
       '</div>'+
       '<div style="font-size:13px;color:var(--ink-3);margin-top:10px;line-height:1.5">'+
@@ -25196,8 +25218,8 @@ function viewZakat(){
     '</section>'+
     lastBlock+
     '<p class="disclaimer">Расчёт ориентировочный: он покрывает наличные, счета, товар, золото и серебро. ' +
-      'Доли партнёров в бизнесе и спорные долги считаются отдельно. Что входит в базу, какой порог применять ' +
-      'и как быть с вашими долгами - вопросы к преподавателю, а не к калькулятору.</p>'+
+      'Доли партнёров в бизнесе и спорные долги считаются отдельно. Мазхабы считают закят по-разному: что входит в базу, ' +
+      'какой порог применять и как быть с долгами - вопросы к имаму или преподавателю, а не к калькулятору.</p>'+
     '</div>';
 }
 
@@ -29700,7 +29722,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -30060,6 +30082,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.hlwa!==undefined){ hlMsgWa(); return; }
   if(d.hlcopy!==undefined){ var tt = hlMsgText(); if(tt){ copyText(tt); toast("Текст скопирован - отправьте его нам в WhatsApp: "+SUPPORT.phone); } return; }
   if(d.nisab){ S.zakat.nisab = d.nisab; save(); render(); return; }
+  if(d.zmzh){ S.zakat.mzh = d.zmzh; save(); render(); return; }
   if(d.zsave!==undefined){ zakatSave(); return; }
   if(d.zics!==undefined){ zakatICS(); return; }
   if(d.zreset!==undefined){
