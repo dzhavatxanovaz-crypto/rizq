@@ -14331,7 +14331,22 @@ function splLoad(){
 }
 function splRec(){ var id = S.splRec; return (SPL.list || []).filter(function(r){ return r.i === id; })[0] || null; }
 function splHas(r, n){ return !r.l || ("," + r.l + ",").indexOf("," + n + ",") > -1; }
-function splUrl(r, n){ return r.s + ("00" + n).slice(-3) + ".mp3"; }
+function splUrl(r, n, direct){ var f = ("00" + n).slice(-3) + ".mp3"; return (!direct && r.c) ? "/mq/" + r.c + f : r.s + f; }
+/* запасной путь: прямой адрес mp3quran, если наш сервер не отдал файл или звук не пошёл за 12 секунд */
+function splAlt(){
+  var r = splRec(); if(!r || !SPL.audio || SPL.alt || !r.c) return false;
+  SPL.alt = true; SPL.audio.src = splUrl(r, SPL.sura, true);
+  var p = SPL.audio.play(); if(p && p.catch) p.catch(function(){ SPL.playing = false; renderInPlace(); });
+  return true;
+}
+function splWatch(){
+  clearTimeout(SPL.wd);
+  SPL.wd = setTimeout(function(){
+    if(!SPL.playing || !SPL.audio || SPL.audio.currentTime > 0.3) return;
+    if(splAlt()){ splWatch(); return; }
+    toast("Сура не загружается: медленный интернет. Попробуйте другого чтеца или Wi-Fi");
+  }, 12000);
+}
 function splTime(t){ t = Math.max(0, Math.floor(t || 0)); var m = Math.floor(t / 60), c = t % 60; return m + ":" + (c < 10 ? "0" : "") + c; }
 /* Список чтецов с поиском: регистр и «ё» не важны. */
 function splRecList(q){
@@ -14354,9 +14369,9 @@ function splPlay(n){
     SPL.audio = new Audio(); SPL.audio.preload = "auto";
     SPL.audio.addEventListener("timeupdate", splTick);
     SPL.audio.addEventListener("ended", function(){ SPL.playing = false; if(S.splAuto !== false) splNext(1); else renderInPlace(); });
-    SPL.audio.addEventListener("error", function(){ SPL.playing = false; toast("Не удалось включить суру. Нужен интернет"); renderInPlace(); });
+    SPL.audio.addEventListener("error", function(){ if(!SPL.audio.getAttribute("src")) return; if(splAlt()){ splWatch(); return; } clearTimeout(SPL.wd); SPL.playing = false; toast("Не удалось включить суру. Нужен интернет"); renderInPlace(); });
   }
-  SPL.sura = n; SPL.audio.src = splUrl(r, n);
+  SPL.sura = n; SPL.alt = false; SPL.audio.src = splUrl(r, n); splWatch();
   var p = SPL.audio.play(); if(p && p.catch) p.catch(function(){ SPL.playing = false; renderInPlace(); });
   SPL.playing = true; S.splLast = n; save();
   splMedia(r, n);
