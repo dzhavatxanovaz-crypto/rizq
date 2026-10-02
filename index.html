@@ -4824,7 +4824,7 @@ var COURSES = [
   rev:[]
 },
 {
-  id:"sunnah", ic:"❖", start:"Старт 17 ноября", price:null, old:null, priceFrom:50000, tariffs:["Премиум","Бизнес","Прорыв"], lvl:"Средний", dur:"15 недель · 83 урока", site:"https://upravlenets-emba.ru/",
+  id:"sunnah", ic:"❖", start:(new Date(Date.now() + 3 * 3600000).toISOString().slice(0, 10) < "2026-11-16" ? "Запись с 16 ноября · старт 15 декабря" : "Старт обучения 15 декабря"), opensAt:"2026-11-16", price:null, old:null, priceFrom:50000, tariffs:["Премиум","Бизнес","Прорыв"], lvl:"Средний", dur:"15 недель · 83 урока", site:"https://upravlenets-emba.ru/",
   brand:"УПРАВЛЕНЕЦ",
   n:"Управление бизнесом по Сунне",
   short:"Полная программа управленца: личная эффективность, маркетинг, продажи, процессы, команда и финансы.",
@@ -27315,7 +27315,7 @@ function viewCourse(){
     if(c.prereg){
       h.push('<section class="card"><div class="eyebrow" style="color:var(--accent-ink)">Старт по запросу</div>'+
         '<p style="font-size:14.5px;line-height:1.6;color:var(--ink-2);margin:8px 0 12px">Курс готовится к новому потоку. Оставьте заявку - напишем один раз, когда откроем запись. '+
-        'А уроки по нейросетям Заира уже проводит на эфирах клуба JAVATTI по понедельникам в 15:00 по Москве.</p>'+
+        'А уроки по нейросетям Заира уже проводит на эфирах клуба JAVATTI по понедельникам в 19:00 по Москве.</p>'+
         '<button class="btn" data-ar="prereg:'+c.id+'">Предварительная запись</button>'+
         '<a class="btn sec" style="display:block;text-align:center;text-decoration:none;margin-top:9px" href="'+esc(javattiUrl("club"))+'" target="_blank" rel="noopener">Эфиры в приложении JAVATTI</a></section>');
     } else if(c.price){
@@ -27329,6 +27329,8 @@ function viewCourse(){
     } else if(L.tariffsFull){
       if(!finData()) finLoad(function(){ if(V.view === "course") render(); });
       var finC = finCounts(c.id, (SUNNAH_TARIFFS[0] || {}).p);
+      var salesOpen = !c.opensAt || new Date(Date.now() + 3 * 3600000).toISOString().slice(0, 10) >= c.opensAt;
+      if(!salesOpen) h.push('<section class="card"><p style="font-size:15px;line-height:1.6;margin:0">Запись и оплата откроются 16 ноября, обучение начнётся 15 декабря. Оставьте заявку - напишем, когда откроется запись.</p></section>');
       h.push('<div class="sec-h"><h3>Тарифы</h3><span class="more" style="color:var(--ink-3)">'+(finC ? finC.join(" или ")+' взноса без переплаты' : 'есть рассрочка')+'</span></div>');
       L.tariffsFull.forEach(function(t){
         h.push('<section class="card">'+
@@ -27337,7 +27339,7 @@ function viewCourse(){
             '<span class="price" style="margin-left:auto;font-size:19px">'+esc(t.p)+'</span></div>'+
           '<p style="font-size:14px;color:var(--ink-2);line-height:1.55;margin:8px 0 0">'+esc(t.d)+'</p>'+
           '<div class="meta" style="margin-top:9px"><span class="chip">'+esc(t.ms)+'</span></div>'+
-          '<button class="btn sm" style="margin-top:11px" data-buy="'+c.id+'" data-tariff="'+esc(t.n)+'">Оплатить тариф «'+esc(t.n)+'»</button></section>');
+          (salesOpen ? '<button class="btn sm" style="margin-top:11px" data-buy="'+c.id+'" data-tariff="'+esc(t.n)+'">Оплатить тариф «'+esc(t.n)+'»</button>' : '')+'</section>');
       });
       h.push('<button class="btn" data-leadgo="'+c.id+'">Оставить заявку на программу</button>');
       h.push(charityLine());
