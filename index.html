@@ -2453,6 +2453,24 @@ details.more[open]>summary:after{content:"⌄"}
 }
 .hb-ayah .hb-ru{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .readall{width:100%;font-size:15.5px}
+.azk-sum{padding:14px 15px}
+.azk-sum-h{display:flex;align-items:baseline;gap:10px;margin-bottom:9px}
+.azk-sum-h b{margin-left:auto;font-family:var(--f-display);font-size:24px;font-weight:700;color:var(--accent-ink);font-variant-numeric:tabular-nums}
+.azk-sum-h b i{font-style:normal;font-size:15px;font-weight:600;color:var(--ink-3)}
+.azk-sum-s{font-size:13px;color:var(--ink-2);margin-top:9px;line-height:1.45}
+.azk-sum-l{font-size:12px;color:var(--ink-3);margin-top:4px}
+.azk-sum.all{border-color:rgba(16,120,90,.35)}
+.azk-sum.all .bar i{background:var(--emerald)}
+.azk-sum.all .azk-sum-s{color:var(--emerald);font-weight:600}
+.azk-done{text-align:center;padding:4px 4px 6px}
+.azk-done-ic{width:62px;height:62px;margin:4px auto 10px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff;background:var(--emerald)}
+.azk-done h3{margin:0;font-family:var(--f-display);font-size:22px}
+.azk-done p{margin:6px 0 0;font-size:15px;color:var(--ink-2)}
+.azk-done-n{display:flex;gap:10px;margin:16px 0 4px}
+.azk-done-n div{flex:1;background:var(--surface-2);border-radius:14px;padding:12px 8px}
+.azk-done-n b{display:block;font-family:var(--f-display);font-size:26px;color:var(--accent-ink);font-variant-numeric:tabular-nums}
+.azk-done-n span{font-size:12.5px;color:var(--ink-3)}
+.azk-done .azk-done-s{font-size:13px;color:var(--ink-3);margin:10px 0 16px}
 .readall-n{margin:-4px 2px 0;font-size:12.5px;text-align:center}
 .readall-done{padding:12px 14px;border-radius:14px;text-align:center;font-weight:600;font-size:14px;color:var(--emerald);background:rgba(16,120,90,.08);border:1px solid rgba(16,120,90,.25)}
 .cm-stats{font-size:13px;color:var(--ink-2);padding:2px 4px}
@@ -6546,8 +6564,55 @@ function readAllCat(cid){
   renderInPlace();
   try{ scoreSync(); }catch(e){}
   var got = (S.points || 0) - p0;
-  toast("Машаллах! Отмечено: " + left.length + (got > 0 ? " · +" + plural(got, "балл", "балла", "баллов") : ""));
-  if(navigator.vibrate){ try{ navigator.vibrate(12); }catch(e){} }
+  if(AZK_DAILY[cid]) azkDoneCheck(cid, false);
+  else toast("Машаллах! Отмечено: " + left.length + (got > 0 ? " · +" + plural(got, "балл", "балла", "баллов") : ""));
+}
+/* Итог раздела утренних или вечерних азкаров за сегодня (просьба Заиры 02.10.2026) */
+var AZK_DAILY = { morning: "утренние", evening: "вечерние" };
+function azkSum(cid){
+  var list = DUAS.filter(function(d){ return d.c === cid; });
+  if(!S.dcnt) S.dcnt = {};
+  var done = 0, reps = 0, need = 0;
+  list.forEach(function(d){
+    var n = d.rep > 1 ? d.rep : 1;
+    var c = S.read[d.id] ? (d.rep > 1 ? Math.min(n, S.dcnt[d.id] || 0) : 1) : 0;
+    need += n; reps += c; if(c >= n) done++;
+  });
+  return { done: done, total: list.length, reps: reps, need: need, all: list.length > 0 && done === list.length };
+}
+function azkSumHtml(cid){
+  var r = azkSum(cid), pct = r.total ? Math.round(r.done * 100 / r.total) : 0;
+  return '<section class="card azk-sum'+(r.all ? ' all' : '')+'" id="azk-sum">'+
+    '<div class="azk-sum-h"><span class="eyebrow">Прочитано сегодня</span>'+
+      '<b>'+r.done+' <i>из '+r.total+'</i></b></div>'+
+    '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
+    '<div class="azk-sum-s">'+(r.all ? '✓ Все прочитаны · повторов: '+r.reps : 'Азкаров: '+r.done+' из '+r.total+' · повторов: '+r.reps+' из '+r.need)+'</div>'+
+    ((S.azkarLifetime || 0) > 0 ? '<div class="azk-sum-l">За всё время отмечено азкаров: '+(S.azkarLifetime || 0).toLocaleString("ru-RU")+'</div>' : '')+
+  '</section>';
+}
+function azkSumPaint(cid){
+  var el = document.getElementById("azk-sum");
+  if(!el || !AZK_DAILY[cid]) return;
+  var box = document.createElement("div"); box.innerHTML = azkSumHtml(cid);
+  if(box.firstElementChild) el.parentNode.replaceChild(box.firstElementChild, el);
+}
+/* окно, когда раздел дочитан: только если до этого касания был не дочитан */
+function azkDoneCheck(cid, wasAll){
+  if(!AZK_DAILY[cid] || wasAll) return;
+  var r = azkSum(cid);
+  if(!r.all) return;
+  setTimeout(function(){
+    sheet('<div class="azk-done">'+
+      '<div class="azk-done-ic">✓</div>'+
+      '<h3>Машаа Аллах!</h3>'+
+      '<p>Все '+AZK_DAILY[cid]+' азкары прочитаны</p>'+
+      '<div class="azk-done-n"><div><b>'+r.total+'</b><span>'+plural(r.total, "азкар", "азкара", "азкаров").replace(/^[0-9]+ /, "")+'</span></div>'+
+        '<div><b>'+r.reps+'</b><span>'+plural(r.reps, "повтор", "повтора", "повторов").replace(/^[0-9]+ /, "")+'</span></div></div>'+
+      '<p class="azk-done-s">Пусть Аллах примет. Баллы засчитаны в рейтинг.</p>'+
+      '<button class="btn" style="width:100%" data-scrim="1">Альхамдулиллях</button>'+
+    '</div>');
+    if(navigator.vibrate){ try{ navigator.vibrate([12, 60, 12]); }catch(e){} }
+  }, 350);
 }
 function readCount(){ var n=0; for(var k in S.read) n++; return n; }
 
@@ -6635,6 +6700,7 @@ function manApply(){
   } else {
     var dua = DUAS.filter(function(x){ return x.id === m.id; })[0]; if(!dua) return;
     LAST_COUNT = Date.now();
+    var wasAllM = AZK_DAILY[dua.c] ? azkSum(dua.c).all : true;
     markRead(dua.id);
     if(!S.dcnt) S.dcnt = {};
     S.dcnt[dua.id] = Math.min(dua.rep, (S.dcnt[dua.id] || 0) + n);
@@ -6643,6 +6709,7 @@ function manApply(){
     renderInPlace();
     toast(S.dcnt[dua.id] >= dua.rep ? "Машаа Аллах - " + dua.rep + " " + timesWord(dua.rep) + " завершено"
       : "Прибавлено " + n.toLocaleString("ru-RU") + ", осталось " + (dua.rep - S.dcnt[dua.id]));
+    azkDoneCheck(dua.c, wasAllM);
   }
   if(navigator.vibrate){ try{ navigator.vibrate(12); }catch(e){} }
   scoreSync();
@@ -8448,6 +8515,7 @@ function viewCat(){
   var cat = CATS.filter(function(c){return c.id===V.p;})[0];
   var list = azkarOrder(V.p, DUAS.filter(function(d){return d.c===V.p;}));
   var h = ['<div class="stack">'];
+  if(AZK_DAILY[V.p]) h.push(azkSumHtml(V.p));
 
   h.push('<div class="card flat" style="padding:13px 15px"><div class="eyebrow">'+esc(cat.s)+'</div>'+
     '<div style="font-size:14px;color:var(--ink-2);margin-top:5px;line-height:1.5">'+
@@ -8461,7 +8529,7 @@ function viewCat(){
     h.push(left.length
       ? '<button class="btn readall" data-readall="'+V.p+'">✓ Прочитала все</button>'+
         '<p class="note readall-n">Если читаете по книге: одна кнопка отметит все '+plural(list.length, "текст", "текста", "текстов")+' - баллы в рейтинг засчитаются, как при отметке каждого.</p>'
-      : '<div class="readall-done">✓ Все '+(V.p === "morning" ? "утренние" : "вечерние")+' азкары прочитаны сегодня</div>');
+      : '');
   }
 
   list.forEach(function(d){ h.push(duaCard(d)); });
@@ -29655,6 +29723,7 @@ function duaCount(id){
   var dua = DUAS.filter(function(x){return x.id===id;})[0];
   if(!dua) return;
   var was = !!S.read[dua.id];
+  var wasAll = AZK_DAILY[dua.c] ? azkSum(dua.c).all : true;
   markRead(dua.id);
   if(!S.dcnt) S.dcnt = {};
   if(!(dua.rep>1)){
@@ -29667,6 +29736,8 @@ function duaCount(id){
   }
   save();
   duaPaint(dua);
+  azkSumPaint(dua.c);
+  azkDoneCheck(dua.c, wasAll);
 }
 /* Перерисовываем только карточку этого азкара. Весь экран (сводки «прочитано»)
    догоняем, когда пальцы отдыхают: иначе частые касания попадали бы в момент
