@@ -10539,6 +10539,16 @@ function clubUnit(n){
     d:(m.dialog && m.dialog.length ? m.dialog.map(function(r){ return [r.who === "ب" ? "Б" : "А", r.ar, r.tr, r.ru]; })
        : m.ph.map(function(p){ return ["А", p[0], p[1], p[2]]; })) };
 }
+/* видеоуроки встреч: /media/club/mNN.mp4 на нашем сервере (scripts/club-video.js), встречи 1..CLUB_VIDEO_N */
+var CLUB_VIDEO_N = 24, CLUB_VIDEO_V = 1;
+function clubVideo(n){
+  if(n > CLUB_VIDEO_N) return "";
+  var f = "/media/club/m" + (n < 10 ? "0" : "") + n;
+  return '<div class="sec-h"><h3>Видеоурок</h3></div>'+
+    '<section class="card" style="padding:0;overflow:hidden">'+
+    '<video controls playsinline preload="none" poster="'+f+'.jpg?v='+CLUB_VIDEO_V+'" src="'+f+'.mp4?v='+CLUB_VIDEO_V+'" style="display:block;width:100%;max-height:72vh;background:#080f24"></video>'+
+    '<p class="ar-note" style="margin:0;padding:10px 14px 12px">Диалог встречи, слова и повтор за диктором: после каждой реплики пауза - скажите её вслух. 3 минуты.</p></section>';
+}
 /* слова Корана к встрече: по CLUB_QW подряд из словаря «Понимаю Коран» */
 var CLUB_QW = 12;
 function clubQwUnit(n){ n = +n; if(!n) return null;
@@ -12651,6 +12661,7 @@ function viewArMeet(n){
     h.push('<section class="card"><div class="eyebrow">Скоро</div><p style="margin:6px 0 0;line-height:1.5">Диалог, слова и тест этой встречи откроются накануне - '+esc(clubDateRu((function(){ var d = new Date(dt + "T12:00:00"); d.setDate(d.getDate() - 1); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); })()))+'.</p></section>');
   } else {
   if(m.review) h.push('<p class="ar-note" style="padding:0 4px">В начале встречи повторяем диалог встречи '+esc(String(m.review))+(m.review2 ? ' и встречи '+esc(String(m.review2)) : '')+'.</p>');
+  h.push(clubVideo(m.n));
   if(m.dialog && m.dialog.length){
     h.push('<div class="sec-h"><h3>Диалог</h3></div>');
     h.push('<section class="card ar-dlg">'+m.dialog.map(function(r, ri){
