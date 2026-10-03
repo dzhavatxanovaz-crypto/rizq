@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Магазинам - исламская рассрочка RIZQ</title>
+<meta name="description" content="Вы продаёте нам по счёту - мы продаём покупательнице частями. Для магазина это обычная продажа: счёт, оплата всей суммы, УПД.">
+<!-- до «да» Заиры страница не индексируется (03.10.2026) -->
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Магазинам - исламская рассрочка RIZQ">
+<meta property="og:description" content="Вы продаёте нам по счёту - мы продаём покупательнице частями.">
+<meta property="og:image" content="https://rizq.javattigroup.ru/icons/share-1200.png">
+<meta name="theme-color" content="#16351F">
+<link rel="icon" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="style.css?v=1003c">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="./">RIZQ<small>исламская рассрочка</small></a>
+    <nav>
+      <a href="./">Покупателям</a>
+      <a href="#forma">Заявка магазина</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="biz">
+  <div class="wrap">
+    <div class="eyebrow">Магазинам</div>
+    <h1 style="font-size:clamp(28px,5.6vw,46px)">Вы продаёте нам по счёту - мы продаём покупательнице частями</h1>
+    <p class="lead" style="margin-top:14px">Для вас это обычная продажа: счёт, оплата всей суммы, УПД. А покупательница, которая не хочет денег под процент, получает ваш товар частями.</p>
+    <ol class="steps" style="margin-top:24px">
+      <li><h3>Заявка</h3><p>Покупательница выбирает у вас товар и оставляет заявку - по ссылке или QR у кассы.</p></li>
+      <li><h3>Цена</h3><p>Мы называем ей цену в рассрочку в рублях, до договора.</p></li>
+      <li><h3>Счёт и оплата</h3><p>Вы выставляете нам счёт, мы оплачиваем его целиком и сами забираем товар по акту.</p></li>
+      <li><h3>Договор с нами</h3><p>Она осматривает товар, подписывает договор с нами и платит взносы нам. Трудно ей платить - наша забота, не ваша.</p></li>
+    </ol>
+    <div class="grid two" style="margin-top:22px">
+      <div class="card">
+        <h3>Что мы проверяем</h3>
+        <ul>
+          <li>ИНН и данные компании</li>
+          <li>Ассортимент без запретного; золото, серебро и валюту в рассрочку не продаём</li>
+          <li>Право вернуть вам товар в течение 3 дней, если покупательница передумала до договора</li>
+          <li>Регион: первые сделки - в Махачкале и Каспийске</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Как подключиться</h3>
+        <ol style="padding-left:18px;margin-top:6px;display:grid;gap:6px">
+          <li>Заявка на этой странице</li>
+          <li>Проверка и разговор</li>
+          <li>Соглашение</li>
+          <li>Ваш магазин - в приложении RIZQ, ссылка и QR для кассы</li>
+        </ol>
+        <p style="margin-top:10px">Сделки ещё не начаты: сейчас это лист ожидания. Сроки подключения и выплат не обещаем, пока не утвердим условия.</p>
+      </div>
+    </div>
+
+    <form class="form" id="fBiz" novalidate style="margin-top:22px">
+      <div id="forma"></div>
+      <h3>Заявка магазина</h3>
+      <div class="two-col">
+        <div><label class="f" for="bName">Компания или магазин</label><input class="t" id="bName" maxlength="160"></div>
+        <div><label class="f" for="bInn">ИНН (если есть под рукой)</label><input class="t" id="bInn" inputmode="numeric" maxlength="12"></div>
+        <div><label class="f" for="bSells">Что продаёте</label><input class="t" id="bSells" maxlength="300" placeholder="мебель, техника, для дома"></div>
+        <div><label class="f" for="bRegions">Регион</label><input class="t" id="bRegions" maxlength="200"></div>
+        <div><label class="f" for="bSite">Сайт или Instagram</label><input class="t" id="bSite" maxlength="300"></div>
+        <div><label class="f" for="bCheck">Средний чек, ₽</label><input class="t" id="bCheck" inputmode="numeric"></div>
+        <div><label class="f" for="bContact">Как к вам обращаться</label><input class="t" id="bContact" maxlength="120"></div>
+        <div><label class="f" for="bTel">Телефон</label><input class="t" id="bTel" type="tel"></div>
+        <div><label class="f" for="bMail">Почта</label><input class="t" id="bMail" type="email" maxlength="120"></div>
+      </div>
+      <label class="f">Где продаёте</label>
+      <div class="seg" id="bCh"><button type="button" data-v="online">Интернет-магазин</button><button type="button" data-v="offline">Магазин, касса</button><button type="button" data-v="both">И там, и там</button></div>
+      <label class="tick"><input type="checkbox" id="bOk"><span>Даю согласие ИП Джаватханова Заират Абдулмуслимовна (ИНН 054307460938, ОГРНИП 320057100041966) на обработку моих персональных данных как контактного лица для рассмотрения заявки магазина. <a href="soglasie.html#biz" target="_blank" rel="noopener">Текст согласия</a></span></label>
+      <button class="btn btn-gold" id="bGo" type="submit" style="margin-top:18px;width:100%">Записать магазин в лист ожидания</button>
+      <p class="muted err-t" id="bErr" style="margin-top:10px"></p>
+      <div class="done" id="bDone"></div>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>ИП Джаватханова Заират Абдулмуслимовна, ИНН 054307460938, ОГРНИП 320057100041966. Почта <a href="mailto:dzhavatxanova@mail.ru">dzhavatxanova@mail.ru</a>, телефон <a href="tel:+79285936069">+7 928 593-60-69</a>.</p>
+    <p>Информация на странице не является офертой. <a href="./">Исламская рассрочка RIZQ для покупателей</a> · <a href="soglasie.html#biz">Согласие</a> · <a href="../privacy.html">Политика</a></p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var API = (location.hostname === "localhost" || location.hostname === "127.0.0.1") ? "http://" + location.hostname + ":3210" : "https://crm.javattigroup.ru";
+  var $ = function(id){ return document.getElementById(id); };
+  var num = function(v){ return Math.round(+String(v == null ? "" : v).replace(/\D/g, "") || 0); };
+  var utm = {};
+  try{ var q = new URLSearchParams(location.search); ["utm_source","utm_medium","utm_campaign","utm_content","utm_term"].forEach(function(k){ var v = q.get(k); if(v) utm[k] = v.slice(0, 120); }); }catch(e){}
+  var channel = "";
+  $("bCh").onclick = function(e){ var b = e.target.closest("button"); if(!b) return; channel = b.getAttribute("data-v");
+    Array.prototype.forEach.call(this.children, function(x){ x.classList.toggle("on", x === b); }); };
+  $("fBiz").addEventListener("submit", function(e){
+    e.preventDefault();
+    var err = $("bErr"), btn = $("bGo"); err.textContent = "";
+    var fail = function(t){ err.textContent = t; };
+    if(!$("bName").value.trim()) return fail("Укажите название компании или магазина");
+    if(!$("bContact").value.trim()) return fail("Как к вам обращаться?");
+    if($("bTel").value.replace(/\D/g, "").length < 10 && !$("bMail").value.trim()) return fail("Укажите телефон или почту");
+    var inn = $("bInn").value.replace(/\D/g, ""); if(inn && inn.length !== 10 && inn.length !== 12) return fail("ИНН - 10 цифр у компании или 12 у ИП");
+    if(!$("bOk").checked) return fail("Отметьте согласие на обработку данных");
+    btn.disabled = true; btn.textContent = "Отправляем...";
+    fetch(API + "/api/public/finance/business", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({
+      company:$("bName").value.trim(), inn:inn, sells:$("bSells").value.trim(), regions:$("bRegions").value.trim(),
+      site:$("bSite").value.trim(), avgCheck:num($("bCheck").value) || "", contactName:$("bContact").value.trim(), phone:$("bTel").value.trim(),
+      email:$("bMail").value.trim(), channel:channel, consent:true, source:"site", utm:utm }) })
+      .then(function(r){ return r.json().then(function(j){ return { ok:r.ok, j:j }; }, function(){ return { ok:r.ok, j:{} }; }); })
+      .then(function(x){
+        btn.disabled = false; btn.textContent = "Записать магазин в лист ожидания";
+        if(!x.ok) return fail(x.j && x.j.error ? x.j.error : "Не получилось отправить, попробуйте ещё раз");
+        var d = $("bDone");
+        d.innerHTML = '<h3>Спасибо! Заявка магазина принята</h3><p style="color:var(--ink-2);margin-top:6px">Мы свяжемся с вами, когда будем готовы обсудить подключение. Сделки ещё не начаты - это лист ожидания.</p>';
+        d.classList.add("show");
+      }, function(){ btn.disabled = false; btn.textContent = "Записать магазин в лист ожидания"; fail("Нет связи с сервером, попробуйте позже"); });
+  });
+})();
+</script>
+</body>
+</html>

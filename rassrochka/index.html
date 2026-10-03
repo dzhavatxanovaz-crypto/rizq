@@ -3,10 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Исламская рассрочка RIZQ - покупки частями через торговлю, а не заём</title>
-<meta name="description" content="Покупки частями через торговлю, а не заём: сначала покупаем товар себе, потом продаём вам. Наценка в рублях до договора, цена не растёт, без штрафов и пеней. Сейчас собираем заявки.">
+<title>Исламская рассрочка RIZQ - техника и мебель частями через торговлю</title>
+<meta name="description" content="Сначала покупаем товар на себя и показываем вам, потом продаём частями. Наценка в рублях до договора, цена не растёт, без штрафов и пеней. Сейчас собираем лист ожидания.">
 <!-- до «да» Заиры страница не индексируется (03.10.2026) -->
 <meta name="robots" content="noindex">
+<!-- в адресе страницы статуса - личный номер заявки: наружу уходит только адрес сайта -->
+<meta name="referrer" content="strict-origin">
+<link rel="canonical" href="https://rizq.javattigroup.ru/rassrochka/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Исламская рассрочка RIZQ">
 <meta property="og:description" content="Цена известна до договора и не растёт. Сначала покупаем товар себе, потом продаём вам частями. Без штрафов и пеней.">
@@ -16,137 +19,19 @@
 <link rel="icon" href="../icons/icon-192.png">
 <link rel="apple-touch-icon" href="../icons/icon-180.png">
 <link rel="stylesheet" href="../fonts.css">
-<style>
-:root{
-  --navy:#1E2A5A; --navy-deep:#131B3F; --navy-2:#26325F;
-  --gold:#D4AF37; --gold-ink:#8A6D12; --gold-soft:#F0E2B4; --emerald:#2D6A4F;
-  --bg:#F9F6F0; --surface:#FFFFFF; --surface-2:#F3EFE6; --ink:#1E2A5A; --ink-2:#5A6183; --ink-3:#736858;
-  --line:#E3DDCE; --accent-ink:var(--gold-ink); --danger:#B3261E;
-  --r:18px; --shadow:0 6px 24px rgba(30,42,90,.10);
-}
-@media (prefers-color-scheme: dark){
-  :root{ --bg:#131B3F; --surface:#1E2A5A; --surface-2:#26325F; --ink:#FFFFFF; --ink-2:#BCC5E4; --ink-3:#ACA28F; --line:#2E3B6E; --accent-ink:#E6C868; --danger:#FF8A80; --shadow:none; }
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font:400 16.5px/1.6 Inter,"Segoe UI",system-ui,sans-serif;padding-bottom:env(safe-area-inset-bottom,0)}
-a{color:inherit}
-.wrap{max-width:1040px;margin:0 auto;padding-inline:16px}
-section{padding-block:clamp(36px,7vw,72px)}
-h1,h2,h3{font-family:Montserrat,Inter,sans-serif;line-height:1.15;letter-spacing:-.01em;text-wrap:balance}
-h1{font-size:clamp(30px,6.4vw,54px);font-weight:800}
-h2{font-size:clamp(24px,4.6vw,36px);font-weight:800;margin-bottom:14px}
-h3{font-size:18px;font-weight:700;margin-bottom:6px}
-.eyebrow{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-ink);font-weight:600;margin-bottom:12px}
-.lead{font-size:clamp(17px,2.6vw,20px);color:var(--ink-2);max-width:720px}
-.muted{color:var(--ink-3);font-size:14px}
-/* шапка */
-.top{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.top .wrap{display:flex;align-items:center;gap:14px;height:58px}
-.mark{font-family:Marcellus,Georgia,serif;font-size:22px;letter-spacing:.08em;text-decoration:none}
-.mark small{font-family:Inter,sans-serif;font-size:12px;letter-spacing:.06em;color:var(--ink-3);margin-left:8px}
-.top nav{margin-left:auto;display:flex;gap:16px;font-size:14.5px}
-.top nav a{text-decoration:none;color:var(--ink-2)} .top nav a:hover{color:var(--ink)}
-@media(max-width:640px){.top nav .hide-s{display:none}.mark small{display:none}}
-/* первый экран */
-.hero{background:radial-gradient(1200px 500px at 85% -10%,rgba(212,175,55,.22),transparent 60%),linear-gradient(160deg,var(--navy-deep),var(--navy));color:#fff;padding-block:clamp(44px,9vw,96px)}
-.hero .eyebrow{color:var(--gold)}
-.hero .lead{color:#D5DBF0}
-.hero h1 span{color:var(--gold)}
-.pill{display:inline-flex;align-items:center;gap:8px;margin-top:22px;padding:9px 14px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);font-size:14px;color:#E8ECF9}
-.pill i{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(212,175,55,.25)}
-.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 22px;border-radius:14px;font:600 16px/1 Inter,sans-serif;text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform .12s ease,filter .2s ease}
-.btn:active{transform:translateY(1px)}
-.btn-gold{background:var(--gold);color:#1E2A5A} .btn-gold:hover{filter:brightness(1.05)}
-.btn-ghost{border-color:rgba(255,255,255,.3);color:#fff;background:transparent}
-.btn-line{border-color:var(--line);color:var(--ink);background:var(--surface)}
-.btn[disabled]{opacity:.6;cursor:default}
-.hero .note{margin-top:12px;font-size:13.5px;color:#C2C9E3}
-.chips{display:grid;gap:10px;margin-top:30px;grid-template-columns:1fr}
-@media(min-width:760px){.chips{grid-template-columns:repeat(3,1fr)}}
-.chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:14px 16px;font-size:15px;line-height:1.45;color:#EEF1FB}
-.chip b{display:block;color:var(--gold);font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
-/* карточки */
-.grid{display:grid;gap:14px;grid-template-columns:1fr}
-@media(min-width:760px){.grid.two{grid-template-columns:1fr 1fr}.grid.four{grid-template-columns:repeat(4,1fr)}}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
-.card p{color:var(--ink-2);font-size:15.5px}
-.vs .card h3{display:flex;align-items:center;gap:8px}
-.vs .ok h3::before{content:"✓";color:var(--emerald);font-weight:800}
-.vs .no h3::before{content:"✕";color:var(--danger);font-weight:800}
-.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0 4px;font-size:14px}
-.flow span{padding:7px 11px;border-radius:10px;background:var(--surface-2);font-weight:600}
-.flow em{font-style:normal;color:var(--ink-3)}
-ol.steps{list-style:none;counter-reset:s;display:grid;gap:14px;grid-template-columns:1fr}
-@media(min-width:760px){ol.steps{grid-template-columns:repeat(4,1fr)}}
-ol.steps li{counter-increment:s;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
-ol.steps li::before{content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--navy);color:var(--gold);font:700 15px/1 Montserrat,sans-serif;margin-bottom:10px}
-ol.steps li p{color:var(--ink-2);font-size:14.5px}
-/* калькулятор */
-.calc{display:grid;gap:18px;grid-template-columns:1fr}
-@media(min-width:860px){.calc{grid-template-columns:1.1fr .9fr}}
-label.f{display:block;font-size:13px;color:var(--ink-3);font-weight:600;margin:14px 0 6px;letter-spacing:.02em}
-input.t,select.t,textarea.t{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:400 16px/1.3 Inter,sans-serif}
-input.t:focus,textarea.t:focus{outline:2px solid var(--gold);outline-offset:1px}
-input[type=range]{width:100%;accent-color:var(--gold)}
-.seg{display:flex;flex-wrap:wrap;gap:8px}
-.seg button{padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 14px/1 Inter,sans-serif;cursor:pointer}
-.seg button.on{border-color:var(--gold);background:var(--gold-soft);color:#1E2A5A}
-.out{background:linear-gradient(160deg,var(--navy-deep),var(--navy));color:#fff;border-radius:var(--r);padding:22px}
-.out .big{font:800 30px/1.15 Montserrat,sans-serif;color:#fff}
-.out .big small{font:600 15px Inter,sans-serif;color:#C2C9E3}
-.out .row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.12);font-size:15px}
-.out .row span:first-child{color:#C2C9E3}
-.out .row.strong{font-weight:700}
-.out p{color:#C2C9E3;font-size:13.5px;margin-top:10px}
-.out .err{color:#FFB4AB}
-/* источники и чек-лист */
-blockquote{border-left:3px solid var(--gold);padding:4px 0 4px 16px;margin:14px 0;color:var(--ink);font-size:15.5px}
-blockquote cite{display:block;font-style:normal;font-size:13px;color:var(--ink-3);margin-top:6px}
-.check{counter-reset:c;display:grid;gap:10px}
-.check li{list-style:none;counter-increment:c;display:grid;grid-template-columns:34px 1fr;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
-.check li::before{content:counter(c);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:1px solid var(--gold);color:var(--accent-ink);font-weight:700}
-.check li b{display:block} .check li span{color:var(--ink-2);font-size:14.5px}
-.phases{display:grid;gap:10px;grid-template-columns:1fr}
-@media(min-width:760px){.phases{grid-template-columns:repeat(4,1fr)}}
-.phase{border-radius:14px;padding:14px 16px;border:1px dashed var(--line);color:var(--ink-2);font-size:15px}
-.phase.on{border:1px solid var(--gold);background:var(--gold-soft);color:#1E2A5A;font-weight:700}
-.phase small{display:block;font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;opacity:.75}
-details.qa{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
-details.qa+details.qa{margin-top:10px}
-details.qa summary{cursor:pointer;font-weight:600}
-details.qa p{color:var(--ink-2);margin-top:8px;font-size:15px}
-/* формы */
-.form{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:clamp(18px,4vw,28px);box-shadow:var(--shadow)}
-.two-col{display:grid;gap:0 14px;grid-template-columns:1fr}
-@media(min-width:640px){.two-col{grid-template-columns:1fr 1fr}}
-.tick{display:flex;gap:10px;align-items:flex-start;margin-top:14px;font-size:14px;color:var(--ink-2);line-height:1.5}
-.tick input{margin-top:3px;flex:none;width:18px;height:18px;accent-color:var(--gold)}
-.done{display:none;margin-top:16px;padding:16px;border-radius:14px;background:var(--surface-2)}
-.done.show{display:block}
-.biz{background:linear-gradient(160deg,#16351F,var(--emerald));color:#fff}
-.biz .eyebrow{color:var(--gold-soft)} .biz .lead{color:#D8EBDD}
-.biz .card{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);box-shadow:none}
-.biz .card p,.biz .card li{color:#E3F1E7}
-.biz .form{background:var(--surface);color:var(--ink)}
-footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--ink-3);font-size:13.5px}
-footer a{color:var(--accent-ink)}
-.appbar{background:var(--gold-soft);color:#1E2A5A;font-size:14.5px;padding:10px 0}.appbar a{font-weight:700}
-.docs a{display:block;padding:10px 0;border-bottom:1px solid var(--line);text-decoration:none}
-.docs span{display:block;padding:10px 0;border-bottom:1px solid var(--line);color:var(--ink-3)}
-</style>
+<link rel="stylesheet" href="style.css?v=1003c">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"RIZQ - исламская рассрочка","legalName":"ИП Джаватханова Заират Абдулмуслимовна","taxID":"054307460938","url":"https://rizq.javattigroup.ru/rassrochka/","email":"dzhavatxanova@mail.ru","telephone":"+7 928 593-60-69"}</script>
 </head>
 <body>
 
 <header class="top">
   <div class="wrap">
-    <a class="mark" href="../">RIZQ<small>исламская рассрочка</small></a>
+    <a class="mark" href="./">RIZQ<small>исламская рассрочка</small></a>
     <nav>
-      <a class="hide-s" href="#kak">Как это работает</a>
-      <a class="hide-s" href="#calc">Калькулятор</a>
-      <a href="#biznes">Бизнесу</a>
-      <a href="#zayavka">Заявка</a>
+      <a class="hide-s" href="./#kak">Как это работает</a>
+      <a href="./#calc">Посчитать</a>
+      <a class="hide-s" href="./#faq">Вопросы</a>
+      <a class="hide-s" href="biznes.html">Магазинам</a>
       <a href="../?go=rassrochka" id="navMine" hidden>Мои заявки</a>
     </nav>
   </div>
@@ -154,17 +39,24 @@ footer a{color:var(--accent-ink)}
 
 <div class="appbar" id="appBar" hidden><div class="wrap">У вас есть заявки в RIZQ - <a href="../?go=rassrochka">статус, предложение и график в приложении</a></div></div>
 
+<!-- Моя заявка: открывается по личной ссылке ?z=номер из письма или после отправки заявки. Витрина в это время скрыта. -->
+<section id="moya" class="status" hidden>
+  <div class="wrap" id="moyaBox" aria-live="polite"></div>
+</section>
+
+<main>
 <section class="hero">
   <div class="wrap">
     <div class="eyebrow">Исламская рассрочка RIZQ</div>
-    <h1>Покупки частями через торговлю, а не заём: <span>цена известна до договора и не растёт</span></h1>
-    <p class="lead" style="margin-top:16px">Сначала покупаем товар себе, потом продаём вам частями. Вместо процентов - наценка, которую вы видите в рублях до подписи. Без штрафов и пеней.</p>
-    <div class="pill"><i></i>Сейчас собираем заявки. Сделки начнём после проверки договора юристом и шариатского заключения</div>
+    <h1>Холодильник, диван, телефон - частями, через торговлю <span>Цена известна до договора и не растёт</span></h1>
+    <p class="lead" style="margin-top:16px">Сначала покупаем товар на себя и показываем вам. Подошёл - продаём частями. Не процент за деньги, а цена товара: наценку называем в рублях до подписи. Штрафов и пеней нет.</p>
+    <p class="example" id="heroEx">Пример: товар <b>60 000 ₽</b> - первый взнос 12 000 ₽, затем 6 ежемесячных взносов по 9 600 ₽. Наценка продавца <b>9 600 ₽</b> видна до договора.</p>
+    <div class="pill"><i></i><span>Сейчас собираем лист ожидания. Сделки начнём после проверки договора юристом и письменного шариатского заключения</span></div>
     <div class="cta">
-      <a class="btn btn-gold" href="#zayavka">Оставить заявку</a>
+      <a class="btn btn-gold" href="#calc">Посчитать и оставить заявку</a>
       <a class="btn btn-ghost" href="#kak">Как это работает</a>
     </div>
-    <p class="note">Для заявки паспорт и доход не нужны. Заявка - не договор и не одобрение.</p>
+    <p class="note">Заявка бесплатна и ни к чему не обязывает. Паспорт и сведения о доходе не нужны.</p>
     <div class="chips">
       <div class="chip"><b>Товар наш</b>Продавец покупает товар на себя, забирает его и отвечает за него до передачи вам</div>
       <div class="chip"><b>Одна цена</b>Наценку называем в рублях до договора. После подписания цена не меняется</div>
@@ -173,81 +65,215 @@ footer a{color:var(--accent-ink)}
   </div>
 </section>
 
-<section>
+<section id="calc" class="alt">
   <div class="wrap">
-    <div class="eyebrow">В чём разница</div>
-    <h2>Торговля или заём под процент</h2>
-    <div class="grid two vs">
-      <div class="card ok">
-        <h3>Мурабаха: торговля с оплатой частями</h3>
-        <div class="flow"><span>Магазин</span><em>→</em><span>Продавец покупает товар себе</span><em>→</em><span>Продаёт вам частями</span></div>
-        <p>Вы покупаете товар, а не деньги. Цена названа один раз до подписания и потом не растёт, даже если взнос пришлось перенести.</p>
-      </div>
-      <div class="card no">
-        <h3>Заём под процент</h3>
-        <div class="flow"><span>Деньги в долг</span><em>→</em><span>Вернуть больше</span><em>→</em><span>Просрочка - ещё больше</span></div>
-        <p>Вам дают деньги, а вернуть нужно больше полученного. Любая оговорённая надбавка к займу - риба, даже если она не растёт со временем.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="kak" style="padding-top:0">
-  <div class="wrap">
-    <div class="eyebrow">Как это работает</div>
-    <h2>Четыре шага</h2>
-    <ol class="steps">
-      <li><h3>Заявка</h3><p>Вы пишете, что нужно купить, примерную цену и срок. Паспорт и доход не нужны.</p></li>
-      <li><h3>Предложение</h3><p>Находим товар и называем цену в рассрочку в рублях. Это ещё не договор - можно отказаться.</p></li>
-      <li><h3>Покупаем товар себе</h3><p>Продавец покупает товар на себя, забирает его у магазина и до договора отвечает за него. Вы осматриваете именно этот товар до подписания и можете отказаться.</p></li>
-      <li><h3>Договор и взносы</h3><p>Первый взнос - при подписании, остальные по графику. Напомним заранее, штрафов нет.</p></li>
-    </ol>
-  </div>
-</section>
-
-<section id="calc" style="background:var(--surface-2)">
-  <div class="wrap">
-    <div class="eyebrow">Калькулятор</div>
-    <h2>Посчитайте свою покупку</h2>
+    <div class="eyebrow">Калькулятор и заявка</div>
+    <h2>Посчитайте покупку и оставьте заявку</h2>
+    <p class="lead" style="margin-bottom:18px">Цена товара + наценка продавца = цена в рассрочку. Её вы видите в рублях заранее, и она не растёт до последнего взноса.</p>
     <div class="calc">
       <div class="card">
         <label class="f" for="cPrice">Цена товара, ₽</label>
-        <input class="t" id="cPrice" inputmode="numeric" value="60000">
-        <input type="range" id="cPriceR" min="10000" max="300000" step="1000" value="60000" style="margin-top:8px" aria-label="Цена товара">
-        <label class="f" for="cDown">Первый взнос: <b id="cDownL">0 ₽</b></label>
-        <input type="range" id="cDown" min="0" max="54000" step="500" value="0">
+        <input class="t" id="cPrice" inputmode="numeric" value="60000" autocomplete="off">
+        <input type="range" id="cPriceR" min="30000" max="100000" step="1000" value="60000" style="margin-top:8px" aria-label="Цена товара">
+        <label class="f" for="cDown">Первый взнос, при подписании: <b id="cDownL">12 000 ₽</b></label>
+        <input type="range" id="cDown" min="12000" max="54000" step="500" value="12000">
         <label class="f">Срок</label>
         <div class="seg" id="cTerms"></div>
-        <div id="cGWrap" style="display:none"><label class="f">Поручители</label><div class="seg" id="cG"></div></div>
-        <div id="cMonWrap"><label class="f" for="cMon">Сколько вам удобно платить в месяц: <b id="cMonL">не выбрано</b></label>
+        <div id="cMonWrap" style="display:none"><label class="f" for="cMon">Сколько вам удобно платить в месяц: <b id="cMonL">не выбрано</b></label>
           <input type="range" id="cMon" min="0" max="30000" step="500" value="0"></div>
       </div>
       <div class="out" id="cOut" aria-live="polite"></div>
     </div>
-    <div class="cta"><a class="btn btn-gold" href="#zayavka" id="cApply">Оставить заявку с этим расчётом</a></div>
+    <div class="cta" style="margin-top:14px"><button class="btn btn-line sm" id="cShare" type="button">Отправить расчёт близким</button></div>
+
+    <form class="form" id="fReq" novalidate style="margin-top:22px">
+      <div id="zayavka"></div>
+      <h3 id="fTitle">Заявка в лист ожидания</h3>
+      <div class="calcline" id="fCalcLine"></div>
+      <div class="two-col">
+        <div><label class="f" for="fItem">Что нужно купить</label><input class="t" id="fItem" placeholder="Например: холодильник двухкамерный" maxlength="300"></div>
+        <div><label class="f" for="fName">Имя</label><input class="t" id="fName" autocomplete="given-name" maxlength="80"></div>
+        <div><label class="f" for="fTel">Телефон</label><input class="t" id="fTel" type="tel" autocomplete="tel" placeholder="+7 900 000-00-00"></div>
+        <div><label class="f" for="fMail">Почта для ссылки и статусов (необязательно)</label><input class="t" id="fMail" type="email" autocomplete="email" maxlength="120" placeholder="name@mail.ru"></div>
+      </div>
+      <details class="more" id="fMore"><summary>Уточнить по желанию: ссылка на товар, магазин, город</summary>
+        <label class="f">Что это</label>
+        <div class="seg" id="fCats"></div>
+        <div class="two-col">
+          <div><label class="f" for="fUrl">Ссылка на товар</label><input class="t" id="fUrl" inputmode="url" placeholder="https://" maxlength="500"></div>
+          <div><label class="f" for="fShop">Магазин</label><input class="t" id="fShop" maxlength="120"></div>
+          <div><label class="f" for="fCity">Город</label><input class="t" id="fCity" maxlength="80"></div>
+          <div id="fMonWrap" style="display:none"><label class="f" for="fMon">Удобный платёж в месяц, ₽</label><input class="t" id="fMon" inputmode="numeric"></div>
+        </div>
+        <p class="muted" style="margin-top:10px">Нашли товар в магазине или на маркетплейсе - вставьте ссылку. Сами не заказывайте и не оплачивайте: товар покупаем мы.</p>
+      </details>
+      <label class="tick"><input type="checkbox" id="fAdult"><span>Мне есть 18 лет</span></label>
+      <label class="tick"><input type="checkbox" id="fOk"><span>Даю согласие ИП Джаватханова Заират Абдулмуслимовна (ИНН 054307460938, ОГРНИП 320057100041966) на обработку моих персональных данных для рассмотрения предварительной заявки на покупку в рассрочку и связи со мной. <a href="soglasie.html" target="_blank" rel="noopener">Текст согласия</a> · <a href="../privacy.html" target="_blank" rel="noopener">Политика</a></span></label>
+      <button class="btn btn-gold" id="fGo" type="submit" style="margin-top:18px;width:100%">Отправить заявку</button>
+      <p class="muted" id="fNote" style="margin-top:8px;text-align:center">Бесплатно. Паспорт, сведения о доходе и деньги не нужны. Звонить и торопить не будем.</p>
+      <p class="muted err-t" id="fErr" style="margin-top:10px"></p>
+      <div class="done" id="fDone"></div>
+    </form>
+    <p class="muted" style="margin-top:12px">Где моя заявка? Номер и личную ссылку на статус покажем сразу после отправки - сохраните её. Если оставите почту, ссылка придёт и туда.</p>
+    <p class="muted" style="margin-top:6px">Золото, серебро, валюту, сертификаты, табак и вейпы в рассрочку не продаём. <a href="#nelzya">Полный список</a></p>
   </div>
 </section>
 
-<section>
+<section id="kak">
   <div class="wrap">
+    <div class="eyebrow">Как это работает</div>
+    <h2>Четыре шага</h2>
+    <ol class="steps">
+      <li><h3>Заявка</h3><p>Вы пишете, что нужно купить, примерную цену и срок. Паспорт и сведения о доходе не нужны.</p></li>
+      <li><h3>Предложение</h3><p>Находим товар и называем цену в рассрочку в рублях. Это ещё не договор - можно отказаться.</p></li>
+      <li><h3>Покупаем товар себе</h3><p>Продавец покупает товар на себя, забирает его у магазина и до договора отвечает за него. Вы осматриваете именно этот товар и можете отказаться без выплат.</p></li>
+      <li><h3>Договор и взносы</h3><p>Первый взнос - при подписании, остальные по графику. Напомним заранее, перенести взнос можно бесплатно.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section id="pochemu" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">Торговля, а не проценты</div>
+    <h2>Почему наценка - не процент</h2>
+    <p class="lead" style="margin-bottom:18px">Суммы бывают похожи, но платите вы за разное.</p>
+    <div class="grid three">
+      <div class="card"><h3>Процент</h3><p>Плата за деньги в долг. Чем дольше должны, тем больше платите, а за просрочку - ещё больше.</p></div>
+      <div class="card"><h3>Наценка</h3><p>Прибыль торговли. Мы покупаем товар на свои деньги, отвечаем за него и продаём дороже - как любой магазин.</p></div>
+      <div class="card"><h3>Срок - один раз</h3><p>Срок влияет на цену только до договора. Потом цена не растёт, даже если взнос перенесли.</p></div>
+    </div>
+    <div class="grid two vs" style="margin-top:14px">
+      <div class="card ok">
+        <h3>Мурабаха: торговля с оплатой частями</h3>
+        <div class="flow"><span>Магазин</span><em>→</em><span>Продавец покупает товар себе</span><em>→</em><span>Продаёт вам частями</span></div>
+        <p>Вы покупаете товар, а не деньги. Цена названа один раз до подписания и потом не растёт.</p>
+      </div>
+      <div class="card no">
+        <h3>Деньги в долг под процент</h3>
+        <div class="flow"><span>Деньги в долг</span><em>→</em><span>Вернуть больше</span><em>→</em><span>Просрочка - ещё больше</span></div>
+        <p>Вам дают деньги, а вернуть нужно больше полученного. Любая оговорённая прибавка к деньгам, данным в долг, - риба, даже если она не растёт со временем.</p>
+      </div>
+    </div>
+    <div class="grid two" style="margin-top:8px">
+      <div>
+        <blockquote>«Воистину, торговля подобна лихоимству». Но Аллах дозволил торговлю и запретил лихоимство<cite>Коран, 2:275, перевод смыслов Э. Кулиева. Продаётся вещь, а не деньги</cite></blockquote>
+        <blockquote>«Не дозволены заём вместе с продажей, два условия в одной продаже, прибыль с того, за что ты не отвечаешь, и продажа того, чего у тебя нет»<cite>Абу Дауд, 3504; ат-Тирмизи, 1234 - хасан сахих по оценке ат-Тирмизи. Поэтому продавец сначала покупает товар себе и отвечает за него</cite></blockquote>
+      </div>
+      <div>
+        <blockquote>Пророк ﷺ запретил «две продажи в одной»<cite>Ат-Тирмизи, 1231 - хасан сахих. Он приводит объяснение учёных: если стороны расстались на одной цене, в этом нет беды. Поэтому цена одна и названа до договора</cite></blockquote>
+        <blockquote>«Если вы заключаете договор о долге на определенный срок, то записывайте его»<cite>Коран, 2:282, перевод смыслов Э. Кулиева. Поэтому всё - в договоре, а новый график после переноса - письменно</cite></blockquote>
+      </div>
+    </div>
+    <h3 style="margin-top:20px">Словарик</h3>
+    <dl class="gloss">
+      <div><dt>Мурабаха</dt><dd>Продажа по цене закупки плюс названная прибыль: сначала покупаем товар себе и получаем его, потом продаём вам частями. Это сделка доверия: закупку называем честно.</dd></div>
+      <div><dt>Наценка</dt><dd>Прибыль продавца внутри цены товара: в рублях до договора, потом не растёт и не пересчитывается.</dd></div>
+      <div><dt>Риба (лихва)</dt><dd>Оговорённая прибавка к деньгам, данным в долг, или к долгу за срок, а также неравный или отсроченный обмен золота, серебра и денег между собой.</dd></div>
+      <div><dt>Кабд (получение)</dt><dd>Товар фактически у нас, одной бумаги мало. С этого момента риск на нас: сломается до договора - наш убыток.</dd></div>
+      <div><dt>Ва'д (обещание)</dt><dd>«Хочу купить по этой цене» - ещё не договор: до подписания отказаться может каждая сторона.</dd></div>
+      <div><dt>Пеня</dt><dd>Плата за просрочку, та же прибавка к долгу. Её у нас нет.</dd></div>
+    </dl>
+    <p class="muted" style="margin-top:16px">Это объяснение, а не фетва. Спорные вопросы задайте имаму своей мечети. Письменное шариатское заключение опубликуем здесь, когда оно будет готово. До этого мы не пишем, что учёные проверили нашу рассрочку.</p>
+    <div class="cta"><a class="btn btn-gold" href="#calc">Посчитать свою покупку</a></div>
+  </div>
+</section>
+
+<section id="doverie">
+  <div class="wrap">
+    <div class="eyebrow">Честно о нас</div>
+    <h2>Кто продаёт и как нас проверить</h2>
     <div class="grid two">
-      <div>
-        <div class="eyebrow">Почему это торговля, а не риба</div>
-        <h2>Разница - в сделке, а не в цифре</h2>
-        <p class="lead">Риба - когда дают деньги в долг и берут больше. Мы денег не даём: покупаем товар на себя, отвечаем за него и продаём вам частями с наценкой. Цена названа заранее и не растёт. По сумме наценка бывает похожа на процент - разница в сделке, а не в цифре.</p>
-        <p class="muted" style="margin-top:14px">Спорные вопросы задайте имаму своей мечети. Шариатское заключение по нашей рассрочке опубликуем здесь, когда оно будет готово. До этого мы не называем её «одобренной».</p>
+      <div class="card">
+        <h3>Продавец</h3>
+        <p>ИП Джаватханова Заират Абдулмуслимовна, ИНН 054307460938, ОГРНИП 320057100041966. Школа бизнеса JAVATTI и приложение RIZQ.</p>
+        <div class="acts"><a class="btn btn-line sm" href="https://egrul.nalog.ru/" target="_blank" rel="noopener">Проверить на сайте ФНС</a><button class="btn btn-soft sm" type="button" id="copyInn">Скопировать ИНН</button></div>
       </div>
-      <div>
-        <blockquote>«Но Аллах дозволил торговлю и запретил лихоимство»<cite>Коран, 2:275, перевод смыслов Э. Кулиева</cite></blockquote>
-        <blockquote>«Не дозволены заём вместе с продажей... прибыль с того, за что ты не отвечаешь, и продажа того, чего у тебя нет»<cite>Абу Дауд, 3504; ат-Тирмизи, 1234 - хасан сахих по оценке ат-Тирмизи. Поэтому продавец сначала покупает товар себе и отвечает за него</cite></blockquote>
-        <blockquote>Пророк ﷺ запретил «две продажи в одной»<cite>Ат-Тирмизи, 1231. Он приводит объяснение учёных: если стороны расстались на одной цене, в этом нет беды. Поэтому цена одна и названа до договора</cite></blockquote>
-        <blockquote>«Если должник находится в трудном положении, то дайте ему отсрочку, пока его положение не улучшится»<cite>Коран, 2:280. Поэтому, если трудно платить, - отсрочка бесплатно. А пеня - прибавка к долгу за отсрочку, то есть лихва</cite></blockquote>
+      <div class="card">
+        <h3>Ваши данные</h3>
+        <p>Заявка хранится в CRM школы на сервере в России. Партнёру данные передаются только с вашего отдельного согласия, где он назван по имени. Партнёры - только участники реестра Банка России.</p>
       </div>
+      <div class="card">
+        <h3>Долг коллекторам не передаём</h3>
+        <p>И не продаём. Родне и на работу не пишем, о долге никому не рассказываем. К поручителю обращаемся, только если человек может платить, но не платит, и только за взносы, без пеней.</p>
+      </div>
+      <div class="card" id="trudno">
+        <h3>Если трудно платить</h3>
+        <ul>
+          <li>Ближайший взнос можно перенести самим на странице заявки: на 14 или 30 дней, бесплатно, сумма та же (до трёх раз за договор).</li>
+          <li>Нужно больше - напишите: перенесём или разделим взнос.</li>
+          <li>Положение тяжёлое - отсрочка, пока оно не улучшится.</li>
+          <li>Цена не растёт ни на рубль.</li>
+        </ul>
+        <blockquote>«Если же должник находится в трудном положении, то дайте ему отсрочку, пока его положение не улучшится»<cite>Коран, 2:280, перевод смыслов Э. Кулиева. Пеня - прибавка к долгу за отсрочку, то есть лихва</cite></blockquote>
+      </div>
+    </div>
+    <h3 style="margin-top:22px">Этапы запуска</h3>
+    <div class="phases" style="margin-top:10px">
+      <div class="phase on"><small>сейчас</small>Собираем заявки</div>
+      <div class="phase"><small>далее</small>Проверка договора юристом</div>
+      <div class="phase"><small>далее</small>Шариатское заключение</div>
+      <div class="phase"><small>далее</small>Первые сделки</div>
+    </div>
+    <span class="counter" id="counter" hidden></span>
+  </div>
+</section>
+
+<section id="dogovor" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">Документы</div>
+    <h2>Договор в одной таблице</h2>
+    <p class="lead" style="margin-bottom:18px" id="tblLead">Главное до подписи - на одном экране. Пример: товар 100 000 ₽ на 12 мес.</p>
+    <div style="overflow-x:auto" id="tblWrap">
+      <table class="tbl">
+        <tbody>
+          <tr><th>Продавец</th><td>ИП Джаватханова З. А., не банк</td></tr>
+          <tr><th>Товар</th><td>модель и серийный номер; вы осмотрели его до подписи</td></tr>
+          <tr><th>Цена товара</th><td id="tPrice">100 000 ₽ по документам магазина</td></tr>
+          <tr><th>Наценка продавца</th><td id="tMarkup">24 000 ₽, названа до договора</td></tr>
+          <tr><th>Цена в рассрочку</th><td id="tSale"><b>124 000 ₽</b>, не меняется</td></tr>
+          <tr><th>Первый взнос</th><td id="tDown">20 000 ₽ при подписании</td></tr>
+          <tr><th>Ежемесячные взносы</th><td id="tPays">12: первый 8 674 ₽, дальше по 8 666 ₽</td></tr>
+          <tr><th>Пени, неустойка</th><td>нет; перенос взноса бесплатно</td></tr>
+          <tr><th>Досрочно</th><td>можно, без платы; скидку заранее не обещаем</td></tr>
+          <tr><th>Залог</th><td>нет, товар ваш с подписи</td></tr>
+          <tr><th>Поручитель</th><td>если нужен - на цену не влияет</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted" style="margin-top:10px">Образец, не оферта. Ваши цифры - в предложении, полный договор - после проверки юристом и учёным.</p>
+    <div class="cta"><a class="btn btn-gold" href="#calc">Посчитать свои цифры</a><button class="btn btn-line" type="button" id="shareTbl">Переслать образец</button></div>
+    <div class="card" id="vozvrat" style="margin-top:22px">
+      <h3>Порядок возврата</h3>
+      <ul>
+        <li>До договора вы осматриваете товар. Не подошёл - откажитесь, платить ничего не нужно.</li>
+        <li>После договора за товар отвечаем мы как продавец: с браком - к нам, по закону о защите прав потребителей.</li>
+        <li>Вернули товар с браком - отдаём всё, что вы внесли, долга больше нет.</li>
+        <li>Исправный товар после договора вернуть можно не всегда, поэтому осматривайте спокойно, без спешки.</li>
+      </ul>
     </div>
   </div>
 </section>
 
-<section style="background:var(--surface-2)">
+<section id="faq">
+  <div class="wrap">
+    <div class="eyebrow">Вопросы</div>
+    <h2>Частые вопросы</h2>
+    <details class="qa"><summary>Почему вам доверять, если сделок ещё не было?</summary><p>До договора мы ничего не берём: заявка бесплатна, паспорт и деньги не нужны. Первые сделки - после проверки договора юристом и письменного шариатского заключения, которое опубликуем здесь. Продавец - ИП с открытыми ИНН и ОГРНИП, его можно проверить на сайте ФНС.</p></details>
+    <details class="qa"><summary>Это не те же деньги в долг под процент?</summary><p>Нет: там дают деньги и берут больше. Здесь мы покупаем товар на себя, отвечаем за него и продаём вам частями по цене, названной до договора. Цена не растёт, даже если взнос перенесли.</p></details>
+    <details class="qa"><summary>Почему цена выше, чем в магазине?</summary><p>Мы покупаем товар на свои деньги, отвечаем за него и ждём оплату месяцами. Наценка - наша прибыль, названная в рублях до договора. Накопите - выйдет дешевле.</p></details>
+    <details class="qa"><summary>Где будут сделки?</summary><p>Первые сделки - в Махачкале и Каспийске: продавец получает товар, а вы осматриваете его до договора. Заявки из других городов тоже собираем - так поймём, куда идти дальше.</p></details>
+    <details class="qa"><summary>Можно без первого взноса?</summary><p id="faqDown">Нет: первый взнос - от 20% цены, при подписании договора.</p></details>
+    <details class="qa"><summary>Когда начнутся сделки?</summary><p>После проверки договора юристом и письменного шариатского заключения. Все, кто оставил заявку, узнают первыми - по ссылке на заявку и на почту, если её указали.</p></details>
+    <details class="qa"><summary>Что будет, если не успею внести взнос?</summary><p>Штрафов и пеней нет. Ближайший взнос можно перенести самим на странице заявки - на 14 или 30 дней, бесплатно. Нужно больше - напишите: перенесём или разделим взнос. Если положение трудное - дадим отсрочку, пока оно не улучшится.</p></details>
+    <details class="qa"><summary>Можно оплатить досрочно?</summary><p>Да, внести весь остаток можно в любой момент, без платы. Скидку за досрочную оплату заранее не обещаем.</p></details>
+    <details class="qa"><summary>Можно купить товар с маркетплейса?</summary><p>Пришлите ссылку. Если товар можно купить с документами для продавца, получить и осмотреть до договора, купим его на себя. Сами не заказывайте и не оплачивайте: покупаем мы.</p></details>
+    <details class="qa" id="nelzya"><summary>Что нельзя купить в рассрочку?</summary><p><b>Запрещено:</b> золото, серебро и вещи с заметной их долей, валюта и денежные заменители (подарочные сертификаты, балансы, криптовалюта) - такой обмен по исламу должен быть сразу. Запретное само по себе: табак и вейпы, музыкальные инструменты, статуэтки живых существ, азартное.</p><p><b>Не продаём из осторожности:</b> ценные бумаги, оплату долгов, услуги (пока), товар, который вы уже купили или оплатили сами, покупки, чтобы перепродать за наличные, предзаказ и товар, который нельзя осмотреть; мебель на заказ - только готовую.</p></details>
+    <details class="qa"><summary>Нужен ли паспорт?</summary><p>Для заявки - нет. Паспорт понадобится при подписании договора.</p></details>
+    <details class="qa"><summary>Кому уйдут мои данные?</summary><p>Заявка хранится в CRM школы на сервере в России. Партнёру данные передаются, только если вы отдельно на это согласились.</p></details>
+  </div>
+</section>
+
+<section class="alt">
   <div class="wrap">
     <div class="eyebrow">Чек-лист</div>
     <h2>7 вопросов, которые стоит задать любой рассрочке</h2>
@@ -255,10 +281,10 @@ footer a{color:var(--accent-ink)}
     <ol class="check">
       <li><div><b>Кому принадлежит товар в момент продажи?</b><span>У нас - продавцу: он покупает товар на себя, забирает его и до договора отвечает за него.</span></div></li>
       <li><div><b>Названа ли цена до подписи и может ли она вырасти?</b><span>Называем в рублях до договора. После подписания цена не меняется.</span></div></li>
-      <li><div><b>Есть ли пени или проценты за просрочку?</b><span>Нет. В договоре прямо откажемся от процентов за просрочку.</span></div></li>
+      <li><div><b>Есть ли пени, неустойка или проценты за просрочку?</b><span>Нет. В договоре прямо откажемся от неустойки и процентов за просрочку.</span></div></li>
       <li><div><b>С кем вы подписываете договор?</b><span>С продавцом товара, а не с банком.</span></div></li>
-      <li><div><b>Что будет, если трудно платить?</b><span>Перенесём дату или разделим взнос - бесплатно.</span></div></li>
-      <li><div><b>Что с возвратом и браком?</b><span>Продавец отвечает за товар по закону о защите прав потребителей.</span></div></li>
+      <li><div><b>Что будет, если трудно платить?</b><span>Перенесём дату или разделим взнос - бесплатно. Ближайший взнос можно перенести и самим, на странице заявки.</span></div></li>
+      <li><div><b>Что с возвратом и браком?</b><span>Продавец отвечает за товар по закону о защите прав потребителей. <a href="#vozvrat">Порядок возврата</a></span></div></li>
       <li><div><b>Есть ли письменное шариатское заключение?</b><span>Без письменного заключения сделок не будет - опубликуем его здесь.</span></div></li>
     </ol>
     <div class="cta"><button class="btn btn-line" id="shareCheck" type="button">Отправить чек-лист близким</button></div>
@@ -266,332 +292,484 @@ footer a{color:var(--accent-ink)}
 </section>
 
 <section>
-  <div class="wrap">
-    <div class="eyebrow">Честно о том, где мы сейчас</div>
-    <h2>Этапы запуска</h2>
-    <div class="phases">
-      <div class="phase on"><small>сейчас</small>Собираем заявки</div>
-      <div class="phase"><small>далее</small>Проверка договора юристом</div>
-      <div class="phase"><small>далее</small>Шариатское заключение</div>
-      <div class="phase"><small>далее</small>Первые сделки</div>
-    </div>
-    <div class="grid two" style="margin-top:18px">
-      <div class="card"><h3>Кто продавец</h3><p>ИП Джаватханова Заират Абдулмуслимовна, ИНН 054307460938, ОГРНИП 320057100041966. Школа бизнеса JAVATTI и приложение RIZQ.</p></div>
-      <div class="card"><h3>Ваши данные</h3><p>Заявка хранится в CRM школы на сервере в России. Партнёру данные передаются только с вашего отдельного согласия, где он назван по имени. Партнёры - только участники реестра Банка России.</p></div>
-    </div>
-  </div>
-</section>
-
-<section style="padding-top:0">
-  <div class="wrap">
-    <div class="eyebrow">Вопросы</div>
-    <h2>Частые вопросы</h2>
-    <details class="qa"><summary>Чем это отличается от кредита?</summary><p>В кредите вам дают деньги в долг и берут больше - любая оговорённая надбавка к займу и есть риба. Здесь денег не дают: продавец сначала покупает товар себе, забирает его и отвечает за него, а потом продаёт вам с оплатой частями. Цена названа заранее и не растёт.</p></details>
-    <details class="qa"><summary>Почему в рассрочку дороже, чем сразу?</summary><p>Продавать с отсрочкой по цене выше наличной - это торговля, если цена названа до сделки и потом не меняется. Наценку мы называем в рублях до договора.</p></details>
-    <details class="qa"><summary>Когда начнутся сделки?</summary><p>После проверки договора юристом и шариатского заключения. Все, кто оставил заявку, узнают первыми.</p></details>
-    <details class="qa"><summary>Что будет, если не успею внести взнос?</summary><p>Штрафов и пеней нет. Напишите нам заранее - перенесём дату или разделим взнос, бесплатно. Если положение трудное - дадим отсрочку, пока оно не улучшится.</p></details>
-    <details class="qa"><summary>Можно оплатить досрочно?</summary><p>Да, можно внести остаток в любой момент. Скидку за досрочную оплату заранее не обещаем.</p></details>
-    <details class="qa"><summary>Что нельзя купить в рассрочку?</summary><p>Золото, серебро и вещи с заметной их долей, валюту и денежные заменители (подарочные сертификаты, балансы, криптовалюту, ценные бумаги), оплату долгов и кредитов - такой обмен по исламу должен быть сразу. Запретное: табак и вейпы, музыкальные инструменты, статуэтки живых существ, азартное. Товар, который вы уже купили или оплатили сами, и покупки, чтобы перепродать за наличные. Предзаказ и товар, который нельзя осмотреть; мебель на заказ - только готовую. Услуги пока не продаём.</p></details>
-    <details class="qa"><summary>Нужен ли паспорт?</summary><p>Для заявки - нет. Паспорт понадобится при подписании договора.</p></details>
-    <details class="qa"><summary>Кому уйдут мои данные?</summary><p>Заявка хранится в CRM школы на сервере в России. Партнёру данные передаются, только если вы отдельно на это согласились.</p></details>
-  </div>
-</section>
-
-<section id="zayavka" style="background:var(--surface-2)">
-  <div class="wrap">
-    <div class="eyebrow">Заявка</div>
+  <div class="wrap" style="text-align:center">
     <h2>Оставьте заявку - узнаете первой</h2>
-    <p class="lead" style="margin-bottom:18px">Мы свяжемся с вами по телефону и расскажем, как будет проходить покупка. Это предварительная заявка: не договор и не одобрение.</p>
-    <form class="form" id="fReq" novalidate>
-      <label class="f">Что это</label>
-      <div class="seg" id="fCats"></div>
-      <div class="two-col">
-        <div><label class="f" for="fItem">Что именно нужно купить</label><input class="t" id="fItem" placeholder="Например: холодильник двухкамерный" maxlength="300"></div>
-        <div><label class="f" for="fUrl">Ссылка на товар, если есть</label><input class="t" id="fUrl" inputmode="url" placeholder="https://" maxlength="500"></div>
-        <div><label class="f" for="fShop">Магазин, если знаете</label><input class="t" id="fShop" maxlength="120"></div>
-        <div><label class="f" for="fPrice">Примерная цена, ₽</label><input class="t" id="fPrice" inputmode="numeric"></div>
-        <div><label class="f" for="fDown">Первый взнос, ₽</label><input class="t" id="fDown" inputmode="numeric" value="0"></div>
-        <div><label class="f" for="fMon">Удобный платёж в месяц, ₽</label><input class="t" id="fMon" inputmode="numeric"></div>
-      </div>
-      <label class="f">Срок</label>
-      <div class="seg" id="fTerms"></div>
-      <div id="fGWrap" style="display:none"><label class="f">Поручители (их данные сейчас не нужны)</label><div class="seg" id="fG"></div></div>
-      <div class="two-col">
-        <div><label class="f" for="fName">Имя</label><input class="t" id="fName" autocomplete="given-name" maxlength="80"></div>
-        <div><label class="f" for="fTel">Телефон</label><input class="t" id="fTel" type="tel" autocomplete="tel" placeholder="+7 900 000-00-00"></div>
-        <div><label class="f" for="fCity">Город</label><input class="t" id="fCity" maxlength="80"></div>
-      </div>
-      <p class="muted" style="margin-top:12px">Золото, серебро и вещи с заметной их долей, валюту, сертификаты, табак и вейпы, музыкальные инструменты в рассрочку не продаём. Паспорт и доход для заявки не нужны.</p>
-      <label class="tick"><input type="checkbox" id="fAdult"><span>Мне есть 18 лет</span></label>
-      <label class="tick"><input type="checkbox" id="fOk"><span>Даю согласие ИП Джаватханова Заират Абдулмуслимовна (ИНН 054307460938, ОГРНИП 320057100041966) на обработку моих персональных данных для рассмотрения предварительной заявки на покупку в рассрочку и связи со мной. <a href="soglasie.html" target="_blank" rel="noopener">Текст согласия</a> · <a href="../privacy.html" target="_blank" rel="noopener">Политика</a></span></label>
-      <button class="btn btn-gold" id="fGo" type="submit" style="margin-top:18px;width:100%">Отправить заявку</button>
-      <p class="muted" id="fErr" style="margin-top:10px;color:var(--danger)"></p>
-      <div class="done" id="fDone"></div>
-    </form>
+    <p class="lead" style="margin:0 auto 6px">Бесплатно и ни к чему не обязывает. Начнём сделки - сообщим по ссылке на заявку.</p>
+    <div class="cta" style="justify-content:center"><a class="btn btn-gold" href="#calc">Посчитать и оставить заявку</a></div>
   </div>
 </section>
 
-<section id="biznes" class="biz">
-  <div class="wrap">
-    <div class="eyebrow">Бизнесу</div>
-    <h2>Ваши покупательницы не хотят брать кредит. Мы купим у вас товар сразу и сами продадим им частями</h2>
-    <p class="lead">Собираем первых партнёров: магазины техники, мебели и товаров для дома. Оставьте заявку - расскажем, как будет устроено подключение.</p>
-    <div class="grid two" style="margin-top:22px">
-      <div class="card">
-        <h3>Что мы проверяем</h3>
-        <ul style="padding-left:18px;margin-top:6px;display:grid;gap:6px">
-          <li>ИНН и данные компании</li>
-          <li>Ассортимент без запретного; золото, серебро и валюту в рассрочку не продаём</li>
-          <li>Право вернуть вам товар в течение 3 дней, если покупательница передумала до договора</li>
-          <li>Регион работы</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3>Как подключиться</h3>
-        <ol style="padding-left:18px;margin-top:6px;display:grid;gap:6px">
-          <li>Заявка на этой странице</li>
-          <li>Проверка и разговор</li>
-          <li>Соглашение</li>
-          <li>Ваш магазин - в приложении RIZQ</li>
-        </ol>
-        <p style="margin-top:10px">Сделки ещё не начаты: сейчас это лист ожидания. Сроки подключения и выплат не обещаем, пока не утвердим условия.</p>
-      </div>
-    </div>
-    <form class="form" id="fBiz" novalidate style="margin-top:22px">
-      <div class="two-col">
-        <div><label class="f" for="bName">Компания или магазин</label><input class="t" id="bName" maxlength="160"></div>
-        <div><label class="f" for="bInn">ИНН (если есть под рукой)</label><input class="t" id="bInn" inputmode="numeric" maxlength="12"></div>
-        <div><label class="f" for="bSells">Что продаёте</label><input class="t" id="bSells" maxlength="300" placeholder="мебель, техника, для дома"></div>
-        <div><label class="f" for="bRegions">Регион</label><input class="t" id="bRegions" maxlength="200"></div>
-        <div><label class="f" for="bSite">Сайт или Instagram</label><input class="t" id="bSite" maxlength="300"></div>
-        <div><label class="f" for="bCheck">Средний чек, ₽</label><input class="t" id="bCheck" inputmode="numeric"></div>
-        <div><label class="f" for="bContact">Как к вам обращаться</label><input class="t" id="bContact" maxlength="120"></div>
-        <div><label class="f" for="bTel">Телефон</label><input class="t" id="bTel" type="tel"></div>
-        <div><label class="f" for="bMail">Почта</label><input class="t" id="bMail" type="email" maxlength="120"></div>
-      </div>
-      <label class="f">Где продаёте</label>
-      <div class="seg" id="bCh"><button type="button" data-v="online">Интернет-магазин</button><button type="button" data-v="offline">Магазин, касса</button><button type="button" data-v="both">И там, и там</button></div>
-      <label class="tick"><input type="checkbox" id="bOk"><span>Даю согласие ИП Джаватханова Заират Абдулмуслимовна (ИНН 054307460938, ОГРНИП 320057100041966) на обработку моих персональных данных как контактного лица для рассмотрения заявки магазина. <a href="soglasie.html#biz" target="_blank" rel="noopener">Текст согласия</a></span></label>
-      <button class="btn btn-gold" id="bGo" type="submit" style="margin-top:18px;width:100%">Отправить заявку магазина</button>
-      <p class="muted" id="bErr" style="margin-top:10px;color:var(--danger)"></p>
-      <div class="done" id="bDone"></div>
-    </form>
-  </div>
-</section>
-
-<section>
+<section class="alt">
   <div class="wrap">
     <div class="grid two">
       <div>
         <div class="eyebrow">Документы</div>
         <div class="docs">
+          <a href="#dogovor">Договор в одной таблице →</a>
+          <a href="#vozvrat">Порядок возврата →</a>
           <a href="soglasie.html">Согласие на обработку данных для заявки →</a>
           <a href="../privacy.html">Политика конфиденциальности →</a>
-          <span>Образец договора - готовится</span>
-          <span>Порядок возврата - готовится</span>
+          <span>Полный договор - после проверки юристом</span>
           <span>Шариатское заключение - готовится</span>
         </div>
       </div>
       <div>
         <div class="eyebrow">Приложение RIZQ</div>
-        <h3>Статус заявки, график и напоминания - в приложении</h3>
+        <h3>Статус заявки, график и напоминания - и в приложении</h3>
         <p class="muted" style="margin-top:6px">В RIZQ также Коран с переводом, азкары, время намаза и журнал «Дело по Сунне».</p>
         <div class="cta"><a class="btn btn-line" href="../">Открыть RIZQ</a></div>
+        <div class="eyebrow" style="margin-top:22px">Магазинам</div>
+        <p class="muted">Вы продаёте нам по счёту - мы продаём покупательнице частями. <a href="biznes.html">Подключить магазин →</a></p>
       </div>
     </div>
   </div>
 </section>
+</main>
 
 <footer>
   <div class="wrap">
     <p>Продавец: ИП Джаватханова Заират Абдулмуслимовна, ИНН 054307460938, ОГРНИП 320057100041966. Почта <a href="mailto:dzhavatxanova@mail.ru">dzhavatxanova@mail.ru</a>, телефон <a href="tel:+79285936069">+7 928 593-60-69</a>.</p>
-    <p style="margin-top:8px">Информация на странице не является офертой. Расчёт в калькуляторе предварительный. Партнёры - только участники реестра Банка России по партнёрскому финансированию; их реклама маркируется; участие в реестре - не шариатское заключение. Перед подписанием любого договора покажите его своему преподавателю.</p>
+    <p>Информация на странице не является офертой. Расчёт в калькуляторе предварительный. Партнёры - только участники реестра Банка России по партнёрскому финансированию; их реклама маркируется; участие в реестре - не шариатское заключение. Перед подписанием любого договора покажите его своему преподавателю.</p>
+    <p><a href="biznes.html">Магазинам</a> · <a href="soglasie.html">Согласие</a> · <a href="../privacy.html">Политика</a></p>
   </div>
 </footer>
+
+<div class="sticky" id="sticky"><a class="btn btn-line" href="#calc">Посчитать</a><a class="btn btn-gold" href="#zayavka">Оставить заявку</a></div>
 
 <script>
 (function(){
   "use strict";
+  /* раздел «Бизнесу» переехал на свою страницу: старые ссылки #biznes (приложение, посты) ведут туда */
+  if(location.hash === "#biznes"){ location.replace("biznes.html"); return; }
+  window.addEventListener("hashchange", function(){ if(location.hash === "#biznes") location.replace("biznes.html"); });
   var API = (location.hostname === "localhost" || location.hostname === "127.0.0.1") ? "http://" + location.hostname + ":3210" : "https://crm.javattigroup.ru";
-  var CATS = [["tech","Техника"],["furniture","Мебель"],["home","Для дома"],["auto","Авто"],["other","Другое"]];
-  var DEF = { terms:[3,6,9,12], minPrice:10000, maxPrice:300000, minDownPct:0, guarantors:false };
-  var calc = null, st = { price:60000, down:0, term:6, g:0, monthly:0, cat:"" };
+  var SUPPORT = { tel:"79285936069", phone:"+7 928 593-60-69" };
+  var CATS = [["tech","Техника"],["furniture","Мебель"],["home","Для дома"],["auto","Для авто"],["other","Другое"]];
+  /* Условия, утверждённые владелицей в CRM (версия 1, 03.10.2026): сайт считает по ним сразу,
+     пока CRM не ответила. Ответ CRM их заменяет; сняли условия с показа - калькулятор без наценки. */
+  var APPROVED = { version:1, terms:[6,9,12], markup:{ 6:[20], 9:[25], 12:[30] }, guarantors:false, minPrice:30000, maxPrice:100000, maxNoGuarantor:null, minDownPct:20, note:null };
+  var calc = APPROVED, dealsOn = false;
+  var st = { price:60000, down:12000, term:6, monthly:0, cat:"", downTouched:false };
   var $ = function(id){ return document.getElementById(id); };
   var money = function(n){ return Math.round(n).toLocaleString("ru-RU") + " ₽"; };
-  var num = function(v){ return Math.round(+String(v || "").replace(/\D/g, "") || 0); };
+  var num = function(v){ return Math.round(+String(v == null ? "" : v).replace(/\D/g, "") || 0); };
   var esc = function(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]; }); };
-  var cfg = function(){ return calc || DEF; };
+  var dmy = function(s){ return String(s || "").slice(0, 10).split("-").reverse().join("."); };
+  var plural = function(n, a, b, c){ var m = n % 10, h = n % 100; return n + " " + (m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 10 || h >= 20) ? b : c); };
+  var EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/;
+  var qs = {};
+  try{ new URLSearchParams(location.search).forEach(function(v, k){ qs[k] = v; }); }catch(e){}
   var utm = {};
-  try{ var qs = new URLSearchParams(location.search); ["utm_source","utm_medium","utm_campaign","utm_content","utm_term"].forEach(function(k){ var v = qs.get(k); if(v) utm[k] = v.slice(0, 120); }); }catch(e){}
+  ["utm_source","utm_medium","utm_campaign","utm_content","utm_term"].forEach(function(k){ if(qs[k]) utm[k] = String(qs[k]).slice(0, 120); });
 
-  /* Та же формула, что в CRM и в приложении: наценка на остаток после первого взноса за весь срок */
-  function quote(){
-    var c = cfg(), price = st.price, down = st.down, term = st.term, g = c.guarantors ? st.g : 0;
+  /* Шаги посетителя - чтобы видеть, где люди уходят. Без cookies: номер живёт до закрытия вкладки. */
+  var vis = "";
+  try{ vis = sessionStorage.getItem("rs.vis") || ""; }catch(e){}
+  if(!/^[a-z0-9]{16}$/.test(vis)){
+    vis = (Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-8) + "00000000").slice(0, 16);
+    try{ sessionStorage.setItem("rs.vis", vis); }catch(e){}
+  }
+  var src = String(utm.utm_source || "").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20) ||
+    (document.referrer && document.referrer.indexOf(location.host) < 0 ? "ref" : "direct");
+  var sent = {};
+  function ev(name){
+    if(sent[name]) return; sent[name] = 1;
+    try{ fetch(API + "/api/public/finance/event", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ event:name, visitor:vis, src:src }), keepalive:true }).catch(function(){}); }catch(e){}
+  }
+  function post(url, body){
+    return fetch(API + url, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(body || {}) })
+      .then(function(r){ return r.json().then(function(j){ return { ok:r.ok, j:j }; }, function(){ return { ok:r.ok, j:{} }; }); });
+  }
+  function copy(text, btn, done){
+    var ok = function(){ if(!btn) return; var t = btn.textContent; btn.textContent = done || "Скопировано"; setTimeout(function(){ btn.textContent = t; }, 2200); };
+    try{ navigator.clipboard.writeText(text).then(ok, function(){ prompt("Скопируйте", text); }); }catch(e){ prompt("Скопируйте", text); }
+  }
+  function share(title, text, url, btn){
+    if(navigator.share){ navigator.share({ title:title, text:text, url:url }).catch(function(){}); return; }
+    copy(text + " " + url, btn, "Ссылка скопирована");
+  }
+
+  /* ---------- калькулятор: та же формула, что в CRM и в приложении ---------- */
+  function minDownOf(price){ var c = calc || APPROVED; return c.minDownPct ? Math.ceil(price * c.minDownPct / 100 / 500) * 500 : 0; }
+  function quoteFor(price, down, term){
+    var c = calc || APPROVED;
     if(!price) return { ok:false, error:"Укажите цену товара" };
     if(price < c.minPrice) return { ok:false, error:"Рассрочка - для покупок от " + money(c.minPrice) };
     if(price > c.maxPrice) return { ok:false, error:"Рассрочка - для покупок до " + money(c.maxPrice) };
     if(down >= price) return { ok:false, error:"Первый взнос должен быть меньше цены" };
-    var minDown = Math.ceil(price * (c.minDownPct || 0) / 100);
-    if(down < minDown) return { ok:false, error:"Первый взнос - от " + money(minDown) };
+    var md = Math.ceil(price * (c.minDownPct || 0) / 100);
+    if(down < md) return { ok:false, error:"Первый взнос - от " + money(md) + " (" + c.minDownPct + "% цены)" };
     var rest = price - down;
     if(!calc) return { ok:true, pre:true, rest:rest };
-    if(c.maxNoGuarantor && g === 0 && price > c.maxNoGuarantor) return { ok:false, error:"Без поручителя - до " + money(c.maxNoGuarantor) + ". Для большей суммы нужен поручитель" };
-    var pct = (c.markup[term] || [0])[g] || 0, markup = Math.round(rest * pct / 100), toPay = rest + markup, each = Math.floor(toPay / term);
-    return { ok:true, rest:rest, markup:markup, salePrice:price + markup, each:each, first:toPay - each * (term - 1) };
+    var pct = (calc.markup[term] || [0])[0] || 0, markup = Math.round(rest * pct / 100), toPay = rest + markup, each = Math.floor(toPay / term);
+    return { ok:true, rest:rest, markup:markup, salePrice:price + markup, toPay:toPay, each:each, first:toPay - each * (term - 1) };
+  }
+  function quote(){ return quoteFor(st.price, st.down, st.term); }
+  function paysText(q, term){
+    var w = plural(term, "ежемесячный взнос", "ежемесячных взноса", "ежемесячных взносов");
+    return q.first !== q.each ? w + ": первый " + money(q.first) + ", затем по " + money(q.each) : w + " по " + money(q.each);
   }
   function seg(el, list, cur, label, onPick){
     el.innerHTML = list.map(function(v){ return '<button type="button" data-v="' + v + '" class="' + (String(v) === String(cur) ? "on" : "") + '">' + label(v) + '</button>'; }).join("");
-    el.onclick = function(ev){ var b = ev.target.closest("button"); if(!b) return; onPick(b.getAttribute("data-v")); };
+    el.onclick = function(e){ var b = e.target.closest("button"); if(!b) return; onPick(b.getAttribute("data-v")); };
   }
   function paint(){
-    var c = cfg(), q = quote(), o = $("cOut");
+    var q = quote(), o = $("cOut");
     $("cDownL").textContent = money(st.down);
     $("cMonL").textContent = st.monthly ? money(st.monthly) : "не выбрано";
+    paintFormLine(q);
     if(!q.ok){ o.innerHTML = '<p class="err" style="font-size:15px;margin:0">' + esc(q.error) + '</p>'; return; }
     if(q.pre){
       o.innerHTML = '<div class="big">' + money(q.rest) + ' <small>к рассрочке на ' + st.term + ' мес.</small></div>' +
         '<div class="row"><span>Цена товара</span><span>' + money(st.price) + '</span></div>' +
         '<div class="row"><span>Первый взнос, при подписании</span><span>' + money(st.down) + '</span></div>' +
-        '<div class="row"><span>Наценка</span><span>назовём до договора</span></div>' +
-        '<p>Цена товара + наценка = цена в рассрочку. Наценку вы увидите в рублях заранее, и она не изменится до последнего взноса. Условия ещё утверждаются, поэтому калькулятор пока не называет наценку. Расчёт не является офертой.</p>';
+        '<div class="row"><span>Наценка продавца</span><span>назовём до договора</span></div>' +
+        '<p>Цена товара + наценка = цена в рассрочку. Наценку вы увидите в рублях заранее, и она не изменится до последнего взноса. Расчёт не является офертой.</p>';
       return;
     }
-    o.innerHTML = '<div class="big">≈ ' + money(q.each) + ' <small>в месяц</small></div>' +
+    o.innerHTML = '<div class="big">' + money(q.each) + ' <small>в месяц</small></div>' +
       '<div class="row"><span>Цена товара</span><span>' + money(st.price) + '</span></div>' +
       '<div class="row"><span>Первый взнос, при подписании</span><span>' + money(st.down) + '</span></div>' +
-      '<div class="row"><span>Наценка за весь срок</span><span>' + money(q.markup) + '</span></div>' +
+      '<div class="row"><span>Наценка продавца</span><span>' + money(q.markup) + '</span></div>' +
       '<div class="row strong"><span>Цена в рассрочку</span><span>' + money(q.salePrice) + '</span></div>' +
-      '<div class="row"><span>Взносы</span><span>' + st.term + ' × ' + (q.first !== q.each ? 'первый ' + money(q.first) + ', затем ' : '') + money(q.each) + '</span></div>' +
-      '<p>Расчёт предварительный и не является офертой. Точную цену назовём до договора, после подписания она не меняется.' + (calc.note ? ' ' + esc(calc.note) : '') + '</p>';
+      '<div class="row"><span>Ежемесячные взносы</span><span>' + (q.first !== q.each ? st.term + ': первый ' + money(q.first) + ', затем по ' + money(q.each) : st.term + ' по ' + money(q.each)) + '</span></div>' +
+      '<div class="formula">' + money(st.price) + ' + ' + money(q.markup) + ' = ' + money(q.salePrice) + ': цена названа до договора и не растёт</div>' +
+      '<p>Расчёт предварительный и не является офертой. Точную цену назовём до договора по документам магазина, после подписания она не меняется.' + (calc.note ? ' ' + esc(calc.note) : '') + '</p>';
   }
-  function minDown(price){ var c = cfg(); return c.minDownPct ? Math.ceil(price * c.minDownPct / 100 / 500) * 500 : 0; }
+  function paintFormLine(q){
+    $("fCalcLine").innerHTML = q.ok
+      ? 'Расчёт для заявки: товар ' + money(st.price) + ', первый взнос ' + money(st.down) + ', ' + st.term + ' мес.' + (q.pre ? '' : ', ' + money(q.each) + ' в месяц') + '. <a href="#calc">Изменить</a>'
+      : '<span class="err-t">' + esc(q.error) + '</span> - поправьте расчёт выше.';
+  }
+  function paintHero(){
+    var c = calc;
+    if(!c){ $("heroEx").textContent = "Цена товара + наценка продавца = цена в рассрочку. Наценку называем в рублях до договора."; return; }
+    var p = Math.min(Math.max(60000, c.minPrice), c.maxPrice), d = minDownOf(p), t = c.terms[0], q = quoteFor(p, d, t);
+    if(!q.ok) return;
+    $("heroEx").innerHTML = 'Пример: товар <b>' + money(p) + '</b> - первый взнос ' + money(d) + ', затем ' + esc(paysText(q, t)) + '. Наценка продавца <b>' + money(q.markup) + '</b> видна до договора.';
+  }
+  function paintTable(){
+    var c = calc;
+    $("tblWrap").style.display = c ? "" : "none";
+    if(!c){ $("tblLead").textContent = "Главное до подписи - на одном экране. Пример с цифрами появится, когда будут утверждены условия."; return; }
+    var p = c.maxPrice, d = minDownOf(p), t = c.terms[c.terms.length - 1], q = quoteFor(p, d, t);
+    if(!q.ok) return;
+    $("tblLead").textContent = "Главное до подписи - на одном экране. Пример: товар " + money(p) + " на " + t + " мес.";
+    $("tPrice").textContent = money(p) + " по документам магазина";
+    $("tMarkup").textContent = money(q.markup) + ", названа до договора";
+    $("tSale").innerHTML = "<b>" + money(q.salePrice) + "</b>, не меняется";
+    $("tDown").textContent = d ? money(d) + " при подписании" : "нет";
+    $("tPays").textContent = q.first !== q.each ? t + ": первый " + money(q.first) + ", дальше по " + money(q.each) : t + " по " + money(q.each);
+  }
+  function paintFaq(){
+    var c = calc || APPROVED;
+    $("faqDown").textContent = c.minDownPct ? "Нет: первый взнос - от " + c.minDownPct + "% цены, при подписании договора." : "Можно, тогда ежемесячные взносы будут больше.";
+  }
+  function limitsDown(){
+    var mx = Math.floor(st.price * 0.9 / 500) * 500, mn = minDownOf(st.price);
+    if(!st.downTouched) st.down = mn;
+    $("cDown").min = mn; $("cDown").max = Math.max(mn, mx);
+    if(st.down > mx) st.down = mx; if(st.down < mn) st.down = mn;
+    $("cDown").value = st.down;
+    $("cMon").max = Math.max(5000, Math.round(st.price / 2 / 500) * 500);
+  }
   function setupCalc(){
-    var c = cfg();
-    if(c.terms.indexOf(st.term) < 0) st.term = c.terms[Math.min(1, c.terms.length - 1)];
+    var c = calc || APPROVED;
+    if(c.terms.indexOf(st.term) < 0) st.term = c.terms[0];
     if(st.price < c.minPrice) st.price = c.minPrice;
     if(st.price > c.maxPrice) st.price = c.maxPrice;
-    $("cPrice").value = st.price; $("cPriceR").value = st.price;
-    var md = minDown(st.price); $("cDown").min = md; if(st.down < md){ st.down = md; $("cDown").value = md; }
     $("cPriceR").min = c.minPrice; $("cPriceR").max = c.maxPrice;
-    seg($("cTerms"), c.terms, st.term, function(v){ return v + " мес."; }, function(v){ st.term = +v; setupCalc(); syncForm(); });
-    $("cGWrap").style.display = c.guarantors ? "" : "none";
-    if(c.guarantors) seg($("cG"), [0,1,2], st.g, function(v){ return +v ? (+v === 1 ? "один" : "два") : "без поручителя"; }, function(v){ st.g = +v; setupCalc(); syncForm(); });
+    $("cPrice").value = st.price; $("cPriceR").value = st.price;
+    limitsDown();
+    seg($("cTerms"), c.terms, st.term, function(v){ return v + " мес."; }, function(v){ st.term = +v; ev("calc"); setupCalc(); });
     $("cMonWrap").style.display = calc ? "none" : "";
-    paint();
+    $("fMonWrap").style.display = calc ? "none" : "";
+    paint(); paintHero(); paintTable(); paintFaq();
   }
-  function onPrice(v){
-    st.price = v; $("cPrice").value = v; $("cPriceR").value = v;
-    var mx = Math.floor(v * 0.9 / 500) * 500, mn = minDown(v); $("cDown").max = mx; $("cDown").min = mn; if(st.down > mx){ st.down = mx; $("cDown").value = mx; } if(st.down < mn){ st.down = mn; $("cDown").value = mn; }
-    $("cMon").max = Math.max(5000, Math.round(v / 2 / 500) * 500);
-    paint();
-  }
-  $("cPrice").addEventListener("input", function(){ onPrice(num(this.value)); });
-  $("cPriceR").addEventListener("input", function(){ onPrice(num(this.value)); });
-  $("cDown").addEventListener("input", function(){ st.down = num(this.value); paint(); });
+  function onPrice(v){ st.price = v; $("cPrice").value = v || ""; $("cPriceR").value = v; limitsDown(); paint(); }
+  $("cPrice").addEventListener("input", function(){ ev("calc"); onPrice(num(this.value)); });
+  $("cPriceR").addEventListener("input", function(){ ev("calc"); onPrice(num(this.value)); });
+  $("cDown").addEventListener("input", function(){ ev("calc"); st.downTouched = true; st.down = num(this.value); paint(); });
   $("cMon").addEventListener("input", function(){ st.monthly = num(this.value); paint(); });
-  $("cApply").addEventListener("click", function(){ syncForm(); });
+  $("cShare").addEventListener("click", function(){
+    var q = quote(); if(!q.ok) return;
+    var url = location.origin + location.pathname + "?p=" + st.price + "&d=" + st.down + "&t=" + st.term + "#calc";
+    var text = q.pre ? "Посчитала покупку частями в RIZQ: " + money(st.price) + ", первый взнос " + money(st.down) + ", " + st.term + " мес. Наценку называют в рублях до договора. Как думаешь?"
+      : "Посчитала в RIZQ: товар " + money(st.price) + ", первый взнос " + money(st.down) + ", " + plural(st.term, "взнос", "взноса", "взносов") + " по " + money(q.each) + ", наценка " + money(q.markup) + " названа заранее. Как думаешь?";
+    ev("share");
+    share("Расчёт рассрочки RIZQ", text, url, this);
+  });
+  /* расчёт, которым поделились: ?p=цена&d=взнос&t=срок */
+  if(qs.p) st.price = num(qs.p) || st.price;
+  if(qs.d){ st.down = num(qs.d); st.downTouched = true; }
+  if(qs.t) st.term = num(qs.t) || st.term;
 
-  /* форма заявки */
-  function syncForm(){
-    $("fPrice").value = st.price || ""; $("fDown").value = st.down || 0; if(st.monthly) $("fMon").value = st.monthly;
-    var cc = cfg(); $("fDown").placeholder = cc.minDownPct ? "от " + cc.minDownPct + "% цены" : "";
-    var c = cfg();
-    seg($("fTerms"), c.terms, st.term, function(v){ return v + " мес."; }, function(v){ st.term = +v; syncForm(); setupCalc(); });
-    $("fGWrap").style.display = c.guarantors ? "" : "none";
-    if(c.guarantors) seg($("fG"), [0,1,2], st.g, function(v){ return +v ? (+v === 1 ? "один" : "два") : "нет"; }, function(v){ st.g = +v; syncForm(); setupCalc(); });
-  }
+  /* ---------- заявка ---------- */
   seg($("fCats"), CATS.map(function(c){ return c[0]; }), st.cat, function(v){ return CATS.filter(function(c){ return c[0] === v; })[0][1]; }, function(v){
     st.cat = st.cat === v ? "" : v;
     Array.prototype.forEach.call($("fCats").children, function(b){ b.classList.toggle("on", b.getAttribute("data-v") === st.cat); });
   });
-  function post(url, body){
-    return fetch(API + url, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(body) })
-      .then(function(r){ return r.json().then(function(j){ return { ok:r.ok, j:j }; }, function(){ return { ok:false, j:{} }; }); });
+  $("fReq").addEventListener("focusin", function(){ ev("form"); });
+  function applyDeals(){
+    if(!dealsOn) return;
+    $("fTitle").textContent = "Заявка на покупку";
+    $("fNote").textContent = "Бесплатно. Паспорт, сведения о доходе и деньги для заявки не нужны.";
   }
-  $("fReq").addEventListener("submit", function(ev){
-    ev.preventDefault();
+  $("fReq").addEventListener("submit", function(e){
+    e.preventDefault();
     var err = $("fErr"), btn = $("fGo"); err.textContent = "";
-    var item = $("fItem").value.trim(), url = $("fUrl").value.trim(), price = num($("fPrice").value), down = num($("fDown").value);
     var fail = function(t){ err.textContent = t; };
+    var item = $("fItem").value.trim(), url = $("fUrl").value.trim(), mail = $("fMail").value.trim();
     if(!item) return fail("Напишите, что нужно купить");
     if(/золот|серебр|валют|бриллиант|криптовалют|сертификат|вейп|табак|сигарет|кальян/i.test(item)) return fail("Золото, серебро, валюту, сертификаты, табак и вейпы в рассрочку не продаём");
-    if(url && !/^https?:\/\//i.test(url)) return fail("Ссылка начинается с https://");
-    if(!price) return fail("Укажите примерную цену");
-    if(down >= price) return fail("Первый взнос должен быть меньше цены");
+    if(url && !/^https?:\/\//i.test(url)) return fail("Ссылка на товар начинается с https://");
     if(!$("fName").value.trim()) return fail("Напишите, как к вам обращаться");
     if($("fTel").value.replace(/\D/g, "").length < 10) return fail("Проверьте номер телефона");
+    if(mail && !EMAIL_RE.test(mail)) return fail("Проверьте адрес почты или оставьте поле пустым");
+    var q = quote(); if(!q.ok) return fail(q.error + " - поправьте расчёт выше");
     if(!$("fAdult").checked) return fail("Заявку можно оставить с 18 лет");
     if(!$("fOk").checked) return fail("Отметьте согласие на обработку данных");
-    st.price = price; st.down = down;
-    if(calc){ var q = quote(); if(!q.ok) return fail(q.error); }
     btn.disabled = true; btn.textContent = "Отправляем...";
-    post("/api/public/finance/request", { kind:"murabaha", category: st.cat, item: item, productUrl: url, shop: $("fShop").value.trim(),
-      amount: price, down: down, term: st.term, monthly: num($("fMon").value) || "", guarantors: cfg().guarantors ? st.g : "",
-      city: $("fCity").value.trim(), name: $("fName").value.trim(), phone: $("fTel").value.trim(), consent: true, source: "site", utm: utm })
+    post("/api/public/finance/request", { kind:"murabaha", category:st.cat, item:item, productUrl:url, shop:$("fShop").value.trim(),
+      amount:st.price, down:st.down, term:st.term, monthly: calc ? "" : (num($("fMon").value) || ""), guarantors:"",
+      city:$("fCity").value.trim(), name:$("fName").value.trim(), phone:$("fTel").value.trim(), email:mail, consent:true, source:"site", utm:utm })
       .then(function(x){
         btn.disabled = false; btn.textContent = "Отправить заявку";
         if(!x.ok) return fail(x.j && x.j.error ? x.j.error : "Не получилось отправить, попробуйте ещё раз");
+        ev("submit");
+        var tok = x.j.token || "", link = tok ? location.origin + location.pathname + "?z=" + encodeURIComponent(tok) : "";
         var d = $("fDone");
         d.innerHTML = '<h3>Заявка принята' + (x.j.number ? ': ' + esc(x.j.number) : '') + '</h3>' +
-          '<p style="color:var(--ink-2);margin-top:6px">Мы свяжемся с вами по телефону. Сейчас мы собираем заявки: сделки начнём после проверки юристом и шариатского заключения, и вы узнаете первой.</p>' +
-          (x.j.token ? '<div class="cta"><a class="btn btn-gold" href="../?finreq=' + encodeURIComponent(x.j.token) + '">Открыть мою заявку в RIZQ</a></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:8px">В приложении - статус заявки, предложение с ценой, а потом график и оплата взносов.</p>' : '');
+          '<p style="color:var(--ink-2);margin-top:6px">' + (dealsOn
+            ? 'Мы посчитаем цену и пришлём предложение: оно появится по ссылке ниже' + (mail ? ' и придёт на почту' : '') + '.'
+            : 'Звонить и торопить не будем. Начнём сделки - узнаете первой: по ссылке ниже' + (mail ? ' и на почту' : '') + '.') + '</p>' +
+          (link ? '<p class="muted" style="margin-top:10px">Ваша личная ссылка на статус - сохраните её и не пересылайте:</p>' +
+            '<div class="calcline" style="word-break:break-all">' + esc(link) + '</div>' +
+            '<div class="acts"><a class="btn btn-gold sm" href="' + esc(link) + '">Открыть статус</a><button class="btn btn-line sm" type="button" id="fCopy">Скопировать ссылку</button>' +
+            '<a class="btn btn-soft sm" href="../?finreq=' + encodeURIComponent(tok) + '">Открыть в RIZQ</a></div>' +
+            '<p class="muted" style="margin-top:8px">В приложении RIZQ о каждом шаге придёт уведомление.</p>' : '');
         d.classList.add("show");
-        $("fReq").querySelectorAll("input.t").forEach(function(i){ if(i.id !== "fCity") i.value = ""; });
+        var cp = $("fCopy"); if(cp) cp.onclick = function(){ copy(link, cp, "Ссылка скопирована"); };
+        ["fItem", "fUrl", "fShop", "fMon", "fMail"].forEach(function(id){ $(id).value = ""; });
         $("fOk").checked = false;
+        try{ d.scrollIntoView({ behavior:"smooth", block:"center" }); }catch(e2){}
       }, function(){ btn.disabled = false; btn.textContent = "Отправить заявку"; fail("Нет связи с сервером, попробуйте позже"); });
   });
 
-  /* заявка магазина */
-  var channel = "";
-  $("bCh").onclick = function(ev){ var b = ev.target.closest("button"); if(!b) return; channel = b.getAttribute("data-v");
-    Array.prototype.forEach.call(this.children, function(x){ x.classList.toggle("on", x === b); }); };
-  $("fBiz").addEventListener("submit", function(ev){
-    ev.preventDefault();
-    var err = $("bErr"), btn = $("bGo"); err.textContent = "";
-    var fail = function(t){ err.textContent = t; };
-    if(!$("bName").value.trim()) return fail("Укажите название компании или магазина");
-    if(!$("bContact").value.trim()) return fail("Как к вам обращаться?");
-    if($("bTel").value.replace(/\D/g, "").length < 10 && !$("bMail").value.trim()) return fail("Укажите телефон или почту");
-    var inn = $("bInn").value.replace(/\D/g, ""); if(inn && inn.length !== 10 && inn.length !== 12) return fail("ИНН - 10 цифр у компании или 12 у ИП");
-    if(!$("bOk").checked) return fail("Отметьте согласие на обработку данных");
-    btn.disabled = true; btn.textContent = "Отправляем...";
-    post("/api/public/finance/business", { company: $("bName").value.trim(), inn: inn, sells: $("bSells").value.trim(), regions: $("bRegions").value.trim(),
-      site: $("bSite").value.trim(), avgCheck: num($("bCheck").value) || "", contactName: $("bContact").value.trim(), phone: $("bTel").value.trim(),
-      email: $("bMail").value.trim(), channel: channel, consent: true, source: "site", utm: utm })
-      .then(function(x){
-        btn.disabled = false; btn.textContent = "Отправить заявку магазина";
-        if(!x.ok) return fail(x.j && x.j.error ? x.j.error : "Не получилось отправить, попробуйте ещё раз");
-        var d = $("bDone");
-        d.innerHTML = '<h3>Спасибо! Заявка магазина принята</h3><p style="color:var(--ink-2);margin-top:6px">Мы свяжемся с вами, когда будем готовы обсудить подключение. Сделки ещё не начаты - это лист ожидания.</p>';
-        d.classList.add("show");
-      }, function(){ btn.disabled = false; btn.textContent = "Отправить заявку магазина"; fail("Нет связи с сервером, попробуйте позже"); });
-  });
-
-  /* чек-лист - переслать */
+  /* ---------- поделиться и скопировать ---------- */
   $("shareCheck").addEventListener("click", function(){
-    var text = "7 вопросов, которые стоит задать любой рассрочке, и чем мурабаха отличается от займа под процент:";
-    var url = location.origin + location.pathname;
-    if(navigator.share){ navigator.share({ title:"Исламская рассрочка RIZQ", text:text, url:url }).catch(function(){}); return; }
-    try{ navigator.clipboard.writeText(text + " " + url); this.textContent = "Ссылка скопирована"; }catch(e){ prompt("Скопируйте ссылку", url); }
+    share("Исламская рассрочка RIZQ", "7 вопросов, которые стоит задать любой рассрочке, и чем мурабаха отличается от денег в долг под процент:", location.origin + location.pathname, this);
   });
+  $("shareTbl").addEventListener("click", function(){
+    share("Договор в одной таблице - RIZQ", "Образец условий исламской рассрочки RIZQ: цена названа до договора, без пеней, перенос бесплатно.", location.origin + location.pathname + "#dogovor", this);
+  });
+  $("copyInn").addEventListener("click", function(){ copy("054307460938", this, "ИНН скопирован"); });
+
+  /* ---------- липкая панель на телефоне: прячется у калькулятора и на первом экране ---------- */
+  (function(){
+    var sticky = $("sticky"), hero = document.querySelector(".hero"), sec = $("calc");
+    if(!("IntersectionObserver" in window) || !sticky || !hero) return;
+    var heroVis = true, calcVis = false;
+    var upd = function(){
+      var on = !heroVis && !calcVis && !document.body.classList.contains("status-mode");
+      sticky.classList.toggle("show", on); document.body.classList.toggle("has-sticky", on);
+    };
+    var io = new IntersectionObserver(function(es){ es.forEach(function(x){ if(x.target === hero) heroVis = x.isIntersecting; else calcVis = x.isIntersecting; }); upd(); });
+    io.observe(hero); io.observe(sec);
+  })();
+
+  /* ---------- вопросы - разметкой для поиска ---------- */
+  try{
+    var faq = Array.prototype.map.call(document.querySelectorAll("#faq details.qa"), function(d){
+      return { "@type":"Question", name:d.querySelector("summary").textContent.trim(),
+        acceptedAnswer:{ "@type":"Answer", text:Array.prototype.map.call(d.querySelectorAll("p"), function(p){ return p.textContent.trim(); }).join(" ") } };
+    });
+    var sc = document.createElement("script"); sc.type = "application/ld+json";
+    sc.textContent = JSON.stringify({ "@context":"https://schema.org", "@type":"FAQPage", mainEntity:faq });
+    document.head.appendChild(sc);
+  }catch(e){}
+
+  /* ---------- моя заявка: ?z=номер ---------- */
+  function row(a, b, strong){ return '<div class="row' + (strong ? ' strong' : '') + '"><span>' + esc(a) + '</span><span>' + esc(b) + '</span></div>'; }
+  function card(title, text){ return '<div class="card"><h3>' + esc(title) + '</h3><p>' + esc(text) + '</p></div>'; }
+  function stageFaq(s){
+    var st0 = s.stage || "new", list;
+    if(s.schedule && s.schedule.length) list = [
+      ["Можно перенести взнос?", "Да, кнопкой выше: ближайший взнос - на 14 или 30 дней, бесплатно, до трёх раз за договор. Перенести можно за 10 дней до срока и до 5 дней после. Нужно больше - нажмите «Трудно заплатить вовремя», договоримся."],
+      ["Можно погасить досрочно?", "Да, кнопкой «Погасить остаток», без платы. Скидку за досрочную оплату заранее не обещаем."],
+      ["Есть ли штрафы?", "Нет: ни пеней, ни неустойки. Цена по договору не растёт, даже если взнос перенесли."]];
+    else if(st0 === "offer") list = [
+      ["Это уже договор?", "Нет. Согласие - обещание, а не покупка. Договор подпишем после того, как продавец купит товар, а вы его осмотрите."],
+      ["А если товар подешевеет?", "Цена в договоре - по документам магазина, наценка та же: подешевеет - заплатите меньше."],
+      ["Можно отказаться?", "Да, до подписания договора - без выплат. Мы ничего не удерживаем."]];
+    else list = [
+      ["Когда начнутся сделки?", "После проверки договора юристом и письменного шариатского заключения. Сообщим здесь, а если указали почту - и на неё."],
+      ["Почему наценка - не процент?", "Процент - плата за деньги в долг: чем дольше, тем больше. Наценка - прибыль торговли: мы покупаем товар на свои деньги, отвечаем за него и продаём с наценкой, названной до договора. Потом цена не растёт."],
+      ["Можно отменить заявку?", "Да, в любой момент до договора - кнопкой на этой странице."]];
+    return '<div style="margin-top:18px">' + list.map(function(q){ return '<details class="qa"><summary>' + esc(q[0]) + '</summary><p>' + esc(q[1]) + '</p></details>'; }).join("") + '</div>';
+  }
+  function statusFooter(s, token){
+    return (s.email ? '' : '<div class="card"><h3>Почта для статусов</h3><p>Пришлём ссылку и новости по заявке. Без рассылок.</p>' +
+        '<div class="mailbox"><input class="t" id="zMail" type="email" placeholder="name@mail.ru" maxlength="120" autocomplete="email"><button class="btn btn-gold sm" type="button" data-a="email">Сохранить</button></div><p class="muted err-t" id="zMailErr"></p></div>') +
+      '<div class="card"><h3>Уведомления в приложении RIZQ</h3><p>Откройте заявку в RIZQ - о каждом шаге придёт уведомление, о взносах - заранее.</p>' +
+        '<div class="acts"><a class="btn btn-line sm" href="../?finreq=' + encodeURIComponent(token) + '">Открыть в RIZQ</a><button class="btn btn-soft sm" type="button" data-a="copy">Скопировать ссылку на заявку</button></div>' +
+        '<p class="muted" style="margin-top:8px">Ссылка личная, не пересылайте её.</p></div>' +
+      (s.kind === "murabaha" ? stageFaq(s) : '') +
+      '<p style="margin-top:18px"><a class="muted" href="./">Об исламской рассрочке RIZQ →</a> · <a class="muted" href="https://wa.me/' + SUPPORT.tel + '" target="_blank" rel="noopener">Написать нам</a></p>';
+  }
+  function renderStatus(s, token, msg){
+    var h = '<div class="eyebrow">Моя заявка · ' + esc(s.number || "") + '</div><h2>' + esc(s.item || "Заявка") + '</h2>' +
+      '<p class="st-text">' + esc(s.text || "") + (s.partner ? ' · ' + esc(s.partner) : '') + '</p>' +
+      (s.created ? '<p class="muted">Заявка от ' + dmy(s.created) + '</p>' : '');
+    if(msg) h += '<div class="msg">' + esc(msg) + '</div>';
+    if(s.kind !== "murabaha") return h + statusFooter(s, token);
+    var stage = s.stage || "new", off = /^(rejected|withdrawn|expired)$/.test(stage), a = s.actions || {};
+    if(!off && s.steps && s.step >= 0) h += '<p class="track-step">Шаг ' + Math.min(s.step + 1, s.steps.length) + ' из ' + s.steps.length + ': ' + esc(s.steps[Math.min(s.step, s.steps.length - 1)]) + '</p><ol class="track">' + s.steps.map(function(n, i){ return '<li class="' + (i < s.step ? "passed" : i === s.step ? "cur" : "") + '">' + esc(n) + '</li>'; }).join("") + '</ol>';
+    if(s.waitlist) h += card("Вы в листе ожидания", "Звонить и торопить не будем. Сделки начнём после проверки договора юристом и письменного шариатского заключения - сообщим здесь" + (s.email ? " и на почту" : "") + ". До договора заявку можно отменить в любой момент.");
+    if(a.still) h += '<div class="card"><h3>Мы начали сделки. Покупка ещё актуальна?</h3><p>Ответьте одной кнопкой: если да, посчитаем цену и пришлём предложение.</p>' +
+      '<div class="acts"><button class="btn btn-gold sm" type="button" data-a="still">Да, актуально</button><button class="btn btn-line sm" type="button" data-a="cancel">Уже не нужно</button></div></div>';
+    else if(s.confirmed && (stage === "new" || stage === "contacted")) h += card("Спасибо, покупка актуальна", "Посчитаем цену и пришлём предложение - оно появится здесь.");
+    var o = s.offer;
+    if(o && stage === "offer"){
+      h += '<div class="card"><h3>Предложение</h3>' +
+        (o.itemPrice ? row("Ожидаемая цена закупки", money(o.itemPrice)) + row("Наценка продавца", money(o.salePrice - o.itemPrice)) : '') +
+        row("Цена в рассрочку", money(o.salePrice), true) +
+        row("Первый взнос, при подписании", money(o.first)) +
+        row("Ежемесячные взносы", o.count + " по " + money(o.each) + (o.firstMonthly && o.firstMonthly !== o.each ? " (первый " + money(o.firstMonthly) + ")" : "")) +
+        (o.until ? row("Предложение действует до", dmy(o.until)) : '') +
+        (o.note ? '<p style="margin-top:8px">' + esc(o.note) + '</p>' : '') +
+        '<p class="muted" style="margin-top:10px">Это не договор и не оферта: кнопка ни к чему не обязывает. Продавец купит и заберёт товар, вы его осмотрите, и только потом подпишем договор. Цена в договоре - по документам магазина и не выше этой. До подписания можно отказаться без выплат.</p>' +
+        '<div class="acts"><button class="btn btn-gold sm" type="button" data-a="accept">Хочу купить по этой цене</button><button class="btn btn-line sm" type="button" data-a="decline">Отказаться</button></div></div>';
+    }
+    if(stage === "accepted") h += card("Вы согласились - покупаем товар", "Когда товар будет у продавца, позовём осмотреть его. До подписания договора можно отказаться без выплат.");
+    if(stage === "purchased") h += card("Товар у продавца - приходите осмотреть", "Договор подпишем только после осмотра. Мы свяжемся, чтобы договориться о времени. До подписания можно отказаться без выплат.");
+    if(s.schedule && s.schedule.length){
+      var pct = s.count ? Math.round(s.paid / s.count * 100) : 0;
+      h += '<div class="card"><h3>' + (s.next ? "Взносы по графику" : "Все взносы оплачены") + '</h3>' +
+        '<p>Оплачено ' + s.paid + ' из ' + s.count + (s.left ? ' · осталось ' + money(s.left) : '') + '</p><div class="bar"><i style="width:' + pct + '%"></i></div>';
+      if(s.next){
+        h += '<p style="margin-top:10px;font:700 19px/1.3 Montserrat,sans-serif">Ближайший взнос ' + money(s.next.amount) + ' до ' + dmy(s.next.due) + '</p>' +
+          '<div class="acts"><button class="btn btn-gold sm" type="button" data-a="pay">Оплатить взнос ' + money(s.next.amount) + '</button>' +
+          (a.payoff && s.left > s.next.amount ? '<button class="btn btn-line sm" type="button" data-a="payoff">Погасить остаток ' + money(s.left) + '</button>' : '') + '</div>';
+        if(s.move) h += s.move.allowed
+          ? '<p style="margin-top:14px"><b>Перенести взнос бесплатно</b>: сумма та же, цена не меняется' + (s.move.left < 3 ? ' (осталось переносов: ' + s.move.left + ')' : '') + '</p><div class="acts">' +
+            (s.move.days || [14, 30]).map(function(d){ return '<button class="btn btn-soft sm" type="button" data-a="move" data-d="' + d + '">На ' + d + ' дней</button>'; }).join("") + '</div>'
+          : '<p class="muted" style="margin-top:12px">' + esc(s.move.why || "") + '</p>';
+        h += '<div class="acts"><a class="btn btn-soft sm" href="' + API + '/api/public/finance/request/' + token + '/calendar.ics">Добавить взносы в календарь</a>' +
+          '<button class="btn btn-soft sm" type="button" data-a="hard">Трудно заплатить вовремя</button></div>';
+      }
+      h += '<details class="more"><summary>График взносов</summary><div class="sched">' + s.schedule.map(function(p){
+          return '<div class="' + (p.paid ? "paid" : "") + '"><span>' + dmy(p.due) + '</span><span>' + money(p.amount) + (p.paid ? ' ✓' : '') + '</span></div>'; }).join("") + '</div></details>' +
+        '<p class="muted" style="margin-top:8px">Штрафов и пеней нет. Досрочно можно, без платы.</p></div>';
+    }
+    if(stage === "done") h += '<div class="card"><h3>Спасибо за доверие!</h3><p>Все взносы оплачены, договор исполнен. Пусть покупка служит вам с баракой.</p><div class="acts"><a class="btn btn-gold sm" href="./#calc">Новая покупка</a></div></div>';
+    if(off) h += '<div class="card"><p>' + (stage === "expired" ? "Срок предложения истёк. Напишите нам - обновим расчёт, или оставьте новую заявку."
+        : stage === "rejected" ? "По этой заявке не получилось. Можно оставить новую заявку - подберём другой вариант."
+        : "Заявка отменена. Если покупка снова понадобится - оставьте новую заявку.") + '</p><div class="acts"><a class="btn btn-gold sm" href="./#calc">Оставить новую заявку</a></div></div>';
+    if(a.cancel && stage !== "offer" && !a.still) h += '<div class="acts"><button class="btn btn-line sm" type="button" data-a="cancel">Отменить заявку</button></div>';
+    h += '<div id="hardBox"></div>';
+    return h + statusFooter(s, token);
+  }
+  function loadStatus(token, msg){
+    var box = $("moyaBox");
+    if(!box.innerHTML) box.innerHTML = '<p class="muted">Загружаем заявку...</p>';
+    fetch(API + "/api/public/finance/request/" + token, { cache:"no-store" })
+      .then(function(r){ return r.json().then(function(j){ return { ok:r.ok, j:j }; }, function(){ return { ok:false, j:{} }; }); })
+      .then(function(x){
+        if(!x.ok){
+          box.innerHTML = '<div class="eyebrow">Моя заявка</div><h2>Заявка не найдена</h2><p class="lead">Проверьте ссылку из письма или откройте заявку в приложении RIZQ.</p><div class="cta"><a class="btn btn-gold" href="./">Об исламской рассрочке RIZQ</a></div>';
+          return;
+        }
+        box.innerHTML = renderStatus(x.j, token, msg);
+        bindStatus(x.j, token);
+      }, function(){ box.innerHTML = '<h2>Нет связи с сервером</h2><p class="lead">Проверьте интернет и обновите страницу.</p>'; });
+  }
+  function bindStatus(s, token){
+    $("moyaBox").onclick = function(e){
+      var b = e.target.closest("[data-a]"); if(!b) return;
+      var a = b.getAttribute("data-a");
+      var failAlert = function(x, t){ b.disabled = false; alert(x && x.j && x.j.error ? x.j.error : t); };
+      if(a === "copy") return copy(location.origin + location.pathname + "?z=" + token, b, "Ссылка скопирована");
+      if(a === "accept" || a === "decline" || a === "cancel" || a === "still"){
+        if(a === "decline" && !confirm("Отказаться от предложения?")) return;
+        if(a === "cancel" && !confirm("Отменить заявку? Её можно будет оставить заново.")) return;
+        b.disabled = true;
+        post("/api/public/finance/request/" + token + "/answer", { answer:a }).then(function(x){
+          if(!x.ok) return failAlert(x, "Не получилось, попробуйте ещё раз");
+          loadStatus(token, a === "accept" ? "Спасибо! Когда товар будет у продавца, позовём осмотреть его." : a === "still" ? "Спасибо! Посчитаем цену и пришлём предложение." : "Готово.");
+        }, function(){ failAlert(null, "Нет связи с сервером"); });
+        return;
+      }
+      if(a === "pay" || a === "payoff"){
+        if(a === "payoff" && !confirm("Оплатить весь остаток " + money(s.left) + "? Платы за досрочное погашение нет.")) return;
+        var w = null; try{ w = window.open("", "_blank"); }catch(x){}
+        post("/api/public/finance/request/" + token + "/" + a, {}).then(function(x){
+          if(!x.ok || !x.j.payUrl){ if(w) w.close(); return failAlert(x, "Не получилось получить ссылку на оплату"); }
+          if(w) w.location.href = x.j.payUrl; else location.href = x.j.payUrl;
+        }, function(){ if(w) w.close(); failAlert(null, "Нет связи с сервером"); });
+        return;
+      }
+      if(a === "move"){
+        var d = +b.getAttribute("data-d"), nd = new Date(Date.parse(s.next.due + "T00:00:00Z") + d * 86400000).toISOString().slice(0, 10);
+        if(!confirm("Перенести взнос " + money(s.next.amount) + " с " + dmy(s.next.due) + " на " + dmy(nd) + "? Сумма та же, цена по договору не меняется. Следующие взносы тоже сдвинутся на " + d + " дней.")) return;
+        b.disabled = true;
+        post("/api/public/finance/request/" + token + "/move", { days:d }).then(function(x){
+          if(!x.ok) return failAlert(x, "Не получилось перенести");
+          loadStatus(token, "Взнос перенесён на " + dmy(nd) + ". Сумма прежняя, штрафов нет.");
+        }, function(){ failAlert(null, "Нет связи с сервером"); });
+        return;
+      }
+      if(a === "hard"){
+        post("/api/public/finance/request/" + token + "/hard", {}).catch(function(){});
+        $("hardBox").innerHTML = '<div class="card"><h3>Трудно заплатить вовремя?</h3><p>Мы получили отметку и свяжемся с вами. Перенесём дату или разделим взнос - бесплатно. Штрафов и пеней нет, цена не растёт. Если положение трудное - отсрочка, пока оно не улучшится.</p>' +
+          '<div class="acts"><a class="btn btn-gold sm" href="https://wa.me/' + SUPPORT.tel + '?text=' + encodeURIComponent("Ассаламу алейкум! Трудно внести взнос по заявке " + (s.number || "") + " вовремя, хочу договориться.") + '" target="_blank" rel="noopener">Написать нам</a>' +
+          '<a class="btn btn-line sm" href="tel:+' + SUPPORT.tel + '">Позвонить ' + SUPPORT.phone + '</a></div></div>';
+        try{ $("hardBox").scrollIntoView({ behavior:"smooth", block:"center" }); }catch(x){}
+        return;
+      }
+      if(a === "email"){
+        var m = $("zMail").value.trim(), er = $("zMailErr");
+        if(!EMAIL_RE.test(m)){ er.textContent = "Проверьте адрес почты"; return; }
+        b.disabled = true;
+        post("/api/public/finance/request/" + token + "/email", { email:m }).then(function(x){
+          if(!x.ok){ b.disabled = false; er.textContent = x.j && x.j.error ? x.j.error : "Не получилось"; return; }
+          loadStatus(token, "Почта сохранена: новости по заявке придут туда.");
+        }, function(){ b.disabled = false; er.textContent = "Нет связи с сервером"; });
+      }
+    };
+  }
+  var token = String(qs.z || "").replace(/[^a-f0-9]/gi, "").slice(0, 64);
+  if(token){
+    document.body.classList.add("status-mode");
+    $("moya").hidden = false;
+    ev("status");
+    loadStatus(token);
+  } else ev("view");
 
   /* Пришла из приложения RIZQ (тот же адрес): подставляем имя и телефон, показываем «Мои заявки».
-     Ничего не записываем в данные приложения - заявка с сайта попадёт в приложение по ссылке ?finreq. */
+     В данные приложения ничего не пишем - заявка с сайта попадёт в приложение по ссылке ?finreq. */
   try{
     var app = JSON.parse(localStorage.getItem("rizq.v1") || "null");
     if(app){
       if(app.name && !$("fName").value) $("fName").value = String(app.name).slice(0, 80);
       if(app.phone && !$("fTel").value) $("fTel").value = String(app.phone).slice(0, 30);
       if(app.city === "gps" && app.gps && app.gps.n && !$("fCity").value) $("fCity").value = String(app.gps.n).slice(0, 80);
-      if(app.finReqs && app.finReqs.length){ $("appBar").hidden = false; $("navMine").hidden = false; }
+      if(app.finReqs && app.finReqs.length){ $("appBar").hidden = !!token; $("navMine").hidden = false; }
     }
   }catch(e){}
+
+  setupCalc();
   /* условия калькулятора - только утверждённые владелицей в CRM */
-  fetch(API + "/api/public/finance", { cache: "no-cache" }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
-    if(j && j.calc){ calc = j.calc; }
-    setupCalc(); syncForm();
+  fetch(API + "/api/public/finance", { cache:"no-cache" }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+    if(!j) return;
+    calc = j.calc || null;
+    dealsOn = !!(j.murabaha && j.murabaha.deals);
+    applyDeals();
+    setupCalc();
   }).catch(function(){});
-  onPrice(st.price); setupCalc(); syncForm();
+  fetch(API + "/api/public/finance/stats", { cache:"no-cache" }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+    if(j && j.waitlist){ var c = $("counter"); c.textContent = "В листе ожидания: " + plural(j.waitlist, "заявка", "заявки", "заявок"); c.hidden = false; }
+  }).catch(function(){});
 })();
 </script>
 </body>

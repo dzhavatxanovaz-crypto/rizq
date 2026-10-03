@@ -17074,15 +17074,16 @@ function finReqsRefresh(force){
   finReqs().forEach(function(r){
     var over = r.stage ? /^(done|withdrawn|rejected)$/.test(r.stage) : (r.status === "closed" || r.status === "rejected");
     if(!force && over) return;
-    if(!force && r.checkedAt && now - r.checkedAt < 5*60000) return;
+    /* после обновления приложения у покупки с графиком ещё нет данных о переносе - перечитываем сразу */
+    if(!force && r.checkedAt && now - r.checkedAt < 5*60000 && !(r.next && r.move === undefined)) return;
     r.checkedAt = now;
     fetch(crmApi() + "/api/public/finance/request/" + r.token).then(function(x){ return x.ok ? x.json() : null; })
       .then(function(j){
         if(!j) return;
-        var before = JSON.stringify([r.status, r.stage, r.text, r.offer, r.next, r.paid]);
-        ["status","text","stage","step","offer","schedule","next","paid","count","left","actions","number","partner","updated","item"].forEach(function(key){ if(j[key] !== undefined) r[key] = j[key]; });
+        var sig = function(){ return JSON.stringify([r.status, r.stage, r.text, r.offer, r.next, r.paid, r.actions, r.move, r.confirmed]); }, before = sig();
+        ["status","text","stage","step","offer","schedule","next","paid","count","left","actions","number","partner","updated","item","move","moves","confirmed","email","waitlist"].forEach(function(key){ if(j[key] !== undefined) r[key] = j[key]; });
         save();
-        if(before !== JSON.stringify([r.status, r.stage, r.text, r.offer, r.next, r.paid]) && V.view === "installment") render();
+        if(before !== sig() && V.view === "installment") render();
       }).catch(function(){});
   });
 }
@@ -17102,6 +17103,14 @@ function irReqCard(r){
       '<span style="font-size:12px;color:var(--ink-3);white-space:nowrap">' + esc(r.number || "") + '</span></div>' +
     '<div style="font-size:13.5px;color:' + (off ? 'var(--ink-3)' : 'var(--accent-ink)') + ';margin-top:4px">' + esc(r.text || "") + (r.partner ? ' · ' + esc(r.partner) : '') + '</div>' +
     (off ? '' : irSteps(r));
+  if(r.actions && r.actions.still){
+    h += '<div style="margin-top:12px;padding:12px;border-radius:12px;background:var(--surface-2)"><b>Мы начали сделки. Покупка ещё актуальна?</b>' +
+      '<p class="note" style="margin:6px 0 0">Если да, посчитаем цену и пришлём предложение.</p>' +
+      '<div style="display:flex;gap:8px;margin-top:10px"><button class="btn sm" style="flex:1" data-ir="ans:' + r.token + ':still">Да, актуально</button>' +
+      '<button class="btn sm sec" style="flex:1" data-ir="ans:' + r.token + ':cancel">Уже не нужно</button></div></div>';
+  } else if(r.confirmed && (r.stage === "new" || r.stage === "contacted")){
+    h += '<p class="note" style="margin:10px 0 0">Спасибо, покупка актуальна: посчитаем цену и пришлём предложение.</p>';
+  }
   var o = r.offer;
   if(o && r.stage === "offer"){
     h += '<div style="margin-top:12px;padding:12px;border-radius:12px;background:var(--surface-2)"><b>Предложение</b>' +
@@ -17121,19 +17130,25 @@ function irReqCard(r){
       r.schedule.map(function(p){ return '<div style="display:flex;justify-content:space-between;font-size:13.5px;padding:4px 0;border-bottom:1px solid var(--line-soft)"><span>' + esc(irDate(p.due)) + '</span><span>' + money(p.amount) + (p.paid ? ' ✓' : '') + '</span></div>'; }).join("") +
       '</details>' +
       (r.next ? '<button class="btn sm" style="margin-top:10px;width:100%" data-ir="pay:' + r.token + '">Оплатить взнос ' + money(r.next.amount) + '</button>' +
+        (r.left > r.next.amount ? '<button class="btn sm sec" style="margin-top:6px;width:100%" data-ir="payoff:' + r.token + '">Погасить остаток ' + money(r.left) + ' - без платы</button>' : '') +
+        (r.move ? (r.move.allowed
+          ? '<div style="font-size:13.5px;color:var(--ink-2);margin-top:10px">Перенести взнос бесплатно - сумма та же:</div><div style="display:flex;gap:8px;margin-top:6px">' +
+            (r.move.days || [14, 30]).map(function(dd){ return '<button class="btn sm sec" style="flex:1" data-ir="move:' + r.token + ':' + dd + '">На ' + dd + ' дней</button>'; }).join('') + '</div>'
+          : '<p class="note" style="margin:8px 0 0">' + esc(r.move.why || '') + '</p>') : '') +
+        '<a class="btn sm ghost" style="margin-top:6px;width:100%;text-decoration:none" href="' + crmApi() + '/api/public/finance/request/' + r.token + '/calendar.ics">Добавить взносы в календарь</a>' +
         '<button class="btn sm ghost" style="margin-top:6px;width:100%" data-ir="hard:' + r.token + '">Трудно заплатить вовремя</button>' : '') + '</div>';
   }
   if(r.actions && r.actions.cancel && r.stage !== "offer") h += '<button class="btn sm ghost" style="margin-top:10px" data-ir="ans:' + r.token + ':cancel">Отменить заявку</button>';
   return h + '</section>';
 }
 function irAnswer(token, what){
-  if(what !== "accept" && !confirm(what === "decline" ? "Отказаться от предложения?" : "Отменить заявку?")) return;
+  if(what !== "accept" && what !== "still" && !confirm(what === "decline" ? "Отказаться от предложения?" : "Отменить заявку?")) return;
   fetch(crmApi() + "/api/public/finance/request/" + token + "/answer", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ answer: what }) })
     .then(function(r){ return r.json().then(function(j){ return { ok:r.ok, j:j }; }); })
     .then(function(x){
       if(!x.ok){ toast(x.j && x.j.error ? x.j.error : "Не получилось"); return; }
       finReqs().forEach(function(r){ if(r.token === token){ r.stage = x.j.stage; r.text = x.j.text; r.checkedAt = 0; } });
-      save(); toast(what === "accept" ? "Спасибо! Сообщим, когда товар будет у продавца - приходите осмотреть" : "Готово");
+      save(); toast(what === "accept" ? "Спасибо! Сообщим, когда товар будет у продавца - приходите осмотреть" : what === "still" ? "Спасибо! Посчитаем цену и пришлём предложение" : "Готово");
       finReqsRefresh(true); render();
     }).catch(function(){ toast("Нет связи с сервером школы"); });
 }
@@ -17147,6 +17162,49 @@ function irPay(token){
       if(w) w.location.href = x.j.payUrl; else location.href = x.j.payUrl;
       toast("Взнос " + x.j.n + " из " + x.j.count + ": " + money(x.j.amount));
     }).catch(function(){ if(w) w.close(); toast("Нет связи с сервером школы"); });
+}
+function irPayoff(token){
+  var r = finReqs().filter(function(x){ return x.token === token; })[0];
+  if(!confirm("Оплатить весь остаток" + (r && r.left ? " " + money(r.left) : "") + "? Платы за досрочное погашение нет.")) return;
+  var w = null;
+  try{ w = window.open("", "_blank"); }catch(e){}
+  fetch(crmApi() + "/api/public/finance/request/" + token + "/payoff", { method:"POST", headers:{ "Content-Type":"application/json" }, body:"{}" })
+    .then(function(x){ return x.json().then(function(j){ return { ok:x.ok, j:j }; }); })
+    .then(function(x){
+      if(!x.ok || !x.j.payUrl){ if(w) w.close(); toast(x.j && x.j.error ? x.j.error : "Не получилось получить ссылку"); return; }
+      if(w) w.location.href = x.j.payUrl; else location.href = x.j.payUrl;
+    }).catch(function(){ if(w) w.close(); toast("Нет связи с сервером школы"); });
+}
+/* Перенос ближайшего взноса на 14 или 30 дней: сумма и цена те же, следующие взносы сдвигаются */
+function irMove(token, days){
+  var r = finReqs().filter(function(x){ return x.token === token; })[0];
+  if(!r || !r.next) return;
+  var nd = new Date(Date.parse(r.next.due + "T00:00:00Z") + days * 86400000).toISOString().slice(0, 10);
+  if(!confirm("Перенести взнос " + money(r.next.amount) + " с " + irDate(r.next.due) + " на " + irDate(nd) + "? Сумма та же, цена по договору не меняется. Следующие взносы тоже сдвинутся на " + days + " дней.")) return;
+  fetch(crmApi() + "/api/public/finance/request/" + token + "/move", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ days: days }) })
+    .then(function(x){ return x.json().then(function(j){ return { ok:x.ok, j:j }; }); })
+    .then(function(x){
+      if(!x.ok){ toast(x.j && x.j.error ? x.j.error : "Не получилось перенести"); return; }
+      toast("Взнос перенесён на " + irDate(nd) + ". Сумма прежняя, штрафов нет");
+      r.checkedAt = 0; finReqsRefresh(true);
+    }).catch(function(){ toast("Нет связи с сервером школы"); });
+}
+/* Уведомления по заявке: подписка этого телефона привязывается к номеру заявки - CRM пришлёт push
+   о каждом шаге (предложение, товар у продавца, договор, напоминания о взносах), даже без входа в аккаунт. */
+function irLinkPush(){
+  if(typeof pushOn !== "function" || !pushOn() || !pushSupported() || !window.fetch) return;
+  var list = finReqs().filter(function(r){ return r.token; });
+  if(!list.length) return;
+  navigator.serviceWorker.ready.then(function(reg){ return reg.pushManager.getSubscription(); }).then(function(sub){
+    if(!sub) return;
+    var mark = sub.endpoint.slice(-24);
+    list.forEach(function(r){
+      if(r.pushLinked === mark) return;
+      fetch(crmApi() + "/api/public/finance/request/" + r.token + "/notify", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ endpoint: sub.endpoint }) })
+        .then(function(x){ return x.ok ? x.json() : null; })
+        .then(function(j){ if(j && j.linked){ r.pushLinked = mark; save(); } }).catch(function(){});
+    });
+  }).catch(function(){});
 }
 function irHard(token){
   /* отмечаем в CRM: менеджер получит задачу и свяжется сам, без давления */
@@ -17248,11 +17306,11 @@ function irSend(){
           stage: kind === "murabaha" ? "new" : null, step: kind === "murabaha" ? 0 : -1, number: x.j.number || "",
           text: partner ? "Заявка принята" : "Заявка принята, мы свяжемся", at: Date.now() });
       }
-      V.irf = null; save(); closeSheet(); render();
+      V.irf = null; save(); closeSheet(); render(); irLinkPush();
       sheet('<h3>Заявка принята</h3>' + (x.j.number ? '<p style="font-size:15px;margin:0 0 8px">Номер заявки: <b>' + esc(x.j.number) + '</b></p>' : '') +
         '<p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 14px">' +
         (partner ? 'Передадим заявку в ' + esc(partner.name) + '. С вами свяжутся по номеру ' + esc(S.phone) + '.'
-                 : 'Мы свяжемся с вами по номеру ' + esc(S.phone) + ' и расскажем, как будет проходить покупка. Сейчас мы собираем заявки: сделки начнём после проверки юристом и шариатского заключения, и вы узнаете об этом первой.') +
+                 : ((finData() && finData().murabaha && finData().murabaha.deals) ? 'Мы посчитаем цену и пришлём предложение - оно появится здесь.' : 'Звонить и торопить не будем. Сделки начнём после проверки договора юристом и письменного шариатского заключения - вы узнаете первой.')) +
         ' Статус - в разделе «Исламская рассрочка».</p><button class="btn" data-scrim="1">Хорошо</button>');
     })
     .catch(function(){ if(btn){ btn.disabled = false; btn.textContent = "Отправить заявку"; } toast("Нет связи с сервером школы"); });
@@ -17287,7 +17345,10 @@ function irClick(v){
   if(k === "ans"){ irAnswer(p[1], p[2]); return; }
   if(k === "pay"){ irPay(p[1]); return; }
   if(k === "hard"){ irHard(p[1]); return; }
-  if(k === "site"){ location.href = "rassrochka/" + (p[1] ? "#" + p[1] : ""); return; }
+  if(k === "payoff"){ irPayoff(p[1]); return; }
+  if(k === "move"){ irMove(p[1], +p[2]); return; }
+  if(k === "push"){ pushEnable(); setTimeout(irLinkPush, 4000); setTimeout(irLinkPush, 12000); return; }
+  if(k === "site"){ location.href = p[1] === "biznes" ? "rassrochka/biznes.html" : "rassrochka/" + (p[1] ? "#" + p[1] : ""); return; }
 }
 
 /* ---------- экран раздела: личный кабинет (03.10.2026, решение Заиры) ----------
@@ -17300,22 +17361,27 @@ function viewInstallment(){
   if(!IR_LOADED){ IR_LOADED = true; finLoad(function(){ if(V.view === "installment") render(); }); }
   irSyncMine();
   finReqsRefresh();
+  irLinkPush();
   var deals = !!(d && d.murabaha && d.murabaha.deals);
   var mine = finReqs(), orders = finOrderCards();
 
   h.push('<section class="card">' +
     '<div class="eyebrow">Исламская рассрочка RIZQ</div>' +
-    '<div style="font-family:var(--f-display);font-size:19px;font-weight:700;line-height:1.35;margin-top:6px">Покупки частями через торговлю, а не заём</div>' +
-    '<p style="font-size:14px;line-height:1.55;color:var(--ink-2);margin:8px 0 0">Сначала покупаем товар себе, забираем его и отвечаем за него, потом продаём вам частями. Цена известна до договора и не растёт, без штрафов и пеней.</p>' +
-    (deals ? '' : '<div style="margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--surface-2);font-size:13.5px;line-height:1.5;color:var(--ink-2)">Сейчас мы собираем заявки. Сделки начнём после проверки договора юристом и шариатского заключения - вы узнаете первой.</div>') +
+    '<div style="font-family:var(--f-display);font-size:19px;font-weight:700;line-height:1.35;margin-top:6px">Покупки частями через торговлю: цена известна до договора и не растёт</div>' +
+    '<p style="font-size:14px;line-height:1.55;color:var(--ink-2);margin:8px 0 0">Сначала покупаем товар себе, забираем его и отвечаем за него, потом продаём вам частями. Не процент за деньги, а цена товара: наценка в рублях до подписи. Штрафов и пеней нет.</p>' +
+    (deals ? '' : '<div style="margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--surface-2);font-size:13.5px;line-height:1.5;color:var(--ink-2)">Сейчас мы собираем лист ожидания. Сделки начнём после проверки договора юристом и письменного шариатского заключения - вы узнаете первой.</div>') +
     '<button class="btn" style="margin-top:12px;width:100%" data-ir="site">Подробнее, калькулятор и заявка</button>' +
-    '<p class="note" style="margin:8px 0 0;text-align:center">Откроется сайт рассрочки. Заявка - за 2 минуты, паспорт и доход не нужны</p>' +
+    '<p class="note" style="margin:8px 0 0;text-align:center">Откроется сайт рассрочки. Заявка - за 2 минуты, паспорт и сведения о доходе не нужны</p>' +
   '</section>');
 
   h.push('<div class="sec-h"><h3>Мои заявки и покупки</h3></div>');
   if(mine.length || orders){
     mine.forEach(function(r){ h.push(irReqCard(r)); });
     if(orders) h.push(orders);
+    if(mine.length && typeof pushOn === "function" && !pushOn() && (pushSupported() || pushIosBrowser())) h.push('<section class="card">' +
+      '<b style="display:block">Уведомления по заявке</b>' +
+      '<p style="font-size:13.5px;line-height:1.55;color:var(--ink-2);margin:6px 0 10px">Включите - сообщим о каждом шаге: предложение, товар у продавца, договор, напоминания о взносах заранее. Звонить не нужно.</p>' +
+      '<button class="btn sm" style="width:100%" data-ir="push">Включить уведомления</button></section>');
   } else {
     h.push('<section class="card" style="text-align:center;padding:22px 18px">' +
       '<div style="font-size:28px;line-height:1">◈</div>' +
@@ -17342,7 +17408,9 @@ function viewInstallment(){
   });
 
   h.push('<section class="card"><div class="rows">' +
-    '<button class="row" data-ir="site:kak" style="width:100%;text-align:left"><span class="ic">◇</span>Как это устроено и почему это не риба<span class="go">›</span></button>' +
+    '<button class="row" data-ir="site:kak" style="width:100%;text-align:left"><span class="ic">◇</span>Как это устроено: четыре шага<span class="go">›</span></button>' +
+    '<button class="row" data-ir="site:pochemu" style="width:100%;text-align:left"><span class="ic">◇</span>Почему наценка - не процент<span class="go">›</span></button>' +
+    '<button class="row" data-ir="site:dogovor" style="width:100%;text-align:left"><span class="ic">◇</span>Договор в одной таблице и возврат<span class="go">›</span></button>' +
     '<button class="row" data-ir="site:calc" style="width:100%;text-align:left"><span class="ic">◇</span>Калькулятор: сколько в месяц<span class="go">›</span></button>' +
     '<button class="row" data-ir="site:biznes" style="width:100%;text-align:left"><span class="ic">◇</span>Вы продавец? Подключить магазин<span class="go">›</span></button>' +
   '</div></section>');
@@ -17351,7 +17419,6 @@ function viewInstallment(){
   h.push('</div>');
   return h.join("");
 }
-
 function viewSadaqa(){
   var d = sadaqaData(), items = (d.items || []).filter(function(x){ return x && x.n; });
   var h = ['<div class="stack">'];
