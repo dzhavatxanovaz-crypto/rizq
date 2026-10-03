@@ -16980,7 +16980,13 @@ function irState(){
   var c = irCfg();
   if(!V.irc) V.irc = { price:60000, down:0, term:c.terms[Math.min(1, c.terms.length - 1)], g:0, monthly:0 };
   if(c.terms.indexOf(V.irc.term) < 0) V.irc.term = c.terms[c.terms.length - 1];
+  if(V.irc.price < c.minPrice) V.irc.price = c.minPrice;
+  if(V.irc.price > c.maxPrice) V.irc.price = c.maxPrice;
+  /* первый взнос не ниже минимального из утверждённых условий - иначе калькулятор с порога пишет ошибку */
+  var md = irMinDown(V.irc.price); if(V.irc.down < md) V.irc.down = md;
   return V.irc;
+}
+function irMinDown(price){ var c = irCfg(); return c.minDownPct ? Math.ceil(price * c.minDownPct / 100 / 500) * 500 : 0;
 }
 /* Та же формула, что в CRM (crm/automation/rassrochka.js): наценка на остаток после первого взноса
    за весь срок, остаток от деления - в первый ежемесячный взнос. При заявке сервер считает сам. */
@@ -17014,7 +17020,7 @@ function irCalcHtml(){
     '<input class="search" id="irPrice" inputmode="numeric" value="' + st.price + '" style="margin:6px 0 4px">' +
     '<input class="slider" type="range" id="irPriceR" min="' + cfg.minPrice + '" max="' + cfg.maxPrice + '" step="1000" value="' + Math.min(Math.max(st.price, cfg.minPrice), cfg.maxPrice) + '" style="width:100%">' +
     lab('Первый взнос: <b id="irDownL">' + money(st.down) + '</b>') +
-    '<input class="slider" type="range" id="irDown" min="0" max="' + maxDown + '" step="500" value="' + Math.min(st.down, maxDown) + '" style="width:100%">' +
+    '<input class="slider" type="range" id="irDown" min="' + irMinDown(st.price) + '" max="' + maxDown + '" step="500" value="' + Math.min(st.down, maxDown) + '" style="width:100%">' +
     lab("Срок") + '<div class="pill-row" style="justify-content:flex-start;margin-top:6px">' +
       cfg.terms.map(function(v){ return irPill("term", v, v === st.term, v + " мес."); }).join("") + '</div>' +
     (cfg.guarantors ? lab("Поручители") + '<div class="pill-row" style="justify-content:flex-start;margin-top:6px">' +
@@ -17054,7 +17060,7 @@ document.addEventListener("input", function(ev){
     st.price = v;
     var other = document.getElementById(t.id === "irPrice" ? "irPriceR" : "irPrice"); if(other) other.value = v;
     var dn = document.getElementById("irDown");
-    if(dn){ var mx = Math.floor(v * 0.9 / 500) * 500; dn.max = mx; if(st.down > mx){ st.down = mx; dn.value = mx; } }
+    if(dn){ var mx = Math.floor(v * 0.9 / 500) * 500, mn0 = irMinDown(v); dn.max = mx; dn.min = mn0; if(st.down > mx){ st.down = mx; dn.value = mx; } if(st.down < mn0){ st.down = mn0; dn.value = mn0; } }
     var mn = document.getElementById("irMon"); if(mn) mn.max = Math.max(5000, Math.round(v / 2 / 500) * 500);
   } else if(t.id === "irDown") st.down = v;
   else st.monthly = v;

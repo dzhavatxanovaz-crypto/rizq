@@ -460,9 +460,14 @@ footer a{color:var(--accent-ink)}
       '<div class="row"><span>Взносы</span><span>' + st.term + ' × ' + (q.first !== q.each ? 'первый ' + money(q.first) + ', затем ' : '') + money(q.each) + '</span></div>' +
       '<p>Расчёт предварительный и не является офертой. Точную цену назовём до договора, после подписания она не меняется.' + (calc.note ? ' ' + esc(calc.note) : '') + '</p>';
   }
+  function minDown(price){ var c = cfg(); return c.minDownPct ? Math.ceil(price * c.minDownPct / 100 / 500) * 500 : 0; }
   function setupCalc(){
     var c = cfg();
     if(c.terms.indexOf(st.term) < 0) st.term = c.terms[Math.min(1, c.terms.length - 1)];
+    if(st.price < c.minPrice) st.price = c.minPrice;
+    if(st.price > c.maxPrice) st.price = c.maxPrice;
+    $("cPrice").value = st.price; $("cPriceR").value = st.price;
+    var md = minDown(st.price); $("cDown").min = md; if(st.down < md){ st.down = md; $("cDown").value = md; }
     $("cPriceR").min = c.minPrice; $("cPriceR").max = c.maxPrice;
     seg($("cTerms"), c.terms, st.term, function(v){ return v + " мес."; }, function(v){ st.term = +v; setupCalc(); syncForm(); });
     $("cGWrap").style.display = c.guarantors ? "" : "none";
@@ -472,7 +477,7 @@ footer a{color:var(--accent-ink)}
   }
   function onPrice(v){
     st.price = v; $("cPrice").value = v; $("cPriceR").value = v;
-    var mx = Math.floor(v * 0.9 / 500) * 500; $("cDown").max = mx; if(st.down > mx){ st.down = mx; $("cDown").value = mx; }
+    var mx = Math.floor(v * 0.9 / 500) * 500, mn = minDown(v); $("cDown").max = mx; $("cDown").min = mn; if(st.down > mx){ st.down = mx; $("cDown").value = mx; } if(st.down < mn){ st.down = mn; $("cDown").value = mn; }
     $("cMon").max = Math.max(5000, Math.round(v / 2 / 500) * 500);
     paint();
   }
@@ -485,6 +490,7 @@ footer a{color:var(--accent-ink)}
   /* форма заявки */
   function syncForm(){
     $("fPrice").value = st.price || ""; $("fDown").value = st.down || 0; if(st.monthly) $("fMon").value = st.monthly;
+    var cc = cfg(); $("fDown").placeholder = cc.minDownPct ? "от " + cc.minDownPct + "% цены" : "";
     var c = cfg();
     seg($("fTerms"), c.terms, st.term, function(v){ return v + " мес."; }, function(v){ st.term = +v; syncForm(); setupCalc(); });
     $("fGWrap").style.display = c.guarantors ? "" : "none";
