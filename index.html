@@ -10610,6 +10610,8 @@ function qwRoot(r){
   return { id:"qr" + r, n:"Корень " + r, ar:r, qw:1, root:r, w:w };
 }
 function qwUnitPct(i){ return Math.round(QW_COVER[i] / QW_TOTAL * 1000) / 10; }
+function qwUnitPctOf(u){ var i = QW_UNITS.indexOf(u); if(i >= 0) return qwUnitPct(i);
+  var s = 0; (u.w || []).forEach(function(w){ s += w.n || 0; }); return Math.round(s / QW_TOTAL * 1000) / 10; }
 function qwCur(){
   for(var i = 0; i < QW_UNITS.length; i++){ var st = arUnitStat(QW_UNITS[i]); if(st.learned < st.total) return QW_UNITS[i]; }
   return QW_UNITS[QW_UNITS.length - 1];
@@ -12401,6 +12403,7 @@ function arHero(big){
 function arTitle(){
   var p = String(V.p || "");
   if(p.indexOf("u:q") === 0) return "Урок " + p.slice(3) + " · слова Корана";
+  if(p.indexOf("u:cq") === 0) return "Слова Корана · встреча " + p.slice(4);
   if(p.indexOf("u:") === 0){ var tu = AR_UNITS.indexOf(arUnit(p.slice(2))); return "Урок " + (tu >= 0 ? tu + 1 : p.slice(2)); }
   if(p === "abc") return "Буквы";
   if(p === "qw") return "Понимаю Коран";
@@ -12827,8 +12830,8 @@ function viewArUnit(u){
   var st = arUnitStat(u), har = arUnitHar(u);
   var h = ['<div class="stack">'];
   h.push('<section class="ar-uhead"><div class="ar-uhead-ar" dir="rtl">'+esc(u.ar)+'</div>'+
-    '<div class="ar-uhead-h">'+(u.qw ? 'Слова Корана, урок '+String(u.id).slice(1) : 'Урок '+arNo(u))+' · '+esc(u.n)+'</div>'+
-    '<div class="ar-uhead-s">'+st.learned+' из '+st.total+' слов выучено'+(u.qw ? ' · +'+qwUnitPct(QW_UNITS.indexOf(u))+'% к пониманию Корана' : '')+(st.dlg ? ' · диалог пройден' : '')+(st.ex ? ' · упражнения '+st.ex+'%' : '')+'</div></section>');
+    '<div class="ar-uhead-h">'+(u.qw ? (/^cq/.test(u.id) ? esc(u.n) : 'Слова Корана, урок '+String(u.id).slice(1)+' · '+esc(u.n)) : 'Урок '+arNo(u)+' · '+esc(u.n))+'</div>'+
+    '<div class="ar-uhead-s">'+st.learned+' из '+st.total+' слов выучено'+(u.qw ? ' · +'+qwUnitPctOf(u)+'% к пониманию Корана' : '')+(st.dlg ? ' · диалог пройден' : '')+(st.ex ? ' · упражнения '+st.ex+'%' : '')+'</div></section>');
 
   h.push('<div class="sec-h"><h3>Слова</h3></div>');
   h.push('<div class="ar-cta"><button class="btn sm" data-ar="study:'+u.id+'">Учить слова урока</button>'+
