@@ -16854,7 +16854,7 @@ function finData(){
 function finLoad(after){
   if(FIN_LOADING || !window.fetch) return;
   FIN_LOADING = true;
-  fetch(crmApi() + "/api/public/finance").then(function(r){ return r.ok ? r.json() : null; })
+  fetch(crmApi() + "/api/public/finance", { cache: "no-cache" }).then(function(r){ return r.ok ? r.json() : null; })
     .then(function(j){
       FIN_LOADING = false;
       if(!j || !j.products) return;

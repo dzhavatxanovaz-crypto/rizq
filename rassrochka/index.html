@@ -587,7 +587,7 @@ footer a{color:var(--accent-ink)}
     }
   }catch(e){}
   /* условия калькулятора - только утверждённые владелицей в CRM */
-  fetch(API + "/api/public/finance").then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+  fetch(API + "/api/public/finance", { cache: "no-cache" }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
     if(j && j.calc){ calc = j.calc; }
     setupCalc(); syncForm();
   }).catch(function(){});
