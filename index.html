@@ -16956,8 +16956,23 @@ var IR_SELLER = "ИП Джаватханова Заират Абдулмусли
 var IR_SITE = "https://rizq.javattigroup.ru/rassrochka/";
 /* Пока владелица не утвердила условия в CRM, калькулятор не называет наценку */
 var IR_DEF = { terms:[3, 6, 9, 12], minPrice:10000, maxPrice:300000, minDownPct:0, guarantors:false };
-var IR_STAGES = ["Заявка", "Цена", "Товар куплен", "Договор", "Взносы", "Готово"];
-var IR_LOADED = false;
+var IR_STAGES = ["Заявка", "Цена", "Товар у продавца", "Договор", "Взносы", "Готово"];
+var IR_LOADED = false, IR_MINE = false;
+/* Вошла в аккаунт RIZQ - номера её заявок берём из CRM: при смене телефона «Мои заявки» не пропадают */
+function irSyncMine(){
+  if(IR_MINE || typeof AC === "undefined" || !AC || !AC.tok || typeof accHdr !== "function" || !window.fetch) return;
+  IR_MINE = true;
+  fetch(crmApi() + "/api/public/finance/mine", { headers: accHdr(), cache:"no-store" }).then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      if(!j || !j.requests || !j.requests.length) return;
+      var added = 0;
+      j.requests.forEach(function(x){
+        if(!x.token || finReqs().some(function(r){ return r.token === x.token; })) return;
+        finReqs().push({ token: x.token, kind: x.kind, item: x.item || "", status: "new", at: Date.now() }); added++;
+      });
+      if(added){ save(); finReqsRefresh(true); if(V.view === "installment") render(); }
+    }).catch(function(){});
+}
 
 function irCalc(){ var d = finData(); return d && d.calc ? d.calc : null; }
 function irCfg(){ return irCalc() || IR_DEF; }
@@ -17085,12 +17100,12 @@ function irReqCard(r){
   if(o && r.stage === "offer"){
     h += '<div style="margin-top:12px;padding:12px;border-radius:12px;background:var(--surface-2)"><b>Предложение</b>' +
       '<div style="font-size:14px;line-height:1.6;margin-top:4px">Цена в рассрочку <b>' + money(o.salePrice) + '</b>' +
-        (o.itemPrice ? ' (цена товара ' + money(o.itemPrice) + ', наценка ' + money(o.salePrice - o.itemPrice) + ')' : '') + '.<br>' +
+        (o.itemPrice ? ' (ожидаемая цена закупки ' + money(o.itemPrice) + ', наценка ' + money(o.salePrice - o.itemPrice) + '; в договоре - цена по документам магазина)' : '') + '.<br>' +
         'Первый взнос ' + money(o.first) + ' при подписании договора, затем ' + plural(o.count, "взнос", "взноса", "взносов") + ' по ' + money(o.each) +
         (o.firstMonthly && o.firstMonthly !== o.each ? ' (первый из них ' + money(o.firstMonthly) + ')' : '') + '.' +
         (o.until ? '<br>Предложение действует до ' + esc(irDate(o.until)) + '.' : '') + (o.note ? '<br>' + esc(o.note) : '') + '</div>' +
-      '<p class="note" style="margin:8px 0 0">Это ещё не договор. Если вы согласны, продавец купит товар на себя, вы его увидите, и только потом подпишем договор. До подписания можно отказаться.</p>' +
-      '<div style="display:flex;gap:8px;margin-top:10px"><button class="btn sm" style="flex:1" data-ir="ans:' + r.token + ':accept">Согласна</button>' +
+      '<p class="note" style="margin:8px 0 0">Это не договор и не оферта: кнопка вас ни к чему не обязывает. Продавец купит и заберёт товар, вы его осмотрите, и только потом подпишем договор. До подписания можно отказаться без выплат - мы ничего не удерживаем.</p>' +
+      '<div style="display:flex;gap:8px;margin-top:10px"><button class="btn sm" style="flex:1" data-ir="ans:' + r.token + ':accept">Хочу купить по этой цене</button>' +
       '<button class="btn sm sec" style="flex:1" data-ir="ans:' + r.token + ':decline">Отказаться</button></div></div>';
   }
   if(r.schedule && r.schedule.length){
@@ -17100,7 +17115,7 @@ function irReqCard(r){
       r.schedule.map(function(p){ return '<div style="display:flex;justify-content:space-between;font-size:13.5px;padding:4px 0;border-bottom:1px solid var(--line-soft)"><span>' + esc(irDate(p.due)) + '</span><span>' + money(p.amount) + (p.paid ? ' ✓' : '') + '</span></div>'; }).join("") +
       '</details>' +
       (r.next ? '<button class="btn sm" style="margin-top:10px;width:100%" data-ir="pay:' + r.token + '">Оплатить взнос ' + money(r.next.amount) + '</button>' +
-        '<button class="btn sm ghost" style="margin-top:6px;width:100%" data-ir="hard">Трудно заплатить вовремя</button>' : '') + '</div>';
+        '<button class="btn sm ghost" style="margin-top:6px;width:100%" data-ir="hard:' + r.token + '">Трудно заплатить вовремя</button>' : '') + '</div>';
   }
   if(r.actions && r.actions.cancel && r.stage !== "offer") h += '<button class="btn sm ghost" style="margin-top:10px" data-ir="ans:' + r.token + ':cancel">Отменить заявку</button>';
   return h + '</section>';
@@ -17112,7 +17127,7 @@ function irAnswer(token, what){
     .then(function(x){
       if(!x.ok){ toast(x.j && x.j.error ? x.j.error : "Не получилось"); return; }
       finReqs().forEach(function(r){ if(r.token === token){ r.stage = x.j.stage; r.text = x.j.text; r.checkedAt = 0; } });
-      save(); toast(what === "accept" ? "Спасибо! Сообщим, когда товар будет куплен" : "Готово");
+      save(); toast(what === "accept" ? "Спасибо! Сообщим, когда товар будет у продавца - приходите осмотреть" : "Готово");
       finReqsRefresh(true); render();
     }).catch(function(){ toast("Нет связи с сервером школы"); });
 }
@@ -17127,9 +17142,11 @@ function irPay(token){
       toast("Взнос " + x.j.n + " из " + x.j.count + ": " + money(x.j.amount));
     }).catch(function(){ if(w) w.close(); toast("Нет связи с сервером школы"); });
 }
-function irHard(){
+function irHard(token){
+  /* отмечаем в CRM: менеджер получит задачу и свяжется сам, без давления */
+  if(token && window.fetch) fetch(crmApi() + "/api/public/finance/request/" + token + "/hard", { method:"POST", headers:{ "Content-Type":"application/json" }, body:"{}" }).catch(function(){});
   sheet('<h3>Трудно заплатить вовремя?</h3>' +
-    '<p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 10px">Напишите нам заранее, до даты взноса. Перенесём дату или разделим взнос на части - бесплатно. Штрафов и пеней у нас нет, цена не растёт.</p>' +
+    '<p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 10px">Мы уже получили отметку и свяжемся с вами. Перенесём дату или разделим взнос на части - бесплатно. Штрафов и пеней у нас нет, цена не растёт. Можно и написать нам сразу.</p>' +
     '<p class="note" style="margin:0 0 14px">«Если должник находится в трудном положении, то дайте ему отсрочку, пока его положение не улучшится» (Коран, 2:280, перевод Э. Кулиева).</p>' +
     '<a class="btn" style="text-decoration:none" href="https://wa.me/' + SUPPORT.tel + '?text=' + encodeURIComponent("Ассаламу алейкум! Трудно внести взнос по рассрочке вовремя, хочу перенести дату.") + '" target="_blank" rel="noopener">Написать нам</a>' +
     '<a class="btn sec" style="text-decoration:none;margin-top:8px" href="tel:+' + SUPPORT.tel + '">Позвонить ' + esc(SUPPORT.phone) + '</a>' +
@@ -17172,7 +17189,7 @@ function sheetIrStep1(partner){
     (cfg.guarantors ? lab("Поручители (их данные сейчас не нужны)") + '<div class="pill-row" style="justify-content:flex-start;margin:6px 0 10px">' +
       [0, 1, 2].map(function(v){ return irPill("fg", v, v === st.g, v ? (v === 1 ? "один" : "два") : "нет"); }).join("") + '</div>' : '') +
     lab("Сколько удобно платить в месяц, ₽") + '<input class="search" id="irFMon" inputmode="numeric" style="margin:6px 0 4px" value="' + (st.monthly || "") + '">' +
-    '<p class="note" style="margin:8px 0 0">Золото, серебро, украшения из них и валюту в рассрочку не продаём.</p>' +
+    '<p class="note" style="margin:8px 0 0">Золото, серебро и вещи с заметной их долей, валюту, сертификаты, табак и вейпы, музыкальные инструменты в рассрочку не продаём. Предзаказ - только когда товар у продавца.</p>' +
     '<button class="btn" style="margin-top:14px" data-ir="next">Дальше</button>' +
     '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
 }
@@ -17195,7 +17212,7 @@ function irNext(){
   irKeep();
   var f = irForm(), st = irState();
   if(!String(f.item || "").trim()){ toast("Напишите, что нужно купить"); return; }
-  if(/золот|серебр|валют|бриллиант/i.test(f.item)){ toast("Золото, серебро и валюту в рассрочку не продаём"); return; }
+  if(/золот|серебр|валют|бриллиант|криптовалют|сертификат|вейп|табак|сигарет|кальян/i.test(f.item)){ toast("Золото, серебро, валюту, сертификаты, табак и вейпы в рассрочку не продаём"); return; }
   if(f.url && !/^https?:\/\//i.test(f.url)){ toast("Ссылка начинается с https://"); return; }
   if(!st.price){ toast("Укажите примерную цену"); return; }
   if(st.down >= st.price){ toast("Первый взнос должен быть меньше цены"); return; }
@@ -17263,7 +17280,7 @@ function irClick(v){
   if(k === "send"){ irSend(); return; }
   if(k === "ans"){ irAnswer(p[1], p[2]); return; }
   if(k === "pay"){ irPay(p[1]); return; }
-  if(k === "hard"){ irHard(); return; }
+  if(k === "hard"){ irHard(p[1]); return; }
   if(k === "site"){ window.open(IR_SITE + (p[1] ? "#" + p[1] : ""), "_blank", "noopener"); return; }
 }
 
@@ -17271,6 +17288,7 @@ function irClick(v){
 function viewInstallment(){
   var d = finData(), h = ['<div class="stack">'];
   if(!IR_LOADED){ IR_LOADED = true; finLoad(function(){ if(V.view === "installment") render(); }); }
+  irSyncMine();
   finReqsRefresh();
   var deals = !!(d && d.murabaha && d.murabaha.deals);
 
@@ -17284,9 +17302,9 @@ function viewInstallment(){
 
   h.push('<section class="card">' +
     '<div class="eyebrow">Исламская рассрочка RIZQ</div>' +
-    '<div style="font-family:var(--f-display);font-size:19px;font-weight:700;line-height:1.35;margin-top:6px">Покупки частями по нормам ислама: цена известна до договора и не растёт</div>' +
+    '<div style="font-family:var(--f-display);font-size:19px;font-weight:700;line-height:1.35;margin-top:6px">Покупки частями через торговлю, а не заём: цена известна до договора и не растёт</div>' +
     '<div class="rows" style="margin-top:12px">' +
-      '<div class="row"><span class="ic">✓</span><span style="flex:1;line-height:1.5">Сначала покупаем товар себе и отвечаем за него, потом продаём вам частями</span></div>' +
+      '<div class="row"><span class="ic">✓</span><span style="flex:1;line-height:1.5">Сначала покупаем товар себе, забираем его и отвечаем за него, потом продаём вам частями</span></div>' +
       '<div class="row"><span class="ic">✓</span><span style="flex:1;line-height:1.5">Наценку называем в рублях до договора, после подписания цена не меняется</span></div>' +
       '<div class="row"><span class="ic">✓</span><span style="flex:1;line-height:1.5">Без штрафов и пеней. Трудно платить - перенесём взнос бесплатно</span></div>' +
     '</div>' +
@@ -17306,7 +17324,7 @@ function viewInstallment(){
   h.push('<section class="card">' +
     step(1, "Заявка", "Вы пишете, что нужно купить, примерную цену и срок. Паспорт и доход не нужны") +
     step(2, "Предложение", "Находим товар и называем цену в рассрочку в рублях. Это ещё не договор - можно отказаться") +
-    step(3, "Покупаем товар себе", "Продавец покупает товар на себя и отвечает за него. Вы видите товар до подписания") +
+    step(3, "Покупаем товар себе", "Продавец покупает товар на себя, забирает его у магазина и до договора отвечает за него. Вы осматриваете именно этот товар до подписания и можете отказаться") +
     step(4, "Договор и взносы", "Первый взнос - при подписании, остальные по графику. Напомним заранее, штрафов нет") +
     '<div class="pill-row" style="justify-content:flex-start;margin-top:10px">' + FINREQ_CATS.map(function(c){ return '<button class="pill" data-ir="catgo:' + c[0] + '">' + c[1] + '</button>'; }).join("") + '</div>' +
   '</section>');
@@ -17316,9 +17334,9 @@ function viewInstallment(){
     '<p style="font-size:14.5px;line-height:1.6;margin:0">Риба - когда дают деньги в долг и берут больше. Мы денег не даём: покупаем товар на себя, отвечаем за него и продаём вам частями с наценкой. Цена названа заранее и не растёт. По сумме наценка бывает похожа на процент - разница в сделке, а не в цифре.</p>' +
     '<details style="margin-top:10px"><summary style="cursor:pointer;font-weight:600;font-size:14px">Источники</summary>' +
       '<p style="font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:8px 0 0">«Но Аллах дозволил торговлю и запретил лихоимство» (Коран, 2:275, перевод Э. Кулиева).</p>' +
-      '<p style="font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:8px 0 0">«Не дозволены заём вместе с продажей... и продажа того, чего у тебя нет» (Абу Дауд, 3504; ат-Тирмизи, 1234; хасан сахих по оценке ат-Тирмизи) - поэтому продавец сначала покупает товар себе.</p>' +
+      '<p style="font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:8px 0 0">«Не дозволены заём вместе с продажей... прибыль с того, за что ты не отвечаешь, и продажа того, чего у тебя нет» (Абу Дауд, 3504; ат-Тирмизи, 1234; хасан сахих по оценке ат-Тирмизи) - поэтому продавец сначала покупает товар себе и отвечает за него.</p>' +
       '<p style="font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:8px 0 0">Пророк ﷺ запретил «две продажи в одной» (ат-Тирмизи, 1231). Ат-Тирмизи приводит объяснение учёных: если стороны расстались на одной цене, в этом нет беды - поэтому цена одна и названа до договора.</p>' +
-      '<p style="font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:8px 0 0">«Если должник находится в трудном положении, то дайте ему отсрочку, пока его положение не улучшится» (Коран, 2:280) - поэтому без штрафов и пеней.</p>' +
+      '<p style="font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:8px 0 0">«Если должник находится в трудном положении, то дайте ему отсрочку, пока его положение не улучшится» (Коран, 2:280) - поэтому, если трудно платить, даём отсрочку бесплатно. А пеня - прибавка к долгу за отсрочку, то есть лихва.</p>' +
     '</details>' +
     '<p class="note" style="margin:10px 0 0">Спорные вопросы задайте имаму своей мечети. Шариатское заключение по нашей рассрочке опубликуем здесь, когда оно будет готово.</p>' +
   '</section>');
@@ -17341,7 +17359,8 @@ function viewInstallment(){
       '<b style="display:block;font-family:var(--f-display);font-size:16px;margin-top:6px">' + esc(p.name) + '</b>' +
       '<div style="font-size:13.5px;color:var(--ink-2);line-height:1.55;margin-top:6px">' + esc(p.products || "") + (p.regions ? ' · ' + esc(p.regions) : '') + '</div>' +
       (p.about ? '<div style="font-size:13.5px;color:var(--ink-3);line-height:1.55;margin-top:6px">' + esc(p.about) + '</div>' : '') +
-      '<div style="font-size:12.5px;color:var(--ink-3);line-height:1.5;margin-top:8px">Участник эксперимента по партнёрскому финансированию, в реестре Банка России. Решение о рассрочке и её условия - у партнёра. RIZQ получает вознаграждение за заявку.</div>' +
+      '<div style="font-size:12.5px;color:var(--ink-3);line-height:1.5;margin-top:8px">Участник эксперимента по партнёрскому финансированию, в реестре Банка России. Участие в реестре - не шариатская проверка. Решение о рассрочке и её условия - у партнёра. RIZQ получает от партнёра вознаграждение, если вы заключите с ним договор.</div>' +
+      (p.sharia ? '<div style="font-size:12.5px;color:var(--ink-3);line-height:1.5;margin-top:6px">Шариатское заключение партнёра: ' + (/^https:\/\//.test(p.sharia) ? '<a href="' + esc(p.sharia) + '" target="_blank" rel="noopener" style="color:var(--accent-ink)">открыть</a>' : esc(p.sharia)) + '</div>' : '') +
       (p.mode === "lead"
         ? '<button class="btn sm" style="margin-top:12px;width:100%" data-finreq="partner:' + p.id + '">Оставить заявку</button>'
         : '<button class="btn sm" style="margin-top:12px;width:100%" data-finpartner="' + p.id + '">Перейти к партнёру</button>') +
@@ -17354,16 +17373,16 @@ function viewInstallment(){
       '<p style="font-size:14px;line-height:1.6;color:var(--ink-2);margin:9px 0 0">' + a + '</p></details>';
   };
   h.push('<div class="sec-h"><h3>Частые вопросы</h3></div>');
-  h.push(qa("Чем это отличается от кредита?", "В кредите вам дают деньги в долг и берут больше. Здесь денег не дают: продавец сначала покупает товар себе, отвечает за него, а потом продаёт вам с оплатой частями. Цена названа заранее и не растёт."));
+  h.push(qa("Чем это отличается от кредита?", "В кредите вам дают деньги в долг и берут больше - любая оговорённая надбавка к займу и есть риба. Здесь денег не дают: продавец сначала покупает товар себе, забирает его и отвечает за него, а потом продаёт вам с оплатой частями. Цена названа заранее и не растёт."));
   h.push(qa("Почему в рассрочку дороже, чем сразу?", "Продавать с отсрочкой по цене выше наличной - это торговля, если цена названа до сделки и потом не меняется. Наценку мы называем в рублях до договора."));
   h.push(qa("Сколько будет стоить товар?", "Цену в рассрочку называем до подписания договора. После подписания она не меняется, сколько бы времени ни заняли взносы."));
-  h.push(qa("Что будет, если не успею внести взнос?", "Штрафов и пеней нет. Напишите нам заранее - перенесём дату или разделим взнос, бесплатно."));
+  h.push(qa("Что будет, если не успею внести взнос?", "Штрафов и пеней нет. Напишите нам заранее - перенесём дату или разделим взнос, бесплатно. Если положение трудное - дадим отсрочку, пока оно не улучшится."));
   h.push(qa("Можно оплатить досрочно?", "Да, можно внести остаток в любой момент. Скидку за досрочную оплату заранее не обещаем."));
-  h.push(qa("Что нельзя купить в рассрочку?", "Золото, серебро, украшения из них и валюту: их обмен по исламу должен быть сразу. И, конечно, всё запретное."));
+  h.push(qa("Что нельзя купить в рассрочку?", "Золото, серебро и вещи с заметной их долей, валюту и денежные заменители (подарочные сертификаты, балансы, криптовалюту, ценные бумаги), оплату долгов и кредитов - такой обмен по исламу должен быть сразу. Запретное: табак и вейпы, музыкальные инструменты, статуэтки живых существ, азартное. Товар, который вы уже купили или оплатили сами, и покупки, чтобы перепродать за наличные. Предзаказ и товар, который нельзя осмотреть; мебель на заказ - только готовую. Услуги пока не продаём."));
   h.push(qa("Нужен ли паспорт?", "Для заявки - нет. Паспорт понадобится при подписании договора."));
   h.push(qa("Кому уйдут мои данные?", "Заявка хранится в CRM школы на сервере в России. Партнёру данные передаются, только если вы отдельно на это согласились."));
   h.push(qa("Когда начнутся сделки?", "После проверки договора юристом и шариатского заключения. Все, кто оставил заявку, узнают первыми."));
-  h.push(qa("Есть ли шариатское заключение?", "Пока нет: мы его получаем. Опубликуем здесь, когда оно будет готово, и до этого не называем нашу рассрочку «одобренной»."));
+  h.push(qa("Есть ли шариатское заключение?", "Пока нет. Без письменного заключения сделок не будет - опубликуем его здесь. До этого мы не называем нашу рассрочку «одобренной»."));
 
   h.push('<section class="card" style="display:flex;gap:12px;align-items:center"><div style="flex:1"><b>Вы продавец?</b>' +
     '<div style="font-size:13.5px;color:var(--ink-2);line-height:1.5;margin-top:3px">Магазины мебели, техники и товаров для дома - оставьте заявку на подключение рассрочки для покупательниц.</div></div>' +
