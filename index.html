@@ -17287,74 +17287,41 @@ function irClick(v){
   if(k === "ans"){ irAnswer(p[1], p[2]); return; }
   if(k === "pay"){ irPay(p[1]); return; }
   if(k === "hard"){ irHard(p[1]); return; }
-  if(k === "site"){ window.open(IR_SITE + (p[1] ? "#" + p[1] : ""), "_blank", "noopener"); return; }
+  if(k === "site"){ location.href = "rassrochka/" + (p[1] ? "#" + p[1] : ""); return; }
 }
 
-/* ---------- экран раздела ---------- */
+/* ---------- экран раздела: личный кабинет (03.10.2026, решение Заиры) ----------
+   Вся информация, калькулятор и заявка - на сайте рассрочки (одна витрина для всех:
+   Instagram, слово РАССРОЧКА, приложение). Здесь - кабинет: мои заявки и покупки,
+   предложение, график и оплата взносов, «Трудно заплатить». Заявки с сайта и из
+   приложения приходят в одну CRM. */
 function viewInstallment(){
   var d = finData(), h = ['<div class="stack">'];
   if(!IR_LOADED){ IR_LOADED = true; finLoad(function(){ if(V.view === "installment") render(); }); }
   irSyncMine();
   finReqsRefresh();
   var deals = !!(d && d.murabaha && d.murabaha.deals);
-
-  /* мои заявки и покупки - первыми */
   var mine = finReqs(), orders = finOrderCards();
-  if(mine.length || orders){
-    h.push('<div class="sec-h"><h3>Мои заявки и покупки</h3></div>');
-    mine.forEach(function(r){ h.push(irReqCard(r)); });
-    if(orders) h.push(orders);
-  }
 
   h.push('<section class="card">' +
     '<div class="eyebrow">Исламская рассрочка RIZQ</div>' +
-    '<div style="font-family:var(--f-display);font-size:19px;font-weight:700;line-height:1.35;margin-top:6px">Покупки частями через торговлю, а не заём: цена известна до договора и не растёт</div>' +
-    '<div class="rows" style="margin-top:12px">' +
-      '<div class="row"><span class="ic">✓</span><span style="flex:1;line-height:1.5">Сначала покупаем товар себе, забираем его и отвечаем за него, потом продаём вам частями</span></div>' +
-      '<div class="row"><span class="ic">✓</span><span style="flex:1;line-height:1.5">Наценку называем в рублях до договора, после подписания цена не меняется</span></div>' +
-      '<div class="row"><span class="ic">✓</span><span style="flex:1;line-height:1.5">Без штрафов и пеней. Трудно платить - перенесём взнос бесплатно</span></div>' +
-    '</div>' +
+    '<div style="font-family:var(--f-display);font-size:19px;font-weight:700;line-height:1.35;margin-top:6px">Покупки частями через торговлю, а не заём</div>' +
+    '<p style="font-size:14px;line-height:1.55;color:var(--ink-2);margin:8px 0 0">Сначала покупаем товар себе, забираем его и отвечаем за него, потом продаём вам частями. Цена известна до договора и не растёт, без штрафов и пеней.</p>' +
     (deals ? '' : '<div style="margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--surface-2);font-size:13.5px;line-height:1.5;color:var(--ink-2)">Сейчас мы собираем заявки. Сделки начнём после проверки договора юристом и шариатского заключения - вы узнаете первой.</div>') +
-    '<button class="btn" style="margin-top:12px;width:100%" data-ir="apply">Оставить заявку</button>' +
-    '<p class="note" style="margin:8px 0 0;text-align:center">Для заявки паспорт и доход не нужны</p>' +
+    '<button class="btn" style="margin-top:12px;width:100%" data-ir="site">Подробнее, калькулятор и заявка</button>' +
+    '<p class="note" style="margin:8px 0 0;text-align:center">Откроется сайт рассрочки. Заявка - за 2 минуты, паспорт и доход не нужны</p>' +
   '</section>');
 
-  h.push(irCalcHtml());
-
-  var step = function(n, t, s){
-    return '<div style="display:flex;gap:12px;align-items:flex-start;padding:9px 0">' +
-      '<span style="flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;background:var(--surface-2);color:var(--accent-ink)">' + n + '</span>' +
-      '<div><b style="font-size:14.5px">' + t + '</b><div style="font-size:13px;color:var(--ink-3);line-height:1.5;margin-top:2px">' + s + '</div></div></div>';
-  };
-  h.push('<div class="sec-h"><h3>Как это устроено</h3></div>');
-  h.push('<section class="card">' +
-    step(1, "Заявка", "Вы пишете, что нужно купить, примерную цену и срок. Паспорт и доход не нужны") +
-    step(2, "Предложение", "Находим товар и называем цену в рассрочку в рублях. Это ещё не договор - можно отказаться") +
-    step(3, "Покупаем товар себе", "Продавец покупает товар на себя, забирает его у магазина и до договора отвечает за него. Вы осматриваете именно этот товар до подписания и можете отказаться") +
-    step(4, "Договор и взносы", "Первый взнос - при подписании, остальные по графику. Напомним заранее, штрафов нет") +
-    '<div class="pill-row" style="justify-content:flex-start;margin-top:10px">' + FINREQ_CATS.map(function(c){ return '<button class="pill" data-ir="catgo:' + c[0] + '">' + c[1] + '</button>'; }).join("") + '</div>' +
-  '</section>');
-
-  h.push('<div class="sec-h"><h3>Почему это торговля, а не риба</h3></div>');
-  h.push('<section class="card">' +
-    '<p style="font-size:14.5px;line-height:1.6;margin:0">Риба - когда дают деньги в долг и берут больше. Мы денег не даём: покупаем товар на себя, отвечаем за него и продаём вам частями с наценкой. Цена названа заранее и не растёт. По сумме наценка бывает похожа на процент - разница в сделке, а не в цифре.</p>' +
-    '<details style="margin-top:10px"><summary style="cursor:pointer;font-weight:600;font-size:14px">Источники</summary>' +
-      '<p style="font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:8px 0 0">«Но Аллах дозволил торговлю и запретил лихоимство» (Коран, 2:275, перевод Э. Кулиева).</p>' +
-      '<p style="font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:8px 0 0">«Не дозволены заём вместе с продажей... прибыль с того, за что ты не отвечаешь, и продажа того, чего у тебя нет» (Абу Дауд, 3504; ат-Тирмизи, 1234; хасан сахих по оценке ат-Тирмизи) - поэтому продавец сначала покупает товар себе и отвечает за него.</p>' +
-      '<p style="font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:8px 0 0">Пророк ﷺ запретил «две продажи в одной» (ат-Тирмизи, 1231). Ат-Тирмизи приводит объяснение учёных: если стороны расстались на одной цене, в этом нет беды - поэтому цена одна и названа до договора.</p>' +
-      '<p style="font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:8px 0 0">«Если должник находится в трудном положении, то дайте ему отсрочку, пока его положение не улучшится» (Коран, 2:280) - поэтому, если трудно платить, даём отсрочку бесплатно. А пеня - прибавка к долгу за отсрочку, то есть лихва.</p>' +
-    '</details>' +
-    '<p class="note" style="margin:10px 0 0">Спорные вопросы задайте имаму своей мечети. Шариатское заключение по нашей рассрочке опубликуем здесь, когда оно будет готово.</p>' +
-  '</section>');
-
-  if(!deals){
-    var phase = function(t, on, last){
-      return '<div style="display:flex;gap:10px;align-items:center;padding:7px 0' + (last ? '' : ';border-bottom:1px solid var(--line-soft)') + '">' +
-        '<span style="flex:none;width:10px;height:10px;border-radius:50%;background:' + (on ? 'var(--accent)' : 'var(--line)') + '"></span>' +
-        '<span style="flex:1;font-size:14px;' + (on ? 'font-weight:700' : 'color:var(--ink-2)') + '">' + t + '</span>' + (on ? '<span style="font-size:12px;color:var(--accent-ink)">сейчас</span>' : '') + '</div>';
-    };
-    h.push('<div class="sec-h"><h3>Где мы сейчас</h3></div>');
-    h.push('<section class="card">' + phase("Собираем заявки", true) + phase("Проверка договора юристом") + phase("Шариатское заключение") + phase("Первые сделки", false, true) + '</section>');
+  h.push('<div class="sec-h"><h3>Мои заявки и покупки</h3></div>');
+  if(mine.length || orders){
+    mine.forEach(function(r){ h.push(irReqCard(r)); });
+    if(orders) h.push(orders);
+  } else {
+    h.push('<section class="card" style="text-align:center;padding:22px 18px">' +
+      '<div style="font-size:28px;line-height:1">◈</div>' +
+      '<b style="display:block;margin-top:8px">Здесь будут ваши заявки и покупки</b>' +
+      '<p style="font-size:13.5px;line-height:1.55;color:var(--ink-2);margin:6px 0 12px">Статус заявки, предложение с ценой, график взносов и оплата - всё в одном месте. Заявку можно оставить на сайте рассрочки.</p>' +
+      '<button class="btn sec sm" style="width:auto;margin:0 auto" data-ir="site:zayavka">Оставить заявку</button></section>');
   }
 
   var partners = d ? (d.partners || []) : [];
@@ -17374,36 +17341,13 @@ function viewInstallment(){
     '</section>');
   });
 
-  var qa = function(q, a){
-    return '<details class="card" style="padding:13px 15px"><summary style="cursor:pointer;font-weight:600;font-size:14.5px">' + q + '</summary>' +
-      '<p style="font-size:14px;line-height:1.6;color:var(--ink-2);margin:9px 0 0">' + a + '</p></details>';
-  };
-  h.push('<div class="sec-h"><h3>Частые вопросы</h3></div>');
-  h.push(qa("Чем это отличается от кредита?", "В кредите вам дают деньги в долг и берут больше - любая оговорённая надбавка к займу и есть риба. Здесь денег не дают: продавец сначала покупает товар себе, забирает его и отвечает за него, а потом продаёт вам с оплатой частями. Цена названа заранее и не растёт."));
-  h.push(qa("Почему в рассрочку дороже, чем сразу?", "Продавать с отсрочкой по цене выше наличной - это торговля, если цена названа до сделки и потом не меняется. Наценку мы называем в рублях до договора."));
-  h.push(qa("Сколько будет стоить товар?", "Цену в рассрочку называем до подписания договора. После подписания она не меняется, сколько бы времени ни заняли взносы."));
-  h.push(qa("Что будет, если не успею внести взнос?", "Штрафов и пеней нет. Напишите нам заранее - перенесём дату или разделим взнос, бесплатно. Если положение трудное - дадим отсрочку, пока оно не улучшится."));
-  h.push(qa("Можно оплатить досрочно?", "Да, можно внести остаток в любой момент. Скидку за досрочную оплату заранее не обещаем."));
-  h.push(qa("Что нельзя купить в рассрочку?", "Золото, серебро и вещи с заметной их долей, валюту и денежные заменители (подарочные сертификаты, балансы, криптовалюту, ценные бумаги), оплату долгов и кредитов - такой обмен по исламу должен быть сразу. Запретное: табак и вейпы, музыкальные инструменты, статуэтки живых существ, азартное. Товар, который вы уже купили или оплатили сами, и покупки, чтобы перепродать за наличные. Предзаказ и товар, который нельзя осмотреть; мебель на заказ - только готовую. Услуги пока не продаём."));
-  h.push(qa("Нужен ли паспорт?", "Для заявки - нет. Паспорт понадобится при подписании договора."));
-  h.push(qa("Кому уйдут мои данные?", "Заявка хранится в CRM школы на сервере в России. Партнёру данные передаются, только если вы отдельно на это согласились."));
-  h.push(qa("Когда начнутся сделки?", "После проверки договора юристом и шариатского заключения. Все, кто оставил заявку, узнают первыми."));
-  h.push(qa("Есть ли шариатское заключение?", "Пока нет. Без письменного заключения сделок не будет - опубликуем его здесь. До этого мы не называем нашу рассрочку «одобренной»."));
+  h.push('<section class="card"><div class="rows">' +
+    '<button class="row" data-ir="site:kak" style="width:100%;text-align:left"><span class="ic">◇</span>Как это устроено и почему это не риба<span class="go">›</span></button>' +
+    '<button class="row" data-ir="site:calc" style="width:100%;text-align:left"><span class="ic">◇</span>Калькулятор: сколько в месяц<span class="go">›</span></button>' +
+    '<button class="row" data-ir="site:biznes" style="width:100%;text-align:left"><span class="ic">◇</span>Вы продавец? Подключить магазин<span class="go">›</span></button>' +
+  '</div></section>');
 
-  h.push('<section class="card" style="display:flex;gap:12px;align-items:center"><div style="flex:1"><b>Вы продавец?</b>' +
-    '<div style="font-size:13.5px;color:var(--ink-2);line-height:1.5;margin-top:3px">Магазины мебели, техники и товаров для дома - оставьте заявку на подключение рассрочки для покупательниц.</div></div>' +
-    '<button class="btn sm sec" data-ir="site:biznes">Подробнее</button></section>');
-
-  h.push('<section class="card"><div class="eyebrow">Документы и реквизиты</div>' +
-    '<div class="rows" style="margin-top:8px">' +
-      '<a class="row" href="rassrochka/soglasie.html" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><span class="ic">◇</span>Согласие на обработку данных для заявки<span class="go">›</span></a>' +
-      '<a class="row" href="privacy.html" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><span class="ic">◇</span>Политика конфиденциальности<span class="go">›</span></a>' +
-      '<a class="row" href="' + IR_SITE + '" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><span class="ic">◇</span>Сайт исламской рассрочки<span class="go">›</span></a>' +
-      '<div class="row"><span class="ic">◇</span><span style="flex:1;color:var(--ink-3)">Образец договора и шариатское заключение - готовятся</span></div>' +
-    '</div>' +
-    '<p class="note" style="margin:10px 0 0">Продавец: ' + IR_SELLER + '. Почта ' + esc(SUPPORT.email) + ', телефон ' + esc(SUPPORT.phone) + '.</p></section>');
-
-  h.push('<p class="disclaimer">Перед подписанием любого договора покажите его своему преподавателю. Реестр участников партнёрского финансирования опубликован на сайте Банка России.</p>');
+  h.push('<p class="disclaimer">Продавец: ' + IR_SELLER + '. Перед подписанием любого договора покажите его своему преподавателю.</p>');
   h.push('</div>');
   return h.join("");
 }

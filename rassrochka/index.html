@@ -132,6 +132,7 @@ details.qa p{color:var(--ink-2);margin-top:8px;font-size:15px}
 .biz .form{background:var(--surface);color:var(--ink)}
 footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--ink-3);font-size:13.5px}
 footer a{color:var(--accent-ink)}
+.appbar{background:var(--gold-soft);color:#1E2A5A;font-size:14.5px;padding:10px 0}.appbar a{font-weight:700}
 .docs a{display:block;padding:10px 0;border-bottom:1px solid var(--line);text-decoration:none}
 .docs span{display:block;padding:10px 0;border-bottom:1px solid var(--line);color:var(--ink-3)}
 </style>
@@ -146,9 +147,12 @@ footer a{color:var(--accent-ink)}
       <a class="hide-s" href="#calc">Калькулятор</a>
       <a href="#biznes">Бизнесу</a>
       <a href="#zayavka">Заявка</a>
+      <a href="../?go=rassrochka" id="navMine" hidden>Мои заявки</a>
     </nav>
   </div>
 </header>
+
+<div class="appbar" id="appBar" hidden><div class="wrap">У вас есть заявки в RIZQ - <a href="../?go=rassrochka">статус, предложение и график в приложении</a></div></div>
 
 <section class="hero">
   <div class="wrap">
@@ -530,7 +534,7 @@ footer a{color:var(--accent-ink)}
         var d = $("fDone");
         d.innerHTML = '<h3>Заявка принята' + (x.j.number ? ': ' + esc(x.j.number) : '') + '</h3>' +
           '<p style="color:var(--ink-2);margin-top:6px">Мы свяжемся с вами по телефону. Сейчас мы собираем заявки: сделки начнём после проверки юристом и шариатского заключения, и вы узнаете первой.</p>' +
-          (x.j.token ? '<div class="cta"><a class="btn btn-gold" href="../?finreq=' + encodeURIComponent(x.j.token) + '">Следить за статусом в RIZQ</a></div>' : '');
+          (x.j.token ? '<div class="cta"><a class="btn btn-gold" href="../?finreq=' + encodeURIComponent(x.j.token) + '">Открыть мою заявку в RIZQ</a></div><p style="color:var(--ink-3);font-size:13.5px;margin-top:8px">В приложении - статус заявки, предложение с ценой, а потом график и оплата взносов.</p>' : '');
         d.classList.add("show");
         $("fReq").querySelectorAll("input.t").forEach(function(i){ if(i.id !== "fCity") i.value = ""; });
         $("fOk").checked = false;
@@ -571,6 +575,17 @@ footer a{color:var(--accent-ink)}
     try{ navigator.clipboard.writeText(text + " " + url); this.textContent = "Ссылка скопирована"; }catch(e){ prompt("Скопируйте ссылку", url); }
   });
 
+  /* Пришла из приложения RIZQ (тот же адрес): подставляем имя и телефон, показываем «Мои заявки».
+     Ничего не записываем в данные приложения - заявка с сайта попадёт в приложение по ссылке ?finreq. */
+  try{
+    var app = JSON.parse(localStorage.getItem("rizq.v1") || "null");
+    if(app){
+      if(app.name && !$("fName").value) $("fName").value = String(app.name).slice(0, 80);
+      if(app.phone && !$("fTel").value) $("fTel").value = String(app.phone).slice(0, 30);
+      if(app.city === "gps" && app.gps && app.gps.n && !$("fCity").value) $("fCity").value = String(app.gps.n).slice(0, 80);
+      if(app.finReqs && app.finReqs.length){ $("appBar").hidden = false; $("navMine").hidden = false; }
+    }
+  }catch(e){}
   /* условия калькулятора - только утверждённые владелицей в CRM */
   fetch(API + "/api/public/finance").then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
     if(j && j.calc){ calc = j.calc; }
