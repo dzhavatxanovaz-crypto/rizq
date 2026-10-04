@@ -1450,6 +1450,42 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .vk-g i{position:absolute;left:10px;top:11px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700;color:var(--accent-ink);border:1px solid rgba(212,175,55,.55)}
 .vk-g b{display:block;font-size:13.5px;line-height:1.3;color:var(--ink)}
 .vk-g span{display:block;font-size:12px;line-height:1.35;color:var(--ink-3);margin-top:3px}
+/* запись журнала и руководство: длинное слово переносится по слогам, а без словаря - по месту, вместо того чтобы вылезать (04.10.2026) */
+.wrap-words{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere}
+.wrap-words .ar,.wrap-words [dir="rtl"]{overflow-wrap:normal;hyphens:manual;-webkit-hyphens:manual}
+.blink b,.blink-s{max-width:100%;overflow-wrap:anywhere;hyphens:auto;-webkit-hyphens:auto}.bsteps li>p{min-width:0;overflow-wrap:anywhere}
+:root[data-fs="xl"] .blinks,:root[data-fs="xxl"] .blinks{grid-template-columns:1fr}
+/* Переносы и длинные слова в журнале и руководствах (04.10.2026): на телефоне и крупном шрифте ничего не вылезает */
+.jr-body,.jr-hero,.jr-sum,.jr-toc,.vk-card{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:break-word}
+.vk-key b,.vk-key span,.vk-g b,.vk-g span,.vk-yn h5,.vk-yn li,.vk-flow b,.vk-flow span,.vk-lvl b,.vk-lvl span,.vk-bl,.jr-toc button span{min-width:0;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere}
+.vk-keys.wordy{grid-template-columns:repeat(auto-fit,minmax(128px,1fr))}
+.vk-keys.wordy .vk-key b{font-size:16px;line-height:1.25}
+.vk-yn{grid-template-columns:repeat(2,minmax(0,1fr))}
+.jr-acts{flex-wrap:wrap}.jr-acts .btn{flex:1 1 auto}
+.jr-next>span{min-width:0;flex:1}.jr-next b{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere}
+:root[data-fs="l"] .vk-grid,:root[data-fs="xl"] .vk-grid,:root[data-fs="xxl"] .vk-grid,:root[data-fs="xl"] .vk-yn,:root[data-fs="xxl"] .vk-yn{grid-template-columns:1fr}
+:root[data-fs="xl"] .vk-keys,:root[data-fs="xxl"] .vk-keys{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+/* таблица: переносы в ячейках, тень у края, если всё же шире экрана */
+.vk-tbl th,.vk-tbl td{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:break-word}
+.vk-tbl tbody th{white-space:normal;min-width:5.5em}
+.vk-tblw{container-type:inline-size;background:linear-gradient(90deg,var(--surface) 30%,transparent) left/28px 100% no-repeat local,linear-gradient(270deg,var(--surface) 30%,transparent) right/28px 100% no-repeat local,radial-gradient(farthest-side at 0 50%,rgba(0,0,0,.18),transparent) left/12px 100% no-repeat scroll,radial-gradient(farthest-side at 100% 50%,rgba(0,0,0,.18),transparent) right/12px 100% no-repeat scroll}
+/* на телефоне (таблице уже 360 px): строка таблицы - карточка, у каждого значения подпись колонки; на планшете и компьютере - обычная таблица */
+@container (max-width: 360px){
+  .vk-tbl thead{display:none}
+  .vk-tbl,.vk-tbl tbody,.vk-tbl tr,.vk-tbl tbody th,.vk-tbl td{display:block;width:auto}
+  .vk-tbl tbody tr{padding:10px 12px}
+  .vk-tbl tbody tr+tr{border-top:1px solid var(--line)}
+  .vk-tbl tbody th,.vk-tbl td{border:0!important;padding:3px 0}
+  .vk-tbl tbody th{padding-bottom:5px;color:var(--ink)}
+  .vk-tbl td:before{content:attr(data-l);display:block;font-size:11.5px;font-weight:700;letter-spacing:.02em;color:var(--accent-ink)}
+}
+:root[data-fs="xl"] .vk-tbl thead,:root[data-fs="xxl"] .vk-tbl thead{display:none}
+:root[data-fs="xl"] .vk-tbl,:root[data-fs="xl"] .vk-tbl tbody,:root[data-fs="xl"] .vk-tbl tr,:root[data-fs="xl"] .vk-tbl tbody th,:root[data-fs="xl"] .vk-tbl td,
+:root[data-fs="xxl"] .vk-tbl,:root[data-fs="xxl"] .vk-tbl tbody,:root[data-fs="xxl"] .vk-tbl tr,:root[data-fs="xxl"] .vk-tbl tbody th,:root[data-fs="xxl"] .vk-tbl td{display:block;width:auto}
+:root[data-fs="xl"] .vk-tbl tbody tr,:root[data-fs="xxl"] .vk-tbl tbody tr{padding:10px 12px}
+:root[data-fs="xl"] .vk-tbl tbody tr+tr,:root[data-fs="xxl"] .vk-tbl tbody tr+tr{border-top:1px solid var(--line)}
+:root[data-fs="xl"] .vk-tbl tbody th,:root[data-fs="xl"] .vk-tbl td,:root[data-fs="xxl"] .vk-tbl tbody th,:root[data-fs="xxl"] .vk-tbl td{border:0!important;padding:3px 0}
+:root[data-fs="xl"] .vk-tbl td:before,:root[data-fs="xxl"] .vk-tbl td:before{content:attr(data-l);display:block;font-size:11.5px;font-weight:700;letter-spacing:.02em;color:var(--accent-ink)}
 .vk-note{font-size:12.5px;line-height:1.5;color:var(--ink-3);margin:10px 0 0}
 .bsteps{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column;gap:10px}
 .bsteps li{display:flex;gap:11px;align-items:flex-start}
@@ -3456,6 +3492,117 @@ var CITIES = [
   {id:"ysh", n:"Южно-Сахалинск",          lat:46.9588, lng:142.7386, tz:11},
   {id:"mag", n:"Магадан",                 lat:59.5638, lng:150.8035, tz:11},
   {id:"pkm", n:"Петропавловск-Камчатский", lat:53.0370, lng:158.6559, tz:12},
+  /* 04.10.2026: центры регионов, которых не было, Кавказ, Крым, Татарстан, Башкортостан, Югра, Ямал, Подмосковье, города от ~100 тысяч */
+  {id:"sev", n:"Севастополь",       lat:44.6167, lng:33.5254, tz:3},
+  {id:"brb", n:"Биробиджан",        lat:48.7946, lng:132.9218, tz:10},
+  {id:"nar", n:"Нарьян-Мар",        lat:67.6381, lng:53.0069, tz:3},
+  {id:"anr", n:"Анадырь",           lat:64.7337, lng:177.5089, tz:12},
+  {id:"gud", n:"Гудермес",          lat:43.3519, lng:46.1036, tz:3},
+  {id:"arg", n:"Аргун",             lat:43.2917, lng:45.8723, tz:3},
+  {id:"shl", n:"Шали",              lat:43.1486, lng:45.9009, tz:3},
+  {id:"urm", n:"Урус-Мартан",       lat:43.1300, lng:45.5389, tz:3},
+  {id:"nzr", n:"Назрань",           lat:43.2257, lng:44.7645, tz:3},
+  {id:"mlg", n:"Малгобек",          lat:43.5096, lng:44.5901, tz:3},
+  {id:"krb", n:"Карабулак",         lat:43.3055, lng:44.9094, tz:3},
+  {id:"snz", n:"Сунжа",             lat:43.3204, lng:45.0476, tz:3},
+  {id:"prh", n:"Прохладный",        lat:43.7575, lng:44.0297, tz:3},
+  {id:"bks", n:"Баксан",            lat:43.6819, lng:43.5345, tz:3},
+  {id:"kch", n:"Карачаевск",        lat:43.7731, lng:41.9143, tz:3},
+  {id:"udj", n:"Усть-Джегута",      lat:44.0926, lng:41.9739, tz:3},
+  {id:"mzd", n:"Моздок",            lat:43.7375, lng:44.6567, tz:3},
+  {id:"bsl", n:"Беслан",            lat:43.1917, lng:44.5408, tz:3},
+  {id:"geo", n:"Георгиевск",        lat:44.1513, lng:43.4697, tz:3},
+  {id:"evp", n:"Евпатория",         lat:45.1904, lng:33.3669, tz:3},
+  {id:"krc", n:"Керчь",             lat:45.3562, lng:36.4674, tz:3},
+  {id:"feo", n:"Феодосия",          lat:45.0319, lng:35.3824, tz:3},
+  {id:"yal", n:"Ялта",              lat:44.4952, lng:34.1663, tz:3},
+  {id:"bah", n:"Бахчисарай",        lat:44.7514, lng:33.8752, tz:3},
+  {id:"zld", n:"Зеленодольск",      lat:55.8467, lng:48.5013, tz:3},
+  {id:"bug", n:"Бугульма",          lat:54.5378, lng:52.7985, tz:3},
+  {id:"elb", n:"Елабуга",           lat:55.7564, lng:52.0546, tz:3},
+  {id:"lgr", n:"Лениногорск",       lat:54.5986, lng:52.4422, tz:3},
+  {id:"chs", n:"Чистополь",         lat:55.3648, lng:50.6407, tz:3},
+  {id:"tmz", n:"Туймазы",           lat:54.5992, lng:53.6950, tz:5},
+  {id:"ish", n:"Ишимбай",           lat:53.4545, lng:56.0438, tz:5},
+  {id:"kmr", n:"Кумертау",          lat:52.7671, lng:55.7861, tz:5},
+  {id:"sib", n:"Сибай",             lat:52.7205, lng:58.6655, tz:5},
+  {id:"blr", n:"Белорецк",          lat:53.9678, lng:58.4100, tz:5},
+  {id:"nfy", n:"Нефтеюганск",       lat:61.0998, lng:72.6035, tz:5},
+  {id:"kog", n:"Когалым",           lat:62.2654, lng:74.4791, tz:5},
+  {id:"nyg", n:"Нягань",            lat:62.1406, lng:65.3936, tz:5},
+  {id:"meg", n:"Мегион",            lat:61.0296, lng:76.1136, tz:5},
+  {id:"lgp", n:"Лангепас",          lat:61.2537, lng:75.1808, tz:5},
+  {id:"pty", n:"Пыть-Ях",           lat:60.7585, lng:72.8366, tz:5},
+  {id:"rdj", n:"Радужный",          lat:62.1342, lng:77.4584, tz:5},
+  {id:"ura", n:"Урай",              lat:60.1296, lng:64.8037, tz:5},
+  {id:"ndm", n:"Надым",             lat:65.5377, lng:72.5182, tz:5},
+  {id:"mrv", n:"Муравленко",        lat:63.7940, lng:74.4948, tz:5},
+  {id:"gub", n:"Губкинский",        lat:64.4337, lng:76.5032, tz:5},
+  {id:"lab", n:"Лабытнанги",        lat:66.6592, lng:66.3883, tz:5},
+  {id:"uht", n:"Ухта",              lat:63.5671, lng:53.6835, tz:3},
+  {id:"vrk", n:"Воркута",           lat:67.4974, lng:64.0612, tz:3},
+  {id:"usn", n:"Усинск",            lat:65.9939, lng:57.5571, tz:3},
+  {id:"mrn", n:"Мирный",            lat:62.5353, lng:113.9611, tz:9},
+  {id:"nrg", n:"Нерюнгри",          lat:56.6600, lng:124.7200, tz:9},
+  {id:"bal", n:"Балашиха",          lat:55.7964, lng:37.9382, tz:3},
+  {id:"hmk", n:"Химки",             lat:55.8970, lng:37.4297, tz:3},
+  {id:"pdl", n:"Подольск",          lat:55.4311, lng:37.5447, tz:3},
+  {id:"myt", n:"Мытищи",            lat:55.9116, lng:37.7308, tz:3},
+  {id:"krl", n:"Королёв",           lat:55.9162, lng:37.8545, tz:3},
+  {id:"lub", n:"Люберцы",           lat:55.6766, lng:37.8982, tz:3},
+  {id:"kgr", n:"Красногорск",       lat:55.8204, lng:37.3302, tz:3},
+  {id:"elk", n:"Электросталь",      lat:55.7847, lng:38.4447, tz:3},
+  {id:"klm", n:"Коломна",           lat:55.1036, lng:38.7529, tz:3},
+  {id:"odn", n:"Одинцово",          lat:55.6780, lng:37.2777, tz:3},
+  {id:"dmd", n:"Домодедово",        lat:55.4412, lng:37.7536, tz:3},
+  {id:"srp", n:"Серпухов",          lat:54.9139, lng:37.4114, tz:3},
+  {id:"shk", n:"Щёлково",           lat:55.9233, lng:37.9784, tz:3},
+  {id:"orz", n:"Орехово-Зуево",     lat:55.8067, lng:38.9618, tz:3},
+  {id:"rmn", n:"Раменское",         lat:55.5669, lng:38.2303, tz:3},
+  {id:"dlg", n:"Долгопрудный",      lat:55.9385, lng:37.5100, tz:3},
+  {id:"zhk", n:"Жуковский",         lat:55.5953, lng:38.1203, tz:3},
+  {id:"psh", n:"Пушкино",           lat:56.0104, lng:37.8471, tz:3},
+  {id:"reu", n:"Реутов",            lat:55.7608, lng:37.8550, tz:3},
+  {id:"sps", n:"Сергиев Посад",     lat:56.3153, lng:38.1358, tz:3},
+  {id:"ngn", n:"Ногинск",           lat:55.8686, lng:38.4438, tz:3},
+  {id:"tag", n:"Таганрог",          lat:47.2362, lng:38.8969, tz:3},
+  {id:"sht", n:"Шахты",             lat:47.7085, lng:40.2160, tz:3},
+  {id:"nck", n:"Новочеркасск",      lat:47.4111, lng:40.1042, tz:3},
+  {id:"vdn", n:"Волгодонск",        lat:47.5165, lng:42.1984, tz:3},
+  {id:"bat", n:"Батайск",           lat:47.1383, lng:39.7448, tz:3},
+  {id:"nsh", n:"Новошахтинск",      lat:47.7579, lng:39.9364, tz:3},
+  {id:"vlz", n:"Волжский",          lat:48.7858, lng:44.7797, tz:3},
+  {id:"kam", n:"Камышин",           lat:50.0833, lng:45.4000, tz:3},
+  {id:"chp", n:"Череповец",         lat:59.1269, lng:37.9090, tz:3},
+  {id:"svd", n:"Северодвинск",      lat:64.5582, lng:39.8296, tz:3},
+  {id:"dzr", n:"Дзержинск",         lat:56.2414, lng:43.4554, tz:3},
+  {id:"arz", n:"Арзамас",           lat:55.3949, lng:43.8399, tz:3},
+  {id:"sos", n:"Старый Оскол",      lat:51.2967, lng:37.8417, tz:3},
+  {id:"ryb", n:"Рыбинск",           lat:58.0485, lng:38.8584, tz:3},
+  {id:"kov", n:"Ковров",            lat:56.3633, lng:41.3115, tz:3},
+  {id:"mrm", n:"Муром",             lat:55.5786, lng:42.0526, tz:3},
+  {id:"obn", n:"Обнинск",           lat:55.0968, lng:36.6101, tz:3},
+  {id:"nmk", n:"Новомосковск",      lat:54.0109, lng:38.2964, tz:3},
+  {id:"elc", n:"Елец",              lat:52.6208, lng:38.5031, tz:3},
+  {id:"nvc", n:"Новочебоксарск",    lat:56.1155, lng:47.4925, tz:3},
+  {id:"nkb", n:"Новокуйбышевск",    lat:53.0996, lng:49.9476, tz:4},
+  {id:"ors", n:"Орск",              lat:51.2049, lng:58.5668, tz:5},
+  {id:"brz", n:"Березники",         lat:59.4091, lng:56.8204, tz:5},
+  {id:"kmu", n:"Каменск-Уральский", lat:56.4149, lng:61.9188, tz:5},
+  {id:"pvu", n:"Первоуральск",      lat:56.9054, lng:59.9433, tz:5},
+  {id:"zla", n:"Златоуст",          lat:55.1712, lng:59.6509, tz:5},
+  {id:"mia", n:"Миасс",             lat:55.0450, lng:60.1083, tz:5},
+  {id:"kop", n:"Копейск",           lat:55.1166, lng:61.6253, tz:5},
+  {id:"ang", n:"Ангарск",           lat:52.5444, lng:103.8885, tz:8},
+  {id:"bsk", n:"Бийск",             lat:52.5394, lng:85.2138, tz:7},
+  {id:"prk", n:"Прокопьевск",       lat:53.8850, lng:86.7449, tz:7},
+  {id:"ach", n:"Ачинск",            lat:56.2694, lng:90.4993, tz:7},
+  {id:"svk", n:"Северск",           lat:56.6031, lng:84.8806, tz:7},
+  {id:"brd", n:"Бердск",            lat:54.7581, lng:83.1072, tz:7},
+  {id:"kna", n:"Комсомольск-на-Амуре", lat:50.5499, lng:137.0079, tz:10},
+  {id:"uss", n:"Уссурийск",         lat:43.7972, lng:131.9519, tz:10},
+  {id:"nhd", n:"Находка",           lat:42.8240, lng:132.8927, tz:10},
+  {id:"art", n:"Артём",             lat:43.3542, lng:132.1879, tz:10},
   {id:"krg", n:"Караганда",               lat:49.8047, lng:73.1094, tz:5},
   {id:"akt", n:"Актобе",                  lat:50.2839, lng:57.1670, tz:5},
   {id:"atr", n:"Атырау",                  lat:47.0945, lng:51.9238, tz:5},
@@ -22883,7 +23030,7 @@ var GUIDE_VIS = {
 function viewGuide(){
   var g = GUIDES[V.p];
   if(!g) return '<div class="empty"><b>Раздел не найден</b></div>';
-  var h = ['<div class="stack">'];
+  var h = ['<div class="stack wrap-words">'];
   var key = "guide:" + V.p;
 
   h.push('<section class="card"><div class="eyebrow">' + esc(g.sub) + '</div>' +
@@ -22928,12 +23075,13 @@ function viewGuide(){
 /* один рендер блоков на руководства и на журнал */
 function visHtml(b){
   var s = [];
-  if(b.keys) s.push('<div class="vk-keys">'+b.keys.map(function(k){ return '<div class="vk-key"><b>'+esc(k[0])+'</b><span>'+esc(k[1])+'</span></div>'; }).join("")+'</div>');
+  /* подписи-слова («Определённый срок») крупным шрифтом чисел не помещались в колонку - для них свой размер */
+  if(b.keys) s.push('<div class="vk-keys' + (b.keys.some(function(k){ return /[A-Za-zА-Яа-яЁё]{5,}/.test(String(k[0])); }) ? ' wordy' : '') + '">'+b.keys.map(function(k){ return '<div class="vk-key"><b>'+esc(k[0])+'</b><span>'+esc(k[1])+'</span></div>'; }).join("")+'</div>');
   if(b.flow) s.push('<ol class="vk-flow">'+b.flow.map(function(f, n){ return '<li><i>'+(n + 1)+'</i><div><b>'+esc(f[0])+'</b>'+(f[1] ? '<span>'+esc(f[1])+'</span>' : '')+'</div></li>'; }).join("")+'</ol>');
   if(b.yn) s.push('<div class="vk-yn"><div class="vk-y"><h5>✓ '+esc(b.yn.y)+'</h5><ul>'+b.yn.ya.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul></div>'+
     '<div class="vk-n"><h5>✕ '+esc(b.yn.n)+'</h5><ul>'+b.yn.na.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul></div></div>');
   if(b.tbl) s.push('<div class="vk-tblw"><table class="vk-tbl"><thead><tr>'+b.tbl.h.map(function(x){ return '<th>'+esc(x)+'</th>'; }).join("")+'</tr></thead><tbody>'+
-    b.tbl.r.map(function(r){ return '<tr>'+r.map(function(x, j){ return j ? '<td>'+esc(x)+'</td>' : '<th>'+esc(x)+'</th>'; }).join("")+'</tr>'; }).join("")+'</tbody></table></div>');
+    b.tbl.r.map(function(r){ return '<tr>'+r.map(function(x, j){ return j ? '<td data-l="'+esc(b.tbl.h[j] || "")+'">'+esc(x)+'</td>' : '<th>'+esc(x)+'</th>'; }).join("")+'</tr>'; }).join("")+'</tbody></table></div>');
   if(b.pill) s.push('<div class="vk-pill"><div class="vk-roof"><span>'+esc(b.pill.roof)+'</span></div><div class="vk-cols">'+
     b.pill.cols.map(function(c){ var mx = Math.max.apply(null, b.pill.cols.map(function(x){ return x.length; })); return '<div class="vk-col" style="height:'+Math.max(118, mx * 9.5 + 34)+'px"><span>'+esc(c)+'</span></div>'; }).join("")+'</div><div class="vk-base">'+esc(b.pill.base || "")+'</div></div>');
   if(b.lv) s.push('<div class="vk-lv">'+b.lv.map(function(l, n){ return '<div class="vk-lvl" style="--w:'+(58 + n * 21)+'%"><b>'+esc(l[0])+'</b><span>'+esc(l[1])+'</span></div>'; }).join("")+'</div>');
@@ -23780,7 +23928,7 @@ function viewPost(){
   if(!p) return '<div class="empty"><b>Запись не найдена</b></div>';
   var key = "post:" + p.id, r = rubric(p.r);
   jrMark(p.id);
-  var h = ['<div class="stack">', '<div class="jr-prog"><i id="jrProg"></i></div>'];
+  var h = ['<div class="stack wrap-words">', '<div class="jr-prog"><i id="jrProg"></i></div>'];
   h.push('<section class="jr-hero">'+jrCover(p)+'<div class="jr-ht">'+
     '<span class="jr-meta">'+esc(r ? r.n : "Журнал")+' <i>· '+esc(postDate(p.d))+' · '+jrMinutes(p)+' мин чтения</i></span>'+
     '<h2>'+esc(p.n)+'</h2>'+(p.s ? '<p class="jr-lead">'+esc(p.s)+'</p>' : '')+
@@ -29547,13 +29695,44 @@ function sheetCity(){
     '<input class="search" id="citySearch" placeholder="Найти город" style="margin-bottom:8px">'+
     '<div id="cityList">'+cityOptions("")+'</div>');
 }
+/* Поиск города прощает опечатки и сокращения (04.10.2026): «Ханта-Мансийск», «хантымансийск», «ХМАО»,
+   «Питер», «Екб». Сначала - точное вхождение (без учёта дефиса и пробела), потом сокращения, потом похожие. */
+var CITY_ALIAS = { msk:"мск", spb:"питер спб ленинград", ekb:"екб екат свердловск", hmn:"хмао югра", slh:"янао ямал",
+  nsk:"новосиб", chl:"челяба", nng:"нн", pkm:"камчатка", ysh:"сахалин", kna:"комсомольск" };
+function cityKey(s){ return normQ(s).replace(/ /g, ""); }
+function cityDist(a, b){
+  var p = [], i, j;
+  for(j = 0; j <= b.length; j++) p[j] = j;
+  for(i = 1; i <= a.length; i++){
+    var prev = p[0]; p[0] = i;
+    for(j = 1; j <= b.length; j++){ var cur = p[j]; p[j] = Math.min(p[j] + 1, p[j - 1] + 1, prev + (a[i - 1] === b[j - 1] ? 0 : 1)); prev = cur; }
+  }
+  return p[b.length];
+}
+function cityFind(q){
+  var k = cityKey(q || "");
+  if(!k) return { list: CITIES, fuzzy: false };
+  var hit = CITIES.filter(function(c){
+    if(cityKey(c.n).indexOf(k) >= 0) return true;
+    return (CITY_ALIAS[c.id] || "").split(" ").some(function(a){ return a && (a.indexOf(k) === 0 || (k.length >= 3 && k.indexOf(a) === 0)); });
+  });
+  /* сначала города, название которых начинается с набранного (порядок списка внутри сохраняется) */
+  hit.sort(function(x, y){ return (cityKey(x.n).indexOf(k) === 0 ? 0 : 1) - (cityKey(y.n).indexOf(k) === 0 ? 0 : 1); });
+  if(hit.length || k.length < 4) return { list: hit, fuzzy: false };
+  var max = k.length >= 8 ? 2 : 1, scored = [];
+  CITIES.forEach(function(c){
+    var n = cityKey(c.n), d = Math.min(cityDist(k, n.slice(0, k.length)), cityDist(k, n.slice(0, k.length + 1)), cityDist(k, n));
+    if(d <= max) scored.push([d, c]);
+  });
+  scored.sort(function(a, b){ return a[0] - b[0]; });
+  return { list: scored.map(function(x){ return x[1]; }), fuzzy: true };
+}
 function cityOptions(q){
-  q = normQ(q||"");
-  var list = q ? CITIES.filter(function(c){ return normQ(c.n).indexOf(q) >= 0; }) : CITIES;
+  var f = cityFind(q), list = f.list;
   if(!list.length){
     return '<p class="note" style="margin:12px 0">Такого города в списке нет. Нажмите «Определить по геолокации»: тогда время считается по вашим координатам, а часовой пояс берётся у телефона.</p>';
   }
-  return list.map(function(c){
+  return (f.fuzzy ? '<p class="note" style="margin:8px 0 4px">Точного совпадения нет. Похожие названия:</p>' : '') + list.map(function(c){
     return '<button class="list-opt" data-city="'+c.id+'">'+esc(c.n)+
       '<span class="val" style="margin-left:auto;font-size:13px;color:var(--ink-3)">UTC+'+c.tz+'</span>'+
       (S.city===c.id?'<span class="ok">✓</span>':'')+'</button>';
