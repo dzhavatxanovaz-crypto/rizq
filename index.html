@@ -1450,6 +1450,39 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .vk-g i{position:absolute;left:10px;top:11px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700;color:var(--accent-ink);border:1px solid rgba(212,175,55,.55)}
 .vk-g b{display:block;font-size:13.5px;line-height:1.3;color:var(--ink)}
 .vk-g span{display:block;font-size:12px;line-height:1.35;color:var(--ink-3);margin-top:3px}
+/* Журнал, дизайн v3 (05.10.2026): лента списком, рубрики одной строкой, компактная шапка записи */
+.jr-chips{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 4px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 34px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 34px),transparent)}
+.jr-chips::-webkit-scrollbar{display:none}
+.jr-chip{flex:none;white-space:nowrap;font-size:13px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink-2)}
+.jr-chip.on{border-color:var(--accent);background:rgba(212,175,55,.16);color:var(--accent-ink);font-weight:600}
+.jr-chip:last-child{margin-right:30px}
+.jr-fcv{position:relative;display:block}
+.jr-new{position:absolute;left:14px;top:14px;padding:5px 11px;border-radius:999px;background:var(--gold);color:#1E2A5A;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.jr-sec{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:600;padding:8px 4px 0}
+.jr-list{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.jr-row{position:relative}
+.jr-row+.jr-row{border-top:1px solid var(--line-soft,var(--line))}
+.jr-list .jr-card{border:0;border-radius:0;background:transparent;padding:12px;gap:12px;align-items:center}
+.jr-list .jr-card .jr-mini{width:60px;height:60px;min-height:60px;border-radius:13px}
+.jr-list .jr-card .jr-ct{padding:0 30px 0 0}
+.jr-list .jr-card .jr-ct b{font-size:15px;line-height:1.3;margin:3px 0 2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.jr-list .jr-card .jr-ct .jr-ld{-webkit-line-clamp:1;font-size:12.5px;color:var(--ink-3)}
+.jr-list .jr-card .jr-meta{font-size:10.5px}
+.jr-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);margin-right:6px;vertical-align:1px;box-shadow:0 0 0 3px rgba(212,175,55,.18)}
+.jr-row.rd .jr-mini{opacity:.5}
+.jr-row.rd .jr-ct b{color:var(--ink-2)}
+.jr-list .jp-star{top:6px;right:4px;bottom:auto;width:34px;height:34px;font-size:16px}
+.jr-hero .jr-cv{height:168px}
+.jr-hero .jr-acts{gap:6px}
+.jr-hero .jr-acts .btn{flex:0 0 auto;width:auto;padding:7px 13px;font-size:13px;border-radius:999px;min-height:0}
+.jr-toc summary{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;list-style:none}
+.jr-toc summary::-webkit-details-marker{display:none}
+.jr-toc summary h4{margin:0}
+.jr-toc summary span{font-size:13px;color:var(--accent-ink);font-weight:600;white-space:nowrap}
+.jr-toc summary span:after{content:" ▾"}
+.jr-toc[open] summary span:after{content:" ▴"}
+.jr-toc[open] summary{margin-bottom:8px}
+.jr-body>.jr-txt:first-child p:first-of-type::first-letter{float:left;font-family:var(--f-display);font-size:3.2em;line-height:.86;font-weight:700;color:var(--accent-ink);margin:5px 9px 0 0}
 /* запись журнала и руководство: длинное слово переносится по слогам, а без словаря - по месту, вместо того чтобы вылезать (04.10.2026) */
 .wrap-words{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere}
 .wrap-words .ar,.wrap-words [dir="rtl"]{overflow-wrap:normal;hyphens:manual;-webkit-hyphens:manual}
@@ -23745,6 +23778,13 @@ function postsSeen(){
   var a = postsAll();
   if(a.length){ S.postSeen = a[0].d || ""; save(); }
 }
+/* короткая дата для списка журнала: «30 сен», год - только если не текущий */
+function postDateShort(d){
+  var M = ["янв","фев","мар","апр","мая","июн","июл","авг","сен","окт","ноя","дек"];
+  var p = String(d || "").split("-");
+  if(p.length !== 3) return d || "";
+  return parseInt(p[2],10) + " " + M[parseInt(p[1],10)-1] + (p[0] !== String(new Date().getFullYear()) ? " " + p[0] : "");
+}
 function postDate(d){
   if(!d) return "";
   var M = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
@@ -23796,7 +23836,7 @@ var JR_IC = {
   house:"M18 48L50 22L82 48M26 44V80H74V44M44 80V60H56V80",
   book:"M50 28Q34 20 18 26V78Q34 72 50 80Q66 72 82 78V26Q66 20 50 28ZM50 28V80"
 };
-var JR_ICON = { "pomoch-zakryt-kredit":"give", "rassrochka-halyal":"calendar", "procent-na-ostatok":"percent", "zaym-blagodarnost":"give", "obmen-valyuty":"exchange",
+var JR_ICON = { "trudnost-ispytanie":"moon", "kogda-bolit-telo":"star", "bez-znaniya-net-vybora":"book", "komu-otdat-delo":"partners", "slovo-i-zapis":"oath", "privyazhi-verblyudicu":"scales", "pomoch-zakryt-kredit":"give", "rassrochka-halyal":"calendar", "procent-na-ostatok":"percent", "zaym-blagodarnost":"give", "obmen-valyuty":"exchange",
   "zoloto-obmen":"ring", "klyatva-v-torgovle":"oath", "otzyvy-chestno":"star", "brak-v-tovare":"box", "nacenka":"chart",
   "mudaraba":"partners", "zakyat-biznesa":"coins", "dolg-dve-storony":"doc", "istigfar-rizk":"moon", "rodstvennye-svyazi":"house",
   "mera-i-ves":"scales", "vesy":"scales", "dolg-zapis":"doc", "rizq-v-korane":"book" };
@@ -23839,13 +23879,12 @@ function jrSources(p){
   return out;
 }
 function jrCard(p){
-  var r = rubric(p.r), fk = "post:" + p.id, fon = isFav(fk);
-  return '<div style="position:relative"><button class="jr-card" data-post="'+esc(p.id)+'">'+
+  var r = rubric(p.r), fk = "post:" + p.id, fon = isFav(fk), rd = jrRead(p.id), inRub = V.rub && V.rub !== "_fav";
+  return '<div class="jr-row'+(rd ? ' rd' : '')+'"><button class="jr-card" data-post="'+esc(p.id)+'">'+
     '<span class="jr-mini">'+jrCover(p, "mini")+'</span>'+
-    '<span class="jr-ct"><span class="jr-meta">'+(V.rub && V.rub !== "_fav" ? '' : esc(r ? r.n : "")+' ')+'<i>'+(V.rub && V.rub !== "_fav" ? '' : '· ')+esc(postDate(p.d))+' · '+jrMinutes(p)+' мин</i></span>'+
-      '<b>'+esc(p.n)+'</b>'+(p.s ? '<span>'+esc(p.s)+'</span>' : '')+'</span>'+
-    (jrRead(p.id) ? '<span class="jr-rd">✓ прочитано</span>' : '')+'</button>'+
-    '<button class="jp-star'+(fon?" on":"")+'" data-fav="'+esc(fk)+'" aria-label="'+(fon?"Убрать из избранного":"Сохранить в избранное")+'" style="position:absolute;top:8px;right:8px">'+(fon?"★":"☆")+'</button></div>';
+    '<span class="jr-ct"><span class="jr-meta">'+(rd ? '' : '<em class="jr-dot" aria-label="не прочитано"></em>')+(inRub ? '' : esc(r ? r.n : "")+' ')+'<i>'+(inRub ? '' : '· ')+esc(postDateShort(p.d))+' · '+jrMinutes(p)+' мин</i></span>'+
+      '<b>'+esc(p.n)+'</b>'+(p.s ? '<span class="jr-ld">'+esc(p.s)+'</span>' : '')+'</span></button>'+
+    '<button class="jp-star'+(fon?" on":"")+'" data-fav="'+esc(fk)+'" aria-label="'+(fon?"Убрать из избранного":"Сохранить в избранное")+'">'+(fon?"★":"☆")+'</button></div>';
 }
 function jrShare(id){
   var p = postsAll().filter(function(x){ return x.id === id; })[0]; if(!p) return;
@@ -23876,17 +23915,11 @@ function viewJournal(){
   }
 
   if(used.length > 1){
-    h.push('<div style="display:flex;flex-wrap:wrap;gap:7px">'+
-      '<button data-rub="" style="font-size:13px;padding:8px 14px;border-radius:999px;border:1px solid '+
-        (V.rub?"var(--line)":"var(--accent)")+';background:'+(V.rub?"var(--surface-2)":"rgba(212,175,55,.14)")+
-        ';color:'+(V.rub?"var(--ink-2)":"var(--accent-ink)")+';font-weight:'+(V.rub?"400":"600")+'">Все</button>'+
-      used.map(function(r){
-        var on = V.rub===r.id;
-        return '<button data-rub="'+r.id+'" style="font-size:13px;padding:8px 14px;border-radius:999px;border:1px solid '+
-          (on?"var(--accent)":"var(--line)")+';background:'+(on?"rgba(212,175,55,.14)":"var(--surface-2)")+
-          ';color:'+(on?"var(--accent-ink)":"var(--ink-2)")+';font-weight:'+(on?"600":"400")+'">'+esc(r.n)+'</button>';
-      }).join("")+
-      (favN ? '<button data-rub="_fav" class="jp-favchip'+(V.rub==="_fav"?" on":"")+'">★ Сохранённые · '+favN+'</button>' : '')+
+    /* рубрики - одной строкой с прокруткой: раньше 7 кнопок занимали три строки над записями */
+    h.push('<div class="jr-chips">'+
+      '<button data-rub="" class="jr-chip'+(V.rub ? '' : ' on')+'">Все</button>'+
+      used.map(function(r){ return '<button data-rub="'+r.id+'" class="jr-chip'+(V.rub === r.id ? ' on' : '')+'">'+esc(r.n)+'</button>'; }).join("")+
+      (favN ? '<button data-rub="_fav" class="jr-chip'+(V.rub === "_fav" ? " on" : "")+'">★ Сохранённые · '+favN+'</button>' : '')+
       '</div>');
   }
 
@@ -23896,14 +23929,18 @@ function viewJournal(){
     var feat = !V.rub && list[0];
     if(feat){
       var fr = rubric(feat.r);
-      h.push('<button class="jr-feat" data-post="'+esc(feat.id)+'">'+jrCover(feat)+'<span class="jr-ft">'+
+      h.push('<button class="jr-feat" data-post="'+esc(feat.id)+'"><span class="jr-fcv">'+jrCover(feat)+(jrRead(feat.id) ? '' : '<span class="jr-new">Новое</span>')+'</span><span class="jr-ft">'+
         '<span class="jr-meta">'+esc(fr ? fr.n : "")+' <i>· '+esc(postDate(feat.d))+' · '+jrMinutes(feat)+' мин чтения</i></span>'+
         '<b>'+esc(feat.n)+'</b>'+(feat.s ? '<p>'+esc(feat.s)+'</p>' : '')+'</span></button>');
     }
-    list.forEach(function(p, pi){
-      if(feat && pi === 0) return;
-      h.push(jrCard(p));
-    });
+    /* список - одной карточкой; непрочитанные сверху отдельным разделом, если есть и те и другие */
+    var rest = list.filter(function(p, pi){ return !(feat && pi === 0); });
+    var unread = rest.filter(function(p){ return !jrRead(p.id); }), done = rest.filter(function(p){ return jrRead(p.id); });
+    var split = unread.length && done.length;
+    if(split){
+      h.push('<div class="jr-sec">Новое для вас · '+unread.length+'</div><div class="jr-list">'+unread.map(jrCard).join("")+'</div>');
+      h.push('<div class="jr-sec">Вы уже читали</div><div class="jr-list">'+done.map(jrCard).join("")+'</div>');
+    } else if(rest.length) h.push('<div class="jr-list">'+rest.map(jrCard).join("")+'</div>');
     if(false) list.forEach(function(p){
       var r = rubric(p.r);
       var fk = "post:" + p.id, fon = isFav(fk);
@@ -23933,8 +23970,8 @@ function viewPost(){
     '<span class="jr-meta">'+esc(r ? r.n : "Журнал")+' <i>· '+esc(postDate(p.d))+' · '+jrMinutes(p)+' мин чтения</i></span>'+
     '<h2>'+esc(p.n)+'</h2>'+(p.s ? '<p class="jr-lead">'+esc(p.s)+'</p>' : '')+
     '<div class="jr-acts"><button class="btn sec sm" data-fav="'+key+'">'+(isFav(key) ? "★ Сохранено" : "☆ Сохранить")+'</button>'+
-    '<button class="btn sec sm" data-pshare="'+esc(p.id)+'">Поделиться</button>'+
-    '<button class="btn sec sm" data-vm="post:'+esc(p.id)+'">▣ Рилс по теме</button></div></div></section>');
+    '<button class="btn sec sm" data-pshare="'+esc(p.id)+'">↗ Поделиться</button>'+
+    '<button class="btn sec sm" data-vm="post:'+esc(p.id)+'">▣ Рилс</button></div></div></section>');
   if(p.sum && p.sum.length){
     h.push('<section class="jr-sum"><h4>Главное за 30 секунд</h4><ol>'+p.sum.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ol></section>');
   }
@@ -23953,7 +23990,8 @@ function viewPost(){
     }
     return '<div id="jb-'+i+'">'+renderBlocks([b], "jbc-"+i+"-")+'</div>';
   }).join("");
-  if(toc.length > 3) h.push('<section class="jr-toc"><h4>В этой статье</h4>'+toc.map(function(t, k){ return '<button data-jrto="jb-'+t[0]+'"><i>'+(k + 1)+'</i><span>'+esc(t[1])+'</span></button>'; }).join("")+'</section>');
+  /* оглавление свёрнуто: раньше 8 строк стояли до начала текста */
+  if(toc.length > 3) h.push('<details class="jr-toc"><summary><h4>В этой статье</h4><span>'+plural(toc.length, "раздел", "раздела", "разделов")+'</span></summary>'+toc.map(function(t, k){ return '<button data-jrto="jb-'+t[0]+'"><i>'+(k + 1)+'</i><span>'+esc(t[1])+'</span></button>'; }).join("")+'</details>');
   h.push('<div class="jr-body stack">'+bodyHtml+'</div>');
   if(p.quiz && p.quiz.length){
     var qa = (V.jrq && V.jrq[p.id]) || {};
