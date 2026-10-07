@@ -1475,6 +1475,68 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .jr-hero .jr-cv{height:168px}
 .jr-hero .jr-acts{gap:6px}
 .jr-hero .jr-acts .btn{flex:0 0 auto;width:auto;padding:7px 13px;font-size:13px;border-radius:999px;min-height:0}
+/* «Полезно» - отметка записи журнала (06.10.2026) */
+.jr-like{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.jr-like i,.jr-heart i{font-style:normal;display:inline-flex;line-height:0}
+.jr-acts .jr-like.on{background:rgba(212,175,55,.16);border-color:rgba(212,175,55,.6);color:var(--accent-ink)}
+.jr-like.pop i,.jr-heart.pop i{animation:jrPop .55s cubic-bezier(.2,1.6,.4,1)}
+/* Сериал «Наши герои» (06.10.2026) */
+.ser-ban{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:10px 14px 10px 10px;border-radius:20px;border:1px solid rgba(212,175,55,.42);background:linear-gradient(135deg,#123B32,#1E2A5A);color:#F7EFD8;cursor:pointer;font:inherit}
+.ser-ban .ser-cv{width:62px;height:78px}
+.ser-ban b{display:block;font-family:var(--f-display);font-size:16px;line-height:1.25;margin:3px 0 5px;color:#F7EFD8}
+.ser-ban .ser-k{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#E6C868;font-weight:600}
+.ser-ban .ser-go{font-size:12.5px;color:rgba(247,239,216,.82);font-weight:600}
+.ser-cv{position:relative;flex:0 0 auto;border-radius:12px;overflow:hidden;background:linear-gradient(160deg,#1E2A5A,#123B32)}
+.ser-cv img{display:block;width:100%;height:100%;object-fit:cover}
+.ser-cv .ser-pl{position:absolute;inset:0;display:grid;place-items:center}
+.ser-cv .ser-pl i{width:28px;height:28px;border-radius:50%;background:rgba(8,15,36,.55);display:grid;place-items:center;color:#F7EFD8;font-style:normal;font-size:11px;padding-left:2px;box-sizing:border-box}
+.ser-hero h2{font-family:var(--f-display);font-size:24px;line-height:1.2;margin:6px 0 6px}
+.ser-hero p{font-size:14.5px;line-height:1.6;color:var(--ink-2);margin:0}
+.ser-list{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.ser-row{display:flex;gap:12px;align-items:center;width:100%;padding:12px;text-align:left;background:none;border:0;font:inherit;color:inherit;cursor:pointer}
+.ser-row+.ser-row{border-top:1px solid var(--line-soft,var(--line))}
+.ser-row .ser-cv{width:72px;height:90px}
+.ser-t{flex:1;min-width:0}
+.ser-k{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink);font-weight:600}
+.ser-row b{display:block;font-family:var(--f-display);font-size:16px;line-height:1.3;margin:3px 0}
+.ser-row em{font-style:normal;font-size:12.5px;color:var(--ink-3)}
+.ser-row.soon{cursor:default}.ser-row.soon .ser-cv,.ser-row.soon b{opacity:.55}
+.ser-player{border-radius:20px;overflow:hidden;background:#080f24;aspect-ratio:9/16;width:100%;max-width:calc(72vh * 9 / 16);margin:0 auto}
+.ser-player video{display:block;width:100%;height:100%;object-fit:contain;background:#080f24}
+.ser-q{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-3);text-align:center}
+.ser-q button{border:0;background:none;color:var(--accent-ink);font:inherit;font-weight:600;padding:4px 2px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.ser-info h2{font-family:var(--f-display);font-size:22px;line-height:1.25;margin:6px 0 8px}
+.ser-info p{font-size:15px;line-height:1.6;color:var(--ink-2);margin:0}
+.ser-info .btn{width:100%;margin-top:14px}
+.ser-next{display:block;width:100%;text-align:left;padding:14px 16px;border-radius:18px;border:1px solid var(--line);background:var(--surface);font:inherit;color:inherit;transition:box-shadow .3s,border-color .3s}
+button.ser-next{cursor:pointer}
+.ser-next b{display:block;font-family:var(--f-display);font-size:17px;line-height:1.3;margin:4px 0 2px}
+.ser-next span{font-size:13px;color:var(--ink-3)}
+.ser-next.lit{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,175,55,.22)}
+@keyframes jrPop{0%{transform:scale(1)}35%{transform:scale(1.5)}100%{transform:scale(1)}}
+.jr-end{padding:16px;border-radius:20px;background:linear-gradient(135deg,rgba(212,175,55,.13),rgba(212,175,55,.03));border:1px solid rgba(212,175,55,.34)}
+.jr-end-r{display:flex;align-items:center;gap:14px}
+.jr-end-t{flex:1;min-width:0}
+.jr-end-t b{display:block;font-family:var(--f-display);font-size:17px;line-height:1.3;color:var(--ink)}
+.jr-end-t span{display:block;font-size:13.5px;color:var(--ink-3);margin-top:4px;line-height:1.45}
+.jr-heart{flex:0 0 auto;width:64px;height:64px;border-radius:50%;border:1.5px solid rgba(212,175,55,.65);background:var(--surface);color:var(--accent-ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;font:inherit;padding:0;-webkit-tap-highlight-color:transparent;transition:transform .15s}
+.jr-heart:active{transform:scale(.94)}
+.jr-heart small{font-size:10.5px;font-weight:700;letter-spacing:.03em}
+.jr-heart.on{background:var(--gold);border-color:var(--gold);color:#1E2A5A;box-shadow:0 6px 18px rgba(212,175,55,.35)}
+.jr-end .btn,.jr-end .btn.sm{width:100%;margin-top:14px}
+.jr-end-n{font-size:12.5px;color:var(--ink-3);text-align:center;margin-top:8px}
+.jr-lkm{display:inline-flex;align-items:center;gap:3px;color:var(--accent-ink);font-style:normal}
+@media (prefers-reduced-motion:reduce){.jr-like.pop i,.jr-heart.pop i{animation:none}.jr-heart{transition:none}}
+.jr-hero .jr-acts.jr-actbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin-top:16px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
+.jr-hero .jr-acts.jr-actbar .btn{flex-direction:column;gap:5px;width:100%;min-width:0;min-height:58px;padding:10px 2px 9px;border:0;border-radius:0;background:transparent;box-shadow:none;font-size:11.5px;font-weight:600;letter-spacing:.01em;color:var(--ink-2);white-space:nowrap}
+.jr-hero .jr-acts.jr-actbar .btn+.btn{border-left:1px solid var(--line-soft,var(--line))}
+.jr-hero .jr-acts.jr-actbar .btn i{font-style:normal;display:inline-flex;align-items:center;line-height:0;color:var(--accent-ink)}
+.jr-hero .jr-acts.jr-actbar .btn.on{background:rgba(212,175,55,.14);color:var(--accent-ink)}
+@media (max-width:380px){.jr-hero .jr-acts.jr-actbar .btn{font-size:10.5px;letter-spacing:0}}
+.jr-lkc{font-size:12px;font-weight:700;line-height:20px;margin-left:4px;font-family:var(--f-body,inherit)}
+:root[data-fs="xl"] .jr-hero .jr-acts.jr-actbar,:root[data-fs="xxl"] .jr-hero .jr-acts.jr-actbar{grid-template-columns:repeat(2,minmax(0,1fr))}
+:root[data-fs="xl"] .jr-hero .jr-acts.jr-actbar .btn:nth-child(3),:root[data-fs="xxl"] .jr-hero .jr-acts.jr-actbar .btn:nth-child(3){border-left:0}
+:root[data-fs="xl"] .jr-hero .jr-acts.jr-actbar .btn:nth-child(n+3),:root[data-fs="xxl"] .jr-hero .jr-acts.jr-actbar .btn:nth-child(n+3){border-top:1px solid var(--line-soft,var(--line))}
 .jr-toc summary{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;list-style:none}
 .jr-toc summary::-webkit-details-marker{display:none}
 .jr-toc summary h4{margin:0}
@@ -1495,7 +1557,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .vk-keys.wordy .vk-key b{font-size:16px;line-height:1.25}
 .vk-yn{grid-template-columns:repeat(2,minmax(0,1fr))}
 .jr-acts{flex-wrap:wrap}.jr-acts .btn{flex:1 1 auto}
-.jr-next>span{min-width:0;flex:1}.jr-next b{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere}
+.jr-next>span{min-width:0;flex:1}.jr-next>span:first-child,.jr-next>span:last-child{flex:0 0 auto}.jr-next b{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere}
 :root[data-fs="l"] .vk-grid,:root[data-fs="xl"] .vk-grid,:root[data-fs="xxl"] .vk-grid,:root[data-fs="xl"] .vk-yn,:root[data-fs="xxl"] .vk-yn{grid-template-columns:1fr}
 :root[data-fs="xl"] .vk-keys,:root[data-fs="xxl"] .vk-keys{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
 /* таблица: переносы в ячейках, тень у края, если всё же шире экрана */
@@ -6710,6 +6772,7 @@ function back(){
   if(V.view==="trread" && V.p !== null && V.p !== undefined && V.p !== ""){ V.p=null; render(); $screen.scrollTop = 0; return; }
   if(V.view==="hadithOne"){ V.view="hadith"; V.p=null; V.q=""; render(); return; }
   if(V.view==="course"){ V.view="courses"; V.p=null; render(); return; }
+  if(V.view==="seriya" && V.serRet){ V.serRet = 0; V.view="serii"; V.p=null; render(); $screen.scrollTop = 0; return; }
   if(V.view==="kidstory"){ kidStop(); V.view="kids"; V.p=null; render(); return; }
   V.view=null; V.p=null; V.q=""; render();
 }
@@ -6954,6 +7017,8 @@ function renderHdr(){
   var titles = {dua:"Знания", courses:"Обучение", journal:"Журнал", fav:"Избранное", prof:"Профиль", quran:"Коран", income:"Ризкъ"};
   if(V.view){
     var t = V.view==="cat" ? (CATS.filter(function(c){return c.id===V.p})[0]||{}).n
+        : V.view==="serii" ? "Наши герои"
+        : V.view==="seriya" ? "Серия " + ((serById(V.p) || {}).n || "")
         : V.view==="names" ? "Имена Всевышнего"
         : V.view==="name" ? "Разбор имени"
         : V.view==="namex" ? "Имя Аллаха"
@@ -7896,7 +7961,22 @@ var DEEP_VIEWS = ["courses","sadaqa","zakat","names","hadith","sira","book1","qi
 var DEEP_TABS  = ["home","quran","dua","journal","income","prof"];
 
 var PAYR = { timer:null, until:0, id:"" };
-function payReturnTitle(id){ return id === BOOK2.id ? BOOK2.n : id === BOOK1.id ? BOOK1.n : (COURSES.filter(function(c){ return c.id === id; })[0] || {}).n || ""; }
+/* Программы школы, которые продаются со своих лендингов и в каталоге приложения
+   не стоят. После оплаты покупательница возвращается сюда, и окно должно знать,
+   как программа называется и куда входить. course - номер курса на платформе:
+   вход сразу ведёт в него, а не в общий список. start - когда открываются уроки. */
+var SCHOOL_EXT = {
+  masshtab: { n:"Уповай и делай", to:"тренингу", course:10, start:"2026-10-21T10:00:00+03:00", startText:"21 октября в 10:00 по Москве" }
+};
+function payReturnTitle(id){ return id === BOOK2.id ? BOOK2.n : id === BOOK1.id ? BOOK1.n : (COURSES.filter(function(c){ return c.id === id; })[0] || SCHOOL_EXT[id] || {}).n || ""; }
+/* «Название» в кавычках, но без двойных, если кавычки уже есть в самом названии */
+function qTitle(t){ return /[«»]/.test(t) ? t : "«" + t + "»"; }
+/* «доступ к ...»: у программ с лендинга - «к тренингу «Уповай и делай»» */
+function accessTo(id, t){ var x = SCHOOL_EXT[id]; return x ? x.to + " «" + x.n + "»" : t ? qTitle(t) : "программе"; }
+function schoolExtLogin(id){
+  var x = SCHOOL_EXT[id];
+  return CRM_URL + "/learn-login.html" + (x && x.course ? "?next=" + encodeURIComponent("/learn-course.html?id=" + x.course) : "");
+}
 function payReturn(id, token){
   S.orders = S.orders || [];
   var o = S.orders.filter(function(x){ return x.token === token; })[0];
@@ -7914,7 +7994,7 @@ function payReturn(id, token){
     return;
   }
   sheet('<div class="payr"><div class="payr-ic">✓</div><h3>Оплата прошла</h3>'+
-    '<p>'+(isBook ? 'Спасибо! Сейчас откроется книга «'+esc(t)+'».' : 'Спасибо! Сейчас откроем доступ к «'+esc(t)+'».')+'</p>'+
+    '<p>'+(isBook ? 'Спасибо! Сейчас откроется книга «'+esc(t)+'».' : 'Спасибо! Сейчас откроем доступ к '+esc(accessTo(id, t))+'.')+'</p>'+
     '<div class="payr-sp" id="payrSp"><i></i>Получаем подтверждение от банка...</div></div>');
   PAYR.id = id; PAYR.token = token || ""; PAYR.until = Date.now() + 3 * 60000;
   payReturnTick();
@@ -7935,13 +8015,14 @@ function payReturnTick(){
   }
   ordersCheck();
   if(Date.now() < PAYR.until) PAYR.timer = setTimeout(payReturnTick, 3000);
-  else { var sp = document.getElementById("payrSp"); if(sp) sp.innerHTML = 'Банк ещё не прислал подтверждение. Книга откроется сама, как только оно придёт, - можно закрыть это окно.'; }
+  else { var sp = document.getElementById("payrSp"); if(sp) sp.innerHTML = 'Банк ещё не прислал подтверждение. '+(PAYR.id === BOOK2.id || PAYR.id === BOOK1.id ? 'Книга откроется сама' : 'Доступ откроется сам')+', как только оно придёт, - можно закрыть это окно.'; }
 }
 function deepOpen(qArg){
   try{
     var q = String(qArg || location.search || "");
     var mp = q.match(/[?&]paid=([a-zA-Z0-9_]+)/), mt = q.match(/[?&]t=([a-f0-9]{32})/);
     if(mp){
+      S.welcomed = 1; save();   /* город спросим, когда дойдёт до намаза */
       try{ history.replaceState(null, "", location.pathname); }catch(e){}
       setTimeout(function(){ payReturn(mp[1], mt ? mt[1] : ""); }, 300);
       if(mp[1] === BOOK2.id || mp[1] === BOOK1.id){ V.tab = "income"; open(mp[1] === BOOK2.id ? "book2" : "book1", null); }
@@ -7979,6 +8060,13 @@ function deepOpen(qArg){
       S.welcomed = 1; save();
       V.tab = "journal"; V.view = null; V.p = null; V.rub = "delo";
       render();
+      return true;
+    }
+    /* ?go=istoriya - сразу последняя серия «Наших героев» (слово ИСТОРИЯ в ChatPlace), ?go=serii - список серий */
+    if(mg && (mg[1] === "istoriya" || mg[1] === "serii")){
+      S.welcomed = 1; save(); V.tab = "journal";
+      var sl = mg[1] === "istoriya" ? serLast() : null;
+      if(sl) open("seriya", sl.id); else open("serii", null);
       return true;
     }
     if(mg && mg[1] === "kahf"){ S.welcomed = 1; save(); kahfOpen(); return true; }
@@ -23740,7 +23828,8 @@ function postsLoad(){
       if(j && j.length){
         try{ localStorage.setItem("rizq.posts", JSON.stringify(j)); }catch(e){}
         SEARCH_IX = null;
-        if(V.tab === "home" || V.view === "journal" || (V.tab === "journal" && !V.view)) render();
+        /* и экран записи: по ссылке «Поделиться» новичок попадает в запись раньше, чем записи загрузились */
+        if(V.tab === "home" || V.view === "journal" || V.view === "post" || (V.tab === "journal" && !V.view)) render();
       }
     })
     .catch(function(){});
@@ -23840,7 +23929,7 @@ var JR_IC = {
   book:"M50 28Q34 20 18 26V78Q34 72 50 80Q66 72 82 78V26Q66 20 50 28ZM50 28V80"
 };
 var JR_ICON = { "trudnost-ispytanie":"moon", "kogda-bolit-telo":"star", "bez-znaniya-net-vybora":"book", "komu-otdat-delo":"give", "slovo-i-zapis":"oath", "privyazhi-verblyudicu":"scales", "pomoch-zakryt-kredit":"give", "rassrochka-halyal":"calendar", "procent-na-ostatok":"percent", "zaym-blagodarnost":"give", "obmen-valyuty":"exchange",
-  "zoloto-obmen":"ring", "klyatva-v-torgovle":"oath", "otzyvy-chestno":"star", "brak-v-tovare":"box", "nacenka":"chart",
+  "mysli-o-dengah":"coins", "zoloto-obmen":"ring", "klyatva-v-torgovle":"oath", "otzyvy-chestno":"star", "brak-v-tovare":"box", "nacenka":"chart",
   "mudaraba":"partners", "zakyat-biznesa":"coins", "dolg-dve-storony":"doc", "istigfar-rizk":"moon", "rodstvennye-svyazi":"house",
   "mera-i-ves":"scales", "vesy":"scales", "dolg-zapis":"doc", "rizq-v-korane":"book" };
 function jrHash(t){ var h = 0; t = String(t || ""); for(var i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) % 100000; return h; }
@@ -23885,9 +23974,95 @@ function jrCard(p){
   var r = rubric(p.r), fk = "post:" + p.id, fon = isFav(fk), rd = jrRead(p.id), inRub = V.rub && V.rub !== "_fav";
   return '<div class="jr-row'+(rd ? ' rd' : '')+'"><button class="jr-card" data-post="'+esc(p.id)+'">'+
     '<span class="jr-mini">'+jrCover(p, "mini")+'</span>'+
-    '<span class="jr-ct"><span class="jr-meta">'+(rd ? '' : '<em class="jr-dot" aria-label="не прочитано"></em>')+(inRub ? '' : esc(r ? r.n : "")+' ')+'<i>'+(inRub ? '' : '· ')+esc(postDateShort(p.d))+' · '+jrMinutes(p)+' мин</i></span>'+
+    '<span class="jr-ct"><span class="jr-meta">'+(rd ? '' : '<em class="jr-dot" aria-label="не прочитано"></em>')+(inRub ? '' : esc(r ? r.n : "")+' ')+'<i>'+(inRub ? '' : '· ')+esc(postDateShort(p.d))+' · '+jrMinutes(p)+' мин'+jrLikeMeta(p.id)+'</i></span>'+
       '<b>'+esc(p.n)+'</b>'+(p.s ? '<span class="jr-ld">'+esc(p.s)+'</span>' : '')+'</span></button>'+
     '<button class="jp-star'+(fon?" on":"")+'" data-fav="'+esc(fk)+'" aria-label="'+(fon?"Убрать из избранного":"Сохранить в избранное")+'">'+(fon?"★":"☆")+'</button></div>';
+}
+/* ---------- «Полезно»: отметка записи журнала (06.10.2026) ----------
+   Своя отметка - S.jrLike (облачная копия переносит её вместе со всем S); отправка на сервер -
+   через очередь S.jrLikeQ, чтобы отметка без сети не потерялась. Число по всем сёстрам -
+   api/content/likes; показываем его от JR_LIKE_MIN: «1» рядом с записью читается как «никому не нужно». */
+var JR_LIKE_MIN = 3, JR_LIKES = null, JR_LIKES_AT = 0;
+try{ JR_LIKES = JSON.parse(localStorage.getItem("rizq.likes") || "null"); }catch(e){}
+function jrHeart(on, size){
+  return '<svg viewBox="0 0 24 24" width="'+size+'" height="'+size+'" aria-hidden="true"><path d="M12 20.3c-.3 0-.6-.1-.8-.3C8.6 17.9 2.5 13.6 2.5 8.6 2.5 5.8 4.6 3.7 7.3 3.7c1.9 0 3.5 1 4.7 2.6 1.2-1.6 2.8-2.6 4.7-2.6 2.7 0 4.8 2.1 4.8 4.9 0 5-6.1 9.3-8.7 11.4-.2.2-.5.3-.8.3z" fill="'+(on ? "currentColor" : "none")+'" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+}
+function jrIc(k, on){
+  var a = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">';
+  if(k === "fav") return a+'<path d="M12 3.6l2.6 5.2 5.8.9-4.2 4.1 1 5.7-5.2-2.7-5.2 2.7 1-5.7-4.2-4.1 5.8-.9z"'+(on ? ' fill="currentColor"' : '')+'/></svg>';
+  if(k === "share") return a+'<path d="M12 3.5v11M7.8 7.7L12 3.5l4.2 4.2M5.5 12.5v6a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-6"/></svg>';
+  return a+'<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><path d="M10.2 8.6v6.8l5.6-3.4z" fill="currentColor" stroke="none"/></svg>';
+}
+function jrLiked(id){ return !!(S.jrLike && S.jrLike[id]); }
+function jrLikeN(id){ var n = (JR_LIKES && JR_LIKES[id]) || 0; return Math.max(n, jrLiked(id) ? 1 : 0); }
+function jrLikeMeta(id){ var n = jrLikeN(id); return n >= JR_LIKE_MIN ? ' · <span class="jr-lkm">'+jrHeart(1, 10)+n+'</span>' : ''; }
+function jrLikeBtn(id){
+  var on = jrLiked(id), n = jrLikeN(id), many = n >= JR_LIKE_MIN;
+  return '<button class="btn sec sm jr-like'+(on ? ' on' : '')+'" data-jrlike="'+esc(id)+'" aria-pressed="'+(on ? 'true' : 'false')+'" aria-label="Полезно'+(many ? ', отметок: '+n : '')+'">'+
+    '<i>'+jrHeart(on, 20)+(many ? '<b class="jr-lkc">'+n+'</b>' : '')+'</i>Полезно</button>';
+}
+function jrEndCard(id){
+  var on = jrLiked(id), n = jrLikeN(id), many = n >= JR_LIKE_MIN, cnt = "Полезно для " + plural(n, "сестры", "сестёр", "сестёр");
+  var sub = on ? "Отправьте запись той, кому она сейчас нужна" : (many ? cnt : "Отметьте - так мы поймём, о каких темах писать дальше");
+  return '<section class="jr-end'+(on ? ' on' : '')+'"><div class="jr-end-r"><div class="jr-end-t"><b>'+(on ? "Спасибо, что отметили!" : "Запись была полезной?")+'</b><span>'+esc(sub)+'</span></div>'+
+    '<button class="jr-heart'+(on ? ' on' : '')+'" data-jrlike="'+esc(id)+'" aria-pressed="'+(on ? 'true' : 'false')+'"><i>'+jrHeart(on, 26)+'</i><small>Полезно</small></button></div>'+
+    (on ? '<button class="btn sm" data-pshare="'+esc(id)+'">↗ Отправить сестре</button>'+(many ? '<div class="jr-end-n">'+esc(cnt)+'</div>' : '') : '')+'</section>';
+}
+/* перерисовать только кнопки отметки - без render(), чтобы экран не прыгал */
+function jrLikePaint(id, pop){
+  Array.prototype.forEach.call(document.querySelectorAll("[data-jrlike]"), function(b){
+    var pid = b.getAttribute("data-jrlike"); if(id && pid !== id) return;
+    if(b.classList.contains("jr-heart")){
+      var sec = b; while(sec && !(sec.classList && sec.classList.contains("jr-end"))) sec = sec.parentNode;
+      if(sec) sec.outerHTML = jrEndCard(pid);
+    } else b.outerHTML = jrLikeBtn(pid);
+  });
+  if(pop) setTimeout(function(){ Array.prototype.forEach.call(document.querySelectorAll('[data-jrlike="'+id+'"]'), function(b){ b.classList.add("pop"); }); }, 0);
+}
+function jrLikeToggle(id){
+  if(!S.jrLike) S.jrLike = {};
+  var on = !jrLiked(id);
+  if(on) S.jrLike[id] = todayKey(); else delete S.jrLike[id];
+  if(!JR_LIKES) JR_LIKES = {};
+  JR_LIKES[id] = Math.max(0, (JR_LIKES[id] || 0) + (on ? 1 : -1));
+  if(!S.jrLikeQ) S.jrLikeQ = {};
+  S.jrLikeQ[id] = on ? 1 : 0; save();
+  jrLikePaint(id, on);
+  if(on && navigator.vibrate) try{ navigator.vibrate(12); }catch(e){}
+  jrLikeFlush();
+}
+function jrLikeFlush(){
+  var q = S.jrLikeQ; if(!q) return;
+  Object.keys(q).forEach(function(id){
+    var on = q[id];
+    try{
+      fetch("api/content/like", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ device: hlDevice(), post: id, on: on }) })
+        .then(function(r){
+          /* 400 и 404 - запись сняли или id чужой: повторять бессмысленно */
+          return r.json().catch(function(){ return null; }).then(function(j){ return jrLikeDone(id, on, r, j); });
+        })
+        .then(function(j){ if(j && typeof j.n === "number"){ if(!JR_LIKES) JR_LIKES = {}; JR_LIKES[id] = j.n; jrLikePaint(id); } })
+        .catch(function(){});
+    }catch(e){}
+  });
+}
+function jrLikeDone(id, on, r, j){
+  var done = r.ok || r.status === 400 || (r.status === 404 && j && j.error === "Запись не найдена");
+  if(done && S.jrLikeQ && S.jrLikeQ[id] === on){ delete S.jrLikeQ[id]; save(); }
+  return r.ok ? j : null;
+}
+function jrLikesLoad(){
+  if(Date.now() - JR_LIKES_AT < 6e5) return;
+  JR_LIKES_AT = Date.now();
+  try{
+    fetch("api/content/likes", { cache:"no-store" }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+      if(!j || typeof j !== "object") return;
+      JR_LIKES = j;
+      try{ localStorage.setItem("rizq.likes", JSON.stringify(j)); }catch(e){}
+      jrLikeFlush();
+      if(V.view === "post") jrLikePaint();
+    }).catch(function(){});
+  }catch(e){}
 }
 function jrShare(id){
   var p = postsAll().filter(function(x){ return x.id === id; })[0]; if(!p) return;
@@ -23901,7 +24076,107 @@ function jrProgress(){
   var max = $screen.scrollHeight - $screen.clientHeight;
   bar.style.width = (max > 0 ? Math.min(100, Math.round($screen.scrollTop / max * 100)) : 0) + "%";
 }
-function viewJournal(){
+/* ---------- Сериал «Наши герои» (06.10.2026) ----------
+   Серия видна с даты d (как запись журнала); администратор видит черновик заранее.
+   Файлы - на сервере в /var/www/rizq-media/serii/ (не в www и не в git):
+   <id>-720.mp4 - лёгкое видео 720x1280 (~6-8 МБ, по умолчанию), <id>.mp4 - 1080x1920 (~20 МБ),
+   <id>.jpg - обложка 1080x1350. При замене файлов поднять SER_V.
+   sec - длительность в секундах; post - парная запись журнала; offer - мост в школу JAVATTI
+   (раз в 2-3 серии и только по теме денег и работы); s - описание в 2-3 строки. */
+var SERIES = [
+  { id:"s01", n:1, t:"Договорились на словах", d:"2099-12-31", sec:0, post:"slovo-i-zapis", offer:"sunnah",
+    s:"Она с сестрой ведёт небольшое дело на заказ. О деньгах и сроках договорились на словах, и через месяц каждая помнит своё. Муж не встаёт ни на чью сторону и предлагает записать." }
+];
+var SER_V = 1, SER_SENT = {};
+function serStaff(){ return !!S.admTok; }
+function serOut(e){ return !!e && e.d <= todayKey(); }
+function serList(){ return SERIES.filter(function(e){ return serOut(e) || serStaff(); }); }
+function serById(id){ for(var i = 0; i < SERIES.length; i++){ if(SERIES[i].id === id) return SERIES[i]; } return null; }
+function serLast(){ var l = serList(); return l.length ? l[l.length - 1] : null; }
+function serNextOf(e){ var i = SERIES.indexOf(e); return i > -1 ? (SERIES[i + 1] || null) : null; }
+function serFile(e, kind){ return "/media/serii/" + e.id + (kind === "jpg" ? ".jpg" : kind === "hd" ? ".mp4" : "-720.mp4") + "?v=" + SER_V; }
+function serDur(e){ var x = +e.sec || 0; return x ? Math.floor(x / 60) + ":" + ("0" + (x % 60)).slice(-2) : ""; }
+function serSeen(id){ return !!(S.serSeen && S.serSeen[id]); }
+function serWhen(e){ return e && e.d && e.d < "2099-01-01" ? "выйдет " + postDate(e.d) : "скоро"; }
+function serCover(e){ return '<span class="ser-cv"><img src="'+serFile(e, "jpg")+'" alt="" loading="lazy" onerror="this.remove()"><span class="ser-pl"><i>▶</i></span></span>'; }
+/* источник перехода: метка в адресе (instagram, stories, youtube) или первая сохранённая */
+function serSrc(){
+  var m = /[?&]utm_source=([a-zA-Z0-9_.-]+)/.exec(location.search || "");
+  return String(m ? m[1] : (S.utm && S.utm.utm_source) || "direct").toLowerCase().slice(0, 40);
+}
+function serEv(ep, ev){
+  if(!ep || S.statOn === false) return;
+  var k = ep + ":" + ev; if(SER_SENT[k]) return; SER_SENT[k] = 1;
+  try{ fetch("api/content/ser", { method:"POST", headers:{ "Content-Type":"application/json" }, keepalive:true,
+    body: JSON.stringify({ device: hlDevice(), ep: ep, ev: ev, src: serSrc() }) }).catch(function(){}); }catch(e){}
+}
+function serDone(ep, end){
+  serEv(ep, "complete");
+  if(!S.serSeen) S.serSeen = {};
+  if(!S.serSeen[ep]){ S.serSeen[ep] = todayKey(); save(); }
+  var n = document.getElementById("serNext");
+  if(n){ n.classList.add("lit"); if(end) try{ n.scrollIntoView({ behavior:"smooth", block:"center" }); }catch(e){} }
+}
+/* события плеера: play, timeupdate и ended не всплывают - ловим на погружении */
+try{
+  document.addEventListener("play", function(ev){ var v = ev.target; if(v && v.id === "serVid") serEv(v.getAttribute("data-ep"), "play"); }, true);
+  document.addEventListener("timeupdate", function(ev){
+    var v = ev.target; if(!v || v.id !== "serVid" || !v.duration) return;
+    var r = v.currentTime / v.duration, ep = v.getAttribute("data-ep");
+    if(r >= 0.5) serEv(ep, "half");
+    if(r >= 0.9 && !serSeen(ep)) serDone(ep);
+  }, true);
+  document.addEventListener("ended", function(ev){ var v = ev.target; if(v && v.id === "serVid") serDone(v.getAttribute("data-ep"), 1); }, true);
+}catch(e){}
+/* лёгкое видео или высокое качество - с того же места */
+function serHd(on){
+  var v = document.getElementById("serVid"), t = v ? v.currentTime : 0, play = !!(v && !v.paused);
+  S.serHD = on ? 1 : 0; save(); render();
+  var nv = document.getElementById("serVid");
+  if(nv && t > 1) nv.addEventListener("loadedmetadata", function(){ try{ nv.currentTime = t; if(play) nv.play().catch(function(){}); }catch(e){} }, { once:true });
+}
+function serBanner(){
+  var e = serLast(); if(!e) return "";
+  var seen = serSeen(e.id);
+  return '<button class="ser-ban" data-seropen="'+esc(e.id)+'">'+serCover(e)+'<span class="ser-t"><span class="ser-k">Сериал «Наши герои» · серия '+e.n+(serOut(e) ? '' : ' · черновик')+'</span>'+
+    '<b>'+esc(e.t)+'</b><span class="ser-go">'+(seen ? '✓ Просмотрено · все серии ›' : '▶ Смотреть'+(serDur(e) ? ' · '+serDur(e) : ''))+'</span></span></button>';
+}
+function viewSerii(){
+  var l = serList(), h = ['<div class="stack">'];
+  h.push('<section class="card ser-hero"><div class="eyebrow">Сериал</div><h2>Наши герои</h2>'+
+    '<p>Короткие истории о деле, деньгах и семье. Каждая серия - пара к записи журнала «Дело по Сунне».</p></section>');
+  if(!l.length) h.push('<div class="empty"><b>Первая серия скоро</b></div>');
+  else {
+    var last = l[l.length - 1], nx = serNextOf(last);
+    h.push('<div class="ser-list">'+l.slice().reverse().map(function(e){
+      return '<button class="ser-row" data-seropen="'+esc(e.id)+'">'+serCover(e)+'<span class="ser-t"><span class="ser-k">Серия '+e.n+(serDur(e) ? ' · '+serDur(e) : '')+'</span>'+
+        '<b>'+esc(e.t)+'</b><em>'+(serSeen(e.id) ? '✓ Просмотрено' : serOut(e) ? 'Новая' : 'Черновик: видно только вам, выйдет '+esc(postDate(e.d)))+'</em></span></button>';
+    }).join("")+(nx && !serList().some(function(x){ return x === nx; }) ? '<div class="ser-row soon">'+serCover(nx)+'<span class="ser-t"><span class="ser-k">Серия '+nx.n+'</span><b>'+esc(nx.t)+'</b><em>'+serWhen(nx)+'</em></span></div>' : '')+'</div>');
+  }
+  h.push('<p class="disclaimer">Серии смотрятся онлайн, с нашего сервера, поэтому для них нужен интернет. Всё остальное в RIZQ работает и без сети.</p>');
+  h.push('</div>');
+  return h.join("");
+}
+function viewSeriya(){
+  var e = serById(V.p);
+  if(!e || !(serOut(e) || serStaff())) return viewSerii();
+  serEv(e.id, "open");
+  var hd = !!S.serHD, nx = serNextOf(e), h = ['<div class="stack">'];
+  h.push('<div class="ser-player"><video id="serVid" data-ep="'+esc(e.id)+'" controls playsinline preload="metadata" poster="'+serFile(e, "jpg")+'" src="'+serFile(e, hd ? "hd" : "sd")+'"></video></div>');
+  h.push('<div class="ser-q"><span>'+(hd ? 'Высокое качество' : 'Лёгкое видео - бережёт мобильный интернет')+'</span><button data-serhd="'+(hd ? 0 : 1)+'">'+(hd ? 'Лёгкое видео' : 'Высокое качество')+'</button></div>');
+  var pp = e.post ? postsAll().filter(function(x){ return x.id === e.post; })[0] : null;
+  h.push('<section class="card ser-info"><div class="eyebrow">Наши герои · серия '+e.n+(serDur(e) ? ' · '+serDur(e) : '')+'</div><h2>'+esc(e.t)+'</h2>'+(e.s ? '<p>'+esc(e.s)+'</p>' : '')+
+    (pp ? '<button class="btn sec" data-serpost="'+esc(e.id)+'">Читать в журнале: «'+esc(pp.n)+'» ›</button>' : '')+'</section>');
+  if(nx && (serOut(nx) || serStaff()))
+    h.push('<button class="ser-next" id="serNext" data-sernext="'+esc(nx.id)+'"><span class="ser-k">Следующая серия</span><b>'+esc(nx.t)+' ›</b><span>Серия '+nx.n+(serDur(nx) ? ' · '+serDur(nx) : '')+'</span></button>');
+  else h.push('<section class="ser-next" id="serNext"><span class="ser-k">Следующая серия</span><b>'+(nx ? esc(nx.t) : 'Новая история')+'</b><span>'+(nx ? 'Серия '+nx.n+' · ' : '')+serWhen(nx)+'</span></section>');
+  if(e.offer){ var o = offerById(e.offer); if(o && !offerHas(o)) h.push(offerCard(o, "ser" + e.n, "После серии")); }
+  h.push('<p class="disclaimer">Серия смотрится онлайн, для неё нужен интернет. Всё остальное в RIZQ работает и без сети.</p>');
+  if(!serOut(e)) h.push('<p class="disclaimer">Черновик: серию видите только вы (вход в «Управление»). Для всех она откроется '+esc(e.d < "2099-01-01" ? postDate(e.d) : "в день выхода")+'.</p>');
+  h.push('</div>');
+  return h.join("");
+}
+function viewJournal(){ jrLikesLoad();
   var all = postsAll();
   var used = RUBRICS.filter(function(r){ return all.some(function(p){ return p.r===r.id; }); });
   var favN = all.filter(function(p){ return isFav("post:" + p.id); }).length;
@@ -23920,7 +24195,7 @@ function viewJournal(){
   if(used.length > 1){
     /* рубрики - одной строкой с прокруткой: раньше 7 кнопок занимали три строки над записями */
     h.push('<div class="jr-chips">'+
-      '<button data-rub="" class="jr-chip'+(V.rub ? '' : ' on')+'">Все</button>'+
+      '<button data-rub="" class="jr-chip'+(V.rub ? '' : ' on')+'">Все</button>'+(serList().length ? '<button data-open="serii" class="jr-chip">▶ Серии</button>' : '')+
       used.map(function(r){ return '<button data-rub="'+r.id+'" class="jr-chip'+(V.rub === r.id ? ' on' : '')+'">'+esc(r.n)+'</button>'; }).join("")+
       (favN ? '<button data-rub="_fav" class="jr-chip'+(V.rub === "_fav" ? " on" : "")+'">★ Сохранённые · '+favN+'</button>' : '')+
       '</div>');
@@ -23929,6 +24204,7 @@ function viewJournal(){
   if(!list.length){
     h.push('<div class="empty"><b>Записей пока нет</b></div>');
   } else {
+    if(!V.rub) h.push(serBanner());
     var feat = !V.rub && list[0];
     if(feat){
       var fr = rubric(feat.r);
@@ -23967,14 +24243,14 @@ function viewPost(){
   var p = postsAll().filter(function(x){ return x.id === V.p; })[0];
   if(!p) return '<div class="empty"><b>Запись не найдена</b></div>';
   var key = "post:" + p.id, r = rubric(p.r);
-  jrMark(p.id);
+  jrMark(p.id); jrLikesLoad();
   var h = ['<div class="stack wrap-words">', '<div class="jr-prog"><i id="jrProg"></i></div>'];
   h.push('<section class="jr-hero">'+jrCover(p)+'<div class="jr-ht">'+
     '<span class="jr-meta">'+esc(r ? r.n : "Журнал")+' <i>· '+esc(postDate(p.d))+' · '+jrMinutes(p)+' мин чтения</i></span>'+
     '<h2>'+esc(p.n)+'</h2>'+(p.s ? '<p class="jr-lead">'+esc(p.s)+'</p>' : '')+
-    '<div class="jr-acts"><button class="btn sec sm" data-fav="'+key+'">'+(isFav(key) ? "★ Сохранено" : "☆ Сохранить")+'</button>'+
-    '<button class="btn sec sm" data-pshare="'+esc(p.id)+'">↗ Поделиться</button>'+
-    '<button class="btn sec sm" data-vm="post:'+esc(p.id)+'">▣ Рилс</button></div></div></section>');
+    '<div class="jr-acts jr-actbar">'+jrLikeBtn(p.id)+'<button class="btn sec sm'+(isFav(key) ? ' on' : '')+'" data-fav="'+key+'" aria-pressed="'+(isFav(key) ? 'true' : 'false')+'"><i>'+jrIc("fav", isFav(key))+'</i>'+(isFav(key) ? "Сохранено" : "Сохранить")+'</button>'+
+    '<button class="btn sec sm" data-pshare="'+esc(p.id)+'"><i>'+jrIc("share")+'</i>Поделиться</button>'+
+    '<button class="btn sec sm" data-vm="post:'+esc(p.id)+'"><i>'+jrIc("reel")+'</i>Рилс</button></div></div></section>');
   if(p.sum && p.sum.length){
     h.push('<section class="jr-sum"><h4>Главное за 30 секунд</h4><ol>'+p.sum.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ol></section>');
   }
@@ -24012,6 +24288,7 @@ function viewPost(){
   }
   var srcs = jrSources(p);
   if(srcs.length) h.push('<section class="jr-src"><h4>Источники</h4><ol>'+srcs.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ol></section>');
+  h.push(jrEndCard(p.id));
   var same = postsAll().filter(function(x){ return x.r === p.r; }), ix = same.map(function(x){ return x.id; }).indexOf(p.id);
   var nxp = same[ix + 1] || (ix > 0 ? same[0] : null);
   if(nxp && nxp.id !== p.id){
@@ -25094,7 +25371,7 @@ function admLoad(){
   var t = ADM.tab;
   var p = t === "reviews" ? admApi("reviews").then(function(j){ ADM.items = j.items; })
         : t === "posts" ? admApi("posts").then(function(j){ ADM.posts = j; })
-        : t === "stats" ? admApi("stats?days="+(ADM.sdays||30)).then(function(j){ ADM.stats = j; })
+        : t === "stats" ? admApi("stats?days="+(ADM.sdays||30)).then(function(j){ ADM.stats = j; return admApi("engage").then(function(x){ ADM.eng = x; }).catch(function(){ ADM.eng = null; }); })
         : t === "users" ? admApi("users?sort="+(ADM.usort||"week")).then(function(j){ ADM.users = j.items; })
         : t === "winners" ? admApi("week-winners").then(function(j){ ADM.win = j; })
         : t === "auto" ? admApi("auto").then(function(j){ ADM.auto = j; })
@@ -25111,7 +25388,7 @@ var ST_NAMES = { "tab:home":"Главная", "tab:quran":"Коран: огла�
   "cat":"Азкары и дуа", "names":"99 имён", "name":"Разбор имени", "namex":"Имя Аллаха", "tasbih":"Тасбих", "qduas":"Дуа из Корана", "hadith":"40 хадисов",
   "hadithone":"Хадис", "sira":"Сира", "calendar":"Календарь", "qibla":"Кибла", "zakat":"Закят", "kids":"Детям", "kidstory":"Детская история",
   "courses":"Программы обучения", "course":"Программа", "planner":"Планер", "finance":"Финансы", "settings":"Настройки", "admin":"Управление",
-  "post":"Запись журнала", "suras":"Короткие суры", "live":"Мекка онлайн", "mydua":"Мои дуа", "hifz":"Заучивание", "tajwid":"Таджвид",
+  "post":"Запись журнала", "serii":"Серии: список", "seriya":"Серия", "suras":"Короткие суры", "live":"Мекка онлайн", "mydua":"Мои дуа", "hifz":"Заучивание", "tajwid":"Таджвид",
   "report":"Отчёт за месяц", "qsettings":"Настройки чтения", "qsearch":"Поиск по Корану", "salahpics":"Как совершать намаз", "hajjtrip":"Хадж и умра",
   "sadaqa":"Садака", "qada":"Возмещение намазов", "duaall":"Все дуа", "shukr":"Дневник шукра", "guide":"Руководства", "know":"Знания: статья" };
 function stName(k){ return ST_NAMES[k] || k; }
@@ -25181,8 +25458,34 @@ function admStatsHtml(){
     (j.sources.length ? j.sources.map(function(x){ return '<div><span>'+esc(x.src === "direct" ? "напрямую, без метки" : x.src)+'</span><b>'+x.c+'</b><em></em></div>'; }).join("")
       : '<p class="disclaimer" style="margin:0">Пока нет данных</p>')+'</div></section>');
 
+  h.push(admEngageHtml());
   h.push('<p class="disclaimer">Статистика собирается с 22 сентября 2026 года, раньше её не было. Считаются устройства, а не люди: '+
     'один человек с двумя телефонами - это два устройства. Кто выключил статистику в настройках, сюда не попадает.</p>');
+  return h.join("");
+}
+function admEngageHtml(){
+  var E = ADM.eng; if(!E) return "";
+  function pc(a, b){ return b ? Math.round(a / b * 100) + "%" : "-"; }
+  function row(l, v, x){ return '<div><span>'+l+'</span><b>'+v+'</b><em>'+(x || "")+'</em></div>'; }
+  var h = [];
+  h.push('<section class="card"><div class="eyebrow">Сериал «Наши герои»</div>'+(E.series && E.series.length ? E.series.map(function(x){
+    var ep = serById(x.ep);
+    return '<div style="font-weight:600;margin:10px 0 2px">'+esc(ep ? "Серия " + ep.n + " · " + ep.t : x.ep)+'</div><div class="st-rows">'+
+      row("Открыли", x.open)+
+      row("Начали смотреть", x.play, pc(x.play, x.open))+
+      row("Досмотрели", x.complete, pc(x.complete, x.open)+' от открывших · цель от 50%')+
+      row("Открыли следующую", x.nextOpen, pc(x.nextOpen, x.complete)+' от досмотревших · цель от 30%')+
+      row("Перешли в запись журнала", x.post)+
+      row("Карточка школы JAVATTI", x.offer, pc(x.offer, x.complete)+' · цель от 3%, вывод после 100 досмотров')+
+      (x.src && x.src.length ? row("Откуда открыли", "", esc(x.src.map(function(s){ return (s[0] === "direct" ? "без метки" : s[0]) + " " + s[1]; }).join(", "))) : "")+'</div>';
+  }).join("") : '<p class="disclaimer" style="margin:6px 0 0">Пока нет данных: серий ещё не открывали.</p>')+'</section>');
+  if(E.likes && E.likes.length){
+    var all = postsAll();
+    h.push('<section class="card"><div class="eyebrow">«Полезно» в журнале</div><div class="st-rows">'+E.likes.map(function(x){
+      var p = all.filter(function(q){ return q.id === x.post; })[0];
+      return row(esc(p ? p.n : x.post), x.n, "");
+    }).join("")+'</div></section>');
+  }
   return h.join("");
 }
 function viewAdmin(){
@@ -29539,6 +29842,7 @@ function ordersCheck(manual){
       .then(function(j){
         if(!j || j.status !== "paid" || o.status === "paid") return;
         o.status = "paid"; o.cabinetUrl = j.cabinetUrl; if(j.plan) o.planInfo = j.plan;
+        if(j.title && !o.title) o.title = j.title;
         /* Подарок: книгу получает другой человек, поэтому у дарителя она не
            открывается и в «купленное» не попадает. Ему показываем, что подарок ушёл. */
         if(o.gift){
@@ -29569,9 +29873,20 @@ function ordersWatch(){
 }
 function cabinetUrl(){ return CRM_URL + "/learn-login.html"; }
 function sheetAccessOpened(o){
+  var t = o.title || payReturnTitle(o.id), x = SCHOOL_EXT[o.id];
+  var mail = S.email ? 'на почту '+esc(S.email) : 'на почту, которую вы указали в заказе';
+  if(x){
+    var started = x.start && Date.now() >= Date.parse(x.start);
+    sheet('<h3>Доступ открыт</h3>'+
+      '<p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 12px">Оплата получена, доступ к '+esc(accessTo(o.id, t))+' открыт. Баракаллаху фикум!</p>'+
+      '<p class="note" style="margin:0 0 14px">'+(started ? 'Все уроки уже открыты.' : 'Вводный урок уже открыт, все уроки - '+esc(x.startText)+'.')+' Логин и пароль - в письме '+mail+'.</p>'+
+      '<a class="btn" style="text-decoration:none;display:block;text-align:center" href="'+esc(schoolExtLogin(o.id))+'" target="_blank" rel="noopener">Войти на платформу тренинга</a>'+
+      '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Хорошо</button>');
+    return;
+  }
   sheet('<h3>Доступ открыт</h3>'+
-    '<p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 12px">Оплата получена, доступ к программе «'+esc(o.title)+'» открыт. Баракаллаху фикум!</p>'+
-    '<p class="note" style="margin:0 0 14px">Данные для входа на обучающую платформу отправлены на почту '+esc(S.email||"")+'. Войти можно по этой почте или по телефону.</p>'+
+    '<p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 12px">Оплата получена, доступ к программе'+(t ? ' '+esc(qTitle(t)) : '')+' открыт. Баракаллаху фикум!</p>'+
+    '<p class="note" style="margin:0 0 14px">Данные для входа на обучающую платформу отправлены '+mail+'. Войти можно по этой почте или по телефону.</p>'+
     '<a class="btn" style="text-decoration:none;display:block;text-align:center" href="'+esc(javattiUrl("", o.token))+'" target="_blank" rel="noopener" data-jopen="'+esc(o.id || "")+'">Открыть обучение в приложении JAVATTI</a>'+
     '<a class="btn ghost" style="margin-top:8px;text-decoration:none;display:block;text-align:center" href="'+esc(o.cabinetUrl || cabinetUrl())+'" target="_blank" rel="noopener">Войти на платформу по почте</a>'+
     '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Хорошо</button>');
@@ -30168,6 +30483,8 @@ function renderCore(){
   else if(V.view==="know") html = viewKnow();
   else if(V.view==="share") html = viewShare();
   else if(V.view==="post") html = viewPost();
+  else if(V.view==="serii") html = viewSerii();
+  else if(V.view==="seriya") html = viewSeriya();
   else if(V.view==="fav") html = viewFav();
   else if(V.view==="qmarks") html = viewQMarks();
   else if(V.view==="sira") html = viewSira();
@@ -30376,7 +30693,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -30389,7 +30706,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.stop!==undefined) return;
 
   if(d.back!==undefined){ back(); return; }
-  if(d.offer){ offerClick(d.offer); return; }
+  if(d.offer){ if(V.view === "seriya" && String(d.offer).indexOf(":ser") > 0) serEv(V.p, "offer"); offerClick(d.offer); return; }
   if(d.offerx!==undefined){ offerDismiss(d.offerx); return; }
   if(d.go){ go(d.go); return; }
   if(d.open==="account"){ sheetAccount(); return; }
@@ -30422,6 +30739,11 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.rub!==undefined){ V.rub = d.rub; render(); return; }
   if(d.post){ V.tab="journal"; open("post", d.post); return; }
   if(d.pshare){ jrShare(d.pshare); return; }
+  if(d.jrlike){ jrLikeToggle(d.jrlike); return; }
+  if(d.seropen){ V.serRet = V.view === "serii" ? 1 : 0; V.tab = "journal"; open("seriya", d.seropen); return; }
+  if(d.sernext){ serEv(V.p, "next"); V.tab = "journal"; open("seriya", d.sernext); return; }
+  if(d.serpost){ var spe = serById(d.serpost); if(spe && spe.post){ serEv(spe.id, "post"); V.tab = "journal"; open("post", spe.post); } return; }
+  if(d.serhd !== undefined){ serHd(d.serhd === "1"); return; }
   if(d.jrto){ var el = document.getElementById(d.jrto); if(el) $screen.scrollTo({ top: el.offsetTop - 64, behavior: "smooth" }); return; }
   if(d.jrq){ var jq = d.jrq.split(":"); if(!V.jrq) V.jrq = {}; if(!V.jrq[jq[0]]) V.jrq[jq[0]] = {};
     if(V.jrq[jq[0]][jq[1]] === undefined){ V.jrq[jq[0]][jq[1]] = +jq[2]; var st = $screen.scrollTop; render(); $screen.scrollTop = st; } return; }
