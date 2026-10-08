@@ -23236,7 +23236,15 @@ function renderBlocks(blocks, idp){
       }).join("") + '</div>');
     }
     if(b.links){
-      s.push('<div class="blinks">' + b.links.map(function(l){
+      /* ссылку на запись журнала показываем только когда она вышла (08.10.2026) */
+      var linksOut = b.links.filter(function(l){
+        var v = String(l[3] || "");
+        if(v.indexOf("post:") !== 0) return true;
+        var pid = v.slice(5), all = postsAll();
+        for(var k = 0; k < all.length; k++) if(all[k].id === pid) return true;
+        return false;
+      });
+      if(linksOut.length) s.push('<div class="blinks">' + linksOut.map(function(l){
         return '<button class="blink" data-jump="' + esc(l[3]) + '"><span class="blink-ic">' + esc(l[0]) + '</span>' +
           '<b>' + esc(l[1]) + '</b><span class="blink-s">' + esc(l[2]) + '</span></button>'; }).join("") + '</div>');
     }
@@ -23928,7 +23936,7 @@ var JR_IC = {
   house:"M18 48L50 22L82 48M26 44V80H74V44M44 80V60H56V80",
   book:"M50 28Q34 20 18 26V78Q34 72 50 80Q66 72 82 78V26Q66 20 50 28ZM50 28V80"
 };
-var JR_ICON = { "bolezn-i-operaciya":"moon", "kogda-bolen-blizkiy":"give", "trudnost-ispytanie":"moon", "kogda-bolit-telo":"star", "bez-znaniya-net-vybora":"book", "komu-otdat-delo":"give", "slovo-i-zapis":"oath", "privyazhi-verblyudicu":"scales", "pomoch-zakryt-kredit":"give", "rassrochka-halyal":"calendar", "procent-na-ostatok":"percent", "zaym-blagodarnost":"give", "obmen-valyuty":"exchange",
+var JR_ICON = { "zaveshchanie-kak-napisat":"doc", "kogda-blizkiy-v-bede":"scales", "bolezn-i-operaciya":"moon", "kogda-bolen-blizkiy":"give", "trudnost-ispytanie":"moon", "kogda-bolit-telo":"star", "bez-znaniya-net-vybora":"book", "komu-otdat-delo":"give", "slovo-i-zapis":"oath", "privyazhi-verblyudicu":"scales", "pomoch-zakryt-kredit":"give", "rassrochka-halyal":"calendar", "procent-na-ostatok":"percent", "zaym-blagodarnost":"give", "obmen-valyuty":"exchange",
   "mysli-o-dengah":"coins", "zoloto-obmen":"ring", "klyatva-v-torgovle":"oath", "otzyvy-chestno":"star", "brak-v-tovare":"box", "nacenka":"chart",
   "mudaraba":"partners", "zakyat-biznesa":"coins", "dolg-dve-storony":"doc", "istigfar-rizk":"moon", "rodstvennye-svyazi":"house",
   "mera-i-ves":"scales", "vesy":"scales", "dolg-zapis":"doc", "rizq-v-korane":"book" };
