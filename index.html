@@ -7977,6 +7977,20 @@ function schoolExtLogin(id){
   var x = SCHOOL_EXT[id];
   return CRM_URL + "/learn-login.html" + (x && x.course ? "?next=" + encodeURIComponent("/learn-course.html?id=" + x.course) : "");
 }
+/* Кабинет обучения без пароля: приложение с ключом аккаунта просит у CRM одноразовую ссылку (живёт 3 минуты).
+   same - перейти в этой же вкладке (после личной ссылки), иначе открыть новую; без ключа или при сбое - обычная страница входа. */
+function schoolCabinetGo(id, same){
+  var x = SCHOOL_EXT[id]; if(!x || !x.course) return;
+  var fallback = schoolExtLogin(id);
+  var w = null;
+  if(!same){ try{ w = window.open("", "_blank"); }catch(e){} }
+  function done(u){ if(same || !w){ location.href = u; } else { w.location.href = u; } }
+  if(!AC.tok){ done(fallback); return; }
+  fetch(accApi("portal-link"), { method:"POST", headers:accHdr(), body:JSON.stringify({ next:"/learn-course.html?id=" + x.course }) })
+    .then(function(r){ return r.json(); })
+    .then(function(j){ done(j && j.url ? j.url : fallback); })
+    .catch(function(){ done(fallback); });
+}
 function payReturn(id, token){
   S.orders = S.orders || [];
   var o = S.orders.filter(function(x){ return x.token === token; })[0];
@@ -8052,7 +8066,7 @@ function deepOpen(qArg){
     var mkh = q.match(/[?&]khatm=([a-z0-9]{6,16})/);
     if(mkh){ S.welcomed = 1; save(); try{ history.replaceState(null, "", location.pathname); }catch(e){} V.tab = "quran"; open("khatm", mkh[1]); return true; }
     var mlg = q.match(/[?&]login=([a-f0-9]{40})/);
-    if(mlg){ S.welcomed = 1; save(); setTimeout(function(){ accLinkLogin(mlg[1]); }, 300); return true; }
+    if(mlg){ S.welcomed = 1; save(); var mto = q.match(/[&?]to=([a-z]+)/); setTimeout(function(){ accLinkLogin(mlg[1], mto ? mto[1] : ""); }, 300); return true; }
     var mg = q.match(/[?&]go=([a-zA-Z0-9_]+)/);
     /* ?go=delo - журнал сразу на рубрике «Дело по Сунне»: туда ведёт
        кодовое слово ДЕЛО из рилсов, все разборы серии лежат в этой рубрике. */
@@ -29280,7 +29294,7 @@ function accVerify(){
   }).catch(function(){ LG.busy = false; LG.msg = "Нет связи с сервером школы - проверьте интернет"; sheetLoginCode(); });
 }
 /* вход по личной ссылке */
-function accLinkLogin(code){
+function accLinkLogin(code, to){
   var dev = "";
   try{ dev = (navigator.userAgent || "").slice(0, 80); }catch(e){}
   try{ history.replaceState(null, "", location.pathname); }catch(e){}
@@ -29290,6 +29304,7 @@ function accLinkLogin(code){
     accLoginDone(x.j);
     ACX.meAt = 0; accMeLoad(true);
     setTimeout(function(){ toast("Вы вошли" + (x.j.account && x.j.account.name ? ", " + x.j.account.name : "")); }, 400);
+    if(to && SCHOOL_EXT[to]){ setTimeout(function(){ schoolCabinetGo(to, true); }, 900); return; }
     setTimeout(function(){ if(typeof clubHas === "function" && clubHas()){ V.tab = "dua"; open("arabic", "club"); } }, 2500);
   }).catch(function(){ toast("Нет связи с сервером школы - откройте ссылку ещё раз, когда будет интернет"); });
 }
@@ -29888,8 +29903,10 @@ function sheetAccessOpened(o){
     sheet('<h3>Доступ открыт</h3>'+
       '<p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 12px">Оплата получена, доступ к '+esc(accessTo(o.id, t))+' открыт. Баракаллаху фикум!</p>'+
       '<p class="note" style="margin:0 0 14px">'+(started ? 'Все уроки уже открыты.' : 'Вводный урок уже открыт, все уроки - '+esc(x.startText)+'.')+' Логин и пароль - в письме '+mail+'.</p>'+
-      '<a class="btn" style="text-decoration:none;display:block;text-align:center" href="'+esc(schoolExtLogin(o.id))+'" target="_blank" rel="noopener">Войти на платформу тренинга</a>'+
+      '<a class="btn" style="text-decoration:none;display:block;text-align:center" href="'+esc(schoolExtLogin(o.id))+'" id="schoolGo" target="_blank" rel="noopener">Открыть уроки тренинга</a>'+
       '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Хорошо</button>');
+    var sg = document.getElementById("schoolGo");
+    if(sg) sg.addEventListener("click", function(e){ e.preventDefault(); schoolCabinetGo(o.id, false); });
     return;
   }
   sheet('<h3>Доступ открыт</h3>'+
