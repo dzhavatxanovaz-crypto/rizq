@@ -1037,6 +1037,14 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .jp-card{position:relative;padding:0}
 /* журнал: обложки, запись, рубрика (26.09.2026) */
 .jr-cv{width:100%}
+/* 99 имён подряд */
+.nm-all{border-color:rgba(212,175,55,.45);background:linear-gradient(140deg,rgba(212,175,55,.13),rgba(212,175,55,.03))}
+.nm-all-now:empty{display:none}
+.nm-all-now{display:flex;align-items:baseline;gap:10px;margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--surface-2)}
+.nm-all-now span{font-size:12px;color:var(--ink-3);white-space:nowrap}
+.nm-all-now b{font-family:var(--f-display);font-size:16px;min-width:0;overflow-wrap:anywhere}
+.nm-all-now .ar{margin-left:auto;font-style:normal;font-family:var(--f-ar);font-size:20px;color:var(--accent-ink)}
+.name.nm-now{border-color:var(--accent);background:rgba(212,175,55,.12)}
 .wc-ex{margin-top:14px;padding:14px;border-radius:16px;background:var(--surface-2)}
 .wc-ex b{display:block;font-size:15.5px;margin:4px 0 6px}
 .wc-o{display:block;width:100%;text-align:left;margin-top:7px;padding:11px 13px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:16px}
@@ -9216,6 +9224,7 @@ function nameSndMark(){
   }
 }
 function nameSnd(i){
+  if(NAME_ALL_I >= 0) nameAllStop();
   if(NAME_AUDIO && NAME_PLAYING !== null){ NAME_AUDIO.pause(); NAME_PLAYING = null; }
   if(!NAME_SND){
     NAME_SND = new Audio();
@@ -9227,6 +9236,41 @@ function nameSnd(i){
   NAME_SND_I = i; nameSndMark();
   var p = NAME_SND.play();
   if(p && p.catch) p.catch(function(e){ if(e && e.name === "AbortError") return; NAME_SND_I = null; nameSndMark(); toast("Не получилось воспроизвести"); });
+}
+/* Все 99 имён подряд (10.10.2026): те же записи одна за другой, пауза между именами,
+   на карточке видно, какое имя звучит. Отдельный Audio, чтобы не мешать «Послушать имя». */
+var NAME_ALL = null, NAME_ALL_I = -1, NAME_ALL_T = null;
+function nameAllMark(){
+  var on = NAME_ALL_I >= 0, n = on ? NAMES99[NAME_ALL_I] : null;
+  var b = document.getElementById("nmAllBtn"), now = document.getElementById("nmAllNow"), bar = document.getElementById("nmAllBar");
+  if(b) b.textContent = on ? "■ Остановить" : (S.nameAllAt > 0 ? "▶ Продолжить с № " + (S.nameAllAt + 1) : "▶ Слушать все 99 имён");
+  if(now) now.innerHTML = on ? '<span>№ ' + (NAME_ALL_I + 1) + ' из ' + NAMES99.length + '</span><b>' + esc(n.n) + '</b><i class="ar">' + esc(n.ar) + '</i>' : '';
+  if(bar) bar.style.width = (on ? Math.round((NAME_ALL_I + 1) / NAMES99.length * 100) : 0) + "%";
+  var rows = document.querySelectorAll("[data-name]");
+  for(var k = 0; k < rows.length; k++) rows[k].classList.toggle("nm-now", on && Number(rows[k].getAttribute("data-name")) === NAME_ALL_I);
+}
+function nameAllStop(){
+  clearTimeout(NAME_ALL_T);
+  if(NAME_ALL) NAME_ALL.pause();
+  NAME_ALL_I = -1; nameAllMark();
+}
+function nameAllPlay(i){
+  if(i >= NAMES99.length){ S.nameAllAt = 0; save(); nameAllStop(); toast("Все 99 имён прослушаны"); return; }
+  NAME_ALL_I = i; S.nameAllAt = i; save();
+  NAME_ALL.src = nameSndUrl(i); nameAllMark();
+  var p = NAME_ALL.play();
+  if(p && p.catch) p.catch(function(e){ if(e && e.name === "AbortError") return; nameAllStop(); toast("Не получилось воспроизвести"); });
+}
+function nameAll(){
+  if(NAME_ALL_I >= 0){ nameAllStop(); return; }
+  if(NAME_AUDIO && NAME_PLAYING !== null){ NAME_AUDIO.pause(); NAME_PLAYING = null; }
+  if(NAME_SND && NAME_SND_I !== null){ NAME_SND.pause(); NAME_SND_I = null; nameSndMark(); }
+  if(!NAME_ALL){
+    NAME_ALL = new Audio();
+    NAME_ALL.addEventListener("ended", function(){ if(NAME_ALL_I < 0) return; var nx = NAME_ALL_I + 1; NAME_ALL_T = setTimeout(function(){ if(NAME_ALL_I >= 0) nameAllPlay(nx); }, 700); });
+    NAME_ALL.addEventListener("error", function(){ if(NAME_ALL_I < 0) return; nameAllStop(); toast("Не получилось открыть запись. Проверьте интернет и попробуйте ещё раз"); });
+  }
+  nameAllPlay(S.nameAllAt > 0 && S.nameAllAt < NAMES99.length ? S.nameAllAt : 0);
 }
 /* Все 99 записей - около 2 МБ. Докачиваем их по одной в тишине, когда человек открыл
    список имён: потом каждое имя звучит и без интернета. Раз за запуск, не на экономии трафика. */
@@ -9996,6 +10040,14 @@ function viewNameGroups(){
 function viewNames(){
   var q = V.q.toLowerCase().trim();
   var h = ['<div class="stack">'];
+  /* все 99 имён подряд - живое произношение (записи с Wikimedia Commons, CC BY-SA) */
+  if(!q) h.push('<section class="card nm-all">'+
+    '<div class="eyebrow" style="color:var(--accent-ink)">Аудио</div>'+
+    '<div style="font-family:var(--f-display);font-size:16.5px;font-weight:600;margin:6px 0 4px">Все 99 имён подряд</div>'+
+    '<div style="font-size:14px;color:var(--ink-2);line-height:1.5">Произношение каждого имени по порядку, около 5 минут. Можно остановить и продолжить с того же места.</div>'+
+    '<div class="nm-all-now" id="nmAllNow">'+(NAME_ALL_I >= 0 ? '<span>№ '+(NAME_ALL_I + 1)+' из '+NAMES99.length+'</span><b>'+esc(NAMES99[NAME_ALL_I].n)+'</b><i class="ar">'+esc(NAMES99[NAME_ALL_I].ar)+'</i>' : '')+'</div>'+
+    '<div class="bar" style="margin-top:10px"><i id="nmAllBar" style="width:'+(NAME_ALL_I >= 0 ? Math.round((NAME_ALL_I + 1) / NAMES99.length * 100) : 0)+'%"></i></div>'+
+    '<button class="btn" style="width:100%;margin-top:12px" id="nmAllBtn" data-namesall="1">'+(NAME_ALL_I >= 0 ? '■ Остановить' : (S.nameAllAt > 0 ? '▶ Продолжить с № '+(S.nameAllAt + 1) : '▶ Слушать все 99 имён'))+'</button></section>');
   /* Две кнопки первым экраном: найти имя и посмотреть имена группами.
      Раньше поиск был спрятан под списком прогресса, и его не находили. */
   h.push('<button class="card" style="width:100%;text-align:left;display:block;margin-bottom:2px;'+
@@ -30718,7 +30770,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-namesall],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -31118,6 +31170,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.lead){ leadSubmit(d.lead); return; }
   if(d.leadgo!==undefined){ leadJump(); return; }
   if(d.namesnd!==undefined){ nameSnd(parseInt(d.namesnd, 10)); return; }
+  if(d.namesall!==undefined){ nameAll(); return; }
   if(d.nameaudio!==undefined){ if(NAME_SND && NAME_SND_I !== null){ NAME_SND.pause(); NAME_SND_I = null; } nameAyahPlay(parseInt(d.nameaudio, 10)); return; }
   if(d.namecardshare!==undefined){ nameCardShare(parseInt(d.namecardshare, 10)); return; }
   if(d.namecardsave!==undefined){ nameCardSave(parseInt(d.namecardsave, 10)); return; }
