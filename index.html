@@ -24002,7 +24002,7 @@ var JR_IC = {
   house:"M18 48L50 22L82 48M26 44V80H74V44M44 80V60H56V80",
   book:"M50 28Q34 20 18 26V78Q34 72 50 80Q66 72 82 78V26Q66 20 50 28ZM50 28V80"
 };
-var JR_ICON = { "zaveshchanie-kak-napisat":"doc", "kogda-blizkiy-v-bede":"scales", "bolezn-i-operaciya":"moon", "kogda-bolen-blizkiy":"give", "trudnost-ispytanie":"moon", "kogda-bolit-telo":"star", "bez-znaniya-net-vybora":"book", "komu-otdat-delo":"give", "slovo-i-zapis":"oath", "privyazhi-verblyudicu":"scales", "pomoch-zakryt-kredit":"give", "rassrochka-halyal":"calendar", "procent-na-ostatok":"percent", "zaym-blagodarnost":"give", "obmen-valyuty":"exchange",
+var JR_ICON = { "novoe-99-imen-audio":"star", "zaveshchanie-kak-napisat":"doc", "kogda-blizkiy-v-bede":"scales", "bolezn-i-operaciya":"moon", "kogda-bolen-blizkiy":"give", "trudnost-ispytanie":"moon", "kogda-bolit-telo":"star", "bez-znaniya-net-vybora":"book", "komu-otdat-delo":"give", "slovo-i-zapis":"oath", "privyazhi-verblyudicu":"scales", "pomoch-zakryt-kredit":"give", "rassrochka-halyal":"calendar", "procent-na-ostatok":"percent", "zaym-blagodarnost":"give", "obmen-valyuty":"exchange",
   "mysli-o-dengah":"coins", "zoloto-obmen":"ring", "klyatva-v-torgovle":"oath", "otzyvy-chestno":"star", "brak-v-tovare":"box", "nacenka":"chart",
   "mudaraba":"partners", "zakyat-biznesa":"coins", "dolg-dve-storony":"doc", "istigfar-rizk":"moon", "rodstvennye-svyazi":"house",
   "mera-i-ves":"scales", "vesy":"scales", "dolg-zapis":"doc", "rizq-v-korane":"book" };
@@ -30860,6 +30860,7 @@ document.getElementById("app").addEventListener("click", function(ev){
     else if(j[0]==="guide"){ V.tab="dua"; open("guide", j[1]); }
     else if(j[0]==="name"){ V.q=""; V.tab="dua"; open("name", parseInt(j[1],10)); }
     else if(j[0]==="hadith"){ V.q=""; V.tab="dua"; open("hadithOne", parseInt(j[1],10)); }
+    else if(j[0]==="names99"){ V.q=""; V.tab="dua"; if(NAME_ALL_I < 0) nameAll(); open("names", null); }
     else if(j[0]==="post"){ V.q=""; V.tab="journal"; open("post", j[1]); }
     else if(j[0]==="ext"){ var eu = j.slice(1).join(":"); if(/^[a-z0-9.-]+[.]ru[/?]/.test(eu)) window.open("https://" + eu, "_blank", "noopener"); }
     else if(j[0]==="sira"){ V.q=""; V.tab="dua"; open("siraOne", parseInt(j[1],10)); }
