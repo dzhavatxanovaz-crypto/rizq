@@ -30697,12 +30697,16 @@ function renderInPlace(){
 /* Отрисовка обёрнута: сбой на одном экране не оставляет пустую страницу */
 var RENDER_BUSY = 0;
 /* ---------- «Наставник души» (11.10.2026) ---------- */
-var NS_PUBLIC = 1;                         /* 1 - кнопка на главной у всех; до «да» Заиры 0 */
+var NS_PUBLIC = 0;                         /* 1 - кнопка на главной у всех; до «да» Заиры 0 */
+/* 11.10.2026 Заира: «очень плохо пока работает... убери вообще наставник для души, чтобы не было его видно в приложении».
+   NS_OFF = 1 - раздел выключен целиком: нет кнопки на главной, ?go=nastavnik не открывает, открытый экран закрывается. */
+var NS_OFF = 1;
 var NS_BOOK = "https://crm.javattigroup.ru/kurs/kouch-sessiya";
 var NS = { msgs: [], busy: 0, draft: "", ended: 0, loaded: 0 };
 var NS_TOPICS = ["Тревога и страх", "Злюсь, а потом жалею", "Обида на близких", "Зависть", "Чувство вины", "Нет сил, всё валится из рук", "Одиночество", "Не могу решиться"];
 function nsLs(k, v){ try{ if(v === undefined) return localStorage.getItem(k); if(v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); }catch(e){ return null; } }
 function nsOn(){
+  if(NS_OFF) return false;
   if(NS_PUBLIC) return true;
   if(/[?&]go=nastavnik/.test(String(location.search || ""))) nsLs("rizq.ns.on", "1");
   return nsLs("rizq.ns.on") === "1";
@@ -30803,7 +30807,7 @@ function nsSend(text){
 document.addEventListener("click", function(e){
   var el = e.target, n = el && el.closest ? el.closest("[data-nsopen],[data-nsagree],[data-nstopic],[data-nssend],[data-nsend],[data-nsclear],[data-nsnew]") : null;
   if(!n) return;
-  if(n.hasAttribute("data-nsopen")){ open("nastavnik", null); return; }
+  if(n.hasAttribute("data-nsopen")){ if(nsOn()) open("nastavnik", null); return; }
   if(n.hasAttribute("data-nsagree")){ nsLs("rizq.ns.ok", "1"); nsRender(); return; }
   if(n.hasAttribute("data-nstopic")){ nsSend("Хочу поговорить: " + NS_TOPICS[+n.getAttribute("data-nstopic")]); return; }
   if(n.hasAttribute("data-nssend")){ var ta = document.getElementById("nsText"); nsSend(ta ? ta.value : ""); return; }
@@ -30829,6 +30833,7 @@ function renderCore(){
   if(V.tab==="journal" && !V.view) postsSeen();
   renderHdr(); renderTabs();
   var html;
+  if(V.view==="nastavnik" && !nsOn()){ V.view = null; V.p = null; }
   if(V.view==="nastavnik") html = viewNastavnik();
   else if(V.view==="cat") html = viewCat();
   else if(V.view==="names") html = viewNames();
