@@ -63,7 +63,7 @@ pre{white-space:pre-wrap;font-size:12px;background:var(--now);padding:8px;border
 </head>
 <body>
 <div id="app">
-  <div id="nav"><button id="nb" type="button">← Назад</button><button id="nm" type="button">Меню игры</button><button id="nr" type="button">⌂ RIZQ</button></div>
+  <div id="nav"><button id="nb" type="button">← Назад</button><button id="nm" type="button">Меню игры</button><button id="nv" type="button" aria-label="Озвучка">🔊</button><button id="nr" type="button">⌂ RIZQ</button></div>
   <div id="hud"></div>
   <div id="cvw"><canvas id="cv" width="320" height="180" role="img" aria-label="Картинка сцены"></canvas></div>
   <div id="ttl"></div>
@@ -203,11 +203,14 @@ var SCRIPT={
 'rules.4':'Вода и силы тратятся в пути. Доверие людей поднимает цену твоего товара. Решаешь ты, и у каждого поступка есть последствие, но честный путь есть всегда. В день - 20 минут пути, игра сама сохраняет место.',
 'catch.1':'Лови финики корзиной! Води пальцем по картинке или жми стрелки. Золотой финик - за три. Готов{а|}?'
 };
+var REV={};
 function L(id){
   var a=arguments,t=SCRIPT[id]||('['+id+']');
   t=t.replace(/\{([^|{}]*)\|([^{}]*)\}/g,function(m,f,mm){return S&&S.hero===1?mm:f});
   t=t.replace(/%c/g,'«'+camName()+'»');
-  return t.replace(/\$([0-9])/g,function(m,n){return a[+n]!==undefined?a[+n]:m});
+  t=t.replace(/\$([0-9])/g,function(m,n){return a[+n]!==undefined?a[+n]:m});
+  if(t.length>12)REV[t]=id;
+  return t;
 }
 function camName(){return (S&&S.camel)||load().camel||'Бархан'}
 function g(f,m){return S&&S.hero===1?m:f}
@@ -295,7 +298,7 @@ var SP={
   changer:{r:rowsWith(MAN,BEARD),p:{t:'#3a2a4a',s:'#c99668',d:'#4a3a5a',e:'#2a1c12',b:'#1a1418'}},
   waterman:{r:rowsWith(MAN,WBEARD),p:{t:'#e9e4d4',s:'#c99668',d:'#8a7a5a',w:'#f2f0e8',b:'#2a1c12'}}
 };
-var SMALL={kid:1,hani:1,mazin:1,weaverF:1,weaverM:1};
+var SMALL={kid:1,hani:1,mazin:1,weaverF:1,weaverM:1,boyA:1,boyB:1};
 (function(){
   SP.friendF={r:GIRL,p:{h:'#2a8a8a',s:'#d9a77a',d:'#5fb8b0',b:'#3a2a1c'}};
   SP.friendM={r:MAN,p:{t:'#e9e4d4',s:'#d9a77a',d:'#2a8a8a',b:'#3a2a1c'}};
@@ -310,11 +313,19 @@ var SMALL={kid:1,hani:1,mazin:1,weaverF:1,weaverM:1};
   SP.mother={r:GIRL,p:{h:'#6b4a5a',s:'#c99668',d:'#8a6a7a',b:'#3a2a1c'}};
   SP.aunt={r:GIRL,p:{h:'#4a5a3a',s:'#c99668',d:'#6a7a5a',b:'#3a2a1c'}};
   SP.scribe={r:rowsWith(MAN,WBEARD),p:{t:'#f2f0e8',s:'#c99668',d:'#3a4a6a',w:'#f2f0e8',b:'#2a1c12'}};
+  SP.jasir={r:rowsWith(MAN,BEARD),p:{t:'#1f2a44',s:'#c99668',d:'#5a2a4a',e:'#1a1418',b:'#1a1418'}};
+  SP.servant={r:MAN,p:{t:'#9a8a6a',s:'#c99668',d:'#6a6a5a',b:'#2a1c12'}};
+  SP.boyA={r:MAN,p:{t:'#e9dcc0',s:'#d9a77a',d:'#4a7a3a',b:'#3a2a1c'}};
+  SP.boyB={r:MAN,p:{t:'#d8cfb8',s:'#d9a77a',d:'#8a6a9a',b:'#3a2a1c'}};
+  SP.weaver3F={r:GIRL,p:{h:'#8a6a2a',s:'#d9a77a',d:'#b8945a',b:'#3a2a1c'}};
+  SP.weaver3M={r:MAN,p:{t:'#d8cfb8',s:'#d9a77a',d:'#8a6a2a',b:'#3a2a1c'}};
+  SP.shami={r:rowsWith(MAN,BEARD),p:{t:'#2c5f8a',s:'#c99668',d:'#e9dcc0',e:'#3a2a1c',b:'#2a1c12'}};
 })();
 function person(name,x,y,z){
   if(name==='hero')name=S&&S.hero===1?'boy':'girl';
   if(name==='friend')name=S&&S.hero===1?'friendM':'friendF';
   if(name==='weaver')name=S&&S.hero===1?'weaverM':'weaverF';
+  if(name==='weaver3')name=S&&S.hero===1?'weaver3M':'weaver3F';
   var s=SP[name];if(!s)return;z=z||2;
   if(!RM&&(name==='girl'||name==='boy')&&(T>>3)%2)y-=1;
   if(SMALL[name])z=1;
@@ -323,6 +334,7 @@ function person(name,x,y,z){
   if(name==='carrier'){px(x+18,y+12,9,12,'#7a5230');px(x+19,y+10,6,3,'#5a3a1a')}
   if(name==='potter'){px(x+4,y+20,16,14,'#c9b48a')}
   if(name==='scribe'){px(x+22,y+16,2,10,'#2A201C')}
+  if(name==='weaver3F'||name==='weaver3M'){px(x+26,y+28,10,10,'#b8945a');px(x+27,y+30,8,1,'#8a6a2a');px(x+27,y+34,8,1,'#8a6a2a')}
 }
 function camel(x,y,f,col){
   col=col||'#c9a063';
@@ -344,6 +356,7 @@ var BLD={
   p:{n:'Пальма',f:function(x,y){px(x+18,y+14,4,24,'#7a5230');px(x+6,y+9,28,5,'#2f8f46');px(x+10,y+5,20,5,'#3aa856');px(x+4,y+14,9,4,'#2f8f46');px(x+27,y+14,9,4,'#2f8f46')}},
   w:{n:'Колодец',f:function(x,y){px(x+8,y+22,24,14,'#9a9080');px(x+10,y+22,20,4,'#3b6fa8');px(x+8,y+8,3,16,'#6b4a22');px(x+29,y+8,3,16,'#6b4a22');px(x+8,y+6,24,3,'#6b4a22');px(x+19,y+9,2,8,'#c9a063')}},
   k:{n:'Дом знаний',f:function(x,y){px(x+3,y+9,34,30,'#5a4a7a');px(x+4,y+12,32,26,'#d9c9a8');px(x+4,y+10,32,4,'#e9dcc0');px(x+16,y+24,8,14,'#6b4a22');px(x+8,y+16,10,7,'#f6f0de');px(x+12,y+16,1,7,'#7a6435');px(x+26,y+16,5,5,'#ffe27a');px(x+27,y+21,3,2,'#8a5a2a')}},
+  t:{n:'Часы-тень',f:function(x,y){px(x+4,y+4,5,5,'#ffe27a');px(x+18,y+8,3,26,'#6b4a22');for(var q=0;q<8;q++)px(x+20+q*2,y+33+Math.round(q*0.1),2,2,'#b8934d');px(x+24,y+35,2,2,'#7a6435');px(x+29,y+33,2,2,'#7a6435');px(x+34,y+31,2,2,'#7a6435')}},
   b:{n:'Стена',f:function(x,y){for(var r=0;r<4;r++)for(var c=0;c<4;c++)px(x+2+c*9+(r%2?4:0),y+6+r*8,8,7,'#c9ad7a');px(x+2,y+6,36,1,'#e3cfa3')}}
 };
 
@@ -368,6 +381,8 @@ function draw(){
   if(bg==='map'){drawMap();return}
   if(bg==='cave'||bg==='dawn'){drawCave(bg==='dawn');return}
   if(bg==='memo'){drawMemo();return}
+  if(bg==='load'){drawLoad();return}
+  if(bg==='tablet'){drawTablet();return}
   if(bg==='sky'){drawSky();return}
   if(bg==='catch'){drawCatch();return}
   if(bg==='night'){
@@ -395,6 +410,23 @@ function draw(){
     palm(70,84);palm(276,82);
     BLD.w.f(14,98);
     px(0,146,W,34,'#cdb27a');
+  } else if(bg==='hill'){
+    px(0,0,W,60,'#f3d2a0');px(0,60,W,90,'#e8b98a');
+    for(var hx=56;hx<264;hx+=4){var u=(hx-160)/104,hh=Math.round(78*(1-u*u)+4*Math.sin(hx/11));if(hh<=0)continue;px(hx,150-hh,4,hh,'#9a8a74');px(hx,150-hh,4,3,'#b8a88f')}
+    for(var r0=0;r0<26;r0++){var rx0=70+((r0*53)%180),u2=(rx0-160)/104,top0=150-Math.round(78*(1-u2*u2));var ry0=top0+8+((r0*29)%Math.max(8,150-top0-12));if(ry0<146&&top0<146)px(rx0,ry0,6,3,'#7a6a5a')}
+    px(0,150,W,10,'#d9bd88');for(var rx=0;rx<W;rx+=22)px(rx+4,146,14,4,'#c9a46a');px(0,160,W,20,'#cdaa68');
+  } else if(bg==='street'){
+    var ev=bgEve;
+    px(0,0,W,90,ev?'#f1b98c':'#fff1c8');if(!ev){px(151,8,18,18,'#fff6d8')}
+    house(-6,60,64,70);house(54,70,50,60);house(216,70,50,60);house(262,60,64,70);
+    px(0,130,W,50,'#d8b778');px(0,130,104,4,'#b8934d');px(216,130,104,4,'#b8934d');px(0,150,W,30,'#cdaa68');
+    if(ev&&!(S&&S.jas)){camel(244,124,0,'#b88f55');for(var jj=0;jj<5;jj++){px(148+jj*16,150+(jj%2)*5,6,8,'#b5733c');px(149+jj*16,148+(jj%2)*5,4,2,'#8a5226')}px(226,140,14,10,'#a07a3e')}
+  } else if(bg==='well'){
+    px(0,0,W,45,'#f1b98c');px(0,45,W,45,'#d98a6a');px(0,90,W,90,'#d8b778');
+    house(214,60,56,52);house(266,66,50,46);
+    px(40,108,48,28,'#9a9080');px(44,108,40,6,'#3b6fa8');px(40,80,6,32,'#6b4a22');px(82,80,6,32,'#6b4a22');px(40,76,48,6,'#6b4a22');px(62,82,3,16,'#c9a063');
+    px(96,124,10,12,'#b5733c');px(98,120,6,4,'#8a5226');px(108,128,8,8,'#b5733c');
+    px(0,146,W,34,'#cdaa68');
   } else if(bg==='city'){
     px(0,0,W,20,'#cde8ff');
     px(0,20,W,160,'#e2c98f');
@@ -522,12 +554,26 @@ function hud(show){
   if(prevH&&cur.m>pv.m)sfx('coin');
   prevH=cur;
 }
+var VOICE_V=1,VOICE=load().voice!==0,VA=null,vq=[];
+function vBase(){return '../media/igra/'+(S&&S.hero===1?'m':'f')+'/'}
+function vStop(){vq=[];if(VA){try{VA.pause()}catch(e){}}}
+function vNext(){if(!vq.length||!VOICE)return;var k=vq.shift();if(!VA){VA=new Audio();VA.onended=function(){setTimeout(vNext,250)};VA.onerror=function(){vNext()}}
+  VA.src=vBase()+k+'.mp3?v='+VOICE_V;var p=VA.play();if(p&&p.catch)p.catch(function(){vq=[]})}
+function vPlay(keys){vStop();if(!VOICE||!keys||!keys.length)return;vq=keys.slice();vNext()}
+function vKeys(o){
+  if(o.vo)return o.vo;
+  var ks=[];(o.p||[]).forEach(function(x){if(!x)return;var t=typeof x==='string'?x:(x.now||x.t||'');if(!t)return;
+    if(REV[t]){ks.push(REV[t]);return}
+    var found=[];for(var txt in REV){var i=t.indexOf(txt);if(i>=0)found.push([i,REV[txt],txt.length])}
+    found.sort(function(a,b){return a[0]-b[0]||b[2]-a[2]});var end=-1;found.forEach(function(f){if(f[0]>=end){ks.push(f[1]);end=f[0]+f[2]}})});
+  return ks;
+}
 var hist=[],curScr=null;
 function navUpd(){var b=$('nb');if(b)b.disabled=!hist.length;$('nav').style.display=onTitle?'none':'flex'}
 var onTitle=false;
 function goBack(){
-  while(hist.length){var h=hist.pop();if(h.o.bg==='catch'||h.o.bg==='memo')continue;
-    cg=null;mm=null;rainOn=false;cv.onpointermove=null;cv.onpointerdown=null;
+  while(hist.length){var h=hist.pop();if(h.o.bg==='catch'||h.o.bg==='memo'||h.o.bg==='load'||h.o.bg==='tablet')continue;
+    cg=null;mm=null;ld=null;pz=null;rainOn=false;cv.onpointermove=null;cv.onpointerdown=null;
     try{S=JSON.parse(h.s)}catch(e){}
     curScr=h;h.o._back=1;say(h.o);return}
   title();
@@ -564,11 +610,12 @@ function say(o){
   cv.setAttribute('aria-label',o.alt||o.t||'Картинка сцены');
   if(!same)window.scrollTo(0,0);
   navUpd();
+  if(!same)vPlay(vKeys(o));
 }
 function nx(t,f){return [{t:t||'Дальше',f:f}]}
 /* несколько коротких экранов подряд: информация порциями */
-function seq(list,done){var i=0;(function show(){var o={};for(var k in list[i])o[k]=list[i][k];
-  if(i<list.length-1)o.b=nx('Дальше',function(){i++;show()});else if(!o.b)o.b=nx('Дальше',done);say(o)})()}
+function seq(list,done){(function show(i){var o={};for(var k in list[i])o[k]=list[i][k];
+  if(i<list.length-1)o.b=nx('Дальше',function(){show(i+1)});else if(!o.b)o.b=nx('Дальше',done);say(o)})(0)}
 function word(ar,tr,ru){return {html:'<div class="word"><span class="ar">'+ar+'</span><span><b>'+tr+'</b> - '+ru+'</span></div>'}}
 
 /* переход между сценами: сохраняет место и следит за дневным лимитом */
@@ -581,20 +628,21 @@ function go(name){
 }
 var PLACE={intro:'Мекка',elder:'Мекка',riba:'Мекка',market:'Рынок Мекки',road:'Дорога',stranger:'Дорога',storm:'Буря',ev1:'Дорога',camp:'Привал',wudu:'Привал',word:'Привал',night1:'Ночлег',oasis:'Оазис',ev2:'Оазис',defect:'Оазис',sham:'Шам',sham2:'Шам',kid:'Шам',confess:'Шам',uhelp:'Шам',weigh:'Шам',oath:'Шам',sell:'Шам',widow:'Шам',uncle:'Шам',result:'Конец пути',name:'Самоцвет',scroll:'Свиток',quiz:'Вопросы'};
 PLACE.g2recall='Глава 2';PLACE.g2intro='Лавка';PLACE.g2coin='Лавка';PLACE.g2friend='Лавка';PLACE.g2hira1='Гора Хира';PLACE.g2carrier='Полдень';PLACE.g2order='Заказ';PLACE.g2weaver='За рынком';PLACE.g2evening='Вечер';PLACE.g2roof='Крыша';PLACE.g2storm='Гроза';PLACE.g2flood='Сель';PLACE.g2hira2='Гора Хира';PLACE.g2morning='Утро';PLACE.g2guest='Гостья';PLACE.g2hira3='Хадиджа';PLACE.g2mirror='Утро';PLACE.g2aunt='Тётя';PLACE.g2scribe='Писец';PLACE.g2hira4='Варака';PLACE.g2ret='Вечер';PLACE.g2result='Итог';PLACE.g2name='Самоцвет';PLACE.g2word='Слово';PLACE.g2scroll='Свиток';PLACE.g2quiz='Вопросы';
+PLACE.g3recall='Глава 3';PLACE.g3intro='Лавка';PLACE.g3spill='Лавка';PLACE.g3safa='Ас-Сафа';PLACE.g3market='Полдень';PLACE.g3ranya='В тени лавки';PLACE.g3first='Первые';PLACE.g3load='Ворота';PLACE.g3song='Колодец';PLACE.g3eve='Вечер';PLACE.g3hani='Крыша';PLACE.g3rumor='Утро';PLACE.g3khab='Хаббаб';PLACE.g3scribe='Писец';PLACE.g3north='Караван из Шама';PLACE.g3promise='Лавка';PLACE.g3bakr='Абу Бакр';PLACE.g3jasir='Переулок';PLACE.g3ret='Вечер';PLACE.g3night='Ночь';PLACE.g3motive='Ночь';PLACE.g3result='Итог';PLACE.g3name='Самоцвет';PLACE.g3word='Слово';PLACE.g3scroll='Свиток';PLACE.g3quiz='Вопросы';
 var TEASE={oasis:'Завтра: оазис, покупатель у колодца и первая большая сделка.',sham:'Завтра: огромный рынок Шама.',camp:'Завтра: ночь у костра и звёзды.'};
 function rest(){
   playing=false;
   var at=load().at;
   say({t:'Привал до завтра',bg:'night',nohud:true,cast:[['hero',150,110]],p:[
     'Караван встал на ночлег. На сегодня пути хватит.',
-    S&&S.ch===2?L('g2.rest'):(TEASE[at]||'Завтра продолжим с этого же места.'),
+    S&&S.ch===3?L('g3.rest'):S&&S.ch===2?L('g2.rest'):(TEASE[at]||'Завтра продолжим с этого же места.'),
     '<span class="note">Иди, отдохни и помоги дома.</span>'
   ],b:[{t:'Сокровищница имён',c:'alt',f:function(){treasury(rest)}},load().city?{t:'Мой город',c:'alt',f:city}:null,{t:'← Вернуться в RIZQ',c:'alt',f:function(){location.href='../'}},{t:'Для родителей',c:'alt',f:parents}]});
 }
 /* ---------- титул ---------- */
 function qday(){
   var pool=[],gg=gems();
-  QS.slice(0,3).forEach(function(q){pool.push(q)});if(load().done2)QS2.forEach(function(q){pool.push(q)});
+  QS.slice(0,3).forEach(function(q){pool.push(q)});if(load().done2)QS2.forEach(function(q){pool.push(q)});if(load().done3)QS3.forEach(function(q){pool.push(q)});
   for(var k in gg)if(GEMS[k])(function(g0){var o=[[g0.mean,1]];shuf(DIST.filter(function(x){return x!==g0.mean})).slice(0,2).forEach(function(x){o.push([x,0])});pool.push({q:'Что значит имя Аллаха '+g0.n+'?',o:o,e:g0.n+' - '+g0.mean+'.'})})(GEMS[k]);
   var Q=pool[Math.floor(Math.random()*pool.length)];
   say({t:'Вопрос дня',bg:'gem',nohud:true,cast:[],p:[Lx(Q.q)],b:shuf(Q.o).map(function(o){return {t:Lx(o[0]),c:'alt',f:function(){
@@ -606,19 +654,21 @@ function title(){
   playing=false;lim=overLimit();
   var st=load();
   S=st.S||fresh();applyCol();
-  var canGo=st.at&&st.S&&st.at!=='done'&&st.at!=='done2';
-  var d1=!!(st.stats&&st.stats.done),d2=!!st.done2,ch=(S&&S.ch)||1;
+  var canGo=st.at&&st.S&&st.at!=='done'&&st.at!=='done2'&&st.at!=='done3';
+  var d1=!!(st.stats&&st.stats.done),d2=!!st.done2,d3=!!st.done3,ch=(S&&S.ch)||1;
   function sure(label,fn){return function(ev){var bt=ev&&ev.currentTarget;if(canGo&&bt&&!bt._ok){bt._ok=1;bt.innerHTML='Точно? Текущий путь начнётся заново. Нажми ещё раз';setTimeout(function(){bt._ok=0;bt.innerHTML=label},3000);return}if(lim)return rest();fn()}}
-  var show2=CH2_ON&&d1&&(!canGo||ch===2);
+  var show3=CH3_ON&&d2&&(!canGo||ch===3),show2=!show3&&CH2_ON&&d1&&(!canGo||ch===2);
+  var l3=d3?'Глава 3 заново':'Глава 3: Терпение в Мекке';
   var l2=d2?'Глава 2 заново':'Глава 2: Ночь в пещере Хира',l1=d1?'Глава 1 заново':(canGo?'Начать главу заново':'Начать путь');
-  say({_title:1,t:show2?'Глава 2. Ночь в пещере Хира':'Глава 1. Честный торговец',bg:show2?'cave':'mecca',nohud:true,cast:show2?[]:[['woman',140,96]],p:[
+  say({_title:1,t:show3?'Глава 3. Терпение в Мекке':show2?'Глава 2. Ночь в пещере Хира':'Глава 1. Честный торговец',bg:show3?'hill':show2?'cave':'mecca',nohud:true,cast:show2||show3?[]:[['woman',140,96]],p:[
     '<b style="font-size:22px">Ильм-Крафт</b><br><span class="note">Игра-путешествие во времена Пророка (саллаллаху алейхи ва саллям)</span>',
-    show2?L('g2.title.1'):L('title.1'),
-    '<span class="note">'+(show2?L('g2.title.2'):L('title.2'))+' Возраст: 12+.</span>'
+    show3?L('g3.title.1'):show2?L('g2.title.1'):L('title.1'),
+    '<span class="note">'+(show3?L('g3.title.2'):show2?L('g2.title.2'):L('title.2'))+' Возраст: 12+.</span>'
   ],b:[
     dueGem()?{t:'✦ Самоцвет ждёт огранки',c:'gold',s:'вспомни имя - самоцвет засияет',f:function(){polish(dueGem(),title)}}:null,
     d1&&st.qday!==day()?{t:'Вопрос дня',c:'gold',s:'30 секунд, +1 блок в город',f:qday}:null,
     canGo?{t:'Продолжить путь',c:'gold',s:'Глава '+ch+' · '+(PLACE[st.at]||''),f:function(){S=st.S;if(lim)return rest();playing=true;SC[st.at]()}}:null,
+    d2&&CH3_ON?{t:l3,c:canGo||d3?'alt':'gold',f:sure(l3,function(){S=fresh3();go('g3recall')})}:null,
     d1&&CH2_ON?{t:l2,c:canGo||d2?'alt':'gold',f:sure(l2,function(){S=fresh2();go('g2recall')})}:null,
     {t:l1,c:d1||canGo?'alt':'gold',f:sure(l1,function(){S=fresh();pickHero()})},
     d1?{t:'Свиток знаний',c:'alt',f:function(){scrollView(title)}}:null,
@@ -987,11 +1037,13 @@ var SCROLL=[
   ['Риба - лихоимство','«Аллах дозволил торговлю и запретил лихоимство» (Коран 2:275). Лихоимство (риба) в долге - это когда заранее ставят условие вернуть больше, чем взяли.'],
   ['Садака','Пророк (саллаллаху алейхи ва саллям) сказал: «Садака не уменьшает имущества» (Муслим 2588, перевод смысла).']
 ];
+window.__vp=function(k){vPlay(k)};
 SC.scroll=function(){scrollView(function(){go('quiz')},'Три вопроса',1)};
 function scrollView(back,lab,only){
   var h='<p>Нажми на строку, чтобы прочитать.</p>';
-  var list=only===2?SCROLL2:(only===1?SCROLL:SCROLL.concat(load().done2?SCROLL2:[]));
-  list.forEach(function(x,i){h+='<details style="border-bottom:1px solid var(--line);padding:6px 0"><summary style="cursor:pointer;font-weight:600">'+(i+1)+'. '+x[0]+'</summary><p style="margin:6px 0 0">'+x[1]+'</p></details>'});
+  var st0=load(),parts=only===3?[[SCROLL3,3]]:only===2?[[SCROLL2,2]]:only===1?[[SCROLL,1]]:[[SCROLL,1]].concat(st0.done2?[[SCROLL2,2]]:[]).concat(st0.done3&&typeof SCROLL3!=='undefined'?[[SCROLL3,3]]:[]);
+  var list=[],vks=[];parts.forEach(function(pt){pt[0].forEach(function(x,j){list.push(x);vks.push('scroll'+pt[1]+'.'+(j+1))})});
+  list.forEach(function(x,i){var vk=vks[i];h+='<details ontoggle="if(this.open)window.__vp&&window.__vp([\''+vk+'\'])" style="border-bottom:1px solid var(--line);padding:6px 0"><summary style="cursor:pointer;font-weight:600">'+(i+1)+'. '+x[0]+'</summary><p style="margin:6px 0 0">'+x[1]+'</p></details>'});
   h+='<p class="note" style="margin-top:10px">Аяты - перевод смыслов Корана Э. Кулиева. Хадисы - перевод смысла, с номером сборника.</p>';
   say({t:'Свиток знаний',bg:'sham',nohud:!playing,cast:[],p:[{html:h}],b:nx(lab||'Назад',back)});
 }
@@ -1032,19 +1084,20 @@ function city(){
   var cells=st.city&&st.city.length===32?st.city.slice():(function(){var a=[];for(var i=0;i<32;i++)a.push('');return a})();
   if(!S)S=fresh();
   S.city=cells;
-  var blocks=(st.blocks||0)+(st.blocks2||0)+(st.bonusBlocks||0);
+  var blocks=(st.blocks||0)+(st.blocks2||0)+(st.blocks3||0)+(st.bonusBlocks||0);
   var hasWell=!!st.well;
   function render(){
     var used=cells.filter(function(c){return c}).length,left=Math.max(0,blocks-used);
     say({t:'Мой город',stay:true,bg:'city',nohud:true,cast:[],alt:'Твой квартал из блоков',p:[
       'Блоков осталось: <b>'+left+'</b> из '+blocks+'. Выбери постройку и нажми на клетку на картинке. Нажми ещё раз - уберёшь.',
       hasWell?'<span class="ok">'+L('well.ok')+'</span>':'<span class="note">Колодец открывается за доброе дело в пути.</span>',
-      '<span class="note">В главе 2 постройки помогут: колодец даст воду в начале пути, лавка - место для тюка.</span>'
+      '<span class="note">В следующей главе постройки помогут: колодец даст воду, дом - силы, лавка - запасной тюк'+(load().done2?', Дом знаний - монеты и подсказку у писца':'')+'.</span>'
     ],extra:function(b){
       var pal=document.createElement('div');pal.className='pal';
-      ['h','s','p','w','k','b'].forEach(function(k){
+      ['h','s','p','w','k','t','b'].forEach(function(k){
         var e=document.createElement('button');
         if(k==='k'&&!load().done2)return;
+        if(k==='t'&&!load().done3)return;
         var locked=k==='w'&&!hasWell;
         e.innerHTML='<img alt="" src="'+IC['b'+k]+'">'+(locked?'закрыт':BLD[k].n);
         if(locked)e.disabled=true;
@@ -1052,7 +1105,7 @@ function city(){
         e.onclick=function(){sel=k;render()};pal.appendChild(e);
       });
       b.appendChild(pal);
-      var hook=document.createElement('div');hook.className='now';hook.innerHTML=load().done2?'<span class="who">Рассказчица</span>'+L('g2.end.hook')+'<br><b>'+L('g2.end.next')+'</b> Скоро.':'<span class="who">Рассказчица</span>'+L((load().helped?'end.hook':'end.hook0'))+(CH2_ON?'<br><b>Глава 2 открыта на главном экране.</b>':'<br><b>'+L('end.next')+'</b> Скоро.');
+      var hook=document.createElement('div');hook.className='now';hook.innerHTML=load().done3?'<span class="who">Рассказчица</span>'+L('g3.end.hook')+'<br><b>'+L('g3.end.next')+'</b> Скоро.':load().done2?'<span class="who">Рассказчица</span>'+L('g2.end.hook')+(CH3_ON?'<br><b>Глава 3 открыта на главном экране.</b>':'<br><b>'+L('g2.end.next')+'</b> Скоро.'):'<span class="who">Рассказчица</span>'+L((load().helped?'end.hook':'end.hook0'))+(CH2_ON?'<br><b>Глава 2 открыта на главном экране.</b>':'<br><b>'+L('end.next')+'</b> Скоро.');
       b.appendChild(hook);
       var pc=document.createElement('button');pc.className='btn alt';pc.textContent='Открытка: сохранить картинку города';pc.onclick=function(){try{var url=cv.toDataURL('image/png');var a=document.createElement('a');a.href=url;a.download='moy-gorod-ilm-kraft.png';document.body.appendChild(a);a.click();a.parentNode.removeChild(a);stat('otkrytka','сохранил(а)')}catch(e){}};b.appendChild(pc);
       var t=document.createElement('button');t.className='btn alt';t.textContent='На главный экран';t.onclick=function(){cv.onclick=null;title()};b.appendChild(t);
@@ -1074,7 +1127,7 @@ function parents(){
   playing=false;
   var st=load(),s=st.stats||{},last=s.last||{};
   var days=Object.keys(s.days||{}).length;
-  var LBL={hero:'Герой',starik:'Разговор со стариком',riba:'Ростовщик',pokupka:'Покупка',voda:'Вода путнику',burya:'Буря',eda:'Ужин',koshelek:'Кошелёк',skorpion:'Скорпион',mirazh:'Мираж',verblyud:'Колючка',oazis:'Оазис',finiki:'Финики (мини-игра)',izyan:'Товар с изъяном',motiv:'Почему так поступил(а)',priznanie:'Признание',rebenok:'Потерявшийся ребёнок',vesy:'Весы',klyatva:'Клятва',prodazha:'Кому продал(а)',sadaka:'Садака',samocvet:'Самоцвет',ogranka:'Огранка',slovo:'Слово пути',tyuk:'Чужой тюк ночью',dyadya:'Помощь дяде'};
+  var LBL={hero:'Герой',starik:'Разговор со стариком',riba:'Ростовщик',pokupka:'Покупка',voda:'Вода путнику',burya:'Буря',eda:'Ужин',koshelek:'Кошелёк',skorpion:'Скорпион',mirazh:'Мираж',verblyud:'Колючка',oazis:'Оазис',finiki:'Финики (мини-игра)',izyan:'Товар с изъяном',motiv:'Почему так поступил(а)',priznanie:'Признание',rebenok:'Потерявшийся ребёнок',vesy:'Весы',klyatva:'Клятва',prodazha:'Кому продал(а)',sadaka:'Садака',samocvet:'Самоцвет',ogranka:'Огранка',slovo:'Слово пути',tyuk:'Чужой тюк ночью',dyadya:'Помощь дяде',vspomni:'Глава 2: вспомни',moneta:'Лишняя монета',drug:'Подруга (друг) в страхе',vodonos:'Водонос',zakaz:'Заказ погонщика',korziny:'Корзины',pravda:'Правда матери Мазина',zvezdy:'Загадка звёзд',hani:'Хани в грозу',sel:'Сель',gost:'Гостья',rodstvo:'Родство',pisec:'Писец',motiv2:'Почему так (глава 2)',slovo2:'Слово пути (глава 2)',vspomni3:'Глава 3: вспомни',ekzamen:'Рассыпанные финики',zastupis:'Мальчишки и корзины',ranya:'Расспросы о вере',gruz:'Ровный груз',pesnya:'Стихи у колодца',hani3:'Хани и обидчики',sluh:'Слух о финиках',bukvy:'Слово «сабр»',obeshchanie:'Слово под давлением',dzhasir:'Джасир в беде',vera:'Свидетельство веры',motiv3:'Почему так (глава 3)',slovo3:'Слово пути (глава 3)',nahodka:'Находка',znak:'Знак следопыта',otkrytka:'Открытка',verblyud_imya:'Имя верблюда',vopros_dnya:'Вопрос дня'};
   var rows=[];for(var k in last)rows.push((LBL[k]||k)+': '+last[k]);
   var un=Object.keys(s.unlocks||{});
   say({t:'Для родителей',nohud:true,bg:'mecca',cast:[],p:[
@@ -1082,6 +1135,8 @@ function parents(){
     '<b>Поступок недели:</b> сказать правду, даже когда невыгодно.',
     (load().S&&load().S.ch===2)||load().done2?L('g2.par.1')+' '+L('g2.par.2')+' '+L('g2.par.3'):'',
     (load().S&&load().S.ch===2)||load().done2?L('g2.par.act')+'<br>'+L('g2.par.ask')+'<br>'+L('g2.par.safe'):'',
+    (load().S&&load().S.ch===3)||load().done3?L('g3.par.1')+' '+L('g3.par.2')+' '+L('g3.par.3'):'',
+    (load().S&&load().S.ch===3)||load().done3?L('g3.par.act')+'<br>'+L('g3.par.ask')+'<br>'+L('g3.par.safe'):'',
     '<b>Вопрос к ужину:</b> «Сказал(а) бы ты о дырочке в ткани, если бы покупатель никогда не узнал? Почему?»',
     '<b>Самоцветы.</b> Знание о каждом имени Аллаха - самоцвет в «Сокровищнице имён»: имя, аят и как жить с этим именем. Самоцвет - только образ знания: сами имена мы не изображаем и не делаем игровыми вещами, их нельзя потерять, продать или обменять.',
     '<b>Источники.</b> Аяты - перевод смыслов Корана Э. Кулиева. Хадисы - перевод смысла, с номером сборника. Всё содержание проверено по достоверным источникам и спискам запрещённых в РФ материалов. Возраст: 12+.',
@@ -1163,15 +1218,15 @@ function playIdx(i){
 function gemShow(id,done){
   var g0=GEMS[id],first=!Object.keys(gems()).length,have=gems()[id];
   if(have){gemNow={id:id,lit:have.f>=3?3:2};
-    return say({t:'Знакомый самоцвет',bg:'gem',nohud:true,cast:[],p:['<div class="arab">'+g0.ar+'</div>','Имя Аллаха <b>'+g0.n+'</b> уже в твоей Сокровищнице. Вспомни его - и самоцвет заблестит ярче.'],b:[{t:'Вспомнить',f:function(){polish(id,done)}},{t:'Дальше',c:'alt',f:done}]});}
+    return say({vo:['gem.'+id+'.1'],t:'Знакомый самоцвет',bg:'gem',nohud:true,cast:[],p:['<div class="arab">'+g0.ar+'</div>','Имя Аллаха <b>'+g0.n+'</b> уже в твоей Сокровищнице. Вспомни его - и самоцвет заблестит ярче.'],b:[{t:'Вспомнить',f:function(){polish(id,done)}},{t:'Дальше',c:'alt',f:done}]});}
   gemNow={id:id,lit:1};sfx('facet');vib([20,30,20]);
   var snd={t:'▶ Послушать имя',c:'alt',f:function(){playIdx(g0.i)}};
-  say({t:L('gem.found'),bg:'gem',nohud:true,cast:[],p:['<div class="arab">'+g0.ar+'</div>','Это одно из прекрасных имён Аллаха: <b>'+g0.n+'</b> - '+g0.mean+'.','<span class="note">Самоцвет - образ знания об имени, которое ты хранишь в сердце. Первая грань загорелась, вторую зажжёт ответ.</span>'],b:[snd,{t:'Вторая грань: проверь себя ✦',f:function(){
+  say({vo:['gem.'+id+'.1'],t:L('gem.found'),bg:'gem',nohud:true,cast:[],p:['<div class="arab">'+g0.ar+'</div>','Это одно из прекрасных имён Аллаха: <b>'+g0.n+'</b> - '+g0.mean+'.','<span class="note">Самоцвет - образ знания об имени, которое ты хранишь в сердце. Первая грань загорелась, вторую зажжёт ответ.</span>'],b:[snd,{t:'Вторая грань: проверь себя ✦',f:function(){
     meanQuiz(id,function(ok){
       gemNow.lit=2;
-      say({t:g0.n+': аят',bg:'gem',nohud:true,cast:[],p:[ok?'<span class="ok">Верно!</span> Вторая грань горит.':'Правильно: <b>'+g0.mean+'</b>. Вторая грань всё равно горит - знание пришло.',g0.ayah],b:[{t:'Как жить с этим именем',f:function(){
-        say({t:g0.n+': как жить с этим именем',bg:'gem',nohud:true,cast:[],p:[lifeOf(id),'<span class="note">Третья грань засияет завтра: вернись и вспомни имя.</span>'],b:[{t:'Положить в Сокровищницу',c:'gold',f:function(){
-          setGem(id,{d:day(),f:2,r:dn()+1,b:0});stat('samocvet',g0.n);var gq=gems();if(gq.raqib&&gq.karim)badge('sled');if(gq.badi&&gq.khabir)badge('sled2');
+      say({vo:['gem.'+id+'.ayah'],t:g0.n+': аят',bg:'gem',nohud:true,cast:[],p:[ok?'<span class="ok">Верно!</span> Вторая грань горит.':'Правильно: <b>'+g0.mean+'</b>. Вторая грань всё равно горит - знание пришло.',g0.ayah],b:[{t:'Как жить с этим именем',f:function(){
+        say({vo:['gem.'+id+'.'+(id==='razzaq'&&!(S&&S.helped)?'life0':'life')],t:g0.n+': как жить с этим именем',bg:'gem',nohud:true,cast:[],p:[lifeOf(id),'<span class="note">Третья грань засияет завтра: вернись и вспомни имя.</span>'],b:[{t:'Положить в Сокровищницу',c:'gold',f:function(){
+          setGem(id,{d:day(),f:2,r:dn()+1,b:0});stat('samocvet',g0.n);var gq=gems();if(gq.raqib&&gq.karim)badge('sled');if(gq.badi&&gq.khabir)badge('sled2');if(gq.afuw&&gq.waliyy)badge('sled3');
           if(first)seq([{t:'Сокровищница имён',bg:'gem',nohud:true,cast:[],p:[{now:L('gem.intro')}]},{t:'Сокровищница имён',bg:'gem',nohud:true,cast:[],p:[{now:L('gem.intro2')}],b:nx('Открыть Сокровищницу',function(){treasury(done,id)})}]);
           else treasury(done,id);
         }}]});
@@ -1185,8 +1240,8 @@ function treasury(back,focus){
   gemNow=focus?{id:focus,lit:gg[focus]&&gg[focus].f>=3?3:2}:(n?{id:have[have.length-1],lit:3}:null);
   var cells='';var byIdx={};ids.forEach(function(k){byIdx[GEMS[k].i]=k});
   for(var i=0;i<=98;i++){var k=byIdx[i];cells+=k&&gg[k]?'<img alt="" src="'+gemIcon(k,2)+'" style="width:26px;height:22px;image-rendering:pixelated">':'<span aria-hidden="true" style="display:inline-block;width:26px;height:22px;text-align:center;color:var(--note);opacity:.45;font-size:12px">◇</span>'}
-  var two=!!(load().S&&load().S.ch===2)||!!load().done2;
-  var line='Глава 1: '+CH1.map(function(k){return gg[k]?'◆':'◇'}).join('')+(two?' · Глава 2: '+CH2.map(function(k){return gg[k]?'◆':'◇'}).join(''):''),miss=CH1.concat(two?CH2:[]).filter(function(k){return !gg[k]});
+  var cS=load().S,three=!!(cS&&cS.ch===3)||!!load().done3,two=three||!!(cS&&cS.ch===2)||!!load().done2;
+  var line='Глава 1: '+CH1.map(function(k){return gg[k]?'◆':'◇'}).join('')+(two?' · Глава 2: '+CH2.map(function(k){return gg[k]?'◆':'◇'}).join(''):'')+(three?' · Глава 3: '+CH3.map(function(k){return gg[k]?'◆':'◇'}).join(''):''),miss=CH1.concat(two?CH2:[]).concat(three?CH3:[]).filter(function(k){return !gg[k]});
   say({t:'Сокровищница имён',bg:'gem',nohud:true,cast:[],p:[
     'Звание: <b>'+rank().n+'</b> <span class="note">('+rank().next+')</span><br>Собрано <b>'+n+' из 99</b>. '+line+(miss.length?'<br><span class="note">Не хватает: '+miss.map(function(k){return HINT[k]}).join('; ')+'.</span>':' <span class="ok">Глава собрана!</span>'),
     {html:'<div role="img" aria-label="Собрано '+n+' самоцветов из 99" style="display:flex;flex-wrap:wrap;gap:2px;margin:6px 0 10px">'+cells+'</div>'},
@@ -1490,10 +1545,10 @@ SC.g2order=function(){
   seq([{t:'Заказ погонщика',bg:'mecca',cast:c,p:[{w:'Погонщик',t:L('g2.ord.1')}]},{t:'Заказ погонщика',bg:'mecca',cast:c,p:[L('g2.ord.how'),S.energy<25?L('g2.tired'):''],b:nx('Смотреть',function(){S.ordSeq=shuf(Object.keys(MEMO)).slice(0,5);S.ordAsk=0;memoShow()})}]);
 };
 function memoShow(){
-  mm={seq:S.ordSeq,cur:null,picked:[],phase:'show'};
+  var my=mm={seq:S.ordSeq,cur:null,picked:[],phase:'show'};
   say({t:'Запоминай',bg:'memo',nohud:true,cast:[],p:['Смотри внимательно: пять вещей по одной.'],b:[]});
   var dt=S.energy<25?700:1000,i=0;
-  (function step(){if(!mm||mm.phase!=='show')return;if(i<mm.seq.length){mm.cur=i;sfx('pop');i++;setTimeout(function(){mm.cur=null;setTimeout(step,180)},dt)}else memoPick()})();
+  (function step(){if(mm!==my||my.phase!=='show')return;if(i<my.seq.length){my.cur=i;sfx('pop');i++;setTimeout(function(){if(mm!==my)return;my.cur=null;setTimeout(step,180)},dt)}else memoPick()})();
 }
 function memoPick(){
   mm.phase='pick';
@@ -1507,14 +1562,14 @@ function memoPick(){
   function memoPickRefresh(){var p=document.querySelector('#txt p');if(p)p.innerHTML='Нажми вещи в том же порядке. Собрано: <b>'+mm.picked.length+' из 5</b>.'}
 }
 function memoMiss(){
-  mm.phase='miss';
+  mm=mm||{};mm.phase='miss';
   say({t:'Заказ погонщика',bg:'mecca',cast:c2(['driver',176,96]),p:[L('g2.ord.miss')],b:[
     {t:'Переспросить погонщика',s:'это ничего не стоит',f:function(){S.ordAsk++;stat('zakaz','переспросил(а)');seq([{t:'Заказ погонщика',bg:'mecca',cast:c2(['driver',176,96]),p:[L('g2.ord.ask'),{now:L('g2.ord.now')}],b:nx('Смотреть ещё раз',memoShow)}])}},
     {t:'Собрать как запомнилось',c:'alt',f:function(){memoDone(false)}}
   ]});
 }
 function memoDone(ok){
-  mm.phase='done';var c=c2(['driver',176,96]);
+  mm=mm||{};mm.phase='done';S.ordOk=ok;var c=c2(['driver',176,96]);
   if(ok){ad({money:8,trust:5});stat('zakaz',S.ordAsk?'верно после вопроса':'с первого раза');if(!S.ordAsk)badge('pamyat')}else{ad({money:4,trust:-5});stat('zakaz','как запомнилось')}
   say({t:'Заказ погонщика',bg:'mecca',cast:c,p:[ok?{w:'Погонщик',t:L('g2.ord.ok').replace(/^Погонщик проверяет: всё на месте и по порядку. «|», - говорит он и платит.$/g,'')}:L('g2.ord.wrong'),ok?'Погонщик проверяет: всё на месте и по порядку - и платит.':''],b:nx('Дальше',function(){mm=null;go('g2weaver')})});
 }
@@ -1671,15 +1726,517 @@ function q2show(){
 }
 function q2end(){
   var extra=q2ok>=3?2:q2ok===2?1:0,all=(S.blocks||4)+extra,st=load();all=Math.max(st.blocks2||0,all);
-  var stt=st.stats||{};stt.quiz2=q2ok;stt.done2=day();save({blocks2:all,at:'done2',done2:1,stats:stt});playing=false;
+  var stt=st.stats||{};stt.quiz2=q2ok;stt.done2=day();save({blocks2:all,at:'done2',done2:1,stats:stt,trust2:S.trust,ch2s:{wv:S.wv,friend:S.friend,hani:S.hani,ordOk:!!S.ordOk}});playing=false;
   seq([{t:'Знания - тоже блоки',bg:'mecca',cast:c2(),p:['Верных ответов: '+q2ok+' из '+QS2x.length+'. '+(extra?'+'+extra+' к блокам города.':'Ничего страшного: свиток всегда с тобой.'),'Блоков главы 2: '+all+'.']},
     {t:'Дом знаний',bg:'city',nohud:true,cast:[],p:[{now:L('g2.city.k')},'<span class="ok">Новая постройка открыта: Дом знаний.</span>'],b:nx('Строить город',city)}]);
 }
 
+/* =========================================================
+   ГЛАВА 3 «Терпение в Мекке». Около 614 года, героине 19 лет.
+   Сценарий rizq-igra/glava3-scenariy.md + богословская проверка 11.10.2026 (8 обязательных и 14 желательных правок внесены).
+   Пророка (саллаллаху алейхи ва саллям), ангелов и сподвижников не изображаем: экраны Рассказчицы без людей, Каабы нет.
+   ========================================================= */
+var CH3_ON=true;
+var SCRIPT3={
+'g3.title.1':'Мекка, около 614 года. Тебе 19 лет. Город спорит о призыве к Аллаху Единому, а слабым тяжело.',
+'g3.title.2':'Пророка (саллаллаху алейхи ва саллям), ангелов и сподвижников не рисуем: о них говорит Рассказчица словами Корана, хадисов и сиры.',
+'g3.recall.q':'Вспомни главу 2. С какого слова началось ниспослание Корана?',
+'g3.recall.e':'Икъра’ - «Читай!». Ильм - знание, къалам - письменная трость. С той ночи прошло четыре года.',
+'g3.intro.now':'Прошло четыре года. Тебе 19 лет. Писец Халаф выучил тебя буквам, а у твоей лавки есть свои покупатели.',
+'g3.intro.city':'Твой город помогает: $1.',
+'g3.intro.prm4':'Уже четыре года у входа в лавку стоят корзины {Раньи|Рами}. Ты дал{а|} слово: это место - {её|его}.',
+'g3.intro.prm':'Помнишь {Ранью|Рами}, что плел{а|} корзины за рынком? С весны {её|его} корзины стоят у входа в твою лавку. Ты дал{а|} слово: это место - {её|его}.',
+'g3.intro.1':'Рынок стал другим: спорят на каждом углу. Одни слушают призыв, другие смеются. Держись ближе ко мне.',
+'g3.intro.2':'Утро. Финики, соль, лепёшки. В кошеле прибавилось.',
+'g3.spl.1':'Мимо прилавка идёт слуга купца Джасира из лавки напротив. Он нарочно задевает плечом корзину. Финики катятся в пыль.',
+'g3.spl.2':'Ой. Подбирай, {торговка|торговец}!',
+'g3.spl.sharp':'Слово за слово - вы кричите на всю улицу. Покупатели обходят лавку стороной.',
+'g3.spl.rev':'Его лепёшки летят в пыль. Он поднимает крик, и дядя Салим молча платит ему за лепёшки.',
+'g3.spl.calm':'Слуга оглядывается: на него смотрит вся улица. Он нехотя кладёт на прилавок монету за финики и уходит.',
+'g3.spl.quiet':'Ты собираешь финики по одному. Слуга уходит, посвистывая. Часть фиников уже не продать.',
+'g3.spl.stock':'Испорченные ты заменяешь финиками из запасного тюка.',
+'g3.safa.1':'А теперь о том, что изменило Мекку. Аллах ниспослал: «Предостереги своих ближайших родственников!» (Коран 26:214). Пророк (саллаллаху алейхи ва саллям) поднялся на холм ас-Сафа и позвал мекканские роды.',
+'g3.safa.2':'Пророк (саллаллаху алейхи ва саллям) спросил: «Если я скажу, что в долине конница хочет напасть на вас, поверите?» Люди ответили: «Да, мы не знали за тобой ничего, кроме правды» (аль-Бухари 4770, перевод смысла).',
+'g3.safa.3':'Тогда Пророк (саллаллаху алейхи ва саллям) сказал: «Я предостерегаю вас перед тяжким наказанием» (аль-Бухари 4770, Муслим 208, перевод смысла). Помнишь главу 1? Даже не принявшие призыв знали: аль-Амин не лжёт.',
+'g3.mkt.0':'Полдень, жара. Семья {Раньи|Рами} недавно приняла ислам: поверила в Аллаха Единого и Его Посланника. С тех пор у них почти ничего не покупают.',
+'g3.mkt.1':'За углом мальчишки обступили {Ранью|Рами} и сыплют песок в {её|его} корзины.',
+'g3.mkt.2':'Кто у вас теперь купит? От вас весь рынок отвернулся!',
+'g3.mkt.calm':'Мальчишки ворчат, но расходятся. {Ранья|Рами} молча вытряхивает песок из корзин.',
+'g3.mkt.shout':'Мальчишки с визгом разбегаются. Один оборачивается и грозит тебе кулаком.',
+'g3.mkt.uncle':'Дядя Салим выходит из лавки, и мальчишки исчезают раньше, чем он успевает что-то сказать.',
+'g3.mkt.no':'Ты идёшь дальше. Смех за спиной стихает не сразу.',
+'g3.ran.1':'{Ранья|Рами} садится в тени твоей лавки и стряхивает песок с ладоней.',
+'g3.ran.2':'Спасибо. Мы теперь мусульмане. За это нас и сторонятся.',
+'g3.ran.2no':'Ты видел{а|}... Ладно. Мы теперь мусульмане. За это нас и сторонятся.',
+'g3.ran.faith':'Что Аллах - Один и поклоняться можно только Ему, больше никому и ничему. А Мухаммад (саллаллаху алейхи ва саллям) - Его Посланник.',
+'g3.ran.how':'Мама говорит: потерпим. Мы держимся вместе и напоминаем друг другу: трудно - не значит напрасно.',
+'g3.ran.afw':'Хочется. Иногда очень. Но мама говорит: простить труднее, чем ответить. Я учусь.',
+'g3.afw.1':'Прощать трудно, особенно когда обидно. Но больше всех прощает Аллах.',
+'g3.ran.wait':'{Ранья|Рами} ждёт, что ты спросишь ещё.',
+'g3.asr.1':'Терпение названо в короткой суре «Аль-Аср»: «Клянусь предвечерним временем (или временем)! Воистину, каждый человек в убытке, кроме тех, которые уверовали, совершали праведные деяния, заповедали друг другу истину и заповедали друг другу терпение!» (Коран 103:1-3).',
+'g3.asr.2':'Терпение здесь - не «сидеть и ждать». Это держаться веры и добрых дел, когда трудно, и напоминать о терпении друг другу.',
+'g3.first.1':'Аммар (да будет доволен им Аллах) рассказывал: «Я видел Посланника Аллаха (саллаллаху алейхи ва саллям), и с ним были только пятеро невольников, две женщины и Абу Бакр» (аль-Бухари 3660, перевод смысла).',
+'g3.first.2':'У знатных были роды-защитники. А невольник Билял (да будет доволен им Аллах) был один. Его притесняли за веру, а он повторял: «Ахад, Ахад» - «Един, Един» (Ибн Маджа 150, хасан, перевод смысла).',
+'g3.first.3':'В полуденный зной ему клали на грудь тяжёлый камень. А он всё повторял: «Ахад, Ахад» (сира Ибн Хишама).',
+'g3.load.1':'Помоги навьючить верблюда: шесть тюков для Таифа. Положишь неровно - груз сползёт в пути.',
+'g3.load.1ok':'Ты однажды собрал{а|} мне заказ без ошибки. Помоги и сейчас: шесть тюков для Таифа. Неровный груз сползёт в пути.',
+'g3.load.how':'Нажми тюк, потом бок верблюда. На каждый бок - три тюка. Число на тюке - его вес. Бока должны весить одинаково.',
+'g3.load.tired':'Ты {устала|устал}: тюки кажутся тяжелее.',
+'g3.load.heck':'Мальчишка у ворот: «Быстрее! Караван уходит без тебя!»',
+'g3.load.heck2':'Кто-то смеётся: «Копуша!»',
+'g3.load.even':'Ровно! Верблюд встаёт легко. Погонщик проверяет узлы и платит.',
+'g3.load.tilt':'Груз чуть кренится. Погонщик подтягивает верёвку: «Дойдёт». И платит.',
+'g3.load.slip':'У самых ворот груз сползает набок. Два тюка в пыли, верблюд натёр бок.',
+'g3.load.redo':'Погонщик снимает тюки и ждёт. Не торопит.',
+'g3.load.leave':'Погонщик перевязывает как может и платит меньше: «В следующий раз не спеши».',
+'g3.load.now':'Пророк (саллаллаху алейхи ва саллям) сказал одному человеку: «В тебе есть два качества, которые любит Аллах: выдержка и неторопливость» (Муслим 18, перевод смысла).',
+'g3.load.now2':'Неторопливость - не медлительность. Это сначала подумать, потом сделать, даже когда тебя торопят.',
+'g3.song.0':'Ты идёшь за водой. У колодца {девушки|парни} передают друг другу насмешливые стихи про семью {Раньи|Рами}. Каждый добавляет строчку. Все смеются.',
+'g3.song.1':'Придумай и ты строчку! Это же шутка. А не то и над тобой начнут смеяться.',
+'g3.song.say':'Кто-то фыркает: «Скучн{ая|ый}!» Но двое замолкают. Стихи обрываются на полуслове.',
+'g3.song.talkL':'Ты когда-то меня выслушал{а|}. Теперь я тебя послушаю.',
+'g3.song.talk':'{Сальма|Харис} краснеет: «Я и сам{а|} не хотел{а|}. Просто все смеялись». Вы уходите вместе.',
+'g3.song.join':'Все хохочут над твоей строчкой. А у ворот стоит {Ранья|Рами} с пустым кувшином. {Она|Он} всё слышал{а|}.',
+'g3.song.left':'Ты уходишь с полным кувшином. {Сальма|Харис} смотрит тебе вслед.',
+'g3.song.now':'Пророк (саллаллаху алейхи ва саллям) сказал: «Помогай своему брату, будь он притеснителем или притесняемым». Люди спросили, как помочь притеснителю. Пророк (саллаллаху алейхи ва саллям) ответил: «Удержи его от притеснения» (аль-Бухари 2444, 6952, перевод смысла).',
+'g3.eve.1':'Вечер. Рынок пустеет.',
+'g3.eve.calm':'Слуга Джасира проходит мимо твоей лавки и отводит глаза.',
+'g3.eve.quiet':'Слуга Джасира проходит мимо. Не смеётся. На миг замедляет шаг - и уходит.',
+'g3.eve.sharp':'Слуга Джасира издалека кричит тебе новую грубость. Ссора не кончилась.',
+'g3.eve.rev':'На рынке шепчутся: «В той лавке дерутся». Двое покупателей проходят мимо.',
+'g3.eve.sand':'А в твоих финиках - горсть песка. Из-за угла хихикают те самые мальчишки.',
+'g3.eve.now':'Аллах говорит: «А рабами Милостивого являются те, которые ступают по земле смиренно, а когда невежды обращаются к ним, они говорят: «Мир!»» (Коран 25:63).',
+'g3.eve.now2':'Спокойно потребовать своё или промолчать - оба пути выдержки. А гнев и ответная порча только раздувают ссору.',
+'g3.eve.water':'Воды совсем мало. Водонос Мансур ещё ходит по улице с бурдюком.',
+'g3.hani.0':'Ночь. Душно, и вся семья спит на крыше. Не спит только Хани - ему уже двенадцать.',
+'g3.hani.1':'Днём над ним смеялись: «Вы теперь с корзинщиками водитесь!» Хани сжимает кулаки.',
+'g3.hani.2':'Завтра я им камнем! Пусть знают!',
+'g3.hani.ch2':'Пришёл он не в драку, а к тебе - как тогда, в грозу.',
+'g3.hani.talk':'Хани долго молчит. Потом шепчет: «Обидно». Ты рассказываешь, как {Ранья|Рами} не отвечает злом. Кулаки разжимаются.',
+'g3.hani.go':'Утром отец одного мальчишки слушает молча. Потом зовёт сына: «Извинись». Хани растерянно кивает.',
+'g3.hani.words':'Назавтра Хани приходит с порванным рукавом: слово за слово - и драка. Его мама долго молчит над рукавом.',
+'g3.hani.work':'Утром Хани так занят весами, что про мальчишек почти забывает.',
+'g3.hani.now':'Пророк (саллаллаху алейхи ва саллям) сказал: «Сильный не тот, кто побеждает других силой. Сильный - тот, кто владеет собой в гневе» (аль-Бухари 6114, Муслим 2609, перевод смысла).',
+'g3.sleep':'Ты засыпаешь под звёздами. Завтра - снова рынок.',
+'g3.rum.1':'Утро. Покупательница отдёргивает руку от твоих фиников: «Говорят, у тебя финики с червями».',
+'g3.rum.2':'Я только предупреждаю людей!',
+'g3.rum.show':'Люди перебирают финики. Ни одной червоточины. Покупательница берёт две меры: «Зря я слушала».',
+'g3.rum.lie':'К обеду весь рынок шепчется о кривых весах. Покупатели не верят ни тебе, ни Джасиру и уходят в третью лавку.',
+'g3.rum.ask':'Корзины у твоего входа. Сам{а|} знаешь чьи. Подумай до вечера.',
+'g3.rum.wait':'Слух живёт до вечера. Покупателей вдвое меньше.',
+'g3.khab.1':'Хаббаб ибн аль-Аратт (да будет доволен им Аллах) был кузнецом. Один мекканец задолжал ему и сказал: «Не отдам, пока не отречёшься от Мухаммада (саллаллаху алейхи ва саллям)». Хаббаб не отрёкся (аль-Бухари 2091, перевод смысла).',
+'g3.khab.2':'Хаббаб рассказывал: «Мы пожаловались Посланнику Аллаха (саллаллаху алейхи ва саллям) на притеснения и спросили: «Не попросишь ли для нас помощи? Не помолишься ли Аллаху за нас?»» (аль-Бухари 3612, 3852, перевод смысла).',
+'g3.khab.2b':'Пророк (саллаллаху алейхи ва саллям) напомнил, что верующие до них терпели ещё более тяжкое и не оставляли веры (аль-Бухари 3612).',
+'g3.khab.3':'Пророк (саллаллаху алейхи ва саллям) ответил: «...Аллах непременно завершит это дело, и всадник проедет из Саны в Хадрамаут, боясь лишь Аллаха, а за овец - разве что волка. Но вы торопитесь» (аль-Бухари 3612, перевод смысла).',
+'g3.scr.1':'{Вы с дядей Салимом заходите|Ты заходишь} к писцу Халафу. Уже четыре года он учит тебя буквам.',
+'g3.scr.2':'Сложи-ка слово «сабр» - терпение. Помнишь? Пишем справа налево.',
+'g3.puz.1':'Нажимай буквы по порядку. Первая буква будет справа.',
+'g3.puz.hint':'В Доме знаний ты уже видел{а|} первую букву: она подсвечена.',
+'g3.puz.sin':'Похоже, но это син (س). «Сабр» пишут через сад (ص): это твёрдое, «толстое» с.',
+'g3.puz.miss':'Не та буква. Скажи слово вслух: с-а-б-р. Звук «а» здесь отдельной буквой не пишется.',
+'g3.puz.ok':'Три буквы сложились в целое слово.',
+'g3.puz.ok2':'Ровно и без спешки. Так и пишут, и живут.',
+'g3.scr.clue':'Вчера северный купец заверял у меня договор. Внизу поставил знак - как на твоей табличке. Он ещё у ворот, с караваном из Шама.',
+'g3.scr.look':'На столе договор. В нём рядом с именем сироты написано слово «валий».',
+'g3.scr.wali':'Валий - покровитель, опекун. Его пишут, когда за сироту или слабого отвечает кто-то сильный.',
+'g3.wly.1':'Люди бывают покровителями друг другу. Но лучший Покровитель верующих - Аллах: всё в Его власти.',
+'g3.scr.wait':'Халаф дописывает договор и кивает тебе.',
+'g3.nor.1':'У ворот разгружается караван из Шама. Купец в синей чалме вертит в руках твою табличку.',
+'g3.nor.2':'Прочесть не могу: это письмо дальнего севера. Но знак знаю: так метят вещь, оставленную на хранение. Хозяин за ней вернётся.',
+'g3.nor.3':'Свёрток - не подарок, а чья-то амана? Кто же оставил его тебе - и почему именно тебе?',
+'g3.nor.write':'Ты {записала|записал} слова купца на обороте старого договора. Буквы Халафа пригодились.',
+'g3.prm.1':'Купец Джасир сам подходит к твоей лавке.',
+'g3.prm.2':'Убери корзины этих от входа - возьму весь твой тюк вдвое. А нет - мои люди к тебе не придут.',
+'g3.prm.3':'Ты помнишь своё слово: место у входа - {Раньи|Рами}.',
+'g3.prm.keep':'Джасир пожимает плечами и уходит. Всю неделю его люди обходят твою лавку.',
+'g3.prm.say':'«Я дал{а|} слово. Слово дороже тюка», - говоришь ты. Старый купец из соседнего ряда кивает. Джасир уходит молча.',
+'g3.prm.broke':'Корзины {Раньи|Рами} теперь стоят в пыли за углом. Джасир платит половину: «Остальное - вечером».',
+'g3.prm.now':'Аллах говорит: «...И будьте верны своим обещаниям, ибо за обещания вас призовут к ответу» (Коран 17:34).',
+'g3.bakr.1':'А теперь снова о Биляле (да будет доволен им Аллах). Абу Бакр (да будет доволен им Аллах), купец из Мекки, выкупил его у хозяина и освободил (сира Ибн Хишама; аль-Бухари 3754, 3755).',
+'g3.bakr.2':'Умар (да будет доволен им Аллах) говорил: «Абу Бакр - наш господин, и он освободил нашего господина», имея в виду Биляла (аль-Бухари 3754, перевод смысла).',
+'g3.bakr.3':'Деньги могут давить на слабых, а могут освобождать их. Монета одна - дела разные.',
+'g3.jas.1':'Вечер. Вы с дядей Салимом идёте домой. В переулке верблюд Джасира пугается и сбрасывает тюки. Кувшины с маслом катятся во все стороны. Джасир один пытается поднять тюк.',
+'g3.jas.lift':'Втроём вы поднимаете тюк на верблюда. Джасир долго отряхивает руки. Потом глухо говорит: «Спасибо».',
+'g3.jas.jars':'Ты {собрала|собрал} семь кувшинов из восьми. Джасир смотрит на тебя так, будто видит впервые.',
+'g3.jas.pass':'Ты проходишь мимо. За спиной звякает разбитый кувшин.',
+'g3.jas.gloat':'Прохожие оборачиваются. Джасир багровеет. Ссора стала ещё глубже.',
+'g3.jas.now':'Аллах говорит: «Не равны добро и зло. Оттолкни зло тем, что лучше, и тогда тот, с кем ты враждуешь, станет для тебя словно близкий любящий родственник» (Коран 41:34).',
+'g3.jas.now2':'«Но не будет это даровано никому, кроме тех, кто проявляет терпение...» (Коран 41:35). «Терпи, ибо Аллах не теряет вознаграждения творящих добро» (Коран 11:115).',
+'g3.ret.kept':'К лавке подходит {Ранья|Рами} с новыми корзинами: «Мама просила передать: мы помним, кто нас не бросил».',
+'g3.ret.broke':'Корзины {Раньи|Рами} теперь стоят у лавки дяди Салима. {Ранья|Рами} кивает тебе издалека и не подходит.',
+'g3.ret.pay':'А вторую половину платы Джасир так и не отдал: «Сам{а|} понимаешь, рынок».',
+'g3.ret.fr.say':'Те стихи больше никто не повторяет. Ты тогда сказал{а|} - и всем стало неловко.',
+'g3.ret.fr.talk':'Я купил{а|} корзину у {Раньи|Рами}. Просто так. Ты был{а|} прав{а|}.',
+'g3.ret.fr.join':'Видишь, никто не обиделся! А {Ранья|Рами}, кстати, теперь ходит к колодцу в другое время.',
+'g3.ret.fr.left':'Ты тогда {ушла|ушёл}... Я потом тоже. Стало как-то не смешно.',
+'g3.ngt.1':'Ночь. Все спят на крыше, а ты смотришь на звёзды. Помнишь, Хани когда-то спрашивал: «Кто же их столько сделал?»',
+'g3.ngt.2':'Звёзд не сосчитать, а Творец у них Один. Ахад.',
+'g3.ngt.now':'Слово «ахад» есть в Коране: «Скажи: «Он - Аллах Единый, Аллах Самодостаточный. Он не родил и не был рожден, и нет никого равного Ему»» (Коран 112:1-4).',
+'g3.ngt.shahada':'Это свидетельство веры: нет божества, достойного поклонения, кроме Аллаха, и Мухаммад (саллаллаху алейхи ва саллям) - Его Посланник. Ты {сказала|сказал} его тихо, сердцем и словом. Так ты {стала|стал} {мусульманкой|мусульманином}.',
+'g3.ngt.note':'{Героиня выросла|Герой вырос} до ислама. Ребёнок из мусульманской семьи уже мусульманин, а свидетельство веры произносит в каждом намазе.',
+'g3.ngt.end':'Ты засыпаешь спокойно, хотя завтра на рынке снова будет трудно.',
+'g3.mot.q':'Вспомни слугу Джасира и рассыпанные финики. Почему ты так {поступила|поступил}? Ответь честно: оценки здесь нет.',
+'g3.res.spl.calm':'Слуга заплатил за финики, и ссоры не было.',
+'g3.alt.spl.calm':'Резкий ответ - и ссора тянулась бы до вечера.',
+'g3.res.spl.quiet':'Ты {потеряла|потерял} немного фиников, но ссоры не было.',
+'g3.alt.spl.quiet':'Спокойное «собери или заплати» - и слуга, может быть, заплатил бы.',
+'g3.res.spl.sharp':'Ссора тянулась до вечера, покупатели обходили лавку.',
+'g3.alt.spl.sharp':'Спокойное «собери или заплати» - и всё кончилось бы за минуту.',
+'g3.res.spl.rev':'Испорчены два товара, и дядя заплатил за чужие лепёшки.',
+'g3.alt.spl.rev':'Спокойное требование - и слуга сам заплатил бы за финики.',
+'g3.res.prm.keep':'Слово сдержано. Неделя без покупателей Джасира.',
+'g3.alt.prm.keep':'Двойная цена на словах - а на деле половина платы и нарушенное слово.',
+'g3.res.prm.say':'Слово сдержано, и рынок слышал почему.',
+'g3.alt.prm.say':'Двойная цена на словах - а на деле половина платы и нарушенное слово.',
+'g3.res.prm.broke':'Ты {получила|получил} половину обещанного, а {Ранья|Рами} {ушла|ушёл} от твоей лавки.',
+'g3.alt.prm.broke':'Неделя без покупателей Джасира - но слово было бы цело.',
+'g3.name.pre':'Аллах видит, как люди ошибаются и обижают друг друга, и не спешит наказывать: даёт время одуматься и исправиться.',
+'g3.word.note':'Сабр - терпеть трудное. Хильм - не отвечать гневом, когда можешь ответить. Ахад - Единый.',
+'g3.city.t':'Новая постройка - часы-тень. Она напоминает о суре «Аль-Аср»: в ней Аллах клянётся временем.',
+'g3.end.hook':'Знак на табличке ставят на вещь, оставленную на хранение. Значит, свёрток - чья-то амана. Кто за ним придёт - и когда?',
+'g3.end.next':'Глава 4 - «Хиджра».',
+'g3.rest':'Лавка закрыта до завтра. Продолжим с этого же места. Иди, отдохни и помоги дома.',
+'g3.par.1':'<b>Чему учит глава 3.</b> Пророк (саллаллаху алейхи ва саллям) открыто призвал людей к Аллаху (аль-Бухари 4770). Среди первых уверовавших были невольники и слабые (аль-Бухари 3660).',
+'g3.par.2':'Билял (да будет доволен им Аллах) терпел притеснения и повторял: «Ахад, Ахад» - «Един, Един» (Ибн Маджа 150, хасан). Абу Бакр (да будет доволен им Аллах) выкупил и освободил его (аль-Бухари 3754, 3755).',
+'g3.par.3':'Аль-Халим - Выдержанный: Аллах не спешит наказывать (Коран 17:44). Выдержку и неторопливость любит Аллах (Муслим 18).',
+'g3.par.act':'<b>Поступок недели:</b> когда задевают, сделать паузу и ответить спокойно или промолчать, но не мстить. И держать данное слово.',
+'g3.par.ask':'<b>Вопрос к ужину:</b> «Когда тебе было обидно, но ты {сдержалась|сдержался}? Что помогло?» И ещё: «Что можно сделать, если в чате смеются над одноклассником?»',
+'g3.par.safe':'<b>О притеснениях.</b> В игре о них говорится бережно, без сцен жестокости. Можно обсудить: при травле в жизни не мстят и не терпят молча в одиночку, а сразу говорят взрослым.<br><b>Свидетельство веры.</b> В конце главы герой игры, выросший до ислама, тихо произносит шахаду. Ребёнок из мусульманской семьи уже мусульманин, а шахаду произносит в каждом намазе, в ташаххуде (аль-Бухари 831).'
+};
+for(var k3 in SCRIPT3)SCRIPT[k3]=SCRIPT3[k3];
+
+GEMS.halim={i:32,n:'Аль-Халим',ar:'الْحَلِيمُ',mean:'Выдержанный: видит ошибки людей и не спешит наказывать',pal:{a:'#5c2e0a',b:'#f0a060',c:'#fff0e0',d:'#b8662c'},
+  ayah:'Аллах говорит: «Его славят семь небес, земля и те, кто на них. Нет ничего, что не прославляло бы Его хвалой, но вы не понимаете их славословия. Воистину, Он - Выдержанный, Прощающий» (Коран 17:44).',
+  life:'Выдержка - не слабость: сдержаться, когда можешь ответить, - это сила. «Доброе слово и прощение лучше милостыни, за которой следует обидный попрек. Аллах - Богатый, Выдержанный» (Коран 2:263).'};
+GEMS.afuw={i:81,n:'Аль-Афув',ar:'الْعَفُوُّ',mean:'Снисходительный, Прощающий: стирающий следы греха',pal:{a:'#4a4a5a',b:'#d8d8e8',c:'#ffffff',d:'#9a9ab8'},
+  ayah:'Аллах говорит: «Если вы обнаружите добро, скроете его или простите злодеяние, то ведь Аллах - Снисходительный, Всемогущий» (Коран 4:149). «Снисходительный» здесь - это имя Аль-Афув.',
+  life:'Простить - не значит сказать «обижать можно». Это значит не мстить и не держать зла. О несправедливости можно сказать прямо и спокойно, а прощать учатся всю жизнь.'};
+GEMS.waliyy={i:55,n:'Аль-Валий',ar:'الْوَلِيُّ',mean:'Покровитель: Тот, Кто помогает верующим и ведёт их дела',pal:{a:'#3a4a0f',b:'#c8e070',c:'#f6ffe0',d:'#7a9a2c'},
+  ayah:'Аллах говорит: «Аллах - Покровитель тех, которые уверовали. Он выводит их из мраков к свету» (Коран 2:257). «...Он - Достохвальный Покровитель» (Коран 42:28).',
+  life:'У невольника Биляла (да будет доволен им Аллах) не было защитников среди людей. Но у верующих есть Покровитель - Аллах, и помощь Он посылает через людей, как через Абу Бакра (да будет доволен им Аллах). Проси защиты у Аллаха и помогай слабым.'};
+DIST=DIST.filter(function(x){return x!=='Выдержанный'}).concat([GEMS.halim.mean,GEMS.afuw.mean,GEMS.waliyy.mean]);
+CH3=['halim','afuw','waliyy'];HINT.halim='в конце главы 3';HINT.afuw='расспроси того, кто плетёт корзины (✦)';HINT.waliyy='осмотрись у писца (✦)';
+BADGES.sled3='Следопыт главы 3: найдены все тайные самоцветы';BADGES.gruz='Ровный груз: верблюд навьючен ровно с первой попытки';BADGES.bukvy='Твёрдая рука: слово «сабр» без ошибки';
+
+var SCROLL3=[
+  ['Открытый призыв','Аллах ниспослал: «Предостереги своих ближайших родственников!» (Коран 26:214). Пророк (саллаллаху алейхи ва саллям) поднялся на холм ас-Сафа и позвал мекканцев. Люди сказали: «Мы не знали за тобой ничего, кроме правды» (аль-Бухари 4770, перевод смысла).'],
+  ['Первые уверовавшие','Аммар (да будет доволен им Аллах) рассказывал, что вначале с Пророком (саллаллаху алейхи ва саллям) были только пятеро невольников, две женщины и Абу Бакр (аль-Бухари 3660).'],
+  ['Билял: «Ахад, Ахад»','Знатных защищали их роды, а у невольника Биляла (да будет доволен им Аллах) защиты не было. Его притесняли, а он повторял: «Ахад, Ахад» - «Един, Един» (Ибн Маджа 150, хасан; сира Ибн Хишама).'],
+  ['Абу Бакр освободил Биляла','Абу Бакр (да будет доволен им Аллах) выкупил Биляла (да будет доволен им Аллах) и освободил его (аль-Бухари 3754, 3755; сира Ибн Хишама). Умар (да будет доволен им Аллах) говорил: «Абу Бакр - наш господин, и он освободил нашего господина» (аль-Бухари 3754, перевод смысла).'],
+  ['«Но вы торопитесь»','Хаббаб (да будет доволен им Аллах) просил Пророка (саллаллаху алейхи ва саллям) помолиться за притесняемых. Пророк (саллаллаху алейхи ва саллям) ответил, что Аллах непременно завершит это дело и настанет безопасность, «но вы торопитесь» (аль-Бухари 3612).'],
+  ['Не мстить','Позже посланный Аллахом ангел гор предложил обрушить горы на тех, кто отверг призыв. Пророк (саллаллаху алейхи ва саллям) ответил: «Нет, я надеюсь, что из их потомков Аллах выведет поклоняющихся Аллаху Одному» (аль-Бухари 3231, перевод смысла).']
+];
+
+function fresh3(){
+  applyCol();
+  var st=load(),c=st.city||[],has=function(k){return c.indexOf(k)>=0};
+  var hero=st.hero1!==undefined?st.hero1:((st.S&&st.S.hero)||0);
+  var t2=st.trust2!==undefined?st.trust2:((st.S&&st.S.ch===2)?st.S.trust:50);
+  var ch2s=st.ch2s||((st.S&&st.S.ch===2)?{wv:st.S.wv,friend:st.S.friend,hani:st.S.hani,ordOk:!!st.S.ordOk}:{});
+  var help=[];if(has('w'))help.push('колодец (+20 воды)');if(has('h'))help.push('дом (+10 сил)');if(has('s'))help.push('лавка (запасной тюк фиников)');if(has('k'))help.push('Дом знаний (+8 монет за переписку и подсказка у писца)');
+  var m0=40+(has('k')?8:0);
+  return {ch:3,col:st.col||0,camel:st.camel||'Бархан',hero:hero,water:60+(has('w')?20:0),energy:80+(has('h')?10:0),trust:clamp(50+Math.round((t2-50)/2),30,80),money:m0,start:m0,
+    inv:{dates:has('s')?1:0,cloth:0,oil:0},help:help,hintK:has('k'),ch2s:ch2s,mk:{dates:1,cloth:1,oil:1},bonus:0,ev:[],good:false};
+}
+function c3(){var a=[['hero',120,96]];for(var i=0;i<arguments.length;i++)a.push(arguments[i]);return a}
+var bgEve=false;
+
+SC.g3recall=function(){
+  var opts=shuf([{a:'اقْرَأْ',t:'«Читай!»',ok:1},{a:'عِلْم',t:'«Знание»',ok:0},{a:'قَلَم',t:'«Письменная трость»',ok:0}]);
+  say({t:'Глава 3. Вспомни',bg:'mecca',cast:c3(),p:[L('g3.recall.q')],b:opts.map(function(o){return {t:'<span style="font-size:20px">'+o.a+'</span> - '+o.t,c:'alt',f:function(){
+    stat('vspomni3',o.ok?'верно':'ошибка');sfx(o.ok?'pop':'wrong');
+    say({t:'Глава 3. Вспомни',bg:'mecca',cast:c3(),p:[o.ok?'<span class="ok">Верно!</span>':'Не совсем.',L('g3.recall.e'),word('اقْرَأْ','икъра’','читай!'),word('عِلْم','ильм','знание'),word('قَلَم','къалам','письменная трость')],b:nx('Дальше',function(){go('g3intro')})});
+  }}})});
+};
+SC.g3intro=function(){
+  var shelf=S.ch2s&&S.ch2s.wv==='shelf';
+  seq([
+    {t:'Четыре года спустя',bg:'mecca',cast:c3(['uncle',176,96]),p:[{now:L('g3.intro.now')},S.help&&S.help.length?L('g3.intro.city',S.help.join(', ')):'']},
+    {t:'Своё слово',bg:'mecca',cast:c3(['weaver3',176,96]),p:[L(shelf?'g3.intro.prm4':'g3.intro.prm')]},
+    {t:'Лавка',bg:'mecca',cast:c3(['uncle',176,96]),p:[{w:'Дядя Салим',t:L('g3.intro.1')},L('g3.intro.2')]}
+  ],function(){ad({money:12});go('g3spill')});
+};
+SC.g3spill=function(){
+  var c=c3(['servant',176,96]);
+  function end(t,ex){say({t:'Рассыпанные финики',bg:'mecca',cast:c,p:[t,ex||''],b:nx('Дальше',function(){go('g3safa')})})}
+  say({t:'Рассыпанные финики',bg:'mecca',cast:c,p:[L('g3.spl.1'),{w:'Слуга Джасира',t:L('g3.spl.2')}],b:[
+    {t:'Ответить ему резко',f:function(){S.spl='sharp';ad({trust:-5,energy:-5});stat('ekzamen','резко');end(L('g3.spl.sharp'))}},
+    {t:'Опрокинуть в ответ его лепёшки',f:function(){S.spl='rev';ad({trust:-10,money:-6});stat('ekzamen','месть');end(L('g3.spl.rev'))}},
+    {t:'Спокойно потребовать: собрать или заплатить',f:function(){S.spl='calm';stat('ekzamen','спокойно потребовал(а)');end(L('g3.spl.calm'))}},
+    {t:'Молча собрать финики',f:function(){S.spl='quiet';stat('ekzamen','молча');var st2=S.inv.dates>0;if(st2)S.inv.dates--;else ad({money:-3});end(L('g3.spl.quiet'),st2?L('g3.spl.stock'):'')}}
+  ]});
+};
+function rassk(keys,ttl,bgx,next,extra){
+  bgEve=false;
+  var list=keys.map(function(k){return {t:ttl,bg:bgx,nohud:true,cast:[],alt:'Пустая картина без людей',p:[{now:L(k)}]}});
+  if(extra)list[list.length-1].p.push(extra);
+  seq(list,next);
+}
+SC.g3safa=function(){rassk(['g3.safa.1','g3.safa.2','g3.safa.3'],'Холм ас-Сафа','hill',function(){go('g3market')})};
+SC.g3market=function(){
+  if(!S.noon3){S.noon3=1;ad({water:-10})}
+  var c=c3(['weaver3',176,96],['boyA',214,116],['boyB',236,116]);
+  function end(t){say({t:'Мальчишки',bg:'mecca',cast:c,p:[t],b:nx('Дальше',function(){go('g3ranya')})})}
+  seq([{t:'Полдень',bg:'mecca',cast:c3(['weaver3',176,96]),p:[L('g3.mkt.0')]},
+    {t:'Мальчишки',bg:'mecca',cast:c,p:[L('g3.mkt.1'),{w:'Мальчишка',t:L('g3.mkt.2')}],b:[
+      {t:'Встать рядом с '+g('Раньей','Рами')+' и спокойно отправить мальчишек по домам',s:'-5 сил',f:function(){S.mkt='calm';S.good=true;ad({energy:-5});stat('zastupis','спокойно');end(L('g3.mkt.calm'))}},
+      {t:'Прикрикнуть на мальчишек и прогнать',s:'-10 сил',f:function(){S.mkt='shout';ad({energy:-10});stat('zastupis','прикрикнул(а)');end(L('g3.mkt.shout'))}},
+      {t:'Позвать дядю Салима',f:function(){S.mkt='uncle';S.good=true;stat('zastupis','дядя');end(L('g3.mkt.uncle'))}},
+      {t:'Пройти мимо: это не моё дело',c:'alt',f:function(){S.mkt='no';stat('zastupis','мимо');end(L('g3.mkt.no'))}}
+    ]}]);
+};
+SC.g3ranya=function(){
+  var c=c3(['weaver3',176,96]),nm=g('Ранья','Рами'),asked=S.rq1||S.rq2||S.rq3;
+  function back(t){say({t:nm,bg:'mecca',cast:c,p:[{w:nm,t:t}],b:nx('Дальше',function(){go('g3ranya')})})}
+  say({t:'В тени лавки',bg:'mecca',cast:c,p:asked?[L('g3.ran.wait')]:[L('g3.ran.1'),{w:nm,t:L(S.mkt==='no'?'g3.ran.2no':'g3.ran.2')}],b:[
+    !S.rq1?{t:'Спросить, во что они верят',f:function(){S.rq1=true;back(L('g3.ran.faith'))}}:null,
+    !S.rq2?{t:'Спросить, как они это терпят',f:function(){S.rq2=true;back(L('g3.ran.how'))}}:null,
+    !S.rq3?{t:'✦ Спросить, не хочется ли им ответить обидчикам тем же',c:'alt',s:'расспросить',f:function(){S.rq3=true;
+      seq([{t:nm,bg:'mecca',cast:c,p:[{w:nm,t:L('g3.ran.afw')}]},{t:'Прощение',bg:'mecca',cast:c3(),p:[{now:L('g3.afw.1')}]}],function(){gemShow('afuw',function(){go('g3ranya')})})}}:null,
+    asked?{t:'Вернуться к прилавку',f:function(){stat('ranya',(S.rq1?'вера ':'')+(S.rq2?'терпение ':'')+(S.rq3?'прощение':''));
+      if(S.asr)return go('g3first');S.asr=true;seq([{t:'Сура «Аль-Аср»',bg:'mecca',cast:c3(),p:[{now:L('g3.asr.1')}]},{t:'Сура «Аль-Аср»',bg:'mecca',cast:c3(),p:[{now:L('g3.asr.2')},word('صَبْر','сабр','терпение')]}],function(){go('g3first')})}}:null
+  ]});
+};
+SC.g3first=function(){
+  seq([{t:'Первые',bg:'street',nohud:true,cast:[],p:[{now:L('g3.first.1')}]},{t:'Билял',bg:'street',nohud:true,cast:[],p:[{now:L('g3.first.2')}]},{t:'Билял',bg:'street',nohud:true,cast:[],p:[{now:L('g3.first.3')},word('أَحَد','ахад','Единый, Один')]}],function(){go('g3load')});
+};
+/* ---------- мини-игра «Ровный груз» ---------- */
+var ld=null;
+var LDSETS=[[5,4,3,3,2,1],[6,5,4,3,2,2],[7,5,4,3,2,1]];
+function ldSum(side){var s0=0;for(var i=0;i<6;i++)if(ld.pos[i]===side)s0+=ld.w[i];return s0}
+function ldCount(side){var n=0;for(var i=0;i<6;i++)if(ld.pos[i]===side)n++;return n}
+SC.g3load=function(){
+  if(!S.loadIn){S.loadIn=1;ad({energy:-10})}
+  var c=c3(['driver',176,96]);
+  seq([{t:'Ровный груз',bg:'mecca',cast:c,p:[{w:'Погонщик',t:L(S.ch2s&&S.ch2s.ordOk?'g3.load.1ok':'g3.load.1')}]},
+    {t:'Ровный груз',bg:'mecca',cast:c,p:[L('g3.load.how'),S.energy<25?L('g3.load.tired'):''],b:nx('Навьючить',function(){S.ldTry=(S.ldTry||0)+1;var set=shuf(LDSETS[Math.floor(Math.random()*3)]);ld={w:set,pos:[-1,-1,-1,-1,-1,-1],sel:null,t0:Date.now(),rnd:false};ldRender()})}]);
+};
+function ldRender(msg){
+  var L0=ldSum(0),R0=ldSum(1),all=ldCount(0)+ldCount(1)===6,el=Date.now()-ld.t0;
+  var heck=el>22000?L('g3.load.heck2'):el>10000?L('g3.load.heck'):'';
+  say({t:'Навьючь верблюда',bg:'load',stay:true,nohud:true,cast:[],alt:'Верблюд и шесть тюков с числами веса',p:['Левый бок: <b>'+L0+'</b>, правый бок: <b>'+R0+'</b>.'+(msg?' <span class="note">'+msg+'</span>':''),heck?'<span class="note">'+heck+'</span>':''],extra:function(b){
+    var p=document.createElement('div');p.className='pal';
+    ld.w.forEach(function(w,i){if(ld.pos[i]!==-1)return;var e=document.createElement('button');e.textContent='Тюк '+w;e.setAttribute('aria-label','Тюк, вес '+w);if(ld.sel===i)e.className='sel';e.onclick=function(){ld.sel=i;sfx('tap');ldRender()};p.appendChild(e)});
+    b.appendChild(p);
+    var r=document.createElement('div');r.style.cssText='display:flex;gap:8px';
+    [['◀ На левый бок',0],['На правый бок ▶',1]].forEach(function(x){var e=document.createElement('button');e.className='btn alt';e.style.textAlign='center';e.textContent=x[0];e.onclick=function(){ldPut(x[1])};r.appendChild(e)});
+    b.appendChild(r);
+    var cl=document.createElement('button');cl.className='btn alt';cl.textContent='Снять всё';cl.onclick=function(){ld.pos=[-1,-1,-1,-1,-1,-1];ld.sel=null;ldRender()};b.appendChild(cl);
+    var gb=document.createElement('button');gb.className='btn gold';gb.textContent='Вести к воротам';gb.disabled=!all;gb.onclick=function(){ldDone(false)};b.appendChild(gb);
+    var rb=document.createElement('button');rb.className='btn alt';rb.innerHTML='Навьючить как попало<small>быстрее</small>';rb.onclick=function(){var idx=shuf([0,1,2,3,4,5]);idx.forEach(function(k,j){ld.pos[k]=j<3?0:1});ld.rnd=true;ldDone(true)};b.appendChild(rb);
+  }});
+  cv.onpointerdown=function(e){if(bg!=='load'||!ld)return;var rc=cv.getBoundingClientRect(),x=(e.clientX-rc.left)/rc.width*W,y=(e.clientY-rc.top)/rc.height*H;
+    if(y>=152){for(var i=0;i<6;i++){if(ld.pos[i]!==-1)continue;var gx=40+i*42;if(x>=gx&&x<=gx+20){ld.sel=i;sfx('tap');return ldRender()}}return}
+    if(y>=86&&y<=150){var side=x<160?0:1;if(ld.sel!==null)return ldPut(side);
+      for(var j=0;j<6;j++)if(ld.pos[j]===side){ld.pos[j]=-1;break}ldRender()}};
+  var my=ld;clearTimeout(ld.tm);if(!all&&el<23000)ld.tm=setTimeout(function(){if(ld===my&&bg==='load'){var el2=Date.now()-my.t0;if((el2>10000&&el2<10600)||(el2>22000&&el2<22600)){vib(10);ldRender()}}},el<10000?10050-el:22050-el);
+}
+function ldPut(side){
+  if(ld.sel===null)return ldRender('Сначала выбери тюк.');
+  if(ldCount(side)>=3)return ldRender('На этом боку уже три тюка.');
+  ld.pos[ld.sel]=side;ld.sel=null;sfx('pop');ldRender();
+}
+function ldDone(rnd){
+  cv.onpointerdown=null;
+  var my=ld,d=Math.abs(ldSum(0)-ldSum(1)),c=c3(['driver',176,96]);
+  function after(t,wh){seq([{t:'Ровный груз',bg:'mecca',cast:c,p:[wh?{w:'Погонщик',t:t}:t]},{t:'Выдержка и неторопливость',bg:'mecca',nohud:true,cast:[],p:[{now:L('g3.load.now')},L('g3.load.now2')]}],function(){ld=null;go('g3song')})}
+  if(!rnd&&d===0){ad({money:6,trust:5});stat('gruz',S.ldTry===1?'ровно с первой попытки':'ровно после перекладки');if(S.ldTry===1)badge('gruz');return after(L('g3.load.even'))}
+  if(!rnd&&d<=2){ad({money:6});stat('gruz','с креном');return after(L('g3.load.tilt'))}
+  say({t:'Ровный груз',bg:'mecca',cast:c,p:[L('g3.load.slip')],b:[
+    {t:'Перевьючить заново',s:'-10 сил',f:function(){ad({energy:-10});S.ldTry=(S.ldTry||0)+1;say({t:'Ровный груз',bg:'mecca',cast:c,p:[L('g3.load.redo')],b:nx('Навьючить',function(){ld=my;ld.pos=[-1,-1,-1,-1,-1,-1];ld.sel=null;ld.t0=Date.now();ld.rnd=false;ldRender()})})}},
+    {t:'Оставить как есть',c:'alt',f:function(){ad({money:3,trust:-5});stat('gruz','оставил(а) как есть');after(L('g3.load.leave'),true)}}
+  ]});
+}
+function drawLoad(){
+  px(0,0,W,60,'#f6dba8');px(0,60,W,40,'#e3c48e');px(0,100,W,80,'#cdaa68');
+  px(4,26,18,124,'#c9a46a');px(298,26,18,124,'#c9a46a');px(0,20,W,8,'#b8945a');
+  ctx.save();ctx.translate(130,92);ctx.scale(2,2);camel(0,0,0,'#b8894a');ctx.restore();
+  for(var q=0;q<8;q++){px(146-q*5,72+q*3,2,2,'#6b4a22');px(174+q*4,72+q*3,2,2,'#6b4a22')}
+  px(92,94,28,48,'#6b4a22');px(196,94,28,48,'#6b4a22');
+  if(!ld)return;
+  var Ls=ldSum(0),Rs=ldSum(1),d=clamp((Ls-Rs)*2,-12,12),col=Ls===Rs?'#2f7d4f':Math.abs(Ls-Rs)<=2?'#e3a92e':'#b8452d';
+  px(158,38,4,12,'#6b4a22');px(154,48,12,3,'#6b4a22');for(var i=-40;i<=40;i+=2)px(160+i,38+d*i/-40,2,3,col);
+  ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.fillStyle='#2A201C';ctx.fillText('Л: '+Ls,64,118);ctx.fillText('П: '+Rs,256,118);
+  var shade=['#e2c98f','#d9b87a','#c9a063','#b88f55','#a07a3e','#8a6a30','#8a5a22'];
+  var cnt=[0,0];
+  for(var j=0;j<6;j++){var w=ld.w[j],x,y,p=ld.pos[j];
+    if(p===-1){x=40+j*42;y=158}else{x=p===0?96:200;y=97+cnt[p]*15;cnt[p]++}
+    px(x,y,20,12,shade[w-1]);if(ld.sel===j){px(x-2,y-2,24,2,'#C3AD70');px(x-2,y+12,24,2,'#C3AD70');px(x-2,y,2,12,'#C3AD70');px(x+20,y,2,12,'#C3AD70')}
+    ctx.font='bold 10px sans-serif';ctx.fillStyle=w>4?'#fff6d8':'#2A201C';ctx.fillText(String(w),x+10,y+10)}
+}
+SC.g3song=function(){
+  var nm=g('Сальма','Харис'),c=c3(['friend',176,96]);
+  if(!S.well3){S.well3=1;ad({water:20})}
+  function end(t){seq([{t:'У колодца',bg:'well',cast:c,p:[t]},{t:'Удержать от притеснения',bg:'well',nohud:true,cast:[],p:[{now:L('g3.song.now')}]}],function(){go('g3eve')})}
+  say({t:'У колодца',bg:'well',cast:c,p:[L('g3.song.0'),{w:nm,t:L('g3.song.1')}],b:[
+    {t:'Не смеяться и сказать при всех: над чужой бедой не шутят',s:'-5 сил',f:function(){S.song='say';S.good=true;ad({energy:-5});stat('pesnya','сказал(а) при всех');end(L('g3.song.say'))}},
+    {t:'Отвести '+g('Сальму','Хариса')+' в сторону и поговорить наедине',f:function(){S.song='talk';S.good=true;stat('pesnya','наедине');
+      if(S.ch2s&&S.ch2s.friend==='listen')seq([{t:'У колодца',bg:'well',cast:c,p:[{w:nm,t:L('g3.song.talkL')}]}],function(){end(L('g3.song.talk'))});else end(L('g3.song.talk'))}},
+    {t:'Придумать строчку, чтобы не выделяться',c:'alt',f:function(){S.song='join';ad({trust:-5});stat('pesnya','со всеми');end(L('g3.song.join'))}},
+    {t:'Молча набрать воды и уйти',c:'alt',f:function(){S.song='left';stat('pesnya','ушёл(ла)');end(L('g3.song.left'))}}
+  ]});
+};
+SC.g3eve=function(){
+  var p=[L('g3.eve.1'),L('g3.eve.'+(S.spl||'calm'))];
+  if(S.mkt==='shout'&&!S.sand){S.sand=1;ad({money:-2});p.push(L('g3.eve.sand'))}
+  function water(){
+    if(S.water>=30)return go('g3hani');
+    say({t:'Вечер',bg:'mecca',cast:c3(['carrier',176,96]),p:[L('g3.eve.water')],b:[
+      {t:'Купить воды у Мансура',s:'-2 монеты',d:S.money<2,f:function(){ad({money:-2,water:30});go('g3hani')}},
+      {t:'Потерпеть до утра',c:'alt',s:'-10 сил',f:function(){ad({energy:-10});go('g3hani')}}]});
+  }
+  seq([{t:'Вечер',bg:'mecca',cast:S.spl==='calm'||S.spl==='quiet'||S.spl==='sharp'?c3(['servant',176,96]):c3(),p:p},{t:'Выдержка',bg:'mecca',cast:c3(),p:[{now:L('g3.eve.now')}]},{t:'Выдержка',bg:'mecca',cast:c3(),p:[{now:L('g3.eve.now2')}]}],water);
+};
+SC.g3hani=function(){
+  var c=[['hero',120,106],['hani',170,126]],h2=S.ch2s&&(S.ch2s.hani==='talk'||S.ch2s.hani==='lamp');
+  function end(t){seq([{t:'Хани',bg:'night',cast:c,p:[t]},{t:'Сила',bg:'night',nohud:true,cast:[],p:[{now:L('g3.hani.now')}]},{t:'Ночь',bg:'night',cast:[['hero',120,106]],p:[L('g3.sleep')]}],function(){ad({energy:25});go('g3rumor')})}
+  seq([{t:'Ночь на крыше',bg:'night',cast:c,p:[L('g3.hani.0')]},
+    {t:'Хани',bg:'night',cast:c,p:[L('g3.hani.1'),{w:'Хани',t:L('g3.hani.2')},h2?L('g3.hani.ch2'):''],b:[
+      {t:'Сесть рядом и спросить, что он почувствовал',f:function(){S.hani3='talk';S.good=true;stat('hani3','выслушал(а)');end(L('g3.hani.talk'))}},
+      {t:'Пообещать утром сходить'+g(' с дядей Салимом','')+' к их родителям',s:'-10 сил',f:function(){S.hani3='go';S.good=true;ad({energy:-10});stat('hani3','к родителям');end(L('g3.hani.go'))}},
+      {t:'Научить его отвечать насмешкой на насмешку',c:'alt',f:function(){S.hani3='words';stat('hani3','насмешкой');end(L('g3.hani.words'))}},
+      {t:'Дать ему утром дело в лавке',f:function(){S.hani3='work';S.good=true;stat('hani3','дело');end(L('g3.hani.work'))}}
+    ]}]);
+};
+SC.g3rumor=function(){
+  var c=c3(['jasir',196,96]);
+  function end(t,wh){say({t:'Слух',bg:'mecca',cast:c,p:[wh?{w:'Купец Джасир',t:t}:t],b:nx('Дальше',function(){go('g3khab')})})}
+  say({t:'Слух',bg:'mecca',cast:c,p:[L('g3.rum.1'),{w:'Купец Джасир',t:L('g3.rum.2')}],b:[
+    {t:'Высыпать мешок на прилавок: пусть смотрят все',s:'-5 сил',f:function(){S.rum='show';ad({energy:-5,trust:3});stat('sluh','показал(а) всем');end(L('g3.rum.show'))}},
+    {t:'Пустить слух в ответ про весы Джасира',c:'alt',f:function(){S.rum='lie';ad({trust:-10,money:-4});stat('sluh','слух в ответ');end(L('g3.rum.lie'))}},
+    {t:'Спокойно подойти к Джасиру и спросить, в чём дело',f:function(){S.rum='ask';stat('sluh','спросил(а)');end(L('g3.rum.ask'),true)}},
+    {t:'Промолчать и ждать, пока слух утихнет',c:'alt',f:function(){S.rum='wait';ad({money:-6});stat('sluh','ждал(а)');end(L('g3.rum.wait'))}}
+  ]});
+};
+SC.g3khab=function(){rassk(['g3.khab.1','g3.khab.2','g3.khab.2b','g3.khab.3'],'Хаббаб','street',function(){go('g3scribe')})};
+/* ---------- загадка «Слово «сабр»» ---------- */
+var pz=null;
+SC.g3scribe=function(){
+  var c=g(c3(['uncle',150,96],['scribe',196,96]),c3(['scribe',176,96]));
+  if(S.puzDone){return scrAfter()}
+  say({t:'Писец Халаф',bg:'mecca',cast:c,p:[L('g3.scr.1'),{w:'Писец Халаф',t:L('g3.scr.2')}],b:nx('Сложить слово',function(){pz={picked:[],miss:0,hint:!!S.hintK,msg:''};pzRender()})});
+};
+var PZL=[['ص','сад'],['س','син'],['ب','ба'],['ر','ра'],['ن','нун'],['ط','та']],PZORD=null;
+function pzRender(){
+  if(!PZORD)PZORD=shuf(PZL);
+  say({t:'Слово «сабр»',bg:'tablet',stay:true,nohud:true,cast:[],alt:'Лоток с песком: буквы складываются в слово',p:[L('g3.puz.1'),pz.hint&&!pz.picked.length?'<span class="note">'+L('g3.puz.hint')+'</span>':'',pz.msg?'<span class="note">'+pz.msg+'</span>':''],extra:function(b){
+    var p=document.createElement('div');p.className='pal';
+    PZORD.forEach(function(x){var e=document.createElement('button');e.innerHTML='<span style="display:block;font-size:24px">'+x[0]+'</span>'+x[1];e.setAttribute('aria-label','Буква '+x[1]);
+      if(pz.hint&&!pz.picked.length&&x[0]==='ص')e.className='sel';
+      e.onclick=function(){var need=['ص','ب','ر'][pz.picked.length];
+        if(x[0]===need){pz.picked.push(x[0]);pz.msg='';sfx('pop');if(pz.picked.length===3)return pzDone();pzRender()}
+        else{pz.miss++;sfx('wrong');pz.msg=(pz.picked.length===0&&x[0]==='س')?L('g3.puz.sin'):L('g3.puz.miss');pzRender()}};p.appendChild(e)});
+    b.appendChild(p);
+  }});
+}
+function drawTablet(){
+  px(0,0,W,H,'#e9d3a2');px(40,30,240,120,'#8a5a22');px(46,36,228,108,'#e3cfa3');
+  px(208,118,32,2,'#8a6a3a');px(166,118,32,2,'#8a6a3a');px(124,118,32,2,'#8a6a3a');
+  if(pz&&pz.picked.length){ctx.fillStyle='#2A201C';ctx.font='48px Amiri,"Noto Naskh Arabic","Traditional Arabic",serif';ctx.direction='rtl';ctx.textAlign='right';ctx.fillText(pz.picked.join(''),250,105);ctx.direction='ltr'}
+}
+function pzDone(){
+  S.puzDone=true;stat('bukvy',pz.miss?'с ошибками: '+pz.miss:'без ошибок');if(!pz.miss)badge('bukvy');
+  var c=g(c3(['uncle',150,96],['scribe',196,96]),c3(['scribe',176,96]));
+  say({t:'Слово «сабр»',bg:'tablet',nohud:true,cast:[],p:[L('g3.puz.ok'),word('صَبْر','сабр','терпение'),{w:'Писец Халаф',t:L('g3.puz.ok2')}],b:nx('Дальше',function(){S.clue4=true;scrAfter()})});
+}
+function scrAfter(){
+  var c=g(c3(['uncle',150,96],['scribe',196,96]),c3(['scribe',176,96]));
+  say({t:'Писец Халаф',bg:'mecca',cast:c,p:S.sc3?[L('g3.scr.wait')]:[{w:'Писец Халаф',t:L('g3.scr.clue')}],b:[
+    !S.sc3?{t:'✦ Рассмотреть договор на столе писца',c:'alt',s:'осмотреться',f:function(){S.sc3=true;
+      seq([{t:'Договор',bg:'mecca',cast:c,p:[L('g3.scr.look')]},{t:'Договор',bg:'mecca',cast:c,p:[{w:'Писец Халаф',t:L('g3.scr.wali')},word('وَلِيّ','валий','покровитель, опекун')]},{t:'Покровитель',bg:'mecca',cast:c3(),p:[{now:L('g3.wly.1')}]}],function(){gemShow('waliyy',function(){go('g3scribe')})})}}:null,
+    {t:'Пойти к каравану из Шама',f:function(){go('g3north')}}
+  ]});
+}
+SC.g3north=function(){
+  var c=g(c3(['uncle',150,96],['shami',196,96]),c3(['shami',176,96]));
+  seq([{t:'Караван из Шама',bg:'mecca',cast:c,p:[L('g3.nor.1'),{w:'Купец из Шама',t:L('g3.nor.2')}]},
+    {t:'Амана?',bg:'mecca',cast:c3(),p:[L('g3.nor.3'),word('أَمَانَة','амана','доверенное: вещь, слово или тайна')],b:nx('Записать слова купца',function(){S.clue5=true;say({t:'Амана?',bg:'mecca',cast:c3(),p:[L('g3.nor.write')],b:nx('Дальше',function(){go('g3promise')})})})}]);
+};
+SC.g3promise=function(){
+  var c=c3(['jasir',176,96]);
+  function end(t){seq([{t:'Слово',bg:'mecca',cast:c,p:[t]},{t:'Обещание',bg:'mecca',cast:c3(),p:[{now:L('g3.prm.now')}]}],function(){go('g3bakr')})}
+  say({t:'Слово под давлением',bg:'mecca',cast:c,p:[L('g3.prm.1'),{w:'Купец Джасир',t:L('g3.prm.2')},L('g3.prm.3')],b:[
+    {t:'Сдержать слово: корзины остаются',s:'его люди не придут: -4 монеты',f:function(){S.prm='keep';S.good=true;ad({money:-4});stat('obeshchanie','сдержал(а)');end(L('g3.prm.keep'))}},
+    {t:'Сдержать слово и спокойно объяснить при людях почему',s:'-5 сил, -4 монеты',f:function(){S.prm='say';S.good=true;ad({energy:-5,money:-4});stat('obeshchanie','сдержал(а) и объяснил(а)');end(L('g3.prm.say'))}},
+    {t:'Убрать корзины и продать тюк Джасиру вдвое',c:'alt',s:'он обещает 20 монет',f:function(){S.prm='broke';ad({money:10,trust:-20});stat('obeshchanie','нарушил(а)');end(L('g3.prm.broke'))}}
+  ]});
+};
+SC.g3bakr=function(){rassk(['g3.bakr.1','g3.bakr.2','g3.bakr.3'],'Абу Бакр и Билял','street',function(){go('g3jasir')})};
+SC.g3jasir=function(){
+  var c=[['hero',90,96],['uncle',140,96],['jasir',200,96]];bgEve=true;
+  function end(t){seq([{t:'Переулок',bg:'street',cast:c,p:[t]},{t:'Оттолкни зло лучшим',bg:'street',cast:[['hero',150,96]],p:[{now:L('g3.jas.now')}]},{t:'Оттолкни зло лучшим',bg:'street',cast:[['hero',150,96]],p:[{now:L('g3.jas.now2')}]}],function(){go('g3ret')})}
+  say({t:'Переулок',bg:'street',cast:c,p:[L('g3.jas.1')],b:[
+    {t:'Вместе с дядей Салимом поднять тюк',s:'-10 сил',f:function(){S.jas='lift';S.good=true;ad({energy:-10});stat('dzhasir','подняли тюк');end(L('g3.jas.lift'))}},
+    {t:'Собрать кувшины, пока не разбились',s:'-10 сил',f:function(){S.jas='jars';S.good=true;ad({energy:-10});stat('dzhasir','собрал(а) кувшины');end(L('g3.jas.jars'))}},
+    {t:'Пройти мимо: пусть сам справляется',c:'alt',f:function(){S.jas='pass';stat('dzhasir','мимо');end(L('g3.jas.pass'))}},
+    {t:'Посмеяться над ним при прохожих',c:'alt',f:function(){S.jas='gloat';ad({trust:-5});stat('dzhasir','посмеялся(ась)');end(L('g3.jas.gloat'))}}
+  ]});
+};
+SC.g3ret=function(){
+  var nm=g('Сальма','Харис');
+  seq([{t:'Вечер',bg:'mecca',cast:S.prm==='broke'?c3():c3(['weaver3',176,96]),p:S.prm==='broke'?[L('g3.ret.broke'),L('g3.ret.pay')]:[L('g3.ret.kept')]},
+    {t:'Вечер',bg:'mecca',cast:c3(['friend',176,96]),p:[{w:nm,t:L('g3.ret.fr.'+(S.song||'left'))}]}],function(){go('g3night')});
+};
+SC.g3night=function(){
+  var c=[['hero',120,106]];
+  say({t:'Ночь',bg:'night',cast:c,p:[L('g3.ngt.1'),L('g3.ngt.2')],b:[{t:'Тихо сказать: «Свидетельствую, что нет божества, кроме Аллаха, и свидетельствую, что Мухаммад - Посланник Аллаха» (саллаллаху алейхи ва саллям)',f:function(){stat('vera','свидетельство');
+    seq([{t:'Сура «Аль-Ихлас»',bg:'night',cast:c,p:[{now:L('g3.ngt.now')}]},{t:'Свидетельство веры',bg:'night',cast:c,p:[{now:L('g3.ngt.shahada')},'<span class="note">'+L('g3.ngt.note')+'</span>']},{t:'Ночь',bg:'night',cast:c,p:[L('g3.ngt.end')]}],function(){go('g3motive')})}}]});
+};
+SC.g3motive=function(){
+  var calm=S.spl==='calm'||S.spl==='quiet';
+  var o=calm?['Не '+g('хотела','хотел')+' ссоры','Так правильно',g('Боялась','Боялся')+', что будет хуже','Жалко сил на злость','Не знаю, так получилось']:['Было очень обидно','Чтобы не считали '+g('слабой','слабым'),'Он первый начал','Не знаю, так получилось'];
+  say({t:'Подумай',bg:'night',cast:[['hero',120,106]],p:[L('g3.mot.q')],b:o.map(function(x){return {t:x,c:'alt',f:function(){stat('motiv3',x);go('g3result')}}})});
+};
+SC.g3result=function(){
+  var blocks=clamp(4+Math.floor(Math.max(0,S.money-S.start)/15)+Math.floor(S.trust/20),4,16);S.blocks=blocks;if(S.good)save({well:true});
+  var sp=S.spl||'calm',pr=S.prm||'keep';
+  seq([
+    {t:'Итог главы 3',bg:'mecca',cast:c3(),p:['Монеты: <b>'+S.money+'</b>. Доверие: <b>'+S.trust+'</b>. Блоков для города: <b>'+blocks+'</b>.','<b>А если бы иначе?</b> Слуга Джасира:',{html:'<div class="cmp"><div>Как вышло<br>'+L('g3.res.spl.'+sp)+'</div><div>Иначе<br>'+L('g3.alt.spl.'+sp)+'</div></div>'}]},
+    {t:'Итог главы 3',bg:'mecca',cast:c3(),p:['<b>А если бы иначе?</b> Слово:',{html:'<div class="cmp"><div>Как вышло<br>'+L('g3.res.prm.'+pr)+'</div><div>Иначе<br>'+L('g3.alt.prm.'+pr)+'</div></div>'}],b:nx('Что ты '+g('нашла','нашёл')+'? ✦',function(){go('g3name')})}
+  ]);
+};
+SC.g3name=function(){say({t:'Выдержка',bg:'gem',nohud:true,cast:[],p:[{now:L('g3.name.pre')}],b:nx('Дальше',function(){gemShow('halim',function(){go('g3word')})})})};
+SC.g3word=function(){
+  var W3=[{a:'حِلْم',t:'хильм',r:'выдержка'},{a:'صَبْر',t:'сабр',r:'терпение'},{a:'أَحَد',t:'ахад',r:'Единый'}],q=W3[0],opts=shuf(W3);
+  say({t:'Слово пути',bg:'night',cast:[['hero',100,106]],p:['Как по-арабски «выдержка»?'],b:opts.map(function(o){return {t:'<span style="font-size:22px">'+o.a+'</span> ('+o.t+')',c:'alt',f:function(){
+    var ok=o===q;stat('slovo3',ok?'верно':'ошибка');sfx(ok?'pop':'wrong');
+    say({t:'Слово пути',bg:'night',cast:[['hero',100,106]],p:[ok?'<span class="ok">Верно!</span>':'Не совсем. Запомни:',word('صَبْر','сабр','терпение'),word('حِلْم','хильм','выдержка: не отвечать гневом'),word('أَحَد','ахад','Единый, Один'),'<span class="note">'+L('g3.word.note')+'</span>'],b:nx('Свиток знаний',function(){go('g3scroll')})});
+  }}})});
+};
+SC.g3scroll=function(){scrollView(function(){go('g3quiz')},'Вопросы',3)};
+var QS3=[
+  {q:'Что повторял Билял (да будет доволен им Аллах), когда его притесняли за веру?',o:[['أَحَد أَحَد - «Ахад, Ахад»',1],['صَبْر - «Сабр»',0],['حِلْم - «Хильм»',0]],e:'«Ахад, Ахад» - «Един, Един» (Ибн Маджа 150, хасан, перевод смысла). Билял держался за веру в Аллаха Единого. Сабр и хильм - тоже слова этой главы.'},
+  {q:'Кто выкупил и освободил Биляла?',o:[['Абу Бакр',1],['Хаббаб',0],['Аммар',0]],e:'Абу Бакр (да будет доволен им Аллах). Умар (да будет доволен им Аллах) говорил: «Абу Бакр - наш господин, и он освободил нашего господина», имея в виду Биляла (аль-Бухари 3754, перевод смысла).'},
+  {q:'В классном чате выложили смешную картинку про {одноклассницу|одноклассника}. Все ставят смайлики. Что сделаешь?',o:[['Поставлю смайлик, как все',0],['Не поставлю и напишу: «Давайте не будем, человеку обидно»',1],['Напишу автору лично, а если не уберёт - скажу взрослому',1]],e:'Удержать обидчика - тоже помощь ему (аль-Бухари 2444, 6952). Оба спокойных ответа верны. Смайлик «как все» поддерживает травлю, даже если ты ничего не написал{а|}.'}
+];
+var q3i,q3ok,QS3x;
+SC.g3quiz=function(){
+  q3i=0;q3ok=0;QS3x=QS3.slice();var gg=gems();
+  ['afuw','waliyy'].forEach(function(k){if(gg[k]&&QS3x.length<5){var g0=GEMS[k],o=[[g0.mean,1]];shuf(DIST.filter(function(x){return x!==g0.mean})).slice(0,2).forEach(function(x){o.push([x,0])});QS3x.push({q:'Тайный самоцвет: что значит имя Аллаха '+g0.n+'?',o:o,e:g0.n+' - '+g0.mean+'. '+g0.ayah})}});
+  q3show();
+};
+function q3show(){
+  if(q3i>=QS3x.length)return q3end();
+  var Q=QS3x[q3i];
+  say({t:'Вопрос '+(q3i+1)+' из '+QS3x.length,bg:'mecca',nohud:true,cast:[],p:[Lx(Q.q)],b:shuf(Q.o).map(function(o){return {t:Lx(o[0]),c:'alt',f:function(){
+    if(o[1]){q3ok++;sfx('pop')}else sfx('wrong');
+    say({t:'Вопрос '+(q3i+1)+' из '+QS3x.length,bg:'mecca',nohud:true,cast:[],p:[o[1]?'<span class="ok">Верно!</span>':'Не совсем.',Lx(Q.e)],b:nx(q3i<QS3x.length-1?'Дальше':'Готово',function(){q3i++;q3show()})});
+  }}})});
+}
+function q3end(){
+  var extra=q3ok>=3?2:q3ok===2?1:0,all=(S.blocks||4)+extra,st=load();all=Math.max(st.blocks3||0,all);
+  var stt=st.stats||{};stt.quiz3=q3ok;stt.done3=day();
+  save({blocks3:all,at:'done3',done3:1,stats:stt,trust3:S.trust,ch3s:{spl:S.spl,prm:S.prm,song:S.song,hani3:S.hani3,jas:S.jas,clue4:!!S.clue4,clue5:!!S.clue5}});playing=false;
+  seq([{t:'Знания - тоже блоки',bg:'mecca',cast:c3(),p:['Верных ответов: '+q3ok+' из '+QS3x.length+'. '+(extra?'+'+extra+' к блокам города.':'Ничего страшного: свиток всегда с тобой.'),'Блоков главы 3: '+all+'.']},
+    {t:'Часы-тень',bg:'city',nohud:true,cast:[],p:[{now:L('g3.city.t')},'<span class="ok">Новая постройка открыта: часы-тень.</span>'],b:nx('Строить город',city)}]);
+}
+
 (function(){var last=0;document.addEventListener('touchend',function(e){var n=Date.now();if(n-last<350&&e.target&&e.target.closest&&e.target.closest('button')){e.preventDefault();var t=e.target.closest('button');if(t&&!t.disabled)t.click()}last=n},{passive:false})})();
 $('nb').onclick=function(){sfx('tap');goBack()};
-$('nm').onclick=function(){sfx('tap');cg=null;mm=null;rainOn=false;title()};
-$('nr').onclick=function(){location.href='../'};
+$('nm').onclick=function(){sfx('tap');vStop();cg=null;mm=null;ld=null;pz=null;cv.onpointerdown=null;rainOn=false;title()};
+$('nr').onclick=function(){vStop();location.href='../'};
+function nvUpd(){var b=$('nv');b.textContent=VOICE?'🔊 Голос':'🔈 Без голоса';b.setAttribute('aria-pressed',VOICE?'true':'false')}
+$('nv').onclick=function(){VOICE=!VOICE;save({voice:VOICE?1:0});nvUpd();if(!VOICE)vStop();else if(curScr)vPlay(vKeys(curScr.o))};nvUpd();
 mkIcons();fit();title();loop();
 })();
 </script>
