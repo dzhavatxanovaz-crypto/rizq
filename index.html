@@ -7165,7 +7165,7 @@ function renderHdr(){
   var titles = {dua:"Знания", courses:"Обучение", journal:"Журнал", fav:"Избранное", prof:"Профиль", quran:"Коран", income:"Ризкъ"};
   if(V.view){
     var t = V.view==="cat" ? (CATS.filter(function(c){return c.id===V.p})[0]||{}).n
-        : V.view==="nastavnik" ? "Наставник души"
+        : V.view==="nastavnik" ? "Наставник для души"
         : V.view==="serii" ? "Наши герои"
         : V.view==="seriya" ? "Серия " + ((serById(V.p) || {}).n || "")
         : V.view==="names" ? "Имена Всевышнего"
@@ -7813,7 +7813,7 @@ function viewHomeMain(){
     '<span class="igra-home-t"><b>Ильм-Крафт <em>игра</em></b><span>Игра-путешествие для детей во времена Пророка (саллаллаху алейхи ва саллям)</span></span>'+
     '<span class="igra-home-go">›</span></button>');
   if(nsOn()) h.push('<button class="ns-home" data-nsopen="1"><span class="ns-home-ic">♡</span>'+
-    '<span class="ns-home-t"><b>Наставник души</b><span>Разобраться в себе с опорой на Коран и Сунну</span></span>'+
+    '<span class="ns-home-t"><b>Наставник для души</b><span>Разобраться в себе с опорой на Коран и Сунну</span></span>'+
     '<span class="igra-home-go">›</span></button>');
   h.push(hbAfterPrayer());
   h.push(homeCtx(vaultHtml));
@@ -30697,8 +30697,8 @@ function renderInPlace(){
 /* Отрисовка обёрнута: сбой на одном экране не оставляет пустую страницу */
 var RENDER_BUSY = 0;
 /* ---------- «Наставник души» (11.10.2026) ---------- */
-var NS_PUBLIC = 0;                         /* 1 - кнопка на главной у всех; до «да» Заиры 0 */
-var NS_BOOK = "https://app.javattigroup.ru/?course=razbor";
+var NS_PUBLIC = 1;                         /* 1 - кнопка на главной у всех; до «да» Заиры 0 */
+var NS_BOOK = "https://crm.javattigroup.ru/kurs/kouch-sessiya";
 var NS = { msgs: [], busy: 0, draft: "", ended: 0, loaded: 0 };
 var NS_TOPICS = ["Тревога и страх", "Злюсь, а потом жалею", "Обида на близких", "Зависть", "Чувство вины", "Нет сил, всё валится из рук", "Одиночество", "Не могу решиться"];
 function nsLs(k, v){ try{ if(v === undefined) return localStorage.getItem(k); if(v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); }catch(e){ return null; } }
@@ -30726,7 +30726,7 @@ function viewNastavnik(){
   nsLoad();
   var h = ['<div class="ns-wrap">'];
   if(nsLs("rizq.ns.ok") !== "1"){
-    h.push('<div class="ns-card"><h3>Наставник души</h3>'+
+    h.push('<div class="ns-card"><h3>Наставник для души</h3>'+
       '<p>Разговор, который помогает разобраться в своих чувствах, мыслях и поступках - бережно, без осуждения, с опорой на Коран и Сунну и на учение об очищении души имама аль-Газали.</p>'+
       '<ul><li>Наставник задаёт вопросы и помогает увидеть, что происходит внутри, а в конце предлагает один маленький шаг.</li>'+
       '<li>Это искусственный интеллект, а не психолог, не врач и не имам. Он не выносит фетв и не ставит диагнозов.</li>'+
