@@ -1,5 +1,5 @@
 /* Ризк - офлайн-кэш. Меняйте номер версии при каждом обновлении приложения. */
-var CACHE = "rizq-v330";
+var CACHE = "rizq-v331";
 var ASSETS = [
   "./",
   "./index.html",
@@ -140,7 +140,7 @@ self.addEventListener("fetch", function (e) {
   if (url.pathname.indexOf("/api/") === 0) return;
   /* Сайт рассрочки и страница книги - не приложение: всегда из сети (Caddy отдаёт их без кэша).
      Раньше копия страницы могла осесть в кэше, и телефон с RIZQ показывал старую версию сайта (03.10.2026). */
-  if (/^\/(kniga|rassrochka)(\/|$)/.test(url.pathname)) return;
+  if (/^\/(kniga|rassrochka|igra)(\/|$)/.test(url.pathname)) return;
 
   /* Журнал и подборка сборов обновляются без пересборки приложения, поэтому
      для них сначала сеть, а кэш - запасной вариант. Иначе правка файла на
@@ -169,9 +169,9 @@ self.addEventListener("fetch", function (e) {
      Новая версия приходит сама: при выпуске меняется номер кэша, браузер ставит
      новый офлайн-кэш в фоне, и появляется плашка «Вышла новая версия». */
   if (e.request.mode === "navigate") {
-    /* /kniga/ - отдельная продающая страница книги, /rassrochka/ - сайт исламской рассрочки (03.10.2026):
+    /* /kniga/ - отдельная продающая страница книги, /rassrochka/ - сайт исламской рассрочки (03.10.2026), /igra/ - игра «Ильм-Крафт» (11.10.2026):
        их нельзя подменять оболочкой приложения */
-    var isApp = !/^\/(kniga|rassrochka)(\/|$)/.test(url.pathname) &&
+    var isApp = !/^\/(kniga|rassrochka|igra)(\/|$)/.test(url.pathname) &&
       (url.pathname === "/" || /\/index\.html$/.test(url.pathname) || /\/$/.test(url.pathname));
     e.respondWith(
       caches.match(isApp ? "./index.html" : e.request).then(function (hit) {
