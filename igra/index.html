@@ -10,7 +10,7 @@
 :root[data-theme="dark"]{--bg:#1c1511;--ink:#f1ead7;--card:#2a201c;--gold:#C3AD70;--btn:#4a3a2e;--btnink:#f6efdc;--edge:#C3AD70;--line:#4a3d34;--note:#d6cab3;--now:#33281f;--okc:#7fd19b}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Geologica,system-ui,"Segoe UI",Roboto,Arial,sans-serif;font-size:16px;line-height:1.45}
-#app{max-width:480px;margin:0 auto;padding:10px 16px 28px}
+#app{max-width:480px;margin:0 auto;padding:10px 16px 28px;padding-top:calc(10px + env(safe-area-inset-top,0px));padding-left:calc(16px + env(safe-area-inset-left,0px));padding-right:calc(16px + env(safe-area-inset-right,0px));padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))}
 #hud{display:flex;gap:6px;margin:2px 0 8px}
 .st{flex:1;background:var(--card);border:2px solid var(--line);border-radius:8px;padding:3px 4px;text-align:center;font-weight:700;font-size:15px}
 .st img{width:18px;height:18px;vertical-align:-3px;image-rendering:pixelated;margin-right:3px}
