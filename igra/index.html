@@ -2,15 +2,18 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>Ильм-Крафт - RIZQ</title>
 <style>
 :root{--bg:#EDEEE1;--ink:#2A201C;--card:#fff;--gold:#7A6435;--gold2:#C3AD70;--btn:#2A201C;--btnink:#f6efdc;--edge:#2A201C;--line:#d9d6c3;--note:#5a4d42;--now:#f6f0de;--okc:#2f7d4f}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1511;--ink:#f1ead7;--card:#2a201c;--gold:#C3AD70;--btn:#4a3a2e;--btnink:#f6efdc;--edge:#C3AD70;--line:#4a3d34;--note:#d6cab3;--now:#33281f;--okc:#7fd19b}}
 :root[data-theme="dark"]{--bg:#1c1511;--ink:#f1ead7;--card:#2a201c;--gold:#C3AD70;--btn:#4a3a2e;--btnink:#f6efdc;--edge:#C3AD70;--line:#4a3d34;--note:#d6cab3;--now:#33281f;--okc:#7fd19b}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body,button,canvas,#btns,#nav{touch-action:manipulation}
+button{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Geologica,system-ui,"Segoe UI",Roboto,Arial,sans-serif;font-size:16px;line-height:1.45}
 #app{max-width:480px;margin:0 auto;padding:10px 16px 28px;padding-top:calc(10px + env(safe-area-inset-top,0px));padding-left:calc(16px + env(safe-area-inset-left,0px));padding-right:calc(16px + env(safe-area-inset-right,0px));padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))}
+#nav{display:flex;gap:6px;margin:0 0 8px}#nav button{flex:1;min-height:36px;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;font:inherit;font-size:13px;font-weight:600;padding:4px 6px}#nav button[disabled]{opacity:.4}
 #hud{display:flex;gap:6px;margin:2px 0 8px}
 .st{position:relative;flex:1;background:var(--card);border:2px solid var(--line);border-radius:8px;padding:3px 4px;text-align:center;font-weight:700;font-size:15px}
 .st img{width:18px;height:18px;vertical-align:-3px;image-rendering:pixelated;margin-right:3px}
@@ -60,6 +63,7 @@ pre{white-space:pre-wrap;font-size:12px;background:var(--now);padding:8px;border
 </head>
 <body>
 <div id="app">
+  <div id="nav"><button id="nb" type="button">← Назад</button><button id="nm" type="button">Меню игры</button><button id="nr" type="button">⌂ RIZQ</button></div>
   <div id="hud"></div>
   <div id="cvw"><canvas id="cv" width="320" height="180" role="img" aria-label="Картинка сцены"></canvas></div>
   <div id="ttl"></div>
@@ -289,13 +293,34 @@ var SP={
   changer:{r:rowsWith(MAN,BEARD),p:{t:'#3a2a4a',s:'#c99668',d:'#4a3a5a',e:'#2a1c12',b:'#1a1418'}},
   waterman:{r:rowsWith(MAN,WBEARD),p:{t:'#e9e4d4',s:'#c99668',d:'#8a7a5a',w:'#f2f0e8',b:'#2a1c12'}}
 };
+var SMALL={kid:1,hani:1,mazin:1,weaverF:1,weaverM:1};
+(function(){
+  SP.friendF={r:GIRL,p:{h:'#2a8a8a',s:'#d9a77a',d:'#5fb8b0',b:'#3a2a1c'}};
+  SP.friendM={r:MAN,p:{t:'#e9e4d4',s:'#d9a77a',d:'#2a8a8a',b:'#3a2a1c'}};
+  SP.hani={r:MAN,p:{t:'#c9a063',s:'#d9a77a',d:'#7a8a3a',b:'#3a2a1c'}};
+  SP.mazin={r:MAN,p:{t:'#efe9d8',s:'#d9a77a',d:'#c06a2a',b:'#3a2a1c'}};
+  SP.weaverF={r:GIRL,p:{h:'#8a6a2a',s:'#d9a77a',d:'#b8945a',b:'#3a2a1c'}};
+  SP.weaverM={r:MAN,p:{t:'#d8cfb8',s:'#d9a77a',d:'#8a6a2a',b:'#3a2a1c'}};
+  SP.carrier={r:rowsWith(MAN,WBEARD),p:{t:'#d8cfb8',s:'#c99668',d:'#6a5a4a',w:'#f2f0e8',b:'#2a1c12'}};
+  SP.driver={r:rowsWith(MAN,BEARD),p:{t:'#5a3a2a',s:'#c99668',d:'#9a6a3a',e:'#2a1c12',b:'#2a1c12'}};
+  SP.potter={r:rowsWith(MAN,BEARD),p:{t:'#b8a888',s:'#c99668',d:'#8a5a3a',e:'#3a2a1c',b:'#2a1c12'}};
+  SP.guest={r:GIRL,p:{h:'#2b2230',s:'#c99668',d:'#4a2a3a',b:'#1a1418'}};
+  SP.mother={r:GIRL,p:{h:'#6b4a5a',s:'#c99668',d:'#8a6a7a',b:'#3a2a1c'}};
+  SP.aunt={r:GIRL,p:{h:'#4a5a3a',s:'#c99668',d:'#6a7a5a',b:'#3a2a1c'}};
+  SP.scribe={r:rowsWith(MAN,WBEARD),p:{t:'#f2f0e8',s:'#c99668',d:'#3a4a6a',w:'#f2f0e8',b:'#2a1c12'}};
+})();
 function person(name,x,y,z){
   if(name==='hero')name=S&&S.hero===1?'boy':'girl';
+  if(name==='friend')name=S&&S.hero===1?'friendM':'friendF';
+  if(name==='weaver')name=S&&S.hero===1?'weaverM':'weaverF';
   var s=SP[name];if(!s)return;z=z||2;
   if(!RM&&(name==='girl'||name==='boy')&&(T>>3)%2)y-=1;
-  if(name==='kid')z=1;
+  if(SMALL[name])z=1;
   spr(x,y,s.r,s.p,z);
   if(name==='woman'){px(x+20,y+16,6,8,'#b5733c');px(x+21,y+14,4,2,'#8a5226')}
+  if(name==='carrier'){px(x+18,y+12,9,12,'#7a5230');px(x+19,y+10,6,3,'#5a3a1a')}
+  if(name==='potter'){px(x+4,y+20,16,14,'#c9b48a')}
+  if(name==='scribe'){px(x+22,y+16,2,10,'#2A201C')}
 }
 function camel(x,y,f,col){
   col=col||'#c9a063';
@@ -308,7 +333,7 @@ function palm(x,y){px(x,y,4,30,'#7a5230');px(x-10,y-5,24,5,'#2f8f46');px(x-6,y-1
 function house(x,y,w,h){px(x,y,w,h,'#d9bd88');px(x,y,w,3,'#e9d3a2');px(x+4,y+8,6,6,'#5a4630');px(x+w-12,y+8,7,7,'#4a3a2a');px(x+w/2-3,y+h-12,6,12,'#6b4a22')}
 function stall(x,y,c1,c2){for(var i=0;i<6;i++)px(x+i*8,y,8,6,i%2?c1:c2);px(x,y+6,2,18,'#6b4a22');px(x+46,y+6,2,18,'#6b4a22');px(x+4,y+18,40,6,'#a07a3e')}
 function dunes(off,base,col){for(var x=0;x<W;x+=4){var h=base+Math.sin((x+off)/34)*7+Math.sin((x+off)/13)*2;px(x,h,4,H-h,col)}}
-var stars=[];for(var i=0;i<40;i++)stars.push([(i*53)%W,(i*29)%90,(i%3)+1]);
+var stars=[];(function(){var r=7;function rnd(){r=(r*16807)%2147483647;return r/2147483647}for(var i=0;i<40;i++)stars.push([Math.floor(rnd()*W),Math.floor(rnd()*90),(i%3)+1])})();
 
 /* постройки города (клетка 40x40) */
 var BLD={
@@ -316,6 +341,7 @@ var BLD={
   s:{n:'Лавка',f:function(x,y){for(var i=0;i<5;i++)px(x+3+i*7,y+10,7,6,i%2?'#b8452d':'#f2e2b8');px(x+4,y+16,2,20,'#6b4a22');px(x+34,y+16,2,20,'#6b4a22');px(x+7,y+28,26,8,'#a07a3e');px(x+10,y+25,6,3,'#7a4a22');px(x+20,y+25,6,3,'#2c7fb8')}},
   p:{n:'Пальма',f:function(x,y){px(x+18,y+14,4,24,'#7a5230');px(x+6,y+9,28,5,'#2f8f46');px(x+10,y+5,20,5,'#3aa856');px(x+4,y+14,9,4,'#2f8f46');px(x+27,y+14,9,4,'#2f8f46')}},
   w:{n:'Колодец',f:function(x,y){px(x+8,y+22,24,14,'#9a9080');px(x+10,y+22,20,4,'#3b6fa8');px(x+8,y+8,3,16,'#6b4a22');px(x+29,y+8,3,16,'#6b4a22');px(x+8,y+6,24,3,'#6b4a22');px(x+19,y+9,2,8,'#c9a063')}},
+  k:{n:'Дом знаний',f:function(x,y){px(x+3,y+9,34,30,'#5a4a7a');px(x+4,y+12,32,26,'#d9c9a8');px(x+4,y+10,32,4,'#e9dcc0');px(x+16,y+24,8,14,'#6b4a22');px(x+8,y+16,10,7,'#f6f0de');px(x+12,y+16,1,7,'#7a6435');px(x+26,y+16,5,5,'#ffe27a');px(x+27,y+21,3,2,'#8a5a2a')}},
   b:{n:'Стена',f:function(x,y){for(var r=0;r<4;r++)for(var c=0;c<4;c++)px(x+2+c*9+(r%2?4:0),y+6+r*8,8,7,'#c9ad7a');px(x+2,y+6,36,1,'#e3cfa3')}}
 };
 
@@ -338,6 +364,9 @@ function draw(){
   var f=RM?0:(T>>4)&1, i;
   if(bg==='gem'){drawGem();return}
   if(bg==='map'){drawMap();return}
+  if(bg==='cave'||bg==='dawn'){drawCave(bg==='dawn');return}
+  if(bg==='memo'){drawMemo();return}
+  if(bg==='sky'){drawSky();return}
   if(bg==='catch'){drawCatch();return}
   if(bg==='night'){
     px(0,0,W,H,'#0f1630');px(0,90,W,30,'#16204a');
@@ -382,10 +411,43 @@ function draw(){
   }
   for(i=0;i<cast.length;i++){var cc=cast[i];person(cc[0],cc[1],cc[2],cc[3])}
   if(bg==='scale')drawScale();
+  if(bg==='rain'||(bg==='night'&&rainOn)){var nr=RM?20:70;for(var r2=0;r2<nr;r2++)px(((r2*41+(RM?0:T*2))%W),((r2*29+(RM?0:T*9))%H),1,6,'rgba(170,190,255,.7)')}
   if(bg==='storm'){
     ctx.fillStyle='rgba(205,160,95,.55)';ctx.fillRect(0,0,W,H);
     var n=RM?15:60;for(var j=0;j<n;j++)px(((j*37+(RM?0:T*7))%W),((j*23+(RM?0:T*3))%H),6,1,'rgba(255,235,190,.8)');
   }
+}
+var rainOn=false;
+function drawCave(dawn){
+  px(0,0,W,H,dawn?'#6a5a8a':'#0c1028');px(0,dawn?60:200,W,60,dawn?'#c99a7a':'#0c1028');
+  if(!dawn)for(var i=0;i<stars.length;i++)if(RM||((T>>5)+i)%7)px(stars[i][0],stars[i][1]*0.8,stars[i][2],stars[i][2],'#fff6c8');
+  for(var x=0;x<W;x+=2){var h=Math.max(0,70-Math.abs(x-170)*0.55)+Math.max(0,30-Math.abs(x-60)*0.6);px(x,150-h,2,30+h,dawn?'#3a2a3a':'#2a2140');px(x,150-h,2,1,dawn?'#5a4a5a':'#3a3058')}
+  px(176,104,10,8,'#05060c');px(0,160,W,20,dawn?'#4a3a3a':'#1a1424');
+}
+var MEMO={dates:{n:'финики'},skin:{n:'бурдюк'},rope:{n:'верёвка'},cloth:{n:'ткань'},bread:{n:'лепёшки'},salt:{n:'соль'},sandals:{n:'сандалии'},lamp:{n:'лампа'}},mm=null;
+var MM={
+  skin:[["...kk....","..kbbk...",".kbbbbk..","kbbbbbbk.","kbbwbbbk.","kbbbbbbk.",".kbbbbk..","..kkkk...","........."],{k:'#4a2a12',b:'#8a5a2a',w:'#c9a063'}],
+  rope:[["..rrrrr..",".r.....r.","r..rrr..r","r.r...r.r","r.r.r.r.r","r.r...r.r","r..rrr..r",".r.....r.","..rrrrr.."],{r:'#a07a3e'}],
+  bread:[".........|..bbbbb..|.bBBBBBb.|bBBdBdBBb|bBBBBBBBb|bBdBBdBBb|.bBBBBBb.|..bbbbb..|.........".split('|'),{b:'#8a5a22',B:'#d9a85a',d:'#6b3a1a'}],
+  salt:[".........|.........|....w....|...www...|..wwwww..|.wwwgwww.|wwwwwwwww|ggggggggg|.........".split('|'),{w:'#f6f6f0',g:'#b8b8b0'}],
+  sandals:[".........|.ss...ss.|sbbs.sbbs|sbbs.sbbs|sbbs.sbbs|sbbs.sbbs|sbbs.sbbs|.ss...ss.|.........".split('|'),{s:'#5a3a1a',b:'#a07a3e'}],
+  lamp:["....f....|...fyf...|....y....|...kkk...|.kkkkkkk.|kkkkkkkkk|.kkkkkkk.|..kkkkk..|.........".split('|'),{f:'#ff9b2e',y:'#ffe27a',k:'#8a5a2a'}]
+};
+function memoIcon(k){if(k==='dates')return IC.dates;if(k==='cloth')return IC.cloth;if(!IC['m_'+k])IC['m_'+k]=iconURL(MM[k][0],MM[k][1],3);return IC['m_'+k]}
+function memoDraw(k,x,y,z){if(k==='dates'||k==='cloth'){var im=new Image();im.src=memoIcon(k);ctx.drawImage(im,x,y,9*z,9*z);return}spr(x,y,MM[k][0],MM[k][1],z)}
+function drawMemo(){
+  px(0,0,W,H,'#e9d3a2');px(0,120,W,60,'#8a6a3a');px(0,118,W,4,'#6b4a22');
+  if(!mm)return;
+  if(mm.phase==='show'&&mm.cur!==null)memoDraw(mm.seq[mm.cur],160-27,40,6);
+  for(var i=0;i<mm.picked.length;i++)memoDraw(mm.picked[i],20+i*58,128,4);
+}
+var SKYG={north:[[40,140],[52,134],[66,132],[80,136],[92,128],[104,134],[100,146]],over:[[140,30],[156,40],[170,28],[184,44],[196,32],[150,56],[178,60]],south:[[240,120],[252,110],[266,118],[280,108],[292,122],[258,132],[276,136]]};
+function drawSky(){
+  px(0,0,W,H,'#0c1028');for(var i=0;i<stars.length;i++)px(stars[i][0],stars[i][1]*1.6%H,1,1,'#5a6a9a');
+  px(0,150,W,30,'#1a1424');for(var x=0;x<W;x+=6)px(x,156,4,1,'#3a3044');
+  for(var k in SKYG)SKYG[k].forEach(function(p){px(p[0],p[1],2,2,'#fff6c8')});
+  px(262,6,52,34,'#c9b48a');px(264,8,48,30,'#e3cfa3');
+  var t=[[268,30],[274,26],[281,25],[288,27],[294,22],[300,26],[299,33]];t.forEach(function(p){px(p[0],p[1],2,2,'#2A201C')});px(268,34,32,1,'#2A201C');
 }
 var MAPP=[[34,142,'Мекка'],[96,116,'Буря'],[150,128,'Привал'],[212,92,'Оазис'],[284,40,'Шам']],mapAt=0;
 function drawMap(){
@@ -398,7 +460,7 @@ function drawMap(){
   px(298,150,12,2,'#2A201C');px(303,145,2,12,'#2A201C');ctx.fillText('С',304,140);
 }
 function showMap(i,t,txt,next){mapAt=i;say({t:t,bg:'map',cast:[],p:[txt],b:nx('Дальше',next)})}
-var BADGES={sled:'Следопыт: найдены все тайные самоцветы главы',ruki:'Ловкие руки: 12 фиников и больше',omov:'Знаток омовения: без единой ошибки',slovo:'Знаток слов: слово пути с первой попытки'};
+var BADGES={sled:'Следопыт: найдены все тайные самоцветы главы 1',sled2:'Следопыт главы 2: найдены все тайные самоцветы',pamyat:'Цепкая память: заказ погонщика с первой попытки',zvezdy:'Звездочёт: загадка звёзд с первой попытки',ruki:'Ловкие руки: 12 фиников и больше',omov:'Знаток омовения: без единой ошибки',slovo:'Знаток слов: слово пути с первой попытки'};
 function badge(id){var b=load().badges||{};if(b[id])return;b[id]=day();save({badges:b});stat('znak',BADGES[id].split(':')[0]);sfx('facet');vib([20,30,20]);
   var t=document.getElementById('toast');if(t)t.parentNode.removeChild(t);t=document.createElement('div');t.id='toast';t.textContent='Знак следопыта! '+BADGES[id];document.body.appendChild(t);setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t)},3200)}
 function drawScale(){
@@ -435,7 +497,21 @@ function hud(show){
   if(prevH&&cur.m>pv.m)sfx('coin');
   prevH=cur;
 }
+var hist=[],curScr=null;
+function navUpd(){var b=$('nb');if(b)b.disabled=!hist.length;$('nav').style.display=onTitle?'none':'flex'}
+var onTitle=false;
+function goBack(){
+  while(hist.length){var h=hist.pop();if(h.o.bg==='catch'||h.o.bg==='memo')continue;
+    cg=null;mm=null;rainOn=false;cv.onpointermove=null;cv.onpointerdown=null;
+    try{S=JSON.parse(h.s)}catch(e){}
+    curScr=h;h.o._back=1;say(h.o);return}
+  title();
+}
 function say(o){
+  var same0=o.stay&&$('ttl').textContent===(o.t||'');
+  if(!same0&&!o._back&&!o._title){if(curScr)hist.push(curScr);if(hist.length>40)hist.shift();curScr={o:o,s:JSON.stringify(S)}}
+  if(o._back)o._back=0;
+  onTitle=!!o._title;if(o._title){hist=[];curScr=null}
   bg=o.bg||bg;cast=o.cast||[];camelOn=!!o.camel;
   hud(!o.nohud);
   var same=o.stay&&$('ttl').textContent===(o.t||'');
@@ -461,6 +537,7 @@ function say(o){
   if(o.extra)o.extra(b);
   cv.setAttribute('aria-label',o.alt||o.t||'Картинка сцены');
   if(!same)window.scrollTo(0,0);
+  navUpd();
 }
 function nx(t,f){return [{t:t||'Дальше',f:f}]}
 /* несколько коротких экранов подряд: информация порциями */
@@ -477,13 +554,14 @@ function go(name){
   SC[name]();
 }
 var PLACE={intro:'Мекка',elder:'Мекка',riba:'Мекка',market:'Рынок Мекки',road:'Дорога',stranger:'Дорога',storm:'Буря',ev1:'Дорога',camp:'Привал',wudu:'Привал',word:'Привал',night1:'Ночлег',oasis:'Оазис',ev2:'Оазис',defect:'Оазис',sham:'Шам',sham2:'Шам',kid:'Шам',confess:'Шам',uhelp:'Шам',weigh:'Шам',oath:'Шам',sell:'Шам',widow:'Шам',uncle:'Шам',result:'Конец пути',name:'Самоцвет',scroll:'Свиток',quiz:'Вопросы'};
+PLACE.g2recall='Глава 2';PLACE.g2intro='Лавка';PLACE.g2coin='Лавка';PLACE.g2friend='Лавка';PLACE.g2hira1='Гора Хира';PLACE.g2carrier='Полдень';PLACE.g2order='Заказ';PLACE.g2weaver='За рынком';PLACE.g2evening='Вечер';PLACE.g2roof='Крыша';PLACE.g2storm='Гроза';PLACE.g2flood='Сель';PLACE.g2hira2='Гора Хира';PLACE.g2morning='Утро';PLACE.g2guest='Гостья';PLACE.g2hira3='Хадиджа';PLACE.g2mirror='Утро';PLACE.g2aunt='Тётя';PLACE.g2scribe='Писец';PLACE.g2hira4='Варака';PLACE.g2ret='Вечер';PLACE.g2result='Итог';PLACE.g2name='Самоцвет';PLACE.g2word='Слово';PLACE.g2scroll='Свиток';PLACE.g2quiz='Вопросы';
 var TEASE={oasis:'Завтра: оазис, покупатель у колодца и первая большая сделка.',sham:'Завтра: огромный рынок Шама.',camp:'Завтра: ночь у костра и звёзды.'};
 function rest(){
   playing=false;
   var at=load().at;
   say({t:'Привал до завтра',bg:'night',nohud:true,cast:[['hero',150,110]],p:[
     'Караван встал на ночлег. На сегодня пути хватит.',
-    TEASE[at]||'Завтра продолжим с этого же места.',
+    S&&S.ch===2?L('g2.rest'):(TEASE[at]||'Завтра продолжим с этого же места.'),
     '<span class="note">Иди, отдохни и помоги дома.</span>'
   ],b:[{t:'Сокровищница имён',c:'alt',f:function(){treasury(rest)}},load().city?{t:'Мой город',c:'alt',f:city}:null,{t:'← Вернуться в RIZQ',c:'alt',f:function(){location.href='../'}},{t:'Для родителей',c:'alt',f:parents}]});
 }
@@ -492,19 +570,24 @@ function title(){
   playing=false;lim=overLimit();
   var st=load();
   S=st.S||fresh();
-  var canGo=st.at&&st.S&&st.at!=='done';
-  say({t:'Глава 1. Честный торговец',bg:'mecca',nohud:true,cast:[['woman',140,96]],p:[
+  var canGo=st.at&&st.S&&st.at!=='done'&&st.at!=='done2';
+  var d1=!!(st.stats&&st.stats.done),d2=!!st.done2,ch=(S&&S.ch)||1;
+  function sure(label,fn){return function(ev){var bt=ev&&ev.currentTarget;if(canGo&&bt&&!bt._ok){bt._ok=1;bt.innerHTML='Точно? Текущий путь начнётся заново. Нажми ещё раз';setTimeout(function(){bt._ok=0;bt.innerHTML=label},3000);return}if(lim)return rest();fn()}}
+  var show2=CH2_ON&&d1&&(!canGo||ch===2);
+  var l2=d2?'Глава 2 заново':'Глава 2: Ночь в пещере Хира',l1=d1?'Глава 1 заново':(canGo?'Начать главу заново':'Начать путь');
+  say({_title:1,t:show2?'Глава 2. Ночь в пещере Хира':'Глава 1. Честный торговец',bg:show2?'cave':'mecca',nohud:true,cast:show2?[]:[['woman',140,96]],p:[
     '<b style="font-size:22px">Ильм-Крафт</b><br><span class="note">Игра-путешествие во времена Пророка (саллаллаху алейхи ва саллям)</span>',
-    L('title.1'),
-    '<span class="note">'+L('title.2')+' Возраст: 12+.</span>'
+    show2?L('g2.title.1'):L('title.1'),
+    '<span class="note">'+(show2?L('g2.title.2'):L('title.2'))+' Возраст: 12+.</span>'
   ],b:[
     dueGem()?{t:'✦ Самоцвет ждёт огранки',c:'gold',s:'вспомни имя - самоцвет засияет',f:function(){polish(dueGem(),title)}}:null,
-    canGo?{t:'Продолжить путь',c:'gold',s:PLACE[st.at]||'',f:function(){S=st.S;if(lim)return rest();playing=true;SC[st.at]()}}:null,
-    {t:canGo?'Начать главу заново':'Начать путь',c:canGo?'alt':'gold',f:function(ev){var bt=ev&&ev.currentTarget;if(canGo&&bt&&!bt._ok){bt._ok=1;bt.innerHTML='Точно начать заново? Нажми ещё раз';setTimeout(function(){bt._ok=0;bt.innerHTML='Начать главу заново'},3000);return}if(lim)return rest();S=fresh();pickHero()}},
-    st.stats&&st.stats.done?{t:'Свиток знаний',c:'alt',f:function(){scrollView(title)}}:null,
-    {t:'Звук: '+(SND?'включён':'выключен'),c:'alt',f:function(){SND=!SND;save({snd:SND?1:0});title()}},
+    canGo?{t:'Продолжить путь',c:'gold',s:'Глава '+ch+' · '+(PLACE[st.at]||''),f:function(){S=st.S;if(lim)return rest();playing=true;SC[st.at]()}}:null,
+    d1&&CH2_ON?{t:l2,c:canGo||d2?'alt':'gold',f:sure(l2,function(){S=fresh2();go('g2recall')})}:null,
+    {t:l1,c:d1||canGo?'alt':'gold',f:sure(l1,function(){S=fresh();pickHero()})},
+    d1?{t:'Свиток знаний',c:'alt',f:function(){scrollView(title)}}:null,
     st.city&&st.city.join('')?{t:'Мой город',c:'alt',f:city}:null,
     {t:'Сокровищница имён ('+Object.keys(gems()).length+' из 99)',c:'alt',f:function(){treasury(null)}},
+    {t:'Звук: '+(SND?'включён':'выключен'),c:'alt',f:function(){SND=!SND;save({snd:SND?1:0});title()}},
     {t:'Как играть',c:'alt',f:function(){rules(title)}},
     {t:'Для родителей',c:'alt',f:parents},
     {t:'← Вернуться в RIZQ',c:'alt',f:function(){location.href='../'}}
@@ -854,10 +937,11 @@ var SCROLL=[
   ['Риба - лихоимство','«Аллах дозволил торговлю и запретил лихоимство» (Коран 2:275). Лихоимство (риба) в долге - это когда заранее ставят условие вернуть больше, чем взяли.'],
   ['Садака','Пророк (саллаллаху алейхи ва саллям) сказал: «Садака не уменьшает имущества» (Муслим 2588, перевод смысла).']
 ];
-SC.scroll=function(){scrollView(function(){go('quiz')},'Три вопроса')};
-function scrollView(back,lab){
+SC.scroll=function(){scrollView(function(){go('quiz')},'Три вопроса',1)};
+function scrollView(back,lab,only){
   var h='<p>Нажми на строку, чтобы прочитать.</p>';
-  SCROLL.forEach(function(x,i){h+='<details style="border-bottom:1px solid var(--line);padding:6px 0"><summary style="cursor:pointer;font-weight:600">'+(i+1)+'. '+x[0]+'</summary><p style="margin:6px 0 0">'+x[1]+'</p></details>'});
+  var list=only===2?SCROLL2:(only===1?SCROLL:SCROLL.concat(load().done2?SCROLL2:[]));
+  list.forEach(function(x,i){h+='<details style="border-bottom:1px solid var(--line);padding:6px 0"><summary style="cursor:pointer;font-weight:600">'+(i+1)+'. '+x[0]+'</summary><p style="margin:6px 0 0">'+x[1]+'</p></details>'});
   h+='<p class="note" style="margin-top:10px">Аяты - перевод смыслов Корана Э. Кулиева. Хадисы - перевод смысла, с номером сборника.</p>';
   say({t:'Свиток знаний',bg:'sham',nohud:!playing,cast:[],p:[{html:h}],b:nx(lab||'Назад',back)});
 }
@@ -868,7 +952,7 @@ var QS=[
 ];
 var qi,qok;
 SC.quiz=function(){qi=0;qok=0;var gg=gems();QS.length=3;['raqib','karim'].forEach(function(k){if(gg[k]&&QS.length<4){var g0=GEMS[k],o=[[g0.mean,1]];DIST.filter(function(x){return x!==g0.mean}).slice(0,2).forEach(function(x){o.push([x,0])});QS.push({q:'Тайный самоцвет: что значит имя Аллаха '+g0.n+'?',o:o,e:g0.n+' - '+g0.mean+'. '+g0.ayah})}});qshow()};
-var DIST=['Наделяющий уделом, Дающий пропитание','Наблюдающий','Щедрый, Великодушный','Хранитель','Выдержанный','Знающий'];
+var DIST=['Наделяющий уделом, Дающий пропитание','Наблюдающий','Щедрый, Великодушный','Хранитель','Выдержанный','Знающий, Всезнающий: Тот, Кто знает всё - явное и скрытое','Первосоздатель: творящий без образца','Ведающий, Сведущий: знающий скрытую суть всего'];
 function qshow(){
   if(qi>=QS.length)return qend();
   var Q=QS[qi];
@@ -883,7 +967,7 @@ function qshow(){
 function qend(){
   var extra=qok>=3?2:qok===2?1:0,all=(S.blocks||4)+extra;
   var st=load();all=Math.max(st.blocks||0,all);
-  var stt=st.stats||{};stt.quiz=qok;stt.done=day();save({blocks:all,at:'done',stats:stt,helped:S.helped?1:0});
+  var stt=st.stats||{};stt.quiz=qok;stt.done=day();save({blocks:all,at:'done',stats:stt,helped:S.helped?1:0,trust1:S.trust,hero1:S.hero});
   playing=false;
   say({t:'Знания - тоже блоки',bg:'sham',cast:[['hero',150,108]],p:[
     'Верных ответов: '+qok+' из '+QS.length+'. '+(extra?'+'+extra+' к блокам города.':'Ничего страшного: свиток всегда с тобой.'),
@@ -898,7 +982,7 @@ function city(){
   var cells=st.city&&st.city.length===32?st.city.slice():(function(){var a=[];for(var i=0;i<32;i++)a.push('');return a})();
   if(!S)S=fresh();
   S.city=cells;
-  var blocks=st.blocks||0;
+  var blocks=(st.blocks||0)+(st.blocks2||0);
   var hasWell=!!st.well;
   function render(){
     var used=cells.filter(function(c){return c}).length,left=Math.max(0,blocks-used);
@@ -908,8 +992,9 @@ function city(){
       '<span class="note">В главе 2 постройки помогут: колодец даст воду в начале пути, лавка - место для тюка.</span>'
     ],extra:function(b){
       var pal=document.createElement('div');pal.className='pal';
-      ['h','s','p','w','b'].forEach(function(k){
+      ['h','s','p','w','k','b'].forEach(function(k){
         var e=document.createElement('button');
+        if(k==='k'&&!load().done2)return;
         var locked=k==='w'&&!hasWell;
         e.innerHTML='<img alt="" src="'+IC['b'+k]+'">'+(locked?'закрыт':BLD[k].n);
         if(locked)e.disabled=true;
@@ -917,7 +1002,7 @@ function city(){
         e.onclick=function(){sel=k;render()};pal.appendChild(e);
       });
       b.appendChild(pal);
-      var hook=document.createElement('div');hook.className='now';hook.innerHTML='<span class="who">Рассказчица</span>'+L((load().helped?'end.hook':'end.hook0'))+'<br><b>'+L('end.next')+'</b>';
+      var hook=document.createElement('div');hook.className='now';hook.innerHTML=load().done2?'<span class="who">Рассказчица</span>'+L('g2.end.hook')+'<br><b>'+L('g2.end.next')+'</b> Скоро.':'<span class="who">Рассказчица</span>'+L((load().helped?'end.hook':'end.hook0'))+(CH2_ON?'<br><b>Глава 2 открыта на главном экране.</b>':'<br><b>'+L('end.next')+'</b> Скоро.');
       b.appendChild(hook);
       var t=document.createElement('button');t.className='btn alt';t.textContent='На главный экран';t.onclick=function(){cv.onclick=null;title()};b.appendChild(t);
     }});
@@ -944,6 +1029,8 @@ function parents(){
   say({t:'Для родителей',nohud:true,bg:'mecca',cast:[],p:[
     '<b>Чему учит глава 1.</b> Пророка (саллаллаху алейхи ва саллям) в Мекке звали аль-Амин - надёжный. Честный торговец показывает недостаток товара и даёт полную меру. Пропитание даёт Аллах - Ар-Раззак.',
     '<b>Поступок недели:</b> сказать правду, даже когда невыгодно.',
+    (load().S&&load().S.ch===2)||load().done2?L('g2.par.1')+' '+L('g2.par.2')+' '+L('g2.par.3'):'',
+    (load().S&&load().S.ch===2)||load().done2?L('g2.par.act')+'<br>'+L('g2.par.ask')+'<br>'+L('g2.par.safe'):'',
     '<b>Вопрос к ужину:</b> «Сказал(а) бы ты о дырочке в ткани, если бы покупатель никогда не узнал? Почему?»',
     '<b>Самоцветы.</b> Знание о каждом имени Аллаха - самоцвет в «Сокровищнице имён»: имя, аят и как жить с этим именем. Самоцвет - только образ знания: сами имена мы не изображаем и не делаем игровыми вещами, их нельзя потерять, продать или обменять.',
     '<b>Источники.</b> Аяты - перевод смыслов Корана Э. Кулиева. Хадисы - перевод смысла, с номером сборника. Всё содержание проверено по достоверным источникам и спискам запрещённых в РФ материалов. Возраст: 12+.',
@@ -952,7 +1039,6 @@ function parents(){
     rows.length?'<span class="note">'+rows.join('<br>')+'</span>':'',
     un.length?'<span class="note">Лимит снимали: '+un.join(', ')+'</span>':''
   ],b:[
-    location.hash==='#team'?{t:'Сценарий для озвучки (для команды)',c:'alt',f:scriptView}:null,
     {t:'Снять лимит на сегодня',c:'alt',s:'для взрослых: нужен ответ на пример',f:unlockAsk},
     {t:'Назад',f:title}
   ]});
@@ -963,10 +1049,7 @@ function unlockAsk(){
     {t:'Снять лимит',f:function(){var v=+($('pin')||{}).value;if(v===a*b2){var st=load(),s2=st.stats||{};s2.unlocks=s2.unlocks||{};s2.unlocks[day()]=1;save({t:{d:day(),s:0},stats:s2});lim=false;title()}else{sfx('wrong');parents()}}},
     {t:'Назад',c:'alt',f:parents}]});
 }
-function scriptView(){
-  var t='';for(var k in SCRIPT)t+=k+': '+SCRIPT[k]+'\n';
-  say({t:'Сценарий',nohud:true,cast:[],p:['Все реплики главы 1 с номерами. {ж|м} - форма для девочки и мальчика.',{html:'<pre>'+t.replace(/</g,'&lt;')+'</pre>'}],b:nx('Назад',parents)});
-}
+
 
 /* ---------- самоцветы: знание об имени Аллаха (каждое имя - только с аятом) ---------- */
 var GEMS={
@@ -980,6 +1063,15 @@ var GEMS={
     ayah:'В Коране сказано: «...то ведь мой Господь - Богатый, Великодушный» (Коран 27:40).',
     life:'Щедрость - не только монеты: вода, помощь, улыбка и доброе слово. Будь {щедрой|щедрым} к людям - Аллах щедрее всех.'}
 };
+GEMS.alim={i:19,n:'Аль-Алим',ar:'الْعَلِيمُ',mean:'Знающий, Всезнающий: Тот, Кто знает всё - явное и скрытое',pal:{a:'#5c4210',b:'#f0c860',c:'#fff6d8',d:'#b8902c'},
+  ayah:'В Коране сказано: ангелы ответили Аллаху: «Пречист Ты! Мы знаем только то, чему Ты научил нас. Воистину, Ты - Знающий, Мудрый» (Коран 2:32).',
+  life:'Учись и не стесняйся спрашивать. А когда чего-то не знаешь, проси Того, Кто знает всё: «Господи! Приумножь мои знания» (Коран 20:114).'};
+GEMS.badi={i:94,n:'Аль-Бади‘',ar:'الْبَدِيعُ',mean:'Первосоздатель: творящий без образца',pal:{a:'#2e1a5c',b:'#a88af0',c:'#f2ecff',d:'#5f3fb8'},
+  ayah:'Аллах говорит: «Он - Первосоздатель небес и земли. Когда Он принимает решение, то стоит Ему сказать: «Будь!», как это сбывается» (Коран 2:117).',
+  life:'Каждая звезда и каждый человек сотворены без образца. Посмотри сегодня вечером на небо и вспомни это имя.'};
+GEMS.khabir={i:31,n:'Аль-Хабир',ar:'الْخَبِيرُ',mean:'Ведающий, Сведущий: знающий скрытую суть всего',pal:{a:'#0f4a4a',b:'#6fd6cf',c:'#e6fffd',d:'#1f8a84'},
+  ayah:'В Коране сказано: «...Он - Мудрый, Ведающий» (Коран 6:18).',
+  life:'Ты не всегда знаешь, что у человека на сердце и что будет завтра. Аль-Хабир знает. Не спеши судить людей и доверяй Ему то, что от тебя скрыто.'};
 var GEM=["....aaaaa....","...abbbbba...","..abbcccbba..",".abbcccccbba.","aaaaaaaaaaaaa",".addddddddda.","..addddddda..","...addddda...","....addda....",".....ada.....","......a......"];
 var gemNow=null;
 function gems(){var g0=load().gems||{},o={};for(var k in g0)o[k]=typeof g0[k]==='string'?{d:g0[k],f:2,r:0,b:0}:g0[k];return o}
@@ -1028,7 +1120,7 @@ function gemShow(id,done){
       gemNow.lit=2;
       say({t:g0.n+': аят',bg:'gem',nohud:true,cast:[],p:[ok?'<span class="ok">Верно!</span> Вторая грань горит.':'Правильно: <b>'+g0.mean+'</b>. Вторая грань всё равно горит - знание пришло.',g0.ayah],b:[{t:'Как жить с этим именем',f:function(){
         say({t:g0.n+': как жить с этим именем',bg:'gem',nohud:true,cast:[],p:[lifeOf(id),'<span class="note">Третья грань засияет завтра: вернись и вспомни имя.</span>'],b:[{t:'Положить в Сокровищницу',c:'gold',f:function(){
-          setGem(id,{d:day(),f:2,r:dn()+1,b:0});stat('samocvet',g0.n);var gq=gems();if(gq.raqib&&gq.karim)badge('sled');
+          setGem(id,{d:day(),f:2,r:dn()+1,b:0});stat('samocvet',g0.n);var gq=gems();if(gq.raqib&&gq.karim)badge('sled');if(gq.badi&&gq.khabir)badge('sled2');
           if(first)seq([{t:'Сокровищница имён',bg:'gem',nohud:true,cast:[],p:[{now:L('gem.intro')}]},{t:'Сокровищница имён',bg:'gem',nohud:true,cast:[],p:[{now:L('gem.intro2')}],b:nx('Открыть Сокровищницу',function(){treasury(done,id)})}]);
           else treasury(done,id);
         }}]});
@@ -1036,13 +1128,14 @@ function gemShow(id,done){
     });
   }}]});
 }
-var CH1=['razzaq','raqib','karim'],HINT={razzaq:'в конце пути',raqib:'ищи ночью на привале (✦)',karim:'смотри вокруг на рынке Шама (✦)'};
+var CH1=['razzaq','raqib','karim'],CH2=['alim','badi','khabir'],HINT={razzaq:'в конце пути',raqib:'ищи ночью на привале (✦)',karim:'смотри вокруг на рынке Шама (✦)',alim:'в конце главы 2',badi:'смотри на ночное небо с крыши (✦)',khabir:'расспроси писца обо всём (✦)'};
 function treasury(back,focus){
   var gg=gems(),ids=Object.keys(GEMS),have=ids.filter(function(k){return gg[k]}),n=have.length;
   gemNow=focus?{id:focus,lit:gg[focus]&&gg[focus].f>=3?3:2}:(n?{id:have[have.length-1],lit:3}:null);
   var cells='';var byIdx={};ids.forEach(function(k){byIdx[GEMS[k].i]=k});
   for(var i=0;i<=98;i++){var k=byIdx[i];cells+=k&&gg[k]?'<img alt="" src="'+gemIcon(k,2)+'" style="width:26px;height:22px;image-rendering:pixelated">':'<span aria-hidden="true" style="display:inline-block;width:26px;height:22px;text-align:center;color:var(--note);opacity:.45;font-size:12px">◇</span>'}
-  var line='Глава 1: '+CH1.map(function(k){return gg[k]?'◆':'◇'}).join(''),miss=CH1.filter(function(k){return !gg[k]});
+  var two=!!(load().S&&load().S.ch===2)||!!load().done2;
+  var line='Глава 1: '+CH1.map(function(k){return gg[k]?'◆':'◇'}).join('')+(two?' · Глава 2: '+CH2.map(function(k){return gg[k]?'◆':'◇'}).join(''):''),miss=CH1.concat(two?CH2:[]).filter(function(k){return !gg[k]});
   say({t:'Сокровищница имён',bg:'gem',nohud:true,cast:[],p:[
     'Собрано <b>'+n+' из 99</b>. '+line+(miss.length?'<br><span class="note">Не хватает: '+miss.map(function(k){return HINT[k]}).join('; ')+'.</span>':' <span class="ok">Глава собрана!</span>'),
     {html:'<div role="img" aria-label="Собрано '+n+' самоцветов из 99" style="display:flex;flex-wrap:wrap;gap:2px;margin:6px 0 10px">'+cells+'</div>'},
@@ -1128,6 +1221,413 @@ var EVENTS={
 SC.ev1=function(){EVENTS[S.ev[0]](function(){go('camp')})};
 SC.ev2=function(){EVENTS[S.ev[1]](function(){go('defect')})};
 
+/* =========================================================
+   ГЛАВА 2 «Ночь в пещере Хира». Около 610 года, герою 15 лет.
+   Об откровении говорит только Рассказчица словами хадисов (аль-Бухари 3, Муслим 160);
+   Пророка (саллаллаху алейхи ва саллям) и ангела не изображаем никак: на экранах о Хира фон без людей и без света.
+   ========================================================= */
+/* глава 2 включается после богословской проверки её текста */
+var CH2_ON=/[?&]ch2=1/.test(location.search);
+var SCRIPT2={
+'g2.title.1':'Мекка, около 610 года. Тебе 15 лет, у тебя своя маленькая лавка. Скоро здесь начнётся то, что изменит мир.',
+'g2.title.2':'Пророка (саллаллаху алейхи ва саллям), ангелов и сподвижников не рисуем: о них говорит Рассказчица словами хадисов.',
+'g2.recall.q':'Вспомни главу 1. Что значит арабское слово «амана»?',
+'g2.recall.e':'Амана - то, что тебе доверили. Сук - рынок, амин - надёжный. Сегодня тебе доверят то, что дороже товара.',
+'g2.intro.now':'Прошло два года. Ты уже не {новенькая|новенький} в караване: у тебя своя лавка у рынка Мекки. Дядя Салим торгует по соседству.',
+'g2.intro.city':'Твой город помогает: $1.',
+'g2.intro.1':'Лавка твоя, и решения твои. Я рядом, если понадоблюсь.',
+'g2.intro.2':'Утро. Покупатели идут один за другим: финики, соль, лепёшки. В кошеле прибавилось.',
+'g2.coin.1':'Малыш Мазин покупает горсть фиников за одну монету. Кладёт на прилавок две - и уже бежит прочь.',
+'g2.coin.back':'Мазин возвращается, зажимает монету в кулаке и серьёзно кивает. Потом убегает вприпрыжку.',
+'g2.coin.dates':'Мазин удивлённо смотрит на вторую горсть фиников и улыбается до ушей.',
+'g2.coin.kept':'Монета лежит на прилавке. Мазин уже скрылся за углом.',
+'g2.fr.1':'{Сальма|Харис}, {твоя подруга|твой друг} с соседней улицы, садится у лавки. Глаза красные.',
+'g2.fr.2':'Караван отца из Йемена опаздывает на пять дней. Говорят, на юге были бури. Мне страшно.',
+'g2.fr.listen':'{Сальма|Харис} говорит долго, а ты слушаешь. Потом {она|он} вытирает глаза: «Мне легче. Спасибо, что не {перебивала|перебивал}».',
+'g2.fr.quick':'{Сальма|Харис} кивает и уходит. Слова были добрые, но страх ушёл вместе с {ней|ним}.',
+'g2.fr.news':'Погонщик из Таифа слышал: караван стоит у колодца, у верблюда сбита нога. Люди целы. {Сальма|Харис} впервые за день улыбается.',
+'g2.hira1':'А теперь о том, чего в Мекке пока не знал никто. Мухаммад (саллаллаху алейхи ва саллям) подолгу уединялся в пещере Хира в горе близ Мекки и поклонялся там Аллаху (аль-Бухари 3).',
+'g2.car.1':'Полдень, жара. Старый водонос Мансур спотыкается у твоей лавки. Бурдюк лопается по шву. Ему ещё нести воду в три дома.',
+'g2.car.sew':'Шов держит. Мансур взвешивает бурдюк в руке: «Ещё послужит». Идёт дальше не так быстро, как раньше, но идёт.',
+'g2.car.carry':'Ты {вернулась|вернулся} с мокрыми плечами. Мансур ждёт в тени: «Дома сказали спасибо. Передаю».',
+'g2.car.give':'Мансур берёт твой бурдюк: «Верну, как наполню». И уходит к трём домам.',
+'g2.car.no':'Мансур кое-как стягивает шов узлом. До домов дойдёт половина воды.',
+'g2.car.clue0':'Мансур замечает у тебя на полке свёрток с жёлтой каймой.',
+'g2.car.clue':'Такую кайму ткут на севере, в Шаме. Я видел такой платок у путника. Он ушёл с караваном на север.',
+'g2.ord.1':'На рассвете ухожу в Таиф. Собери мне к вечеру пять вещей. Скажу один раз - запоминай порядок.',
+'g2.ord.how':'Смотри на прилавок: вещи появятся по одной. Потом нажми их в том же порядке.',
+'g2.ord.miss':'Стоп. Кажется, порядок был другой.',
+'g2.ord.ask':'Погонщик повторяет, не сердясь: «Лучше спросить дважды, чем везти не то».',
+'g2.ord.now':'Переспросить не стыдно. Так ты бережёшь чужое дело.',
+'g2.ord.ok':'Погонщик проверяет: всё на месте и по порядку. «Тебе можно доверить дело», - говорит он и платит.',
+'g2.ord.wrong':'Вечером погонщик проверяет тюк: двух вещей нет, одна лишняя. Он молча перекладывает и платит меньше.',
+'g2.tired':'Ты {устала|устал}: вещи мелькают быстрее, чем хочется.',
+'g2.wv.1':'За рынком в пыли сидит {Ранья|Рами} с корзинами. Плетёт хорошо, но туда никто не заходит. С утра не продано ни одной.',
+'g2.wv.2':'Мама болеет. Продам хоть три - купим муки.',
+'g2.wv.buy':'{Ранья|Рами} крепко сжимает монеты и бежит за мукой. Сегодня дома будет хлеб.',
+'g2.wv.shelf':'К вечеру уходят пять корзин. Покупатели спрашивают: «Чьё плетение?» {Ранья|Рами} теперь приходит каждое утро.',
+'g2.wv.show':'У караванов {Ранья|Рами} продаёт две корзины. Мало, но {сама|сам}. Завтра {она|он} придёт туда снова.',
+'g2.wv.no':'{Ранья|Рами} кивает и снова смотрит на пустую дорогу.',
+'g2.eve.1':'Вечер. К лавке подходит мать Мазина.',
+'g2.eve.2':'Сын говорит, отдал тебе две монеты за одну горсть фиников. Это так?',
+'g2.eve.true':'Она берёт монету и смягчается: «Хорошо, что сказал{а|} прямо. Мазин ещё путает монеты».',
+'g2.eve.trade':'Она кивает: «Давай финики. Главное, что сказал{а|} прямо».',
+'g2.eve.lie':'Она смотрит на тебя долго. «Ну что ж», - и уходит. Назавтра она покупает в другой лавке.',
+'g2.eve.back':'Вечер. Мать Мазина проходит мимо и кивает тебе: «Сын сказал, ты вернул{а|} ему монету».',
+'g2.eve.dates0':'Вечер. Мать Мазина проходит мимо: «Сын принёс две горсти фиников. Спасибо, что не взял{а|} лишнего».',
+'g2.eve.now':'Пророк (саллаллаху алейхи ва саллям) сказал: «Правдивость ведёт к благочестию, а благочестие ведёт в Рай» (аль-Бухари 6094, Муслим 2607, перевод смысла).',
+'g2.eve.water':'Воды совсем мало. Мансур ещё ходит по улице с бурдюком.',
+'g2.roof.1':'Ночь. Душно, и вся семья спит на крыше. Не спит только Хани, твой восьмилетний двоюродный брат. Ты разворачиваешь свёрток с жёлтой каймой.',
+'g2.roof.2':'При свете лампы на обороте таблички видны точки, будто камень кололи иглой. Семь точек и линия.',
+'g2.puz.1':'Найди на небе такие же семь звёзд. Где они: на севере, над головой или на юге?',
+'g2.puz.miss':'Не похоже. Хани тянет тебя за рукав: «А вон те, низко, над северной дорогой?»',
+'g2.puz.ok':'Это же звёзды, по которым караваны идут на север! Мне дядя Салим показывал.',
+'g2.puz.ok2':'Точки на табличке - звёзды северной дороги. Платок из Шама, путь на север... Кто же он?',
+'g2.sky.1':'Хани считает звёзды и сбивается на сорок третьей: «Кто же их столько сделал?»',
+'g2.st.1':'Среди ночи звёзды гаснут за тучами. Гром, ливень! Все бегут с крыши вниз.',
+'g2.hani.1':'Хани стоит на пороге и дрожит. При каждом раскате он зажмуривается: «Дом не смоет? А маму?»',
+'g2.hani.talk':'Ты рассказываешь про тучи и молнию. Хани сам считает от вспышки до грома: «Пять! Гроза уходит!»',
+'g2.hani.lamp':'Хани держит лампу двумя руками, как самое важное дело в мире. Бояться некогда: он светит.',
+'g2.hani.gran':'Бабушка укрывает Хани одеялом, и он затихает у неё под боком.',
+'g2.fl.1':'С улицы крик: по ней к рынку несётся мутный поток - сель. Вода заходит в мастерскую гончара Наджи. Твоя лавка тоже внизу.',
+'g2.fl.2':'Что делаем?',
+'g2.fl.nb':'Вы с дядей и Наджи передаёте горшки из рук в руки. Мастерская спасена. А в твоей лавке размокли два мешка фиников.',
+'g2.fl.own':'Твой товар наверху и сухой. Но когда вы добегаете до Наджи, половина его горшков уже в воде.',
+'g2.fl.all':'Улица просыпается. Мужчины копают канаву, и вода уходит в сторону. Каждый что-то теряет, и ты тоже, но совсем немного.',
+'g2.fl.now':'Пророк (саллаллаху алейхи ва саллям) сказал: «Кто помогает брату в нужде, тому помогает в нужде Аллах» (аль-Бухари 2442, Муслим 2580, перевод смысла).',
+'g2.fl.safe':'В жизни в бурный поток не заходят. Сначала зовут взрослых.',
+'g2.fl.end':'К утру ливень стихает. Ты засыпаешь прямо на сундуке.',
+'g2.hira2.1':'А теперь - то, о чём рассказала Аиша (да будет доволен ею Аллах). Когда он был в пещере Хира, к нему пришёл ангел и сказал: «Читай!»',
+'g2.hira2.2':'Он ответил: «Я не умею читать». Ангел крепко сжал его и отпустил. Так было трижды (аль-Бухари 3, Муслим 160).',
+'g2.hira2.3':'А потом прозвучали первые аяты Корана: «Читай во имя твоего Господа, Который сотворил все сущее, сотворил человека из сгустка крови. Читай, ведь твой Господь - Самый великодушный» (Коран 96:1-3).',
+'g2.hira2.4':'«Он научил посредством письменной трости - научил человека тому, чего тот не знал» (Коран 96:4-5). Первое слово откровения - «Читай!».',
+'g2.morn.1':'Утро. Улица в грязи, колодцы мутные. Водонос Мансур ходит от двери к двери и наливает чистую воду всем подряд.',
+'g2.morn.sew':'«Шов держит!» - кричит он тебе и идёт дальше.',
+'g2.morn.carry':'«Вчера ты {несла|нёс} мою воду, сегодня я несу вашу», - говорит он.',
+'g2.morn.give':'Тебе он отдаёт твой бурдюк - полный, как обещал.',
+'g2.morn.no':'Он наливает и тебе. Всем поровну.',
+'g2.morn.shop':'Лавка открыта. За утро - $1.',
+'g2.gst.1':'К лавке подходит бедуинка Умм Наиля с внучкой. Поток унёс их шатёр у края долины. Обе промокли и с утра не ели.',
+'g2.gst.home':'Мама ставит котёл. Внучка засыпает у очага с лепёшкой в руке. Умм Наиля тихо говорит: «Добрый дом».',
+'g2.gst.shop':'Они едят финики прямо у прилавка. Внучка спрашивает, можно ли помочь тебе подмести. Можно.',
+'g2.gst.uncle':'Дядя Салим выходит сам: «Гость в дом - честь дому». К вечеру у шатра Умм Наили новые колья.',
+'g2.gst.no':'Умм Наиля благодарит и уводит внучку. Девочка оглядывается на твои финики.',
+'g2.gst.now':'Пророк (саллаллаху алейхи ва саллям) сказал: «Кто верует в Аллаха и в Последний день, пусть оказывает почёт своему гостю» (аль-Бухари 6018, Муслим 47, перевод смысла).',
+'g2.hira3.1':'Он вернулся с трепещущим сердцем, пришёл к Хадидже и сказал: «Укройте меня! Укройте меня!» Его укрыли, и страх ушёл (аль-Бухари 3).',
+'g2.hira3.2':'Он рассказал обо всём и сказал: «Я испугался за себя». Хадиджа (да будет доволен ею Аллах) ответила:',
+'g2.hira3.3':'«Нет, радуйся! Клянусь Аллахом, Аллах никогда не опозорит тебя. Ты поддерживаешь родственные связи, говоришь правду, несёшь бремя слабого, даёшь неимущему, принимаешь гостя и помогаешь в беде» (аль-Бухари 3 и 4953, Муслим 160, перевод смысла).',
+'g2.hira3.4':'Сначала его укрыли и дали успокоиться. Потом Хадиджа выслушала и напомнила о добром, что в нём есть. Учёные выводят отсюда: испуганного успокаивают и ободряют (Ибн Хаджар, «Фатх аль-Бари»).',
+'g2.mir.1':'Ты {заметила|заметил}? Многое из этих слов ты {встречала|встречал} за два дня:',
+'g2.mir.2':'Здесь нет оценок. Каждый раз ты {выбирала|выбирал} {сама|сам}.',
+'g2.aunt.1':'Мама узнаёт: у тёти Лубны в нижнем квартале поток размыл стену. Сёстры не разговаривают уже год - поссорились из-за долга.',
+'g2.aunt.2':'Она ко мне не приходила. Почему я должна идти первой?',
+'g2.aunt.go':'Тётя Лубна встречает сухо. Потом молча носит с тобой глину для стены. На прощание: «Передай маме... что стена держится».',
+'g2.aunt.mom':'Мама долго молчит. Потом заворачивает хлеб. У двери сёстры смотрят друг на друга - и обнимаются. Про долг никто не вспоминает.',
+'g2.aunt.unc':'Дядя Салим возвращается: «Корзину взяла. Спросила, как вы все». Дверь приоткрылась. Пока чуть-чуть.',
+'g2.aunt.no':'Мама молчит. Вечером она долго смотрит в сторону нижнего квартала.',
+'g2.aunt.now':'Пророк (саллаллаху алейхи ва саллям) сказал: «Поддерживает родственные связи не тот, кто отвечает тем же, а тот, кто восстанавливает их, когда их разорвали» (аль-Бухари 5991, перевод смысла).',
+'g2.scr.1':'У ворот рынка сидит писец Халаф: за плату пишет купцам договоры. Ты показываешь ему табличку.',
+'g2.scr.2':'Это не рисунки, это буквы. Чужое письмо, читать его я не умею. Но смотри: этот знак повторён трижды.',
+'g2.scr.sign':'Так пишут, когда учатся. Или когда пишут имя: своё или того, кому пишут.',
+'g2.scr.border':'В жёлтую нить каймы вплетён тот же знак! Писец присвистывает: «Свёрток и табличка - от одного человека».',
+'g2.scr.learn':'Можно. Нужны желание и терпение. Приходи - покажу наши буквы. Вот первая.',
+'g2.scr.alif':'Писец чертит на песке черту: ا - алиф.',
+'g2.khb.1':'Ты не знаешь, что написано на табличке и кто её оставил. Но есть Тот, Кому известно всё скрытое.',
+'g2.hira4.1':'Хадиджа отвела его к своему двоюродному брату Вараке ибн Науфалю - слепому старику, который знал прежние Писания (аль-Бухари 3).',
+'g2.hira4.2':'Выслушав, Варака сказал: это тот же ангел, которого Аллах посылал к Мусе (мир ему). И предупредил: с подобным всегда встречали враждой, и народ изгонит его (аль-Бухари 3).',
+'g2.hira4.3':'Вскоре Варака умер, а откровение на время прервалось (аль-Бухари 3). Что было дальше - в главе 3.',
+'g2.ret.1':'Вечером с южной дороги слышен рёв верблюдов. Караван из Йемена! {Сальма|Харис} бежит к тебе: отец жив и здоров.',
+'g2.ret.listen':'Помнишь, ты тогда просто {сидела|сидел} рядом и {слушала|слушал}? Мне это помогло больше всего.',
+'g2.ret.quick':'Я все эти ночи не {спала|спал}. Хорошо, что всё позади. Пойдёшь со мной встречать?',
+'g2.ret.news':'Твоя новость про колодец спасла мне три ночи. Я хоть спать {смогла|смог}.',
+'g2.mot.q':'Почему ты так {поступила|поступил}, когда {Сальме|Харису} было страшно? Ответь честно: оценки здесь нет.',
+'g2.res.fr.listen':'{Сальма|Харис} {выговорилась|выговорился}, и стало легче.',
+'g2.res.fr.quick':'Лавка работала, а страх остался с {ней|ним}.',
+'g2.res.fr.news':'Вы узнали новости, и страх стал меньше.',
+'g2.alt.fr.listen':'Лавка работала бы, а {Сальма|Харис} {ушла|ушёл} бы с тем же страхом.',
+'g2.alt.fr.quick':'Лавка закрылась бы на час, но {Сальме|Харису} стало бы легче уже в тот день.',
+'g2.alt.fr.news':'Новостей не было бы, но {Сальма|Харис} {выговорилась|выговорился} бы.',
+'g2.res.fl.nb':'Мастерская Наджи цела, твои финики размокли.',
+'g2.res.fl.own':'Твой товар цел, а половина горшков Наджи в воде.',
+'g2.res.fl.all':'Улица потеряла немного - все вместе.',
+'g2.alt.fl.nb':'Твой товар был бы цел, а мастерская Наджи - в воде.',
+'g2.alt.fl.own':'Мастерская Наджи была бы цела, а твои финики размокли бы.',
+'g2.alt.fl.all':'Одна лавка была бы спасена, а улица спала бы дольше.',
+'g2.name.pre':'Первое слово откровения - «Читай!». Аллах «научил человека тому, чего тот не знал» (Коран 96:5). Всякое знание - от Него.',
+'g2.word.note':'Икра’ - с короткой остановкой голоса в конце.',
+'g2.city.k':'Новая постройка - Дом знаний. Она открывается в главе о первом слове откровения: «Читай!»',
+'g2.end.hook':'Ночью ты снова смотришь на северные звёзды. Табличка, кайма, один и тот же знак. Писец обещал научить тебя буквам. Кто и зачем оставил тебе свёрток?',
+'g2.end.next':'Глава 3 - «Терпение в Мекке».',
+'g2.rest':'Лавка закрыта до завтра. Продолжим с этого же места. Иди, отдохни и помоги дома.',
+'g2.par.1':'<b>Чему учит глава 2.</b> Откровение началось в пещере Хира со слова «Читай!» - первых аятов суры 96 (аль-Бухари 3, Муслим 160).',
+'g2.par.2':'Испуганного Пророка (саллаллаху алейхи ва саллям) выслушала и ободрила Хадиджа (да будет доволен ею Аллах): напомнила о его добрых делах - родство, правда, помощь слабым, гостеприимство.',
+'g2.par.3':'Аль-Алим - Знающий: всякое знание у людей - от Аллаха (Коран 2:32, 96:5).',
+'g2.par.act':'<b>Поступок недели:</b> когда кому-то страшно, сначала выслушать, потом помочь делом.',
+'g2.par.ask':'<b>Вопрос к ужину:</b> «Кто поддержал тебя, когда тебе было страшно? Что именно он сделал?» И ещё: «Кого из родных мы давно не навещали?»',
+'g2.par.safe':'<b>Сцена с селем.</b> В игре помогают вместе со взрослыми. Можно обсудить: в настоящий бурный поток не заходят, сначала зовут взрослых.'
+};
+for(var k2 in SCRIPT2)SCRIPT[k2]=SCRIPT2[k2];
+
+var SCROLL2=[
+  ['Начало откровения','Откровение началось с правдивых снов, ясных, как утренняя заря. Потом он полюбил уединение в пещере Хира (аль-Бухари 3). Ему было сорок лет (аль-Бухари 3851), шёл рамадан (сира Ибн Хишама).'],
+  ['«Читай!»','Ангел сказал: «Читай!» Он ответил: «Я не умею читать». После третьего раза прозвучали первые аяты суры «Аль-Аляк» (96:1-5) (аль-Бухари 3, Муслим 160).'],
+  ['Он не умел читать','Аллах говорит: «Ты не читал прежде ни одного Писания и не переписывал его своей десницей» (Коран 29:48). Коран - не его сочинение, а откровение.'],
+  ['Слова Хадиджи','Хадиджа (да будет доволен ею Аллах) сказала: Аллах не опозорит тебя. Ты поддерживаешь родство, говоришь правду, несёшь бремя слабого, даёшь неимущему, принимаешь гостя, помогаешь в беде (аль-Бухари 3, Муслим 160).'],
+  ['Варака ибн Науфаль','Варака знал прежние Писания. Он сказал, что это тот же ангел, которого Аллах посылал к Мусе (мир ему). Учёные поясняют: это Джибриль (мир ему) (аль-Бухари 3; Ибн Хаджар, «Фатх аль-Бари»).'],
+  ['Первая уверовавшая','Хадиджа (да будет доволен ею Аллах) первой уверовала в Аллаха и Его Посланника (саллаллаху алейхи ва саллям) и поддержала его (сира Ибн Хишама).']
+];
+
+function fresh2(){
+  var st=load(),c=st.city||[],has=function(k){return c.indexOf(k)>=0};
+  var hero=st.hero1!==undefined?st.hero1:((st.S&&st.S.hero)||0),t1=st.trust1||50;
+  var help=[];if(has('w'))help.push('колодец (+20 воды)');if(has('h'))help.push('дом (+10 сил)');if(has('s'))help.push('лавка (запасной тюк фиников)');
+  return {ch:2,hero:hero,water:60+(has('w')?20:0),energy:80+(has('h')?10:0),trust:clamp(50+Math.round((t1-50)/2),30,80),money:40,start:40,
+    inv:{dates:has('s')?1:0,cloth:0,oil:0},help:help,mk:{dates:1,cloth:1,oil:1},bonus:0,ev:[],good:false};
+}
+function ad(o){for(var k in o){if(k==='money')S.money=Math.max(0,S.money+o[k]);else S[k]=clamp(S[k]+o[k],0,100)}}
+var C2={me:['hero',120,96]};
+function c2(){var a=[['hero',120,96]];for(var i=0;i<arguments.length;i++)a.push(arguments[i]);return a}
+
+SC.g2recall=function(){
+  var opts=shuf([{a:'أَمَانَة',t:'доверенное: вещь, слово или тайна',ok:1},{a:'سُوق',t:'рынок',ok:0},{a:'أَمِين',t:'надёжный человек',ok:0}]);
+  say({t:'Глава 2. Вспомни',bg:'mecca',cast:c2(),p:[L('g2.recall.q')],b:opts.map(function(o){return {t:'<span style="font-size:20px">'+o.a+'</span> - '+o.t,c:'alt',f:function(){
+    stat('vspomni',o.ok?'верно':'ошибка');sfx(o.ok?'pop':'wrong');
+    say({t:'Глава 2. Вспомни',bg:'mecca',cast:c2(),p:[o.ok?'<span class="ok">Верно!</span>':'Не совсем.',L('g2.recall.e'),word('أَمَانَة','амана','доверенное'),word('سُوق','сук','рынок'),word('أَمِين','амин','надёжный')],b:nx('Дальше',function(){go('g2intro')})});
+  }}})});
+};
+SC.g2intro=function(){
+  var c=c2(['uncle',176,96]);
+  seq([
+    {t:'Своя лавка',bg:'mecca',cast:c,p:[{now:L('g2.intro.now')},S.help&&S.help.length?L('g2.intro.city',S.help.join(', ')):'']},
+    {t:'Своя лавка',bg:'mecca',cast:c,p:[{w:'Дядя Салим',t:L('g2.intro.1')},L('g2.intro.2')]}
+  ],function(){ad({money:12});go('g2coin')});
+};
+SC.g2coin=function(){
+  var c=c2(['mazin',180,116]);
+  function end(t){say({t:'Лишняя монета',bg:'mecca',cast:c,p:[t],b:nx('Дальше',function(){go('g2friend')})})}
+  say({t:'Лишняя монета',bg:'mecca',cast:c,p:[L('g2.coin.1')],b:[
+    {t:'Окликнуть Мазина и вернуть монету',f:function(){S.coin='back';stat('moneta','вернул(а)');end(L('g2.coin.back'))}},
+    {t:'Догнать и дать ему ещё горсть фиников',s:'на вторую монету',f:function(){S.coin='dates';stat('moneta','финики');end(L('g2.coin.dates'))}},
+    {t:'Оставить монету: сам отдал',c:'alt',s:'+1 монета',f:function(){S.coin='kept';ad({money:1});stat('moneta','оставил(а)');end(L('g2.coin.kept'))}}
+  ]});
+};
+SC.g2friend=function(){
+  var c=c2(['friend',176,96]),nm=g('Сальма','Харис');
+  function end(t){say({t:nm,bg:'mecca',cast:c,p:[t],b:nx('Дальше',function(){go('g2hira1')})})}
+  say({t:nm,bg:'mecca',cast:c,p:[L('g2.fr.1'),{w:nm,t:L('g2.fr.2')}],b:[
+    {t:'Сесть рядом: «Расскажи, чего ты боишься больше всего»',s:'лавка закрыта на час: -5 монет',f:function(){S.friend='listen';ad({money:-5});stat('drug','выслушал(а)');end(L('g2.fr.listen'))}},
+    {t:'«Не бойся, всё будет хорошо!» - и к покупателям',s:'лавка работает',f:function(){S.friend='quick';stat('drug','коротко');end(L('g2.fr.quick'))}},
+    {t:'Попросить дядю сходить с вами к погонщикам за новостями',s:'-15 сил',f:function(){S.friend='news';ad({energy:-15});stat('drug','новости');end(L('g2.fr.news'))}}
+  ]});
+};
+SC.g2hira1=function(){say({t:'Гора Хира',bg:'cave',nohud:true,cast:[],alt:'Гора Хира ночью, без людей',p:[{now:L('g2.hira1')}],b:nx('Дальше',function(){go('g2carrier')})})};
+SC.g2carrier=function(){
+  if(!S.noon){S.noon=1;ad({water:-10})}
+  var c=c2(['carrier',176,96]);
+  function end(t){seq([{t:'Водонос',bg:'mecca',cast:c,p:[t]},{t:'Жёлтая кайма',bg:'mecca',cast:c,p:[L('g2.car.clue0'),{w:'Водонос Мансур',t:L('g2.car.clue')}]}],function(){S.clue1=true;go('g2order')})}
+  say({t:'Водонос',bg:'mecca',cast:c,p:[L('g2.car.1')],b:[
+    {t:'Зашить бурдюк крепкой ниткой из лавки',s:'-10 сил',f:function(){S.car='sew';ad({energy:-10});stat('vodonos','зашил(а)');end(L('g2.car.sew'))}},
+    {t:'Отнести воду в три дома вместо него',s:'-20 сил',f:function(){S.car='carry';ad({energy:-20});stat('vodonos','отнёс(ла)');end(L('g2.car.carry'))}},
+    {t:'Отдать ему свой полный бурдюк',s:'-20 воды',f:function(){S.car='give';ad({water:-20});stat('vodonos','отдал(а) бурдюк');end(L('g2.car.give'))}},
+    {t:'Посочувствовать и вернуться к делам',c:'alt',f:function(){S.car='no';stat('vodonos','мимо');end(L('g2.car.no'))}}
+  ]});
+};
+/* мини-игра на память «Заказ погонщика» */
+SC.g2order=function(){
+  var c=c2(['driver',176,96]);
+  seq([{t:'Заказ погонщика',bg:'mecca',cast:c,p:[{w:'Погонщик',t:L('g2.ord.1')}]},{t:'Заказ погонщика',bg:'mecca',cast:c,p:[L('g2.ord.how'),S.energy<25?L('g2.tired'):''],b:nx('Смотреть',function(){S.ordSeq=shuf(Object.keys(MEMO)).slice(0,5);S.ordAsk=0;memoShow()})}]);
+};
+function memoShow(){
+  mm={seq:S.ordSeq,cur:null,picked:[],phase:'show'};
+  say({t:'Запоминай',bg:'memo',nohud:true,cast:[],p:['Смотри внимательно: пять вещей по одной.'],b:[]});
+  var dt=S.energy<25?700:1000,i=0;
+  (function step(){if(!mm||mm.phase!=='show')return;if(i<mm.seq.length){mm.cur=i;sfx('pop');i++;setTimeout(function(){mm.cur=null;setTimeout(step,180)},dt)}else memoPick()})();
+}
+function memoPick(){
+  mm.phase='pick';
+  var keys=shuf(Object.keys(MEMO));
+  say({t:'Собери заказ',bg:'memo',stay:true,nohud:true,cast:[],p:['Нажми вещи в том же порядке. Собрано: <b>'+mm.picked.length+' из 5</b>.'],extra:function(b){
+    var g0=document.createElement('div');g0.className='pal';
+    keys.forEach(function(k){var e=document.createElement('button');e.setAttribute('aria-label',MEMO[k].n);e.innerHTML='<img alt="" src="'+memoIcon(k)+'">'+MEMO[k].n;
+      e.onclick=function(){sfx('tap');var need=mm.seq[mm.picked.length];if(k===need){mm.picked.push(k);if(mm.picked.length===5)return memoDone(true);memoPickRefresh()}else{sfx('wrong');memoMiss()}};g0.appendChild(e)});
+    b.appendChild(g0);
+  }});
+  function memoPickRefresh(){var p=document.querySelector('#txt p');if(p)p.innerHTML='Нажми вещи в том же порядке. Собрано: <b>'+mm.picked.length+' из 5</b>.'}
+}
+function memoMiss(){
+  mm.phase='miss';
+  say({t:'Заказ погонщика',bg:'mecca',cast:c2(['driver',176,96]),p:[L('g2.ord.miss')],b:[
+    {t:'Переспросить погонщика',s:'это ничего не стоит',f:function(){S.ordAsk++;stat('zakaz','переспросил(а)');seq([{t:'Заказ погонщика',bg:'mecca',cast:c2(['driver',176,96]),p:[L('g2.ord.ask'),{now:L('g2.ord.now')}],b:nx('Смотреть ещё раз',memoShow)}])}},
+    {t:'Собрать как запомнилось',c:'alt',f:function(){memoDone(false)}}
+  ]});
+}
+function memoDone(ok){
+  mm.phase='done';var c=c2(['driver',176,96]);
+  if(ok){ad({money:8,trust:5});stat('zakaz',S.ordAsk?'верно после вопроса':'с первого раза');if(!S.ordAsk)badge('pamyat')}else{ad({money:4,trust:-5});stat('zakaz','как запомнилось')}
+  say({t:'Заказ погонщика',bg:'mecca',cast:c,p:[ok?{w:'Погонщик',t:L('g2.ord.ok').replace(/^Погонщик проверяет: всё на месте и по порядку. «|», - говорит он и платит.$/g,'')}:L('g2.ord.wrong'),ok?'Погонщик проверяет: всё на месте и по порядку - и платит.':''],b:nx('Дальше',function(){mm=null;go('g2weaver')})});
+}
+SC.g2weaver=function(){
+  var c=c2(['weaver',180,116]),nm=g('Ранья','Рами');
+  function end(t){S.good=true;say({t:'Корзины',bg:'mecca',cast:c,p:[t],b:nx('Дальше',function(){go('g2evening')})})}
+  say({t:'Корзины',bg:'mecca',cast:c,p:[L('g2.wv.1'),{w:nm,t:L('g2.wv.2')}],b:[
+    {t:'Купить три корзины '+g('самой','самому'),s:'-6 монет',d:S.money<6,f:function(){S.wv='buy';ad({money:-6});stat('korziny','купил(а)');end(L('g2.wv.buy'))}},
+    {t:'Поставить '+g('её','его')+' корзины у входа в свою лавку',s:'место у входа',f:function(){S.wv='shelf';stat('korziny','у лавки');end(L('g2.wv.shelf'))}},
+    {t:'Показать, где разгружаются караваны',s:'-5 сил',f:function(){S.wv='show';ad({energy:-5});stat('korziny','показал(а)');end(L('g2.wv.show'))}},
+    {t:'Пожелать удачи',c:'alt',f:function(){S.wv='no';stat('korziny','удачи');say({t:'Корзины',bg:'mecca',cast:c,p:[L('g2.wv.no')],b:nx('Дальше',function(){go('g2evening')})})}}
+  ]});
+};
+SC.g2evening=function(){
+  var c=c2(['mother',176,96],['mazin',214,116]);
+  function water(){
+    if(S.water>=30)return go('g2roof');
+    say({t:'Вечер',bg:'mecca',cast:c2(['carrier',176,96]),p:[L('g2.eve.water')],b:[
+      {t:'Купить воды у Мансура',s:'-2 монеты',d:S.money<2,f:function(){ad({money:-2,water:30});go('g2roof')}},
+      {t:'Потерпеть до утра',c:'alt',s:'-10 сил',f:function(){ad({energy:-10});go('g2roof')}}]});
+  }
+  function now(t){seq([{t:'Вечер',bg:'mecca',cast:c,p:[t]},{t:'Правда',bg:'mecca',cast:c2(),p:[{now:L('g2.eve.now')}]}],water)}
+  if(S.coin==='kept')return say({t:'Вечер',bg:'mecca',cast:c,p:[L('g2.eve.1'),{w:'Мать Мазина',t:L('g2.eve.2')}],b:[
+    {t:'Сказать правду и вернуть монету',f:function(){ad({money:-1,trust:3});stat('pravda','вернул(а)');now(L('g2.eve.true'))}},
+    {t:'Сказать правду и предложить вместо монеты финики',f:function(){ad({trust:3});stat('pravda','финики');now(L('g2.eve.trade'))}},
+    {t:'Сказать, что не '+g('заметила','заметил'),c:'alt',f:function(){ad({trust:-10});S.lied=true;stat('pravda','не сказал(а)');now(L('g2.eve.lie'))}}
+  ]});
+  now(L(S.coin==='back'?'g2.eve.back':'g2.eve.dates0'));
+};
+SC.g2roof=function(){
+  rainOn=false;var c=[['hero',120,106],['hani',170,126]];
+  say({t:'Ночь на крыше',bg:'night',cast:c,p:[L('g2.roof.1')],b:nx('Дальше',roof2)});
+};
+function roof2(){
+  var c=[['hero',120,106],['hani',170,126]];
+  say({t:'Табличка',bg:'night',cast:c,p:[L('g2.roof.2')],b:[
+    {t:'Сравнить точки со звёздами',s:'загадка',f:function(){S.puzTry=0;puzzle()}},
+    !S.skySeen?{t:'✦ Просто смотреть на небо',c:'alt',s:'осмотреться',f:function(){S.skySeen=true;say({t:'Звёзды',bg:'night',cast:c,p:[{w:'Хани',t:L('g2.sky.1').replace(/^Хани считает звёзды и сбивается на сорок третьей: «|»$/g,'')},'Хани считает звёзды и сбивается на сорок третьей.'],b:nx('Дальше',function(){gemShow('badi',roof2)})})}}:null
+  ]});
+}
+function puzzle(){
+  say({t:'Загадка звёзд',bg:'sky',cast:[],alt:'Ночное небо: три группы звёзд и табличка с семью точками',p:[L('g2.puz.1')],b:shuf([['Север, низко над дорогой','north'],['Над головой','over'],['Юг','south']]).map(function(o){return {t:o[0],c:'alt',f:function(){
+    S.puzTry++;
+    if(o[1]!=='north'){sfx('wrong');return say({t:'Загадка звёзд',bg:'sky',cast:[],p:[L('g2.puz.miss')],b:nx('Ещё раз',puzzle)})}
+    sfx('facet');S.clue2=true;stat('zvezdy','с попытки '+S.puzTry);if(S.puzTry===1)badge('zvezdy');
+    say({t:'Загадка звёзд',bg:'sky',cast:[],p:[{w:'Хани',t:L('g2.puz.ok')},L('g2.puz.ok2')],b:nx('Спать',function(){go('g2storm')})});
+  }}})});
+}
+SC.g2storm=function(){
+  rainOn=true;sfx('sand');var c=[['hero',120,106],['hani',170,126]];
+  function end(t){say({t:'Гроза',bg:'night',cast:c,p:[t],b:nx('Дальше',function(){go('g2flood')})})}
+  say({t:'Гроза',bg:'night',cast:c,p:[L('g2.st.1'),L('g2.hani.1')],b:[
+    {t:'Сесть рядом и рассказать, откуда гром',f:function(){S.hani='talk';stat('hani','рассказал(а)');end(L('g2.hani.talk'))}},
+    {t:'Дать ему дело: светить лампой',s:'-5 сил',f:function(){S.hani='lamp';ad({energy:-5});stat('hani','лампа');end(L('g2.hani.lamp'))}},
+    {t:'Отвести к бабушке',c:'alt',f:function(){S.hani='gran';stat('hani','к бабушке');end(L('g2.hani.gran'))}}
+  ]});
+};
+SC.g2flood=function(){
+  rainOn=true;var c=[['hero',90,106],['uncle',140,106],['potter',200,106]];
+  function end(t){seq([{t:'Сель',bg:'night',cast:c,p:[t]},{t:'Помощь в беде',bg:'night',cast:[['hero',120,106]],p:[{now:L('g2.fl.now')},'<span class="note">'+L('g2.fl.safe')+'</span>']},{t:'Утро близко',bg:'night',cast:[['hero',120,106]],p:[L('g2.fl.end')]}],function(){rainOn=false;ad({energy:25});go('g2hira2')})}
+  say({t:'Сель',bg:'night',cast:c,p:[L('g2.fl.1'),{w:'Дядя Салим',t:L('g2.fl.2')}],b:[
+    {t:'С дядей - к Наджи, выносить горшки',s:'-25 сил, твой товар может намокнуть',f:function(){S.flood='nb';ad({energy:-25,money:-8});stat('sel','к Наджи');end(L('g2.fl.nb'))}},
+    {t:'Сначала поднять свой товар на полки, потом к Наджи',s:'-25 сил',f:function(){S.flood='own';ad({energy:-25});stat('sel','сначала свой товар');end(L('g2.fl.own'))}},
+    {t:'Стучать в двери: будить всю улицу',s:'-15 сил',f:function(){S.flood='all';ad({energy:-15,money:-3});stat('sel','разбудил(а) улицу');end(L('g2.fl.all'))}}
+  ]});
+};
+function cave(keys,next,dawn,extra){
+  var list=keys.map(function(k,i){var o={t:i?'':'Гора Хира',bg:dawn?'dawn':'cave',nohud:true,cast:[],alt:'Гора Хира, без людей и без света',p:[{now:L(k)}]};o.t=dawn?'Хадиджа (да будет доволен ею Аллах)':'Гора Хира';return o});
+  if(extra)list[list.length-1].p.push(extra);
+  seq(list,next);
+}
+SC.g2hira2=function(){cave(['g2.hira2.1','g2.hira2.2','g2.hira2.3','g2.hira2.4'],function(){go('g2morning')},false,word('اقْرَأْ','икра’','читай!'))};
+SC.g2morning=function(){
+  var plus=S.flood==='nb'?4:10;
+  if(!S.morn){S.morn=1;ad({water:30,money:plus})}
+  say({t:'Утро',bg:'mecca',cast:c2(['carrier',176,96]),p:[L('g2.morn.1'),L('g2.morn.'+(S.car||'no')),L('g2.morn.shop',mon(plus))],b:nx('Дальше',function(){go('g2guest')})});
+};
+SC.g2guest=function(){
+  var c=c2(['guest',176,96],['kid',212,116]);
+  function end(t){seq([{t:'Гостья',bg:'mecca',cast:c,p:[t]},{t:'Почёт гостю',bg:'mecca',cast:c2(),p:[{now:L('g2.gst.now')}]}],function(){go('g2hira3')})}
+  say({t:'Гостья',bg:'mecca',cast:c,p:[L('g2.gst.1')],b:[
+    {t:'Позвать к себе домой: накормить и обсушить',s:'-10 воды, -3 монеты на хлеб',f:function(){S.gst='home';S.good=true;ad({water:-10,money:-3});stat('gost','домой');end(L('g2.gst.home'))}},
+    {t:'Угостить тем, что есть в лавке',s:'-10 воды, финики из запаса',f:function(){S.gst='shop';S.good=true;ad({water:-10});if(S.inv.dates>0)S.inv.dates--;else ad({money:-2});stat('gost','в лавке');end(L('g2.gst.shop'))}},
+    {t:'Попросить дядю Салима принять их: у него дом больше',f:function(){S.gst='uncle';S.good=true;stat('gost','к дяде');end(L('g2.gst.uncle'))}},
+    {t:'Показать дорогу к колодцу',c:'alt',f:function(){S.gst='no';stat('gost','к колодцу');end(L('g2.gst.no'))}}
+  ]});
+};
+SC.g2hira3=function(){cave(['g2.hira3.1','g2.hira3.2','g2.hira3.3','g2.hira3.4'],function(){go('g2mirror')},true)};
+SC.g2mirror=function(){
+  say({t:'Ты это встречал'+g('а',''),bg:'mecca',cast:c2(),p:[L('g2.mir.1'),'правда - Мазин;<br>бремя слабого - Мансур;<br>неимущий - '+g('Ранья','Рами')+';<br>гость - Умм Наиля;<br>беда - сель;<br>родство - впереди.',L('g2.mir.2')],b:nx('Дальше',function(){go('g2aunt')})});
+};
+SC.g2aunt=function(){
+  var c=c2(['mother',176,96]);
+  function end(t,ca){seq([{t:'Родство',bg:'mecca',cast:ca||c2(['aunt',176,96]),p:[t]},{t:'Родство',bg:'mecca',cast:c2(),p:[{now:L('g2.aunt.now')}]}],function(){go('g2scribe')})}
+  say({t:'Тётя Лубна',bg:'mecca',cast:c,p:[L('g2.aunt.1'),{w:'Мама',t:L('g2.aunt.2')}],b:[
+    {t:'Пойти к тёте с едой и помочь со стеной',s:'-15 сил, -3 монеты',f:function(){S.aunt='go';S.good=true;ad({energy:-15,money:-3});stat('rodstvo','пошёл(ла) сам(а)');end(L('g2.aunt.go'))}},
+    {t:'Мягко попросить маму пойти вместе',s:'-10 сил',f:function(){S.aunt='mom';S.good=true;ad({energy:-10});stat('rodstvo','с мамой');end(L('g2.aunt.mom'),c2(['mother',160,96],['aunt',200,96]))}},
+    {t:'Передать корзину и привет через дядю Салима',s:'-3 монеты',f:function(){S.aunt='unc';S.good=true;ad({money:-3});stat('rodstvo','через дядю');end(L('g2.aunt.unc'),c2(['uncle',176,96]))}},
+    {t:'Не вмешиваться: это дело взрослых',c:'alt',f:function(){S.aunt='no';stat('rodstvo','не вмешиваться');end(L('g2.aunt.no'),c)}}
+  ]});
+};
+SC.g2scribe=function(){
+  var c=c2(['scribe',176,96]);
+  if(S.sc1&&S.sc2&&!S.khb){S.khb=true;return say({t:'Писец Халаф',bg:'mecca',cast:c2(),p:[L('g2.khb.1')],b:nx('Дальше',function(){gemShow('khabir',function(){go('g2scribe')})})})}
+  var asked=S.sc1||S.sc2||S.alif;
+  say({t:'Писец Халаф',bg:'mecca',cast:c,p:asked?['Писец ждёт, что ты спросишь ещё.']:[L('g2.scr.1'),{w:'Писец Халаф',t:L('g2.scr.2')}],b:[
+    !S.sc1?{t:'✦ Спросить, что может значить знак',c:'alt',s:'расспросить',f:function(){S.sc1=true;say({t:'Писец Халаф',bg:'mecca',cast:c,p:[{w:'Писец Халаф',t:L('g2.scr.sign')}],b:nx('Дальше',function(){go('g2scribe')})})}}:null,
+    !S.sc2?{t:'✦ Приложить кайму свёртка к табличке',c:'alt',s:'осмотреться',f:function(){S.sc2=true;S.clue3=true;say({t:'Писец Халаф',bg:'mecca',cast:c,p:[L('g2.scr.border')],b:nx('Дальше',function(){go('g2scribe')})})}}:null,
+    !S.alif?{t:'Спросить, можно ли научиться читать',f:function(){S.alif=true;say({t:'Писец Халаф',bg:'mecca',cast:c,p:[{w:'Писец Халаф',t:L('g2.scr.learn')},L('g2.scr.alif'),word('ا','алиф','первая буква')],b:nx('Дальше',function(){go('g2scribe')})})}}:null,
+    asked?{t:'Поблагодарить и идти',f:function(){stat('pisec',(S.sc1?'знак ':'')+(S.sc2?'кайма ':'')+(S.alif?'буквы':''));go('g2hira4')}}:null
+  ]});
+};
+SC.g2hira4=function(){cave(['g2.hira4.1','g2.hira4.2','g2.hira4.3'],function(){go('g2ret')},true)};
+SC.g2ret=function(){
+  var nm=g('Сальма','Харис');
+  seq([{t:'Караван из Йемена',bg:'mecca',cast:c2(['friend',176,96]),p:[L('g2.ret.1'),{w:nm,t:L('g2.ret.'+(S.friend||'quick'))}]},
+    {t:'Подумай',bg:'mecca',cast:c2(),p:[L('g2.mot.q')],b:[g(['Она мне дорога'],['Он мне дорог'])[0],'Мне '+g('самой','самому')+' было бы страшно','Так правильно','Не '+g('знала','знал')+', что сказать','Не знаю, так получилось'].map(function(x){return {t:x,c:'alt',f:function(){stat('motiv2',x);go('g2result')}}})}]);
+};
+SC.g2result=function(){
+  var blocks=clamp(4+Math.floor(Math.max(0,S.money-40)/15)+Math.floor(S.trust/20),4,16);S.blocks=blocks;if(S.good)save({well:true});
+  var fr=S.friend||'quick',fl=S.flood||'all';
+  seq([
+    {t:'Итог главы 2',bg:'mecca',cast:c2(),p:['Монеты: <b>'+S.money+'</b>. Доверие: <b>'+S.trust+'</b>. Блоков для города: <b>'+blocks+'</b>.','<b>А если бы иначе?</b> '+g('Подруга','Друг')+':',{html:'<div class="cmp"><div>Как вышло<br>'+L('g2.res.fr.'+fr)+'</div><div>Иначе<br>'+L('g2.alt.fr.'+fr)+'</div></div>'}]},
+    {t:'Итог главы 2',bg:'mecca',cast:c2(),p:['<b>А если бы иначе?</b> Ночь потопа:',{html:'<div class="cmp"><div>Как вышло<br>'+L('g2.res.fl.'+fl)+'</div><div>Иначе<br>'+L('g2.alt.fl.'+fl)+'</div></div>'}],b:nx('Что ты '+g('нашла','нашёл')+'? ✦',function(){go('g2name')})}
+  ]);
+};
+SC.g2name=function(){say({t:'Первое слово',bg:'gem',nohud:true,cast:[],p:[{now:L('g2.name.pre')}],b:nx('Дальше',function(){gemShow('alim',function(){go('g2word')})})})};
+SC.g2word=function(){
+  var W3=[{a:'عِلْم',t:'ильм',r:'знание'},{a:'اقْرَأْ',t:'икра’',r:'читай!'},{a:'قَلَم',t:'калям',r:'письменная трость'}],q=W3[0],opts=shuf(W3);
+  say({t:'Слово пути',bg:'night',cast:[['hero',100,106]],p:['Как по-арабски «знание»?'],b:opts.map(function(o){return {t:'<span style="font-size:22px">'+o.a+'</span> ('+o.t+')',c:'alt',f:function(){
+    var ok=o===q;stat('slovo2',ok?'верно':'ошибка');sfx(ok?'pop':'wrong');
+    say({t:'Слово пути',bg:'night',cast:[['hero',100,106]],p:[ok?'<span class="ok">Верно!</span>':'Не совсем. Запомни:',word('اقْرَأْ','икра’','читай!'),word('عِلْم','ильм','знание'),word('قَلَم','калям','письменная трость, ею пишут'),'<span class="note">'+L('g2.word.note')+'</span>'],b:nx('Свиток знаний',function(){go('g2scroll')})});
+  }}})});
+};
+SC.g2scroll=function(){scrollView(function(){go('g2quiz')},'Вопросы',2)};
+var QS2=[
+  {q:'С какого слова началось откровение?',o:[['اقْرَأْ - «Читай!»',1],['عِلْم - «Знание»',0],['قَلَم - «Трость»',0]],e:'Первое слово - «Читай!» (Коран 96:1, аль-Бухари 3). О письменной трости и знании - в тех же первых аятах (96:4-5).'},
+  {q:'К кому он (саллаллаху алейхи ва саллям) пришёл, вернувшись из пещеры Хира?',o:[['К Хадидже',1],['К Вараке ибн Науфалю',0],['К Абу Бакру',0]],e:'К Хадидже (да будет доволен ею Аллах). Она выслушала и ободрила его, а потом отвела к Вараке (аль-Бухари 3). Об Абу Бакре (да будет доволен им Аллах) - в главе 3.'},
+  {q:'{Подруга|Друг} пишет тебе поздно вечером: «Завтра выступаю перед всем классом. Мне очень страшно». Что ответишь?',o:[['«Не бойся!» - и спать',0],['«Чего боишься больше всего? Давай утром прорепетируем вместе»',1],['«Помнишь, как ты {справилась|справился} в прошлый раз? Ты много {готовилась|готовился}»',1]],e:'Выслушать, помочь делом, напомнить о хорошем - всё это поддержка, как у Хадиджи. Короткое «не бойся» - тоже забота, но страх уходит быстрее, когда тебя выслушали.'}
+];
+var q2i,q2ok,QS2x;
+SC.g2quiz=function(){
+  q2i=0;q2ok=0;QS2x=QS2.slice();var gg=gems();
+  ['badi','khabir'].forEach(function(k){if(gg[k]&&QS2x.length<4){var g0=GEMS[k],o=[[g0.mean,1]];shuf(DIST.filter(function(x){return x!==g0.mean})).slice(0,2).forEach(function(x){o.push([x,0])});QS2x.push({q:'Тайный самоцвет: что значит имя Аллаха '+g0.n+'?',o:o,e:g0.n+' - '+g0.mean+'. '+g0.ayah})}});
+  q2show();
+};
+function q2show(){
+  if(q2i>=QS2x.length)return q2end();
+  var Q=QS2x[q2i];
+  say({t:'Вопрос '+(q2i+1)+' из '+QS2x.length,bg:'mecca',nohud:true,cast:[],p:[Lx(Q.q)],b:shuf(Q.o).map(function(o){return {t:Lx(o[0]),c:'alt',f:function(){
+    if(o[1]){q2ok++;sfx('pop')}else sfx('wrong');
+    say({t:'Вопрос '+(q2i+1)+' из '+QS2x.length,bg:'mecca',nohud:true,cast:[],p:[o[1]?'<span class="ok">Верно!</span>':'Не совсем.',Lx(Q.e)],b:nx(q2i<QS2x.length-1?'Дальше':'Готово',function(){q2i++;q2show()})});
+  }}})});
+}
+function q2end(){
+  var extra=q2ok>=3?2:q2ok===2?1:0,all=(S.blocks||4)+extra,st=load();all=Math.max(st.blocks2||0,all);
+  var stt=st.stats||{};stt.quiz2=q2ok;stt.done2=day();save({blocks2:all,at:'done2',done2:1,stats:stt});playing=false;
+  seq([{t:'Знания - тоже блоки',bg:'mecca',cast:c2(),p:['Верных ответов: '+q2ok+' из '+QS2x.length+'. '+(extra?'+'+extra+' к блокам города.':'Ничего страшного: свиток всегда с тобой.'),'Блоков главы 2: '+all+'.']},
+    {t:'Дом знаний',bg:'city',nohud:true,cast:[],p:[{now:L('g2.city.k')},'<span class="ok">Новая постройка открыта: Дом знаний.</span>'],b:nx('Строить город',city)}]);
+}
+
+(function(){var last=0;document.addEventListener('touchend',function(e){var n=Date.now();if(n-last<350&&e.target&&e.target.closest&&e.target.closest('button')){e.preventDefault();var t=e.target.closest('button');if(t&&!t.disabled)t.click()}last=n},{passive:false})})();
+$('nb').onclick=function(){sfx('tap');goBack()};
+$('nm').onclick=function(){sfx('tap');cg=null;mm=null;rainOn=false;title()};
+$('nr').onclick=function(){location.href='../'};
 mkIcons();fit();title();loop();
 })();
 </script>

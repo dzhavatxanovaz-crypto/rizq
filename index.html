@@ -457,6 +457,14 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .cat-wide.igra .cw-t b em{font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#4E1119;background:#E6C868;border-radius:6px;padding:2px 6px;margin-left:6px;vertical-align:2px}
 .cat-wide.igra .cw-t span{color:rgba(247,239,227,.82)}
 .cat-wide.igra .cw-go{color:#E6C868}
+.igra-home{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;border-radius:18px;padding:15px 14px;background:linear-gradient(135deg,#E0262F,#9E0F1A);color:#fff;box-shadow:0 10px 26px rgba(158,15,26,.40);cursor:pointer}
+.igra-home:active{transform:scale(.99)}
+.igra-home-ic{flex:none;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:21px;background:rgba(255,255,255,.18);color:#FFE08A}
+.igra-home-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.igra-home-t b{font-family:var(--f-display);font-size:17.5px;font-weight:700;color:#fff}
+.igra-home-t b em{font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#9E0F1A;background:#FFE08A;border-radius:6px;padding:2px 6px;margin-left:6px;vertical-align:2px}
+.igra-home-t span{font-size:13px;line-height:1.4;color:rgba(255,255,255,.88)}
+.igra-home-go{flex:none;font-size:24px;color:#FFE08A}
 .cw-ic{
   width:42px;height:42px;flex:none;border-radius:13px;display:grid;place-items:center;
   background:rgba(45,106,79,.22);color:#3E9B72;font-size:19px;
@@ -7772,6 +7780,10 @@ function viewHomeMain(){
     '<div class="city-row"><span>📍 '+esc(tn.city.n)+' · '+esc(METHODS[methodNow()].n)+(Math.abs(tn.city.lat) > 65 ? ' · по широте 65°, где солнце всходит и заходит круглый год' : '')+
     (methodNow() === "rt" ? ' · в мечетях зухр в 12:00, фаджр в '+hhmm(tn.t.sunrise - 91/60) : '')+(ptAdjAny() ? ' · время поправлено вручную' : '')+'</span>'+
     '<button data-open="settings" style="margin-left:auto">Изменить</button></div></section>');
+  /* игра «Ильм-Крафт» - красная кнопка сразу под временем намаза (просьба Заиры 11.10.2026) */
+  h.push('<button class="igra-home" data-igra="1"><span class="igra-home-ic">▦</span>'+
+    '<span class="igra-home-t"><b>Ильм-Крафт <em>игра</em></b><span>Игра-путешествие для детей во времена Пророка (саллаллаху алейхи ва саллям)</span></span>'+
+    '<span class="igra-home-go">›</span></button>');
   h.push(hbAfterPrayer());
   h.push(homeCtx(vaultHtml));
 
