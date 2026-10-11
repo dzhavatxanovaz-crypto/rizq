@@ -554,7 +554,8 @@ function hud(show){
   if(prevH&&cur.m>pv.m)sfx('coin');
   prevH=cur;
 }
-var VOICE_V=1,VOICE=load().voice!==0,VA=null,vq=[];
+var VOICE_OFF=true; /* решение Заиры 11.10.2026: игра без озвучки */
+var VOICE_V=1,VOICE=!VOICE_OFF&&load().voice!==0,VA=null,vq=[];
 function vBase(){return '../media/igra/'+(S&&S.hero===1?'m':'f')+'/'}
 function vStop(){vq=[];if(VA){try{VA.pause()}catch(e){}}}
 function vNext(){if(!vq.length||!VOICE)return;var k=vq.shift();if(!VA){VA=new Audio();VA.onended=function(){setTimeout(vNext,250)};VA.onerror=function(){vNext()}}
@@ -2236,7 +2237,7 @@ $('nb').onclick=function(){sfx('tap');goBack()};
 $('nm').onclick=function(){sfx('tap');vStop();cg=null;mm=null;ld=null;pz=null;cv.onpointerdown=null;rainOn=false;title()};
 $('nr').onclick=function(){vStop();location.href='../'};
 function nvUpd(){var b=$('nv');b.textContent=VOICE?'🔊 Голос':'🔈 Без голоса';b.setAttribute('aria-pressed',VOICE?'true':'false')}
-$('nv').onclick=function(){VOICE=!VOICE;save({voice:VOICE?1:0});nvUpd();if(!VOICE)vStop();else if(curScr)vPlay(vKeys(curScr.o))};nvUpd();
+$('nv').onclick=function(){VOICE=!VOICE;save({voice:VOICE?1:0});nvUpd();if(!VOICE)vStop();else if(curScr)vPlay(vKeys(curScr.o))};nvUpd();if(VOICE_OFF)$('nv').style.display='none';
 mkIcons();fit();title();loop();
 })();
 </script>
