@@ -465,6 +465,33 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .igra-home-t b em{font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#4E1119;background:#E6C868;border-radius:6px;padding:2px 6px;margin-left:6px;vertical-align:2px}
 .igra-home-t span{font-size:13px;line-height:1.4;color:rgba(247,239,227,.82)}
 .igra-home-go{flex:none;font-size:24px;color:#E6C868}
+.ns-home{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;border-radius:18px;padding:15px 14px;margin-top:10px;background:linear-gradient(135deg,#1F5C4A,#0E3A2E);color:#fff;box-shadow:0 10px 26px rgba(14,58,46,.35);cursor:pointer}
+.ns-home-ic{flex:none;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:21px;background:rgba(255,255,255,.16);color:#F3D88B}
+.ns-home-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.ns-home-t b{font-family:var(--f-display);font-size:17px;font-weight:700;color:#fff}
+.ns-home-t span{font-size:13px;line-height:1.4;color:rgba(255,255,255,.86)}
+.ns-wrap{padding:14px 16px 24px;display:flex;flex-direction:column;gap:12px}
+.ns-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;color:var(--ink)}
+.ns-card h3{margin:0 0 8px;font-family:var(--f-display);font-size:20px}
+.ns-card p,.ns-card li{font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+.ns-card ul{margin:8px 0 0;padding-left:18px}
+.ns-btn{display:block;width:100%;border:0;border-radius:14px;padding:14px;font-size:16px;font-weight:700;background:var(--gold);color:var(--on-gold);cursor:pointer}
+.ns-btn2{border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:12px;padding:9px 12px;font-size:14px;cursor:pointer}
+.ns-chips{display:flex;flex-wrap:wrap;gap:8px}
+.ns-msgs{display:flex;flex-direction:column;gap:10px}
+.ns-m{max-width:88%;padding:11px 13px;border-radius:16px;font-size:15px;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+.ns-u{align-self:flex-end;background:var(--gold-soft);color:var(--ink);border-bottom-right-radius:6px}
+.ns-a{align-self:flex-start;background:var(--surface);border:1px solid var(--line);color:var(--ink);border-bottom-left-radius:6px}
+.ns-crisis{border:2px solid #C0392B}
+.ns-wait{align-self:flex-start;color:var(--ink-3);font-size:14px}
+.ns-input{display:flex;gap:8px;align-items:flex-end}
+.ns-input textarea{flex:1;min-height:46px;max-height:140px;resize:vertical;border:1px solid var(--line);border-radius:14px;padding:11px 12px;font:inherit;font-size:15px;background:var(--surface);color:var(--ink)}
+.ns-send{flex:none;border:0;border-radius:14px;width:52px;height:46px;font-size:20px;background:var(--gold);color:var(--on-gold);cursor:pointer}
+.ns-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between}
+.ns-note{font-size:12.5px;line-height:1.45;color:var(--ink-3);text-align:center}
+.ns-offer{background:linear-gradient(135deg,#1F5C4A,#0E3A2E);color:#fff;border-radius:16px;padding:16px}
+.ns-offer p{margin:0 0 12px;font-size:14.5px;line-height:1.5;color:rgba(255,255,255,.92)}
+.ns-offer a{display:block;text-align:center;border-radius:12px;padding:12px;background:#F3D88B;color:#0E3A2E;font-weight:700;text-decoration:none}
 .cw-ic{
   width:42px;height:42px;flex:none;border-radius:13px;display:grid;place-items:center;
   background:rgba(45,106,79,.22);color:#3E9B72;font-size:19px;
@@ -7138,6 +7165,7 @@ function renderHdr(){
   var titles = {dua:"Знания", courses:"Обучение", journal:"Журнал", fav:"Избранное", prof:"Профиль", quran:"Коран", income:"Ризкъ"};
   if(V.view){
     var t = V.view==="cat" ? (CATS.filter(function(c){return c.id===V.p})[0]||{}).n
+        : V.view==="nastavnik" ? "Наставник души"
         : V.view==="serii" ? "Наши герои"
         : V.view==="seriya" ? "Серия " + ((serById(V.p) || {}).n || "")
         : V.view==="names" ? "Имена Всевышнего"
@@ -7784,6 +7812,9 @@ function viewHomeMain(){
   h.push('<button class="igra-home" data-igra="1"><span class="igra-home-ic">▦</span>'+
     '<span class="igra-home-t"><b>Ильм-Крафт <em>игра</em></b><span>Игра-путешествие для детей во времена Пророка (саллаллаху алейхи ва саллям)</span></span>'+
     '<span class="igra-home-go">›</span></button>');
+  if(nsOn()) h.push('<button class="ns-home" data-nsopen="1"><span class="ns-home-ic">♡</span>'+
+    '<span class="ns-home-t"><b>Наставник души</b><span>Разобраться в себе с опорой на Коран и Сунну</span></span>'+
+    '<span class="igra-home-go">›</span></button>');
   h.push(hbAfterPrayer());
   h.push(homeCtx(vaultHtml));
 
@@ -8175,7 +8206,7 @@ function deepOpen(qArg){
       quran:["quran", null], azkar:["azkar", null], kniga:["book1", null], book:["book1", null],
       duas:["duas", null], khatms:["khatms", null], dms:["dms", null],
       studio:["vmake", null], video:["vmake", null],
-      rassrochka:["installment", null], installment:["installment", null] };   /* сайт и посты об исламской рассрочке */   /* кодовое слово СТУДИЯ */
+      rassrochka:["installment", null], installment:["installment", null], nastavnik:["nastavnik", null] };   /* сайт и посты об исламской рассрочке */   /* кодовое слово СТУДИЯ */
     /* ?post=<id> - открыть запись журнала (ссылка «Поделиться») */
     /* ?finreq=<номер> - заявка на рассрочку с сайта: показываем её в «Моих заявках» (03.10.2026) */
     var mfr = q.match(/[?&]finreq=([a-f0-9]{32})/);
@@ -30665,6 +30696,122 @@ function renderInPlace(){
 }
 /* Отрисовка обёрнута: сбой на одном экране не оставляет пустую страницу */
 var RENDER_BUSY = 0;
+/* ---------- «Наставник души» (11.10.2026) ---------- */
+var NS_PUBLIC = 0;                         /* 1 - кнопка на главной у всех; до «да» Заиры 0 */
+var NS_BOOK = "https://app.javattigroup.ru/?course=razbor";
+var NS = { msgs: [], busy: 0, draft: "", ended: 0, loaded: 0 };
+var NS_TOPICS = ["Тревога и страх", "Злюсь, а потом жалею", "Обида на близких", "Зависть", "Чувство вины", "Нет сил, всё валится из рук", "Одиночество", "Не могу решиться"];
+function nsLs(k, v){ try{ if(v === undefined) return localStorage.getItem(k); if(v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); }catch(e){ return null; } }
+function nsOn(){
+  if(NS_PUBLIC) return true;
+  if(/[?&]go=nastavnik/.test(String(location.search || ""))) nsLs("rizq.ns.on", "1");
+  return nsLs("rizq.ns.on") === "1";
+}
+function nsLoad(){
+  if(NS.loaded) return; NS.loaded = 1;
+  try{ var d = JSON.parse(nsLs("rizq.ns.v1") || "{}"); NS.msgs = Array.isArray(d.m) ? d.m : []; NS.ended = d.e ? 1 : 0; }catch(e){ NS.msgs = []; }
+}
+function nsSave(){ nsLs("rizq.ns.v1", JSON.stringify({ m: NS.msgs.slice(-40), e: NS.ended })); }
+function nsVid(){
+  if(S.vid) return S.vid;
+  var v = nsLs("rizq.ns.vid");
+  if(!v){ v = "ns" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); nsLs("rizq.ns.vid", v); }
+  return v;
+}
+function nsUserCount(){ return NS.msgs.filter(function(m){ return m.r === "u"; }).length; }
+function nsMsgHtml(m){
+  return '<div class="ns-m '+(m.r === "u" ? "ns-u" : "ns-a")+(m.c ? " ns-crisis" : "")+'">'+esc(m.t)+'</div>';
+}
+function viewNastavnik(){
+  nsLoad();
+  var h = ['<div class="ns-wrap">'];
+  if(nsLs("rizq.ns.ok") !== "1"){
+    h.push('<div class="ns-card"><h3>Наставник души</h3>'+
+      '<p>Разговор, который помогает разобраться в своих чувствах, мыслях и поступках - бережно, без осуждения, с опорой на Коран и Сунну и на учение об очищении души имама аль-Газали.</p>'+
+      '<ul><li>Наставник задаёт вопросы и помогает увидеть, что происходит внутри, а в конце предлагает один маленький шаг.</li>'+
+      '<li>Это искусственный интеллект, а не психолог, не врач и не имам. Он не выносит фетв и не ставит диагнозов.</li>'+
+      '<li>Если тяжело неделями или приходят мысли о том, чтобы не жить, нужен живой специалист - наставник подскажет, куда позвонить.</li>'+
+      '<li>Разговор хранится только на вашем телефоне. Не пишите имён, телефонов и адресов.</li></ul></div>'+
+      '<button class="ns-btn" data-nsagree="1">Понимаю, начать разговор</button>');
+    h.push('</div>');
+    return h.join("");
+  }
+  if(!NS.msgs.length){
+    h.push('<div class="ns-card"><p style="margin:0">Ассаляму алейкум. Расскажите, что у вас на сердце, своими словами. Или выберите, с чего начать:</p></div>');
+    h.push('<div class="ns-chips">'+NS_TOPICS.map(function(t, i){ return '<button class="ns-btn2" data-nstopic="'+i+'">'+esc(t)+'</button>'; }).join("")+'</div>');
+  }
+  h.push('<div class="ns-msgs" id="nsMsgs">'+NS.msgs.map(nsMsgHtml).join("")+
+    (NS.busy ? '<div class="ns-wait">Наставник думает...</div>' : '')+'</div>');
+  var crisis = NS.msgs.some(function(m){ return m.c; });
+  if(NS.ended && !crisis){
+    h.push('<div class="ns-offer"><p>Если хотите пройти коуч-сессию с живым человеком, Заира Джаватханова проводит личные сессии онлайн. Стоимость - 15 000 ₽.</p>'+
+      '<a href="'+NS_BOOK+'" target="_blank" rel="noopener">Записаться на сессию</a></div>');
+  }
+  if(NS.ended){
+    h.push('<button class="ns-btn" data-nsnew="1">Начать новый разговор</button>');
+  } else {
+    h.push('<div class="ns-input"><textarea id="nsText" rows="2" placeholder="Напишите, что чувствуете...">'+esc(NS.draft)+'</textarea>'+
+      '<button class="ns-send" data-nssend="1" aria-label="Отправить">➤</button></div>');
+    h.push('<div class="ns-row">'+(nsUserCount() >= 2 ? '<button class="ns-btn2" data-nsend="1">Завершить и подвести итог</button>' : '<span></span>')+
+      (NS.msgs.length ? '<button class="ns-btn2" data-nsclear="1">Стереть разговор</button>' : '')+'</div>');
+  }
+  h.push('<p class="ns-note">Наставник - искусственный интеллект, он может ошибаться. По вопросам дозволенного и запретного - к имаму. При опасности для жизни - 112.</p>');
+  h.push('</div>');
+  return h.join("");
+}
+function nsRender(){
+  var ta = document.getElementById("nsText"); if(ta) NS.draft = ta.value;
+  if(V.view !== "nastavnik") return;
+  render();
+  requestAnimationFrame(function(){ $screen.scrollTop = $screen.scrollHeight; });
+}
+function nsAsk(end){
+  if(NS.busy) return;
+  NS.busy = 1; nsRender();
+  var body = { vid: nsVid(), msgs: NS.msgs.slice(-14).map(function(m){ return { r: m.r, t: m.t }; }) };
+  if(end) body.end = true;
+  fetch(crmApi() + "/api/app/nafs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      NS.busy = 0;
+      if(j && j.ok && j.a){
+        NS.msgs.push({ r: "a", t: j.a, c: j.crisis ? 1 : 0 });
+        if(end) NS.ended = 1;
+      } else {
+        var why = j && j.reason;
+        NS.msgs.push({ r: "a", s: 1, t: why === "limit_day" ? "На сегодня разговоров достаточно. Возвращайтесь завтра, а пока - один маленький шаг из того, о чём мы говорили."
+          : why === "limit_min" ? "Давайте чуть медленнее. Подождите минуту и напишите снова."
+          : "Наставник сейчас не отвечает. Попробуйте немного позже - ваш разговор сохранён." });
+      }
+      nsSave(); nsRender();
+    })
+    .catch(function(){
+      NS.busy = 0;
+      NS.msgs.push({ r: "a", s: 1, t: "Нет связи с интернетом. Разговор сохранён - продолжите, когда связь появится." });
+      nsSave(); nsRender();
+    });
+}
+function nsSend(text){
+  text = String(text || "").trim();
+  if(!text || NS.busy) return;
+  /* служебные ответы (нет связи, лимит) в модель не отправляем */
+  NS.msgs = NS.msgs.filter(function(m){ return !m.s; });
+  NS.msgs.push({ r: "u", t: text.slice(0, 1200) });
+  NS.draft = ""; nsSave(); nsAsk(false);
+}
+document.addEventListener("click", function(e){
+  var el = e.target, n = el && el.closest ? el.closest("[data-nsopen],[data-nsagree],[data-nstopic],[data-nssend],[data-nsend],[data-nsclear],[data-nsnew]") : null;
+  if(!n) return;
+  if(n.hasAttribute("data-nsopen")){ open("nastavnik", null); return; }
+  if(n.hasAttribute("data-nsagree")){ nsLs("rizq.ns.ok", "1"); nsRender(); return; }
+  if(n.hasAttribute("data-nstopic")){ nsSend("Хочу поговорить: " + NS_TOPICS[+n.getAttribute("data-nstopic")]); return; }
+  if(n.hasAttribute("data-nssend")){ var ta = document.getElementById("nsText"); nsSend(ta ? ta.value : ""); return; }
+  if(n.hasAttribute("data-nsend")){ NS.msgs = NS.msgs.filter(function(m){ return !m.s; }); nsAsk(true); return; }
+  if(n.hasAttribute("data-nsclear") || n.hasAttribute("data-nsnew")){
+    if(n.hasAttribute("data-nsclear") && !confirm("Стереть разговор с этого телефона?")) return;
+    NS.msgs = []; NS.ended = 0; NS.draft = ""; nsSave(); nsRender(); return;
+  }
+});
 function render(){
   if(RENDER_BUSY) return;
   RENDER_BUSY = 1;
@@ -30681,7 +30828,8 @@ function renderCore(){
   if(V.tab==="journal" && !V.view) postsSeen();
   renderHdr(); renderTabs();
   var html;
-  if(V.view==="cat") html = viewCat();
+  if(V.view==="nastavnik") html = viewNastavnik();
+  else if(V.view==="cat") html = viewCat();
   else if(V.view==="names") html = viewNames();
   else if(V.view==="name") html = viewName();
   else if(V.view==="namex") html = viewNameX();
