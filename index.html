@@ -361,6 +361,20 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .ptrack i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--gold),#E4C25A);border-radius:3px}
 .ptrack i::after{content:"";position:absolute;right:-4px;top:-3px;width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px rgba(212,175,55,.25)}
 .plist{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+/* духа и тахаджуд под временем намаза */
+.nafl-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.nafl{display:flex;align-items:center;gap:7px;padding:9px 8px;border-radius:13px;border:1px solid var(--line);background:var(--surface-2);text-align:left;color:inherit;min-width:0}
+.nafl.now{border-color:var(--accent);background:rgba(212,175,55,.13)}
+.nafl-ic{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:15px;background:rgba(212,175,55,.15);color:var(--accent-ink)}
+.nafl-t{flex:1;min-width:0;display:flex;flex-direction:column}
+.nafl-t b{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nafl-t em{margin-top:2px;font-style:normal;font-size:10.5px;color:var(--accent-ink);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.nafl-t i{font-style:normal;font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap}
+.nafl-bell{flex:none;font-size:12px;opacity:.45}.nafl-bell.on{opacity:1}
+:root[data-fs="xl"] .nafl-row,:root[data-fs="xxl"] .nafl-row{grid-template-columns:1fr}
+.nafl-when{font-size:15px;font-weight:600;color:var(--accent-ink);line-height:1.5}
+.nafl-q{border-left:3px solid var(--gold);padding:6px 0 6px 12px;margin:8px 0;font-size:14px;line-height:1.55}
+.nafl-q span{display:block;font-size:12px;color:var(--ink-3);margin-top:4px}
 .pcell{
   text-align:center;padding:8px 2px;border-radius:12px;border:1px solid transparent;
 }
@@ -4178,6 +4192,67 @@ function timesNow(){
   var c = currentCity();
   return { city:c, t: prayerTimesMy(new Date(), c.lat, c.lng, c.tz, S.method, S.madhab) };
 }
+/* Строка под временем намаза: духа и тахаджуд, «сейчас» - если окно открыто, колокольчик - если включено напоминание. */
+function naflRow(nowH){
+  var x = naflNow();
+  function cell(k, from, to){
+    var a = NAFL[k], open = to > from ? (nowH >= from && nowH < to) : (nowH >= from || nowH < to);
+    return '<button class="nafl' + (open ? ' now' : '') + '" data-nafl="' + k + '"><span class="nafl-ic">' + a.ic + '</span>' +
+      '<span class="nafl-t"><b>' + esc(a.n) + '</b><i>' + hhmm(from) + ' - ' + hhmm(to) + '</i>' + (open ? '<em>● сейчас</em>' : '') + '</span>' +
+      '<span class="nafl-bell' + (S[a.key] ? ' on' : '') + '" aria-label="' + (S[a.key] ? 'напоминание включено' : 'напоминание выключено') + '">' + (S[a.key] ? '🔔' : '🔕') + '</span></button>';
+  }
+  return '<div class="nafl-row">' + cell("duha", x.duha.from, x.duha.to) + cell("tahajjud", x.tahajjud.best, x.tahajjud.to) + '</div>';
+}
+/* Желательные намазы: окна времени по расчёту дня (часы, как в prayerTimes). */
+function naflTimes(t, tNext){
+  var night = ((tNext ? tNext.fajr : t.fajr) + 24) - t.maghrib;          /* ночь: от магриба до фаджра */
+  var day = t.maghrib - t.sunrise;
+  return {
+    duha: { from: t.sunrise + 20/60, to: t.dhuhr - 10/60, best: t.sunrise + day / 4 },
+    tahajjud: { from: t.isha, best: fixHour(t.maghrib + night * 2 / 3), to: tNext ? tNext.fajr : t.fajr }
+  };
+}
+function naflNow(){
+  var c = currentCity(), d = new Date(), d2 = new Date(); d2.setDate(d2.getDate() + 1);
+  var t = prayerTimesMy(d, c.lat, c.lng, c.tz, S.method, S.madhab), t2 = prayerTimesMy(d2, c.lat, c.lng, c.tz, S.method, S.madhab);
+  return naflTimes(t, t2);
+}
+var NAFL = {
+  duha: { n: "Духа", ic: "☀", key: "notifDuha", what: "Добровольный намаз утром: от двух ракаатов. Пророк ﷺ советовал его и говорил, что он заменяет садака за каждый сустав тела.",
+    when: function(x){ return "С " + hhmm(x.from) + " до " + hhmm(x.to) + ". Лучшее время - около " + hhmm(x.best) + ", когда пройдёт примерно четверть дня."; },
+    src: [["Каждое утро на каждом суставе каждого из вас лежит садака... и всё это заменяют два ракаата, которые человек совершит в духа.", "Абу Зарр. Муслим, 720"],
+      ["Мой друг ﷺ завещал мне три вещи: пост трёх дней каждого месяца, два ракаата духа и витр перед сном.", "Абу Хурайра. Аль-Бухари, 1981; Муслим, 721"],
+      ["Намаз кающихся - когда верблюжата чувствуют жар.", "Зайд ибн Аркам. Муслим, 748. Поэтому лучшее время - ближе к середине утра"]],
+    note: "Начало - когда солнце поднимется над горизонтом (здесь 20 минут после восхода), конец - незадолго до зухра. Точные минуты по вашему мазхабу уточните у имама.",
+    push: "Время намаза духа", body: function(x){ return "До " + hhmm(x.to) + ". Два ракаата заменяют садака за каждый сустав"; } },
+  tahajjud: { n: "Тахаджуд", ic: "☾", key: "notifTahajjud", what: "Ночной добровольный намаз после иши, лучше - после сна. Самое ценное время - последняя треть ночи: время дуа и просьбы о прощении.",
+    when: function(x){ return "После иши (" + hhmm(x.from) + ") и до фаджра (" + hhmm(x.to) + "). Последняя треть ночи - с " + hhmm(x.best) + "."; },
+    src: [["Бодрствуй часть ночи, читая Коран во время дополнительных намазов. Быть может, Господь твой возведет тебя на Достохвальное место.", "Коран, 17:79, перевод смыслов Э. Кулиева"],
+      ["Наш Господь каждую ночь спускается к нижнему небу, когда остаётся последняя треть ночи, и говорит: «Кто обратится ко Мне с мольбой, чтобы Я ответил ему? Кто попросит Меня, чтобы Я дал ему? Кто попросит у Меня прощения, чтобы Я простил его?»", "Абу Хурайра. Аль-Бухари, 1145; Муслим, 758"]],
+    note: "Треть ночи считаем от магриба до фаджра вашего города. Сколько ракаатов и как совершать - спросите у имама.",
+    push: "Последняя треть ночи", body: function(x){ return "Время тахаджуда и дуа - до фаджра в " + hhmm(x.to); } }
+};
+function sheetNafl(k){
+  var a = NAFL[k]; if(!a) return;
+  var x = naflNow()[k], on = !!S[a.key];
+  sheet('<div class="eyebrow" style="color:var(--accent-ink)">Желательный намаз</div><h3 style="margin:6px 0 4px">' + a.ic + ' ' + esc(a.n) + '</h3>' +
+    '<div class="nafl-when">' + esc(a.when(x)) + '</div>' +
+    '<p style="font-size:14.5px;line-height:1.6;color:var(--ink-2);margin:10px 0">' + esc(a.what) + '</p>' +
+    a.src.map(function(s){ return '<div class="nafl-q">«' + esc(s[0]) + '»<span>' + esc(s[1]) + '</span></div>'; }).join("") +
+    '<p class="note" style="margin:10px 0 0">' + esc(a.note) + '</p>' +
+    '<button class="btn' + (on ? ' sec' : '') + '" style="width:100%;margin-top:14px" data-naflnotif="' + k + '">' + (on ? '🔕 Не напоминать' : '🔔 Напоминать о наступлении времени') + '</button>' +
+    (on && !pushOn() ? '<p class="note" style="margin:8px 0 0">Сейчас напоминание придёт, только пока приложение открыто или свёрнуто. Чтобы приходило и при закрытом - включите уведомления.</p><button class="btn sec" style="width:100%;margin-top:8px" data-pushtoggle="1">Включить при закрытом приложении</button>' : ''));
+}
+function naflNotif(k){
+  var a = NAFL[k]; if(!a) return;
+  S[a.key] = !S[a.key]; save();
+  if(S[a.key]){
+    notifAsk().then(function(r){ if(r === "denied") toast("Телефон запретил уведомления - включите их в настройках"); });
+    toast("Напомню о времени: " + a.n.toLowerCase());
+  } else toast("Напоминание выключено");
+  pushSync(true);
+  sheetNafl(k); renderInPlace();
+}
 function nowHours(){
   var c = currentCity(), d = new Date();
   var localOffset = -d.getTimezoneOffset()/60;
@@ -5591,6 +5666,15 @@ function notifCheck(){
     }
   }
 
+  /* духа и тахаджуд (если включены) */
+  if(S.notifDuha || S.notifTahajjud){
+    var nxx = naflNow(), hh0 = nowHours();
+    [["duha", nxx.duha.from], ["tahajjud", nxx.tahajjud.best]].forEach(function(p){
+      var a = NAFL[p[0]]; if(!S[a.key] || isNaN(p[1])) return;
+      var gone = ((hh0 - p[1]) + 24) % 24 * 60, idn = key + ":" + p[0];
+      if(gone >= 0 && gone < 2 && !notifSent[idn]){ notifSent[idn] = 1; if(!pushOn()) notifShow(a.push, a.body(nxx[p[0]])); }
+    });
+  }
   /* дуа дня утром */
   if(S.notifDua){
     var now = new Date(), idd = key + ":dua";
@@ -7663,7 +7747,7 @@ function viewHomeMain(){
     '<div class="plist">'+ order.map(function(k,i){
       var cls = k===np.key ? "now" : (tn.t[k] < nowH ? "past" : "");
       return '<div class="pcell '+cls+'"><div class="n">'+PRAYERS[i].n+'</div><div class="t">'+hhmm(tn.t[k])+'</div>'+ptAdjTag(k)+wxCell(tn.t[k])+'</div>';
-    }).join("") +'</div>'+ wxNowRow() +
+    }).join("") +'</div>'+ naflRow(nowH) + wxNowRow() +
     '<div class="city-row"><span>📍 '+esc(tn.city.n)+' · '+esc(METHODS[methodNow()].n)+(Math.abs(tn.city.lat) > 65 ? ' · по широте 65°, где солнце всходит и заходит круглый год' : '')+
     (methodNow() === "rt" ? ' · в мечетях зухр в 12:00, фаджр в '+hhmm(tn.t.sunrise - 91/60) : '')+(ptAdjAny() ? ' · время поправлено вручную' : '')+'</span>'+
     '<button data-open="settings" style="margin-left:auto">Изменить</button></div></section>');
@@ -27896,6 +27980,16 @@ function pushItems(){
         if(at > now) items.push({ at: new Date(at).toISOString(), title: "Время намаза - " + f.n, body: c.n + " · " + hhmm(h), tag: "prayer" });
       });
     }
+    /* Духа и тахаджуд - только тем, кто включил (11.10.2026) */
+    if((S.notifDuha || S.notifTahajjud) && !pauseNow()){
+      var tn0 = prayerTimesMy(day, c.lat, c.lng, c.tz, S.method, S.madhab), dn = new Date(day); dn.setDate(dn.getDate() + 1);
+      var tn1 = prayerTimesMy(dn, c.lat, c.lng, c.tz, S.method, S.madhab), nx = naflTimes(tn0, tn1);
+      var baseN = Date.UTC(day.getFullYear(), day.getMonth(), day.getDate());
+      if(S.notifDuha && !isNaN(nx.duha.from)){ var atDu = baseN + (nx.duha.from - c.tz) * 3600000; if(atDu > now) items.push({ at:new Date(atDu).toISOString(), title:NAFL.duha.push, body:NAFL.duha.body(nx.duha), tag:"duha" }); }
+      if(S.notifTahajjud && !isNaN(nx.tahajjud.best)){
+        var bh = nx.tahajjud.best < tn0.maghrib ? nx.tahajjud.best + 24 : nx.tahajjud.best;   /* после полуночи - уже следующие сутки */
+        var atTh = baseN + (bh - c.tz) * 3600000; if(atTh > now) items.push({ at:new Date(atTh).toISOString(), title:NAFL.tahajjud.push, body:NAFL.tahajjud.body(nx.tahajjud), tag:"tahajjud" }); }
+    }
     /* Задачи с датой и временем: напоминание ровно на это время.
        Не больше двадцати - чтобы расписание уведомлений не распухало. */
     if(S.notifTasks !== false){
@@ -28021,7 +28115,7 @@ function pushSig(){
     .map(function(x){ return x.due + x.tm + x.id; }).join(",") + "|" +
     (S.debts || []).filter(function(x){ return !x.closed && x.due; })
     .map(function(x){ return x.due + x.id; }).join(",");
-  return [c.lat, c.lng, c.tz, S.method, S.madhab, S.notifPrayer ? 1 : 0, S.notifDua ? 1 : 0, S.notifAyat === false ? 0 : 1, HAS_TR ? 1 : 0,
+  return [c.lat, c.lng, c.tz, S.method, S.madhab, S.notifPrayer ? 1 : 0, (S.notifDuha ? 1 : 0) + "" + (S.notifTahajjud ? 1 : 0), S.notifDua ? 1 : 0, S.notifAyat === false ? 0 : 1, HAS_TR ? 1 : 0,
           S.notifTasks === false ? 0 : 1, S.notifScore === false ? 0 : 1, scoreState().on ? 1 : 0, S.notifAzkar === false ? 0 : 1, S.notifJumua === false ? 0 : 1, S.notifKahf === false ? 0 : 1, S.notifReport === false ? 0 : 1, JSON.stringify(S.ptAdj || {}), (S.kahf && S.kahf[todayKey()]) ? 1 : 0,
           (S.scoreMe && S.scoreMe.place) || 0, pauseNow() ? 1 : 0, todayKey(), tasks,
           S.ar ? (S.ar.start ? 1 : 0) + ":" + (S.ar.remind || "9") + ":" + (arDayDone(arToday()) ? 1 : 0) : ""].join("|");
@@ -28620,6 +28714,8 @@ function viewProf(){
     '<button class="row" data-open="settings"><span class="ic">⚙</span>Город и расчёт намаза<span class="val">'+esc(currentCity().n)+'</span><span class="go">›</span></button>'+
     '<button class="row" data-fsopen="1"><span class="ic" style="font-family:var(--f-display);font-size:14px">Aa</span>Размер текста<span class="val">'+esc(fsName())+'</span><span class="go">›</span></button>'+
     swRow("notifPrayer", "🕌", "Напоминания о намазе") +
+    swRow("notifDuha", "☀", "Напоминание: время намаза духа") +
+    swRow("notifTahajjud", "☾", "Напоминание: последняя треть ночи (тахаджуд)") +
     swRow("notifAzan", "🔊", "Звук азана") +
     '<button class="row" data-azantest="1"><span class="ic">▶</span>Проверить звук азана<span class="val">'+(S.notifAzan === false ? "выключен" : "послушать")+'</span><span class="go">›</span></button>'+
     '<button class="row" data-pushtoggle="1"><span class="ic">🔔</span>При закрытом приложении<span class="sw'+(pushOn() ? " on" : "")+'"></span></button>'+
@@ -29018,7 +29114,7 @@ function accFetch(p, method, body){
 var SY_KEYS = (function(){
   var a = BK_KEYS.concat(["phone","email","qTime","qtGoal","nameMark","scoreGoal","scoreBest","score","qrmdOff","qFont",
     "qTajweed","qBook","mdnSize","qContinue","qFollow","madhabPicked","bought","leads","hlCity",
-    "notifPrayer","notifDua","notifAyat","notifTasks","notifScore","notifAzkar","notifJumua","notifKahf","notifReport","notifCourse","notifAzan"]), seen = {}, out = [];
+    "notifPrayer","notifDua","notifAyat","notifTasks","notifScore","notifAzkar","notifJumua","notifKahf","notifReport","notifCourse","notifAzan","notifDuha","notifTahajjud"]), seen = {}, out = [];
   for(var i = 0; i < a.length; i++) if(!seen[a[i]]){ seen[a[i]] = 1; out.push(a[i]); }
   return out;
 })();
@@ -29028,7 +29124,7 @@ var SY_ADD = { points:1, pointsDay:1, tasbihTotal:1, azkarLifetime:1, tasbih:1 }
 var SY_SET = {};
 ["name","email","phone","city","method","madhab","madhabPicked","ptAdj","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll",
  "qContinue","qFollow","fontSize","qFont","qFontSafe","qTajweed","qBook","mdnSize","qtGoal","qrmdOff","scoreGoal","score",
- "qLast","hlCity","zakat","notifPrayer","notifDua","notifAyat","notifTasks","notifScore","notifAzkar","notifJumua","notifKahf","notifReport","notifCourse","notifAzan"]
+ "qLast","hlCity","zakat","notifPrayer","notifDua","notifAyat","notifTasks","notifScore","notifAzkar","notifJumua","notifKahf","notifReport","notifCourse","notifAzan","notifDuha","notifTahajjud"]
   .forEach(function(k){ SY_SET[k] = 1; });
 
 function syHash(s){ var h = 5381, i = s.length; while(i) h = ((h << 5) + h) ^ s.charCodeAt(--i); return (h >>> 0).toString(36) + "." + s.length; }
@@ -30770,7 +30866,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-namesall],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
+  var node = t.closest ? t.closest("[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-nafl],[data-naflnotif],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-namesall],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -31543,11 +31639,13 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.pushask!==undefined){ closeSheet(); if(d.pushask === "1") pushEnable(); else toast("Хорошо. Включить можно в профиле, в напоминаниях"); return; }
   if(d.ptadj){ var pa0 = String(d.ptadj).split(":"); ptAdjSet(pa0[0], ptAdjGet(pa0[0]) + parseInt(pa0[1], 10)); return; }
   if(d.ptreset!==undefined){ S.ptAdj = {}; var y0 = $screen.scrollTop; save(); render(); $screen.scrollTop = y0; toast("Поправки сброшены: время снова по расчёту"); return; }
+  if(d.nafl){ sheetNafl(d.nafl); return; }
+  if(d.naflnotif){ naflNotif(d.naflnotif); return; }
   if(d.pushtoggle!==undefined){ if(pushOn()) pushDisable(); else pushEnable(); return; }
   if(d.sw){
     S[d.sw] = !S[d.sw]; save(); render();
-    if(d.sw === "notifAyat" || d.sw === "notifPrayer" || d.sw === "notifDua" || d.sw === "notifTasks" || d.sw === "notifScore" || d.sw === "notifAzkar" || d.sw === "notifJumua" || d.sw === "notifKahf" || d.sw === "notifReport") pushSync(true);
-    if(S[d.sw] && (d.sw === "notifPrayer" || d.sw === "notifDua")){
+    if(d.sw === "notifAyat" || d.sw === "notifPrayer" || d.sw === "notifDua" || d.sw === "notifTasks" || d.sw === "notifScore" || d.sw === "notifAzkar" || d.sw === "notifJumua" || d.sw === "notifKahf" || d.sw === "notifReport" || d.sw === "notifDuha" || d.sw === "notifTahajjud") pushSync(true);
+    if(S[d.sw] && (d.sw === "notifPrayer" || d.sw === "notifDua" || d.sw === "notifDuha" || d.sw === "notifTahajjud")){
       notifAsk().then(function(r){
         if(r === "granted"){ toast("Напоминания включены"); }
         else if(r === "denied"){ toast("Телефон запретил уведомления - включите их в настройках"); }
