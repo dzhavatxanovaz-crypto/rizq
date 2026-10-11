@@ -30797,7 +30797,8 @@ function nsSend(text){
   /* служебные ответы (нет связи, лимит) в модель не отправляем */
   NS.msgs = NS.msgs.filter(function(m){ return !m.s; });
   NS.msgs.push({ r: "u", t: text.slice(0, 1200) });
-  NS.draft = ""; nsSave(); nsAsk(false);
+  NS.draft = ""; var ta = document.getElementById("nsText"); if(ta) ta.value = "";
+  nsSave(); nsAsk(false);
 }
 document.addEventListener("click", function(e){
   var el = e.target, n = el && el.closest ? el.closest("[data-nsopen],[data-nsagree],[data-nstopic],[data-nssend],[data-nsend],[data-nsclear],[data-nsnew]") : null;
