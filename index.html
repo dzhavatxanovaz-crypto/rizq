@@ -29456,13 +29456,17 @@ function accImportOrders(j){
 }
 
 /* ---------- вход ---------- */
-var LG = { contact:"", step:1, via:"", to:"", msg:"", miss:false, busy:false, after:"" };
+var LG = { contact:"", step:1, via:"", to:"", msg:"", miss:false, busy:false, after:"", mode:"" };
+/* Вход по почте и паролю (поручение Заиры 12.10.2026). Включить, когда CRM выложит
+   /api/public/account/login и /api/public/account/password. Пока false - вход по коду, как раньше. */
+var PASS_LOGIN = false;
 function lgIsMail(c){ return String(c || "").indexOf("@") > 0; }
 function lgClean(c){ return String(c || "").trim(); }
 function lgOk(c){ return lgIsMail(c) ? /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(c) : c.replace(/\D/g, "").length >= 10; }
 function sheetLogin(pref){
-  if(pref !== undefined){ LG.contact = pref; LG.step = 1; LG.miss = false; LG.msg = ""; LG.after = ""; }
+  if(pref !== undefined){ LG.contact = pref; LG.step = 1; LG.miss = false; LG.msg = ""; LG.after = ""; LG.mode = ""; }
   if(LG.step === 2) return sheetLoginCode();
+  if(PASS_LOGIN && LG.mode !== "code") return sheetLoginPass();
   sheet('<h3>Войти в свой аккаунт</h3>'+
     '<p class="note" style="margin:0 0 12px">Телефон или почта, с которыми вы регистрировались в RIZQ. Пришлём одноразовый код - и на этом устройстве откроются ваши записи, покупки и место в рейтинге.</p>'+
     '<input class="search" id="lgContact" style="margin:0 0 10px" placeholder="+7 900 000-00-00 или mail@example.com" autocomplete="username" value="'+esc(LG.contact)+'">'+
@@ -29471,9 +29475,83 @@ function sheetLogin(pref){
         '<button class="btn sec sm" style="margin-top:10px" data-acc="signup">Зарегистрироваться</button></div>'
       : (LG.msg ? '<p class="note" style="margin:0 0 10px;color:#C0392B">'+esc(LG.msg)+'</p>' : ''))+
     '<button class="btn" data-acc="code">'+(LG.busy ? "Отправляем..." : "Получить код")+'</button>'+
+    (PASS_LOGIN ? '<button class="btn ghost" style="margin-top:8px" data-acc="bypass">Войти по почте и паролю</button>' : '')+
     (LG.miss || signupState().registered ? '' : '<button class="btn ghost" style="margin-top:8px" data-acc="signup">Ещё не регистрировались? Зарегистрироваться</button>')+
     '<p class="disclaimer" style="text-align:left;padding:0;margin-top:12px">После входа записи приложения сохраняются в вашем аккаунте на сервере школы в России и появляются на всех устройствах, где вы вошли. Выйти можно в «Профиле».</p>');
   lgEnter("lgContact", accCode);
+}
+/* --- вход по почте и паролю --- */
+function lgErr(t){ var e = document.getElementById("lgErr"); if(!e) return; e.textContent = t || ""; e.style.display = t ? "" : "none"; }
+function lgBtn(t){ var b = document.getElementById("lgGo"); if(b) b.textContent = t; }
+function lgDevice(){ var ua = navigator.userAgent || ""; return /iPad/.test(ua) ? "iPad" : /iPhone/.test(ua) ? "iPhone" : /Android/.test(ua) ? "Android" : /Windows/.test(ua) ? "Windows" : /Mac/.test(ua) ? "Mac" : "браузер"; }
+function sheetLoginPass(){
+  var mail = lgIsMail(LG.contact) ? LG.contact : (S.email || AC.email || "");
+  sheet('<h3>Войти в свой аккаунт</h3>'+
+    '<p class="note" style="margin:0 0 12px">Логин - ваша почта. Пароль мы прислали вам в письме.</p>'+
+    '<input class="search" id="lgMail" type="email" inputmode="email" autocomplete="username" autocapitalize="off" style="margin:0 0 10px" placeholder="mail@example.com" aria-label="Почта" value="'+esc(mail)+'">'+
+    '<div style="display:flex;gap:8px;margin:0 0 10px">'+
+      '<input class="search" id="lgPass" type="password" autocomplete="current-password" style="margin:0;flex:1;min-width:0" placeholder="Пароль" aria-label="Пароль">'+
+      '<button type="button" class="btn sec sm" id="lgEye" data-acc="eye" style="flex:none;margin:0" aria-label="Показать пароль">Показать</button></div>'+
+    '<p class="note" id="lgErr" style="margin:0 0 10px;color:#C0392B;display:none"></p>'+
+    '<button class="btn" id="lgGo" data-acc="pass">Войти</button>'+
+    '<p class="note" style="margin:14px 0 8px">Пароль пришёл в письме и в WhatsApp после оплаты. Не нашли - напишите нам.</p>'+
+    '<a class="btn sec sm" style="display:block;text-align:center;text-decoration:none" target="_blank" rel="noopener" href="'+
+      esc(waLink("Здравствуйте! Не могу найти пароль для входа в RIZQ. Моя почта: "))+'">Написать в WhatsApp '+esc(CONTACT.phone)+'</a>'+
+    '<button class="btn ghost" style="margin-top:8px" data-acc="bycode">Войти по коду, без пароля</button>'+
+    (signupState().registered ? '' : '<button class="btn ghost" style="margin-top:4px" data-acc="signup">Ещё не регистрировались? Зарегистрироваться</button>')+
+    '<p class="disclaimer" style="text-align:left;padding:0;margin-top:12px">После входа записи приложения сохраняются в вашем аккаунте на сервере школы в России и появляются на всех устройствах, где вы вошли. Выйти можно в «Профиле».</p>');
+  lgEnter("lgMail", function(){ var p = document.getElementById("lgPass"); if(p) try{ p.focus(); }catch(e){} });
+  lgEnter("lgPass", accPass);
+}
+function accPass(){
+  if(LG.busy) return;
+  var mi = document.getElementById("lgMail"), pi = document.getElementById("lgPass");
+  var m = lgClean(mi && mi.value).toLowerCase(), p = String(pi && pi.value || "");
+  if(!m || !lgIsMail(m) || !lgOk(m)){ lgErr("Проверьте адрес почты"); return; }
+  if(!p){ lgErr("Введите пароль из письма"); return; }
+  if(!window.fetch){ lgErr("Этот браузер слишком старый для входа"); return; }
+  LG.contact = m; LG.busy = true; lgErr(""); lgBtn("Входим...");
+  accFetch("login", "POST", { email:m, password:p, app:"rizq", device:lgDevice(), visitor: (typeof rizqVisitor === "function" ? rizqVisitor() : "") }).then(function(x){
+    LG.busy = false; lgBtn("Войти");
+    if(x.ok && x.j.token){ accLoginDone(x.j); return; }
+    if(x.status === 404) lgErr(x.j.error || "Такой почты нет среди зарегистрированных. Проверьте адрес или войдите по коду.");
+    else if(x.status === 429) lgErr(x.j.error || "Слишком много попыток. Подождите несколько минут и попробуйте снова.");
+    else lgErr(x.j.error || "Почта или пароль не подошли. Проверьте пароль в письме.");
+  }).catch(function(){ LG.busy = false; lgBtn("Войти"); lgErr("Нет связи с сервером школы - проверьте интернет"); });
+}
+/* сменить или задать пароль: человек уже вошёл, поэтому старый пароль не спрашиваем */
+function sheetPassword(){
+  var mail = AC.email || (lgIsMail(AC.contact) ? AC.contact : "");
+  if(!mail){
+    sheet('<h3>Пароль для входа</h3>'+
+      '<p class="note" style="margin:0 0 12px">Логином служит почта, а в вашем аккаунте её пока нет. Добавьте почту в «Моих данных» - и сможете задать пароль.</p>'+
+      '<button class="btn" data-open="account">Мои данные</button>'+
+      '<button class="btn ghost" style="margin-top:8px" data-acc="menu">Назад</button>');
+    return;
+  }
+  sheet('<h3>Пароль для входа</h3>'+
+    '<p class="note" style="margin:0 0 12px">Ваш логин - почта <b>'+esc(mail)+'</b>. Придумайте новый пароль: не короче 6 знаков.</p>'+
+    '<input class="search" id="pwNew" type="password" autocomplete="new-password" style="margin:0 0 10px" placeholder="Новый пароль" aria-label="Новый пароль">'+
+    '<input class="search" id="pwNew2" type="password" autocomplete="new-password" style="margin:0 0 10px" placeholder="Новый пароль ещё раз" aria-label="Новый пароль ещё раз">'+
+    '<p class="note" id="lgErr" style="margin:0 0 10px;color:#C0392B;display:none"></p>'+
+    '<button class="btn" id="lgGo" data-acc="pwsave">Сохранить пароль</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-acc="menu">Назад</button>');
+  lgEnter("pwNew2", accPwSave);
+}
+function accPwSave(){
+  if(LG.busy) return;
+  var a = document.getElementById("pwNew"), b = document.getElementById("pwNew2");
+  var p1 = String(a && a.value || ""), p2 = String(b && b.value || "");
+  if(p1.length < 6){ lgErr("Пароль слишком короткий: нужно не меньше 6 знаков"); return; }
+  if(p1 !== p2){ lgErr("Пароли не совпали - введите ещё раз"); return; }
+  LG.busy = true; lgErr(""); lgBtn("Сохраняем...");
+  accFetch("password", "POST", { password_new:p1 }).then(function(x){
+    LG.busy = false; lgBtn("Сохранить пароль");
+    if(x.status === 401 && x.j.relogin){ closeSheet(); accLost(); return; }
+    if(!x.ok){ lgErr(x.j.error || "Не получилось сохранить пароль, попробуйте ещё раз"); return; }
+    toast("Пароль сохранён. Теперь входите по почте и паролю");
+    sheetAccMenu();
+  }).catch(function(){ LG.busy = false; lgBtn("Сохранить пароль"); lgErr("Нет связи с сервером школы - проверьте интернет"); });
 }
 function sheetLoginCode(){
   var where = LG.via === "email" ? 'Код отправлен на почту <b>'+esc(LG.to)+'</b>. Если письма нет пару минут - загляните в «Спам».'
@@ -29643,6 +29721,7 @@ function sheetAccMenu(){
     '<p class="note" style="margin:12px 0">Записи (трекер, дуа, заметки, задачи, прогресс, настройки) сохраняются в аккаунте и одинаковы на всех устройствах, где вы вошли. Покупки открываются по аккаунту. В рейтинге вы участвуете аккаунтом: на любом устройстве то же место.</p>'+
     '<button class="btn" data-acc="sync">Синхронизировать сейчас</button>'+
     '<button class="btn sec" style="margin-top:8px" data-open="account">Мои данные</button>'+
+    (PASS_LOGIN ? '<button class="btn sec" style="margin-top:8px" data-acc="pw">Сменить пароль</button>' : '')+
     '<button class="btn ghost" style="margin-top:8px" data-acc="logout">Выйти</button>'+
     '<button class="btn ghost sm" style="margin-top:4px;width:100%;color:#C0392B" data-acc="wipe">Выйти и удалить данные с сервера</button>'+
     '<p class="disclaimer" style="text-align:left;padding:0;margin-top:12px">Данные хранятся на сервере школы в России и на ваших устройствах. После выхода записи на этом устройстве остаются.</p>');
@@ -29653,12 +29732,19 @@ function accLoginCard(){
   return '<button class="cat-wide" data-acc="login" style="margin-top:10px">'+
     '<span class="cw-ic">⇆</span>'+
     '<span class="cw-t"><b>Войти в свой аккаунт</b>'+
-    '<span>'+(reg ? "Подтвердите вход кодом - и записи, покупки и рейтинг будут на всех ваших устройствах"
+    '<span>'+(PASS_LOGIN ? "Почта и пароль из письма - и записи, покупки и рейтинг на всех ваших устройствах"
+                  : reg ? "Подтвердите вход кодом - и записи, покупки и рейтинг будут на всех ваших устройствах"
                   : "Уже регистрировались? Записи, покупки и рейтинг - на телефоне и планшете")+'</span></span>'+
     '<span class="cw-go">›</span></button>';
 }
 function accCmd(c){
   if(c === "login"){ sheetLogin(S.phone || S.email || LG.contact || ""); return; }
+  if(c === "pass"){ accPass(); return; }
+  if(c === "bycode"){ var m0 = document.getElementById("lgMail"); if(m0 && lgClean(m0.value)) LG.contact = lgClean(m0.value); LG.mode = "code"; LG.step = 1; LG.msg = ""; LG.miss = false; sheetLogin(); return; }
+  if(c === "bypass"){ var c0 = document.getElementById("lgContact"); if(c0 && lgClean(c0.value)) LG.contact = lgClean(c0.value); LG.mode = ""; LG.msg = ""; LG.miss = false; sheetLogin(); return; }
+  if(c === "eye"){ var pi = document.getElementById("lgPass"), eb = document.getElementById("lgEye"); if(pi){ var sh = pi.type === "password"; pi.type = sh ? "text" : "password"; if(eb){ eb.textContent = sh ? "Скрыть" : "Показать"; eb.setAttribute("aria-label", sh ? "Скрыть пароль" : "Показать пароль"); } } return; }
+  if(c === "pw"){ sheetPassword(); return; }
+  if(c === "pwsave"){ accPwSave(); return; }
   if(c === "code"){ accCode(false); return; }
   if(c === "resend"){ accCode(true); return; }
   if(c === "verify"){ accVerify(); return; }
