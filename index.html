@@ -2843,6 +2843,22 @@ button, a{ -webkit-tap-highlight-color:transparent }
 .pta-in{flex:none;width:60px;height:38px;text-align:center;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:15px;font-variant-numeric:tabular-nums}
 .nb-badge{display:inline-block;width:max-content;padding:4px 10px;border-radius:999px;background:rgba(46,139,87,.16);color:var(--emerald);font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-style:normal}
 .qw-hero .nb-badge{background:rgba(120,200,150,.2);color:#BFE8CC;margin-top:8px}
+/* Доступность (12.10.2026): зона нажатия от 40 px, текст от 10,5 px, контраст подписей от 4,5 */
+.fav,.nafl-x,button.chip,.qd-read{position:relative}
+.fav::after,.nafl-x::after,.jr-list .jp-star::after{content:"";position:absolute;left:-5px;right:-5px;top:-5px;bottom:-5px}
+button.chip::after{content:"";position:absolute;left:0;right:0;top:-8px;bottom:-8px}
+.qd-read{padding-top:9px;padding-bottom:9px}
+.qd-read::after{content:"";position:absolute;left:0;right:0;top:-3px;bottom:-3px}
+.pill{padding-top:9px;padding-bottom:9px}
+.jr-chip{padding-top:10px;padding-bottom:10px}
+.jr-card .jr-meta,.jr-list .jr-card .jr-meta{font-size:11px}
+.ical-d small{font-size:10.5px}
+.jr-heart small{font-size:11px}
+.hb-ay-play,.hb-ay-i{position:relative}.hb-ay-play::after{content:"";position:absolute;left:-6px;right:-6px;top:-6px;bottom:-6px}.hb-ay-i::after{content:"";position:absolute;left:-8px;right:-8px;top:-6px;bottom:-6px}
+@media (max-width:380px){.jr-hero .jr-acts.jr-actbar .btn{font-size:11px;letter-spacing:-.01em}}
+.hb-ay-h .hb-k{color:var(--accent-ink)}
+:root[data-theme="dark"] .nb-badge{color:#8FD3B0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .nb-badge{color:#8FD3B0}}
 .nb-box{border-color:rgba(46,139,87,.4)}
 .nb-box p{font-size:14.5px;line-height:1.6;color:var(--ink-2);margin:0}
 .bk-nudge{position:relative}
@@ -3418,7 +3434,7 @@ function waCard(title, sub, text, label){
         '<b style="font-family:var(--f-display);font-size:15.5px;font-weight:600;display:block;line-height:1.3">'+esc(title)+'</b>'+
         '<span style="font-size:13.5px;color:var(--ink-2);display:block;margin-top:3px;line-height:1.45">'+esc(sub)+'</span>'+
       '</div></div>'+
-    '<a class="btn" style="text-decoration:none;background:#25D366;color:#fff;box-shadow:0 4px 14px rgba(37,211,102,.3)" '+
+    '<a class="btn" style="text-decoration:none;background:#0E8070;color:#fff;box-shadow:0 4px 14px rgba(14,128,112,.3)" '+
       'href="'+waLink(text)+'" target="_blank" rel="noopener">'+esc(label)+'</a>'+
   '</section>';
 }
@@ -8122,12 +8138,12 @@ var PAYR = { timer:null, until:0, id:"" };
    как программа называется и куда входить. course - номер курса на платформе:
    вход сразу ведёт в него, а не в общий список. start - когда открываются уроки. */
 var SCHOOL_EXT = {
-  masshtab: { n:"Уповай и делай", to:"тренингу", course:10, start:"2026-10-21T10:00:00+03:00", startText:"21 октября в 10:00 по Москве" }
+  masshtab: { n:"Опора мышления", to:"тренингу", course:10, start:"2026-10-21T10:00:00+03:00", startText:"21 октября в 10:00 по Москве" }
 };
 function payReturnTitle(id){ return id === BOOK2.id ? BOOK2.n : id === BOOK1.id ? BOOK1.n : (COURSES.filter(function(c){ return c.id === id; })[0] || SCHOOL_EXT[id] || {}).n || ""; }
 /* «Название» в кавычках, но без двойных, если кавычки уже есть в самом названии */
 function qTitle(t){ return /[«»]/.test(t) ? t : "«" + t + "»"; }
-/* «доступ к ...»: у программ с лендинга - «к тренингу «Уповай и делай»» */
+/* «доступ к ...»: у программ с лендинга - «к тренингу «Опора мышления»» */
 function accessTo(id, t){ var x = SCHOOL_EXT[id]; return x ? x.to + " «" + x.n + "»" : t ? qTitle(t) : "программе"; }
 function schoolExtLogin(id){
   var x = SCHOOL_EXT[id];
@@ -27723,7 +27739,7 @@ function viewConsulting(){
         '<b style="font-family:var(--f-display);font-size:15.5px;font-weight:600;display:block;line-height:1.3">Хотите разобрать свою ситуацию?</b>'+
         '<span style="font-size:13.5px;color:var(--ink-2);display:block;margin-top:3px;line-height:1.45">Напишите - расскажем о форматах и подберём подходящий</span>'+
       '</div></div>'+
-    '<a class="btn" style="text-decoration:none;background:#25D366;color:#fff;box-shadow:0 4px 14px rgba(37,211,102,.3)" '+
+    '<a class="btn" style="text-decoration:none;background:#0E8070;color:#fff;box-shadow:0 4px 14px rgba(14,128,112,.3)" '+
       'href="https://wa.me/'+CONSULT_TEL+'?text='+encodeURIComponent("Ассаламу алейкум! Интересует консалтинг Dzhavatkhanova&Co. Расскажите, пожалуйста, о форматах работы.")+'" target="_blank" rel="noopener">Написать в WhatsApp</a>'+
   '</section>');
   h.push('<a class="btn sec" style="text-decoration:none" href="https://t.me/djapodcast" target="_blank" rel="noopener">Telegram @djapodcast ↗</a>');
@@ -31819,7 +31835,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   }
 
   if(d.citypick!==undefined){ sheetCity(); return; }
-  if(d.city){ welcomeDone(); S.city=d.city; save(); closeSheet(); render(); toast("Город изменён"); return; }
+  if(d.city){ var cityFirst = !S.welcomed; welcomeDone(); S.city=d.city; save(); closeSheet(); render(); toast(cityFirst ? "Город выбран" : "Город изменён"); return; }
   if(d.ics!==undefined){ sheetICS(); return; }
   if(d.icsgo!==undefined){ downloadICS(); return; }
   if(d.welcskip!==undefined){ welcomeDone(); closeSheet(); return; }
