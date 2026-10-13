@@ -8178,6 +8178,42 @@ function schoolBigBtn(id){
       '<span style="flex:none;background:#dfe9c4;color:#16241a;border-radius:999px;padding:11px 15px;font-size:14px;font-weight:700;white-space:nowrap">Открыть уроки →</span>'+
     '</span></button>';
 }
+/* --- «На экран телефона»: подсказка ученицам тренинга --- */
+var INST = { evt:null };
+try{ window.addEventListener("beforeinstallprompt", function(e){ e.preventDefault(); INST.evt = e; }); }catch(e){}
+function instKind(){
+  var ua = navigator.userAgent || "";
+  if(/Instagram|FBAN|FBAV|FB_IAB|WhatsApp|Telegram|Line[/]|MailRu|YandexMail|GSA[/]|; wv[)]/i.test(ua)) return "inapp";
+  if(/iPhone|iPad|iPod/.test(ua)) return "ios";
+  if(/Android/.test(ua)) return "android";
+  return "other";
+}
+function schoolAny(){ return Object.keys(SCHOOL_EXT).some(function(k){ return schoolHas(k); }); }
+function sheetHomeTip(){
+  var k = instKind(), t;
+  if(k === "inapp") t = 'Сначала откройте эту страницу в Safari или Chrome: нажмите значок компаса или три точки в углу и выберите «Открыть в браузере». Потом вернитесь к этой подсказке в «Профиле».';
+  else if(k === "ios") t = 'Нажмите «Поделиться» (квадрат со стрелкой внизу экрана), затем «На экран „Домой“» и «Добавить». Откройте значок и войдите ещё раз по почте и паролю - это нужно только один раз.';
+  else if(k === "android") t = 'Нажмите три точки в правом верхнем углу, затем «Добавить на главный экран» или «Установить приложение».';
+  else t = 'В меню браузера выберите «Установить приложение» или «Добавить на главный экран».';
+  sheet('<h3>Чтобы приложение было всегда под рукой</h3>'+
+    '<p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 14px">'+t+'</p>'+
+    (INST.evt ? '<button class="btn" data-acc="instgo">Установить</button>' : '')+
+    '<button class="btn'+(INST.evt ? ' ghost' : '')+'" style="margin-top:8px" data-scrim="1">Понятно</button>'+
+    '<a class="btn ghost" style="margin-top:8px;display:block;text-align:center;text-decoration:none" target="_blank" rel="noopener" href="https://oporamyshleniya.ru/ekran">Подробная инструкция</a>');
+}
+/* один раз после первого входа; ждём, пока закроются другие окна */
+function homeTipMaybe(){
+  if(S.homeTip || isStandalone() || !accOn() || !schoolAny()) return;
+  var n = 0, tm = setInterval(function(){
+    if(++n > 40 || S.homeTip || !accOn()){ clearInterval(tm); return; }
+    if(document.querySelector(".scrim")) return;
+    clearInterval(tm); S.homeTip = 1; save(); sheetHomeTip();
+  }, 1500);
+}
+function homeTipRow(){
+  if(isStandalone() || !schoolAny()) return "";
+  return '<button class="row row-link" data-acc="hometip" style="margin-top:8px;width:100%"><span class="ic">⌂</span>Сохранить на экран телефона<span class="val">чтобы тренинг был под рукой</span><span class="go">›</span></button>';
+}
 function payReturn(id, token){
   S.orders = S.orders || [];
   var o = S.orders.filter(function(x){ return x.token === token; })[0];
@@ -28768,6 +28804,7 @@ function viewProf(){
   /* 1б. вход в аккаунт: записи, покупки и рейтинг - на всех устройствах */
   if(!accOn()) h.push(accLoginCard());
   Object.keys(SCHOOL_EXT).forEach(function(k){ h.push(schoolBigBtn(k)); });
+  h.push(homeTipRow());
 
   /* 2. покупки: сначала то, что ждёт оплаты, потом то, что уже открыто */
   h.push('<div class="sec-h"><h3>Мои покупки</h3></div>');
@@ -29445,6 +29482,7 @@ function accMeLoad(force){
     S.clubAcc = { on: !!ca, until: ca ? (ca.until || "") : "", by: ca ? (ca.by || "") : "", at: Date.now() };
     S.clubMeet = (x.j.club && x.j.club.meet) || "";
     S.extAcc = (x.j.access || []).map(function(q){ return q && q.product; }).filter(function(p){ return p && SCHOOL_EXT[p]; });
+    homeTipMaybe();
     save(); if(V.view === "arabic") render();
     if(V.tab === "prof") render();
   }).catch(function(){});
@@ -29837,6 +29875,8 @@ function accLoginCard(){
 function accCmd(c){
   if(c === "login"){ sheetLogin(S.phone || S.email || LG.contact || ""); return; }
   if(c.indexOf("school:") === 0){ schoolCabinetGo(c.slice(7)); return; }
+  if(c === "hometip"){ sheetHomeTip(); return; }
+  if(c === "instgo"){ var ev = INST.evt; INST.evt = null; closeSheet(); if(ev){ try{ ev.prompt(); }catch(e){} } return; }
   if(c === "lnkstay"){ accLinkDrop(); return; }
   if(c === "lnkgo"){ closeSheet(); accLinkApply(); return; }
   if(c === "lnkok"){ accLinkOk(); return; }
