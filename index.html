@@ -8163,6 +8163,16 @@ function schoolCabinetGo(id, same){
     .then(function(j){ done(j && j.url ? j.url : fallback); })
     .catch(function(){ done(fallback); });
 }
+/* Есть ли доступ к программе школы: по ответу сервера или по оплате с этого телефона */
+function schoolHas(id){ return !!SCHOOL_EXT[id] && ((accOn() && (S.extAcc || []).indexOf(id) >= 0) || bought(id)); }
+/* Крупная кнопка тренинга в профиле - в зелёной гамме его сайта (поручение Заиры 13.10.2026) */
+function schoolBigBtn(id){
+  var x = SCHOOL_EXT[id]; if(!x || !schoolHas(id)) return "";
+  return '<button data-acc="school:'+id+'" style="display:block;width:100%;margin-top:10px;padding:16px 18px;border:0;border-radius:999px;cursor:pointer;'+
+    'background:linear-gradient(135deg,#22301f,#16241a);color:#dfe9c4;font-family:inherit;text-align:center;box-shadow:0 6px 18px rgba(22,36,26,.28)">'+
+    '<b style="display:block;font-size:19px;letter-spacing:.06em;text-transform:uppercase;color:#fff">'+esc(x.n)+'</b>'+
+    '<span style="display:block;font-size:13px;margin-top:3px;color:#dfe9c4">Открыть уроки тренинга</span></button>';
+}
 function payReturn(id, token){
   S.orders = S.orders || [];
   var o = S.orders.filter(function(x){ return x.token === token; })[0];
@@ -8237,8 +8247,16 @@ function deepOpen(qArg){
     /* ?login=<код> - личная ссылка входа от школы */
     var mkh = q.match(/[?&]khatm=([a-z0-9]{6,16})/);
     if(mkh){ S.welcomed = 1; save(); try{ history.replaceState(null, "", location.pathname); }catch(e){} V.tab = "quran"; open("khatm", mkh[1]); return true; }
-    var mlg = q.match(/[?&]login=([a-f0-9]{40})/);
+    var mlg = q.match(/[?&]login=([a-f0-9]{16,40})(?![a-f0-9])/);
     if(mlg){ S.welcomed = 1; save(); var mto = q.match(/[&?]to=([a-z]+)/); setTimeout(function(){ accLinkLogin(mlg[1], mto ? mto[1] : ""); }, 300); return true; }
+    /* ?to=masshtab - постоянный адрес «заходите сюда»: вошла - сразу уроки, нет - вход, а после него уроки */
+    var mto2 = q.match(/[?&]to=([a-z]+)/);
+    if(mto2 && SCHOOL_EXT[mto2[1]]){
+      S.welcomed = 1; save(); try{ history.replaceState(null, "", location.pathname); }catch(e){}
+      if(accOn()){ toast("Открываем уроки..."); setTimeout(function(){ schoolCabinetGo(mto2[1], true); }, 400); }
+      else setTimeout(function(){ LG.goTo = mto2[1]; go("prof"); sheetLogin(S.email || ""); LG.goTo = mto2[1]; }, 400);
+      return true;
+    }
     var mg = q.match(/[?&]go=([a-zA-Z0-9_]+)/);
     /* ?go=delo - журнал сразу на рубрике «Дело по Сунне»: туда ведёт
        кодовое слово ДЕЛО из рилсов, все разборы серии лежат в этой рубрике. */
@@ -28744,6 +28762,7 @@ function viewProf(){
 
   /* 1б. вход в аккаунт: записи, покупки и рейтинг - на всех устройствах */
   if(!accOn()) h.push(accLoginCard());
+  Object.keys(SCHOOL_EXT).forEach(function(k){ h.push(schoolBigBtn(k)); });
 
   /* 2. покупки: сначала то, что ждёт оплаты, потом то, что уже открыто */
   h.push('<div class="sec-h"><h3>Мои покупки</h3></div>');
@@ -29420,6 +29439,7 @@ function accMeLoad(force){
     var ca = (x.j.access || []).filter(function(q){ return q && q.product === CLUB_ID; })[0];
     S.clubAcc = { on: !!ca, until: ca ? (ca.until || "") : "", by: ca ? (ca.by || "") : "", at: Date.now() };
     S.clubMeet = (x.j.club && x.j.club.meet) || "";
+    S.extAcc = (x.j.access || []).map(function(q){ return q && q.product; }).filter(function(p){ return p && SCHOOL_EXT[p]; });
     save(); if(V.view === "arabic") render();
     if(V.tab === "prof") render();
   }).catch(function(){});
@@ -29672,6 +29692,7 @@ function accLinkApply(){
   setTimeout(function(){
     sheet('<h3>Вы вошли</h3>'+
       '<p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 14px">Вы вошли как <b>'+esc(lnkWho(acc.name, acc.email || acc.contact))+'</b>.</p>'+
+      (p.to && SCHOOL_EXT[p.to] ? '<p class="note" style="margin:0 0 14px">Тренинг всегда здесь: Профиль -> «'+esc(SCHOOL_EXT[p.to].n)+'». Добавьте приложение на экран «Домой», чтобы оно было под рукой.</p>' : '')+
       '<button class="btn" data-acc="lnkok">Да, это я</button>'+
       '<button class="btn ghost" style="margin-top:8px" data-acc="lnkout">Это не я - выйти</button>');
   }, 700);
@@ -29711,6 +29732,7 @@ function accLoginDone(j){
   scoreLink();
   syPull(true);
   accMeLoad(true);
+  if(LG.goTo && !LNK){ var gt = LG.goTo; LG.goTo = ""; toast("Открываем уроки..."); setTimeout(function(){ schoolCabinetGo(gt, true); }, 1200); }
 }
 /* После первой регистрации с почтой - сразу предлагаем подтвердить вход кодом:
    иначе записи этого телефона не попадут в аккаунт, и на планшете их не будет. */
@@ -29809,6 +29831,7 @@ function accLoginCard(){
 }
 function accCmd(c){
   if(c === "login"){ sheetLogin(S.phone || S.email || LG.contact || ""); return; }
+  if(c.indexOf("school:") === 0){ schoolCabinetGo(c.slice(7)); return; }
   if(c === "lnkstay"){ accLinkDrop(); return; }
   if(c === "lnkgo"){ closeSheet(); accLinkApply(); return; }
   if(c === "lnkok"){ accLinkOk(); return; }
