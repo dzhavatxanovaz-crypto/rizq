@@ -29615,19 +29615,82 @@ function accVerify(){
   }).catch(function(){ LG.busy = false; LG.msg = "Нет связи с сервером школы - проверьте интернет"; sheetLoginCode(); });
 }
 /* вход по личной ссылке */
+var LNK = null;
+function lnkMask(c){
+  c = String(c || "");
+  if(c.indexOf("@") > 0){ var p = c.split("@"); return p[0].charAt(0) + "•••@" + p[1]; }
+  var d = c.replace(/[^0-9]/g, ""); return d.length >= 4 ? "•••" + d.slice(-4) : c;
+}
+function lnkWho(name, contact){ return (name ? name : "без имени") + (contact ? " (" + lnkMask(contact) + ")" : ""); }
+function lnkNorm(c){ c = String(c || "").trim().toLowerCase(); return c.indexOf("@") > 0 ? c : c.replace(/[^0-9]/g, "").slice(-10); }
+function lnkSame(acc, list){
+  var mine = list.map(lnkNorm).filter(Boolean), theirs = [acc.email, acc.contact].map(lnkNorm).filter(Boolean);
+  return mine.some(function(m){ return theirs.indexOf(m) >= 0; });
+}
 function accLinkLogin(code, to){
   var dev = "";
   try{ dev = (navigator.userAgent || "").slice(0, 80); }catch(e){}
   try{ history.replaceState(null, "", location.pathname); }catch(e){}
-  toast("Входим в ваш аккаунт...");
+  toast("Проверяем ссылку...");
   accFetch("link", "POST", { link:code, device:dev }).then(function(x){
-    if(!x.ok || !x.j.token){ toast(x.j.error || "Ссылка не сработала - войдите по телефону в профиле"); return; }
-    accLoginDone(x.j);
-    ACX.meAt = 0; accMeLoad(true);
-    setTimeout(function(){ toast("Вы вошли" + (x.j.account && x.j.account.name ? ", " + x.j.account.name : "")); }, 400);
-    if(to && SCHOOL_EXT[to]){ setTimeout(function(){ schoolCabinetGo(to, true); }, 900); return; }
-    setTimeout(function(){ if(typeof clubHas === "function" && clubHas()){ V.tab = "dua"; open("arabic", "club"); } }, 2500);
+    if(!x.ok || !x.j.token){
+      sheet('<h3>Ссылка для входа не сработала</h3>'+
+        '<p class="note" style="margin:0 0 14px">'+esc(x.j.error || "Срок ссылки истёк или ею уже воспользовались.")+'</p>'+
+        '<button class="btn" data-acc="login">Войти по почте и паролю</button>'+
+        '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Закрыть</button>');
+      return;
+    }
+    var acc = x.j.account || {};
+    LNK = { j:x.j, to:to || "" };
+    var mine = accOn() ? [AC.email, AC.contact] : [S.email, S.phone];
+    var has = mine.some(function(v){ return !!v; });
+    if(has && !lnkSame(acc, mine)){
+      var meName = accOn() ? (AC.name || S.name) : S.name, meC = mine.filter(Boolean)[0];
+      sheet('<h3>Это ссылка другого человека</h3>'+
+        '<p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 10px">Эта ссылка для входа выдана другой участнице: <b>'+esc(lnkWho(acc.name, acc.email || acc.contact))+'</b>.</p>'+
+        '<p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 14px">'+(accOn() ? 'Сейчас на этом телефоне открыт ваш аккаунт: ' : 'На этом телефоне сохранены ваши записи: ')+'<b>'+esc(lnkWho(meName, meC))+'</b>.</p>'+
+        '<button class="btn" data-acc="lnkstay">Остаться в своём аккаунте</button>'+
+        '<button class="btn ghost" style="margin-top:8px" data-acc="lnkgo">Войти как '+esc(acc.name || lnkMask(acc.email || acc.contact))+'</button>'+
+        '<p class="disclaimer" style="text-align:left;padding:0;margin-top:12px">Если войти в чужой аккаунт, записи этого телефона попадут в него. Ссылку для входа не пересылают другим.</p>');
+      return;
+    }
+    accLinkApply();
   }).catch(function(){ toast("Нет связи с сервером школы - откройте ссылку ещё раз, когда будет интернет"); });
+}
+/* отказ: ключ, выданный по ссылке, гасим сразу - им никто не воспользуется */
+function accLinkDrop(){
+  var p = LNK; LNK = null; closeSheet();
+  if(!p) return;
+  try{ fetch(accApi("logout"), { method:"POST", headers:{ "Content-Type":"application/json", Authorization:"Bearer " + p.j.token }, body:"{}" }).catch(function(){}); }catch(e){}
+  toast(accOn() ? "Вы остались в своём аккаунте" : "Вход по ссылке отменён");
+}
+function accLinkApply(){
+  var p = LNK; if(!p) return;
+  var acc = p.j.account || {};
+  accLoginDone(p.j);
+  ACX.meAt = 0; accMeLoad(true);
+  setTimeout(function(){
+    sheet('<h3>Вы вошли</h3>'+
+      '<p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 14px">Вы вошли как <b>'+esc(lnkWho(acc.name, acc.email || acc.contact))+'</b>.</p>'+
+      '<button class="btn" data-acc="lnkok">Да, это я</button>'+
+      '<button class="btn ghost" style="margin-top:8px" data-acc="lnkout">Это не я - выйти</button>');
+  }, 700);
+}
+function accLinkOk(){
+  var p = LNK; LNK = null; closeSheet();
+  if(!p) return;
+  if(p.to && SCHOOL_EXT[p.to]){ setTimeout(function(){ schoolCabinetGo(p.to, true); }, 300); return; }
+  setTimeout(function(){ if(typeof clubHas === "function" && clubHas()){ V.tab = "dua"; open("arabic", "club"); } }, 1500);
+}
+/* «это не я»: выходим без отправки записей этого телефона в чужой аккаунт */
+function accLinkOut(){
+  LNK = null;
+  var hdr = accHdr();
+  try{ fetch(accApi("logout"), { method:"POST", headers:hdr, body:"{}" }).catch(function(){}); }catch(e){}
+  accClear();
+  if(scoreState().on){ S.score.on = 0; S.scoreMe = null; }
+  save(); closeSheet(); render();
+  toast("Вы вышли. Войдите под своей почтой и паролем");
 }
 function accLoginDone(j){
   var a = j.account || {};
@@ -29746,6 +29809,10 @@ function accLoginCard(){
 }
 function accCmd(c){
   if(c === "login"){ sheetLogin(S.phone || S.email || LG.contact || ""); return; }
+  if(c === "lnkstay"){ accLinkDrop(); return; }
+  if(c === "lnkgo"){ closeSheet(); accLinkApply(); return; }
+  if(c === "lnkok"){ accLinkOk(); return; }
+  if(c === "lnkout"){ accLinkOut(); return; }
   if(c === "pass"){ accPass(); return; }
   if(c === "bycode"){ var m0 = document.getElementById("lgMail"); if(m0 && lgClean(m0.value)) LG.contact = lgClean(m0.value); LG.mode = "code"; LG.step = 1; LG.msg = ""; LG.miss = false; sheetLogin(); return; }
   if(c === "bypass"){ var c0 = document.getElementById("lgContact"); if(c0 && lgClean(c0.value)) LG.contact = lgClean(c0.value); LG.mode = ""; LG.msg = ""; LG.miss = false; sheetLogin(); return; }
