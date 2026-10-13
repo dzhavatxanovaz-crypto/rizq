@@ -29457,9 +29457,9 @@ function accImportOrders(j){
 
 /* ---------- вход ---------- */
 var LG = { contact:"", step:1, via:"", to:"", msg:"", miss:false, busy:false, after:"", mode:"" };
-/* Вход по почте и паролю (поручение Заиры 12.10.2026). Включить, когда CRM выложит
-   /api/public/account/login и /api/public/account/password. Пока false - вход по коду, как раньше. */
-var PASS_LOGIN = false;
+/* Вход по почте и паролю (поручение Заиры 12.10.2026). Включено 13.10.2026: CRM выложила
+   /api/public/account/login и /api/public/account/password. Вход по коду и по личной ссылке - запасные. */
+var PASS_LOGIN = true;
 function lgIsMail(c){ return String(c || "").indexOf("@") > 0; }
 function lgClean(c){ return String(c || "").trim(); }
 function lgOk(c){ return lgIsMail(c) ? /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(c) : c.replace(/\D/g, "").length >= 10; }
@@ -29494,10 +29494,10 @@ function sheetLoginPass(){
       '<button type="button" class="btn sec sm" id="lgEye" data-acc="eye" style="flex:none;margin:0" aria-label="Показать пароль">Показать</button></div>'+
     '<p class="note" id="lgErr" style="margin:0 0 10px;color:#C0392B;display:none"></p>'+
     '<button class="btn" id="lgGo" data-acc="pass">Войти</button>'+
-    '<p class="note" style="margin:14px 0 8px">Пароль пришёл в письме и в WhatsApp после оплаты. Не нашли - напишите нам.</p>'+
+    '<p class="note" style="margin:14px 0 8px">Пароль пришёл в письме и в WhatsApp после оплаты. Не нашли - напишите в отдел заботы.</p>'+
     '<a class="btn sec sm" style="display:block;text-align:center;text-decoration:none" target="_blank" rel="noopener" href="'+
-      esc(waLink("Здравствуйте! Не могу найти пароль для входа в RIZQ. Моя почта: "))+'">Написать в WhatsApp '+esc(CONTACT.phone)+'</a>'+
-    '<button class="btn ghost" style="margin-top:8px" data-acc="bycode">Войти по коду, без пароля</button>'+
+      esc(waLink("Здравствуйте! Не могу найти пароль для входа в RIZQ. Моя почта: "))+'">Написать в отдел заботы</a>'+
+    '<button class="btn ghost" style="margin-top:8px" data-acc="bycode">Войти по коду на почту</button>'+
     (signupState().registered ? '' : '<button class="btn ghost" style="margin-top:4px" data-acc="signup">Ещё не регистрировались? Зарегистрироваться</button>')+
     '<p class="disclaimer" style="text-align:left;padding:0;margin-top:12px">После входа записи приложения сохраняются в вашем аккаунте на сервере школы в России и появляются на всех устройствах, где вы вошли. Выйти можно в «Профиле».</p>');
   lgEnter("lgMail", function(){ var p = document.getElementById("lgPass"); if(p) try{ p.focus(); }catch(e){} });
@@ -29529,8 +29529,10 @@ function sheetPassword(){
       '<button class="btn ghost" style="margin-top:8px" data-acc="menu">Назад</button>');
     return;
   }
-  sheet('<h3>Пароль для входа</h3>'+
-    '<p class="note" style="margin:0 0 12px">Ваш логин - почта <b>'+esc(mail)+'</b>. Придумайте новый пароль: не короче 6 знаков.</p>'+
+  var pwi = (ACX.me && ACX.me.password) || {}, needOld = !!(pwi.needOld || LG.needOld);
+  sheet('<h3>'+(pwi.set === false ? "Задать пароль" : "Сменить пароль")+'</h3>'+
+    '<p class="note" style="margin:0 0 12px">Ваш логин - почта <b>'+esc(mail)+'</b>. Придумайте новый пароль: от 6 до 64 знаков.</p>'+
+    (needOld ? '<input class="search" id="pwOld" type="password" autocomplete="current-password" style="margin:0 0 10px" placeholder="Прежний пароль" aria-label="Прежний пароль">' : '')+
     '<input class="search" id="pwNew" type="password" autocomplete="new-password" style="margin:0 0 10px" placeholder="Новый пароль" aria-label="Новый пароль">'+
     '<input class="search" id="pwNew2" type="password" autocomplete="new-password" style="margin:0 0 10px" placeholder="Новый пароль ещё раз" aria-label="Новый пароль ещё раз">'+
     '<p class="note" id="lgErr" style="margin:0 0 10px;color:#C0392B;display:none"></p>'+
@@ -29543,13 +29545,18 @@ function accPwSave(){
   var a = document.getElementById("pwNew"), b = document.getElementById("pwNew2");
   var p1 = String(a && a.value || ""), p2 = String(b && b.value || "");
   if(p1.length < 6){ lgErr("Пароль слишком короткий: нужно не меньше 6 знаков"); return; }
+  if(p1.length > 64){ lgErr("Пароль - не длиннее 64 знаков"); return; }
   if(p1 !== p2){ lgErr("Пароли не совпали - введите ещё раз"); return; }
+  var oi = document.getElementById("pwOld"), body = { password_new:p1 };
+  if(oi){ if(!oi.value){ lgErr("Введите прежний пароль"); return; } body.password_old = String(oi.value); }
   LG.busy = true; lgErr(""); lgBtn("Сохраняем...");
-  accFetch("password", "POST", { password_new:p1 }).then(function(x){
+  accFetch("password", "POST", body).then(function(x){
     LG.busy = false; lgBtn("Сохранить пароль");
     if(x.status === 401 && x.j.relogin){ closeSheet(); accLost(); return; }
+    if(x.j.needOld && !oi){ LG.needOld = 1; sheetPassword(); lgErr(x.j.error || "Введите прежний пароль"); return; }
     if(!x.ok){ lgErr(x.j.error || "Не получилось сохранить пароль, попробуйте ещё раз"); return; }
-    toast("Пароль сохранён. Теперь входите по почте и паролю");
+    LG.needOld = 0; if(ACX.me && ACX.me.password) ACX.me.password.set = true;
+    toast("Пароль изменён. Теперь входите по почте и паролю");
     sheetAccMenu();
   }).catch(function(){ LG.busy = false; lgBtn("Сохранить пароль"); lgErr("Нет связи с сервером школы - проверьте интернет"); });
 }
@@ -29670,7 +29677,7 @@ function accLost(){
   toast("Вход в аккаунт закончился. Записи на этом устройстве остались - войдите снова, чтобы синхронизировать");
 }
 function accClear(){
-  clearTimeout(ACX.timer);
+  clearTimeout(ACX.timer); LG.needOld = 0;
   AC.tok = ""; AC.rev = 0; AC.kt = {}; AC.kh = {}; AC.sent = ""; AC.syncAt = 0; ACX.me = null; ACX.err = ""; ACX.pulledAt = 0;
   syBaseClear(); accStore();
   /* вышла из аккаунта - подписка больше не привязана к ней */
@@ -29721,7 +29728,7 @@ function sheetAccMenu(){
     '<p class="note" style="margin:12px 0">Записи (трекер, дуа, заметки, задачи, прогресс, настройки) сохраняются в аккаунте и одинаковы на всех устройствах, где вы вошли. Покупки открываются по аккаунту. В рейтинге вы участвуете аккаунтом: на любом устройстве то же место.</p>'+
     '<button class="btn" data-acc="sync">Синхронизировать сейчас</button>'+
     '<button class="btn sec" style="margin-top:8px" data-open="account">Мои данные</button>'+
-    (PASS_LOGIN ? '<button class="btn sec" style="margin-top:8px" data-acc="pw">Сменить пароль</button>' : '')+
+    (PASS_LOGIN ? '<button class="btn sec" style="margin-top:8px" data-acc="pw">'+(ACX.me && ACX.me.password && ACX.me.password.set === false ? "Задать пароль" : "Сменить пароль")+'</button>' : '')+
     '<button class="btn ghost" style="margin-top:8px" data-acc="logout">Выйти</button>'+
     '<button class="btn ghost sm" style="margin-top:4px;width:100%;color:#C0392B" data-acc="wipe">Выйти и удалить данные с сервера</button>'+
     '<p class="disclaimer" style="text-align:left;padding:0;margin-top:12px">Данные хранятся на сервере школы в России и на ваших устройствах. После выхода записи на этом устройстве остаются.</p>');
