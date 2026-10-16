@@ -570,6 +570,27 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .zh-t b{font-family:var(--f-display);font-size:17px;line-height:1.25}
 .zh-t span{font-size:13px;line-height:1.4;color:var(--ink-2)}
 .zh-go{flex:none;font-size:24px;color:var(--ink-3)}
+/* v2 после разбора экспертов */
+.wc-stat{display:grid;gap:6px;margin-top:8px}
+.wc-stat > div{display:flex;flex-direction:column;padding:8px 10px;border-radius:10px;background:var(--surface-2)}
+.wc-stat b{font-size:13px}.wc-stat span{font-size:13px;line-height:1.45;color:var(--ink-2)}
+.wc-ask{margin-top:12px;padding:12px;border-radius:14px;background:rgba(255,255,255,.1);border:1px solid rgba(241,190,200,.4);text-align:left}
+.wc-ask b{display:block;font-size:15px;color:#F7EFD8}.wc-ask span{display:block;font-size:13px;line-height:1.45;color:var(--ink-2);margin:4px 0 8px}
+.wc-ask div{display:flex;gap:8px}.wc-ask .btn{flex:1}
+.zh-today{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.1)}
+.zh-today span{flex:1;min-width:0;font-size:14px;font-weight:600;color:#F7EFD8}
+.wc-lnk2{display:block;margin:-2px auto 8px;background:none;border:0;color:var(--accent-ink);font-size:13px;text-decoration:underline;min-height:32px}
+.wc-nav{min-width:44px;min-height:44px}
+.wc-isl .btn.sm,.wc-ia .btn.sm,.wc-fc .btn.sm,.wc-ask .btn.sm,.zh-today .btn.sm{min-height:44px}
+.wc-terms summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--accent-ink);min-height:40px;display:flex;align-items:center}
+.wc-terms[open] summary{margin-bottom:6px}
+.wc-c.pred{color:#B03A60;border-color:#B03A60}
+.wc-c.ov{background:#2B7A63}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .wc-c.pred{color:#E58AA6;border-color:#E58AA6}}
+:root[data-theme="dark"] .wc-c.pred{color:#E58AA6;border-color:#E58AA6}
+.wc-stat{grid-template-columns:1fr 1fr}
+.wc-stat > div:nth-child(3){grid-column:1/-1}
+:root[data-fs="xl"] .wc-stat,:root[data-fs="xxl"] .wc-stat{grid-template-columns:1fr}
 /* развитие ребёнка (16.10.2026) */
 .hx.rzv-hero{background:radial-gradient(120% 120% at 20% 10%,#3A5A8C 0%,#253E6B 48%,#121F3E 100%)}
 .rzv-kid b{display:block;font-family:var(--f-display);font-size:26px;line-height:1.2;color:#F7E7B4;margin-top:6px}
@@ -6587,6 +6608,7 @@ function appVersion(cb){
 /* Экран, с которого пишут: только название раздела и ключ, без текстов человека. */
 function fbScreen(){
   try{
+    if(/^(wcal|zhen|rzv)$/.test(V.view)) return "other";
     var p = V.view ? V.p : null, key = (typeof p === "string" || typeof p === "number") ? ":" + String(p).slice(0, 30) : "";
     return String(V.view || V.tab || "home") + key;
   }catch(e){ return "?"; }
@@ -6704,7 +6726,7 @@ document.getElementById("app").addEventListener("pointerdown", function(ev){
   if(!b) return;
   var an = [].filter.call(b.attributes, function(a){ return a.name.indexOf("data-") === 0; })[0];
   var kind = an ? an.name.slice(5) : (b.tagName === "A" ? "link" : "button");
-  if(RT_SKIP.indexOf(kind) > -1) return;
+  if(RT_SKIP.indexOf(kind) > -1 || /^(wc|rzv|zhen)/.test(kind)) return;
   var key = fbScreen() + " / " + kind, now = Date.now();
   if(key === RT.key && now - RT.at < 1200) RT.n++; else { RT.key = key; RT.n = 1; }
   RT.at = now;
@@ -8418,7 +8440,7 @@ function deepOpen(qArg){
       quran:["quran", null], azkar:["azkar", null], kniga:["book1", null], book:["book1", null],
       duas:["duas", null], khatms:["khatms", null], dms:["dms", null],
       studio:["vmake", null], video:["vmake", null],
-      rassrochka:["installment", null], installment:["installment", null], nastavnik:["nastavnik", null], kalendar:["wcal", null], beremennost:["wcal", null], razvitie:["rzv", null], zhenskiy:["zhen", null] };   /* сайт и посты об исламской рассрочке */   /* кодовое слово СТУДИЯ */
+      rassrochka:["installment", null], installment:["installment", null], nastavnik:["nastavnik", null], kalendar:["wcal", null], beremennost:["wcal", "preg"], razvitie:["rzv", null], zhenskiy:["zhen", null] };   /* сайт и посты об исламской рассрочке */   /* кодовое слово СТУДИЯ */
     /* ?post=<id> - открыть запись журнала (ссылка «Поделиться») */
     /* ?finreq=<номер> - заявка на рассрочку с сайта: показываем её в «Моих заявках» (03.10.2026) */
     var mfr = q.match(/[?&]finreq=([a-f0-9]{32})/);
@@ -18847,74 +18869,115 @@ function viewKidStory(){
 var WC_WEEKS = {
   4:{f:"маковое зёрнышко", ic:"·", s:"около 1 мм", d:"Зародыш закрепился в матке. Тест на беременность уже может показать две полоски."},
   5:{f:"кунжутное семечко", ic:"·", s:"около 2 мм", d:"Закладываются нервная трубка - будущие мозг и позвоночник - и сердце."},
-  6:{f:"чечевица", ic:"•", s:"около 5 мм", d:"Сердечко начинает сокращаться. На УЗИ его иногда уже видно."},
-  7:{f:"черника", ic:"•", s:"около 1 см", d:"Появляются зачатки ручек и ножек, быстро растёт голова."},
-  8:{f:"малина", ic:"●", s:"около 1,6 см", d:"Формируются пальчики, начинают работать почки."},
-  9:{f:"вишня", ic:"●", s:"около 2,3 см", d:"Малыш начинает шевелиться, но вы этого пока не чувствуете."},
+  6:{f:"чечевица", fa:"чечевицу", ic:"•", s:"около 5 мм", d:"Сердечко начинает сокращаться. На УЗИ его иногда уже видно."},
+  7:{f:"черника", fa:"чернику", ic:"•", s:"около 1 см", d:"Появляются зачатки ручек и ножек, быстро растёт голова."},
+  8:{f:"малина", fa:"малину", ic:"●", s:"около 1,6 см", d:"Формируются пальчики, начинают работать почки."},
+  9:{f:"вишня", fa:"вишню", ic:"●", s:"около 2,3 см", d:"Малыш начинает шевелиться, но вы этого пока не чувствуете."},
   10:{f:"финик", ic:"●", s:"около 3 см", d:"Все главные органы заложены. Дальше они растут и созревают."},
-  11:{f:"инжир", ic:"●", s:"около 4 см", d:"Появляются ноготки, малыш умеет сжимать кулачок."},
-  12:{f:"лайм", ic:"●", s:"около 5,5 см", d:"Конец первого триместра. Обычно в это время проходят первое скрининговое УЗИ."},
+  11:{f:"инжир", ic:"●", s:"около 4 см", d:"Появляются ноготки, малыш умеет сжимать кулачок. С 11 недель 0 дней открывается окно первого скрининга."},
+  12:{f:"лайм", ic:"●", s:"около 5,5 см", d:"Идёт окно первого скрининга: с 11 недель 0 дней до 13 недель 6 дней - УЗИ и кровь из вены. Окно короткое, не пропустите."},
   13:{f:"лимон", ic:"●", s:"около 7 см", d:"Формируются голосовые связки, на пальцах появляются отпечатки."},
   14:{f:"персик", ic:"●", s:"около 8,5 см", d:"Начался второй триместр. Тошнота у многих стихает, сил становится больше."},
-  15:{f:"яблоко", ic:"●", s:"около 10 см", d:"Малыш чувствует свет сквозь кожу живота и много двигается."},
+  15:{f:"яблоко", ic:"●", s:"около 10 см", d:"Малыш много двигается, крепнут мышцы шеи и спины."},
   16:{f:"авокадо", ic:"●", s:"около 11,5 см, около 100 г", d:"Укрепляются кости, малыш учится глотать и «дышать» околоплодными водами."},
-  17:{f:"гранат", ic:"●", s:"около 13 см, около 140 г", d:"Появляется подкожный жир, малыш слышит стук вашего сердца."},
-  18:{f:"сладкий перец", ic:"●", s:"около 14 см, около 190 г", d:"Многие мамы в эти недели впервые чувствуют лёгкие шевеления - «как бабочки»."},
-  19:{f:"манго", ic:"●", s:"около 15 см, около 240 г", d:"Кожу покрывает защитная смазка. Обычно в эти недели назначают второе скрининговое УЗИ."},
+  17:{f:"гранат", ic:"●", s:"около 13 см, около 140 г", d:"Появляется подкожный жир, крепнут кости."},
+  18:{f:"сладкий перец", ic:"●", s:"около 14 см, около 190 г", d:"Многие мамы в эти недели впервые чувствуют лёгкие шевеления - «как бабочки». Обычно в 18-20 недель 6 дней проходят второе скрининговое УЗИ."},
+  19:{f:"манго", ic:"●", s:"около 15 см, около 240 г", d:"Кожу покрывает защитная смазка, начинает развиваться слух."},
   20:{f:"банан", ic:"●", s:"около 25 см с ножками, около 300 г", d:"Половина пути. Малыш различает звуки - ваш голос ему уже знаком."},
   21:{f:"морковь", ic:"●", s:"около 27 см, около 360 г", d:"Шевеления становятся заметнее, малыш спит и бодрствует по своему ритму."},
-  22:{f:"папайя", ic:"●", s:"около 28 см, около 430 г", d:"Формируются брови и ресницы, крепнет хватка."},
+  22:{f:"папайя", fa:"папайю", ic:"●", s:"около 28 см, около 430 г", d:"Формируются брови и ресницы, крепнет хватка."},
   23:{f:"грейпфрут", ic:"●", s:"около 29 см, около 500 г", d:"Малыш отвечает движением на громкие звуки."},
-  24:{f:"початок кукурузы", ic:"●", s:"около 30 см, около 600 г", d:"Развиваются лёгкие. Обычно в 24-28 недель проверяют сахар крови."},
+  24:{f:"початок кукурузы", ic:"●", s:"около 30 см, около 600 г", d:"Развиваются лёгкие. В 24-28 недель - глюкозотолерантный тест с 75 г глюкозы: диабет беременных обычно ничем не ощущается."},
   25:{f:"кочан цветной капусты", ic:"●", s:"около 34 см, около 660 г", d:"Малыш набирает вес, кожа разглаживается."},
   26:{f:"кочан салата", ic:"●", s:"около 35,5 см, около 760 г", d:"Глаза начинают открываться, малыш реагирует на свет."},
   27:{f:"брокколи", ic:"●", s:"около 36,5 см, около 875 г", d:"Конец второго триместра. Малыш икает - вы можете почувствовать ритмичные толчки."},
-  28:{f:"баклажан", ic:"●", s:"около 37,5 см, около 1 кг", d:"Начался третий триместр. С этого срока полезно каждый день замечать, как шевелится малыш."},
+  28:{f:"баклажан", ic:"●", s:"около 37,5 см, около 1 кг", d:"Начался третий триместр. Знайте обычный ритм шевелений малыша. При резус-отрицательной крови в 28-30 недель обычно вводят иммуноглобулин."},
   29:{f:"кабачок", ic:"●", s:"около 38,5 см, около 1,15 кг", d:"Быстро растёт мозг, крепнут мышцы и кости."},
   30:{f:"кочан капусты", ic:"●", s:"около 40 см, около 1,3 кг", d:"Малыш различает свет и темноту, много спит."},
-  31:{f:"кокос", ic:"●", s:"около 41 см, около 1,5 кг", d:"Почти все органы готовы, малыш набирает вес. Обычно в 30-34 недели делают третье УЗИ."},
+  31:{f:"кокос", ic:"●", s:"около 41 см, около 1,5 кг", d:"Почти все органы готовы, малыш набирает вес."},
   32:{f:"ананас", ic:"●", s:"около 42,5 см, около 1,7 кг", d:"Малышу становится тесно: толчки сильнее, но переворотов меньше."},
   33:{f:"большой ананас", ic:"●", s:"около 43,5 см, около 1,9 кг", d:"Кости крепнут, кроме костей черепа - они остаются мягкими для родов."},
-  34:{f:"дыня", ic:"●", s:"около 45 см, около 2,1 кг", d:"Лёгкие почти созрели. Самое время собрать сумку в роддом."},
-  35:{f:"медовая дыня", ic:"●", s:"около 46 см, около 2,4 кг", d:"Малыш набирает около 200 г в неделю."},
-  36:{f:"большая дыня", ic:"●", s:"около 47 см, около 2,6 кг", d:"Многие малыши уже повернулись головкой вниз."},
-  37:{f:"тыква", ic:"●", s:"около 48,5 см, около 2,9 кг", d:"Беременность считается доношенной. Роды могут начаться в любой день."},
-  38:{f:"большая тыква", ic:"●", s:"около 50 см, около 3,1 кг", d:"Малыш тренирует сосательный рефлекс и готов к встрече."},
+  34:{f:"дыня", fa:"дыню", ic:"●", s:"около 45 см, около 2,1 кг", d:"Лёгкие почти созрели. В 34-35 недель - УЗИ третьего триместра. Самое время собрать сумку в роддом."},
+  35:{f:"медовая дыня", fa:"медовую дыню", ic:"●", s:"около 46 см, около 2,4 кг", d:"Малыш набирает около 200 г в неделю."},
+  36:{f:"большая дыня", fa:"большую дыню", ic:"●", s:"около 47 см, около 2,6 кг", d:"Многие малыши уже повернулись головкой вниз."},
+  37:{f:"тыква", fa:"тыкву", ic:"●", s:"около 48,5 см, около 2,9 кг", d:"Беременность считается доношенной. Роды могут начаться в любой день."},
+  38:{f:"большая тыква", fa:"большую тыкву", ic:"●", s:"около 50 см, около 3,1 кг", d:"Малыш тренирует сосательный рефлекс и готов к встрече."},
   39:{f:"небольшой арбуз", ic:"●", s:"около 50,5 см, около 3,3 кг", d:"Ждём со дня на день. Отдыхайте и держите сумку под рукой."},
-  40:{f:"арбуз", ic:"●", s:"около 51 см, около 3,4 кг", d:"Предполагаемая дата родов. Родиться в срок - это от 37 до 42 недель."},
-  41:{f:"арбуз", ic:"●", s:"около 51 см, около 3,5 кг", d:"Роды позже ПДР - обычное дело. Врач скажет, как наблюдать дальше."},
-  42:{f:"арбуз", ic:"●", s:"около 52 см, около 3,6 кг", d:"Обязательно будьте на связи с врачом - он решит, что делать дальше."}
+  40:{f:"арбуз", ic:"●", s:"около 51 см, около 3,4 кг", d:"Предполагаемая дата родов. Роды в срок - с 37 недель 0 дней до 41 недели 6 дней."},
+  41:{f:"арбуз", ic:"●", s:"около 51 см, около 3,5 кг", d:"В 41 неделю обычно направляют в роддом - обсудить родовозбуждение. Если врач этого не назначил, позвоните ему сегодня."},
+  42:{f:"арбуз", ic:"●", s:"около 52 см, около 3,6 кг", d:"Переношенная беременность. Если вы ещё не в роддоме - поезжайте сегодня."}
 };
 
 /* что обычно бывает по триместрам - для мамы */
 var WC_TRI = [
   {n:"Первый триместр", w:"1-13 недели", tips:[
-    "Встаньте на учёт в женской консультации - лучше до 12 недель.",
-    "Фолиевая кислота и другие витамины - только по назначению врача.",
-    "Тошнота и сонливость - частые спутники: ешьте понемногу и чаще, отдыхайте.",
+    "Встаньте на учёт в женской консультации - лучше до 10 недель.",
+    "Фолиевая кислота 400-800 мкг (до 12 недель) и йод 200 мкг (всю беременность) рекомендованы всем. При болезнях щитовидной железы и про другие витамины - с врачом.",
+    "Тошнота и сонливость - частые спутники: ешьте понемногу и чаще, отдыхайте. Рвёт больше 5 раз в день или не держится вода - к врачу.",
+    "Скрининг - с 11 недель 0 дней до 13 недель 6 дней: УЗИ и кровь из вены.",
     "Лекарства, даже привычные, - только после разговора с врачом."]},
   {n:"Второй триместр", w:"14-27 недели", tips:[
     "Обычно самое лёгкое время: сил больше, тошнота стихает.",
     "Появляются первые шевеления - запомните, когда это было, врач спросит.",
     "Больше воды, прогулки и спокойная активность, если врач не против.",
-    "В 24-28 недель обычно проверяют сахар крови."]},
+    "Второе скрининговое УЗИ - в 18-20 недель 6 дней, глюкозотолерантный тест - в 24-28 недель.",
+    "Прививки от гриппа и коклюша рекомендованы во 2-3 триместре - обсудите с врачом."]},
   {n:"Третий триместр", w:"28-40 недели", tips:[
-    "Каждый день замечайте шевеления: если малыш стал двигаться заметно реже - сразу к врачу.",
+    "Знайте обычный ритм шевелений: если малыш шевелится меньше или слабее обычного - не ждите, сразу звоните в роддом или 103.",
+    "УЗИ третьего триместра - в 34-35 недель.",
     "К 34-36 неделям соберите сумку в роддом и документы.",
-    "Отдыхайте лёжа на боку, особенно на левом.",
+    "С 28 недель засыпайте на любом боку, но не на спине.",
     "Узнайте заранее, в какой роддом ехать и как туда добраться ночью."]}
 ];
 
 /* когда к врачу сразу, не дожидаясь приёма */
 var WC_RED = [
-  "Кровянистые выделения или кровотечение",
-  "Сильная или нарастающая боль в животе",
-  "Подтекание или излитие вод",
-  "После 28 недель малыш шевелится заметно реже или затих",
-  "Сильная головная боль, мушки перед глазами, резкие отёки лица и рук",
-  "Температура 38° и выше",
-  "Регулярные схватки до 37 недель"
+  "Кровянистые выделения - любого количества",
+  "Сильная или нарастающая боль в животе; до 12 недель - боль с одной стороны, боль в плече, головокружение или обморок, даже без крови",
+  "Подтекание вод, особенно зелёных или с кровью",
+  "С 24 недель малыш шевелится меньше или слабее обычного",
+  "Сильная головная боль, мушки перед глазами, боль под рёбрами справа или под ложечкой, резкие отёки лица и рук, давление 140/90 и выше",
+  "Судороги, потеря сознания",
+  "Температура 38° и выше; боль в пояснице с ознобом",
+  "Рвота много раз в день, не держится вода, тёмная моча",
+  "Сильный зуд ладоней и стоп, хуже ночью",
+  "Одышка, боль в груди; боль, отёк и покраснение одной ноги",
+  "Удар или падение на живот, авария",
+  "Регулярные схватки или давление внизу живота до 37 недель"
 ];
+/* после родов - когда к врачу сразу (акушер-гинеколог, 16.10.2026) */
+var WC_POST_RED = [
+  "Прокладка «макси» промокает за час; сгустки больше сливы",
+  "Ярко-красная кровь вернулась после того, как выделения посветлели; неприятный запах",
+  "Температура 38° и выше; нарастающая боль в животе",
+  "Шов покраснел, болит или расходится",
+  "Боль и отёк одной ноги; одышка, боль в груди",
+  "Сильная головная боль, мушки, давление 140/90 и выше - опасно до 6 недель после родов",
+  "Красный горячий участок на груди с температурой",
+  "Мысли навредить себе или малышу, бессонница, даже когда малыш спит, голоса или видения - 103"
+];
+var WC_POST_INFO = [
+  {t:"Выделения после родов", p:"Обычно идут 4-6 недель: сначала ярко-красные, потом светлеют. Кровь дольше 6 недель - к гинекологу."},
+  {t:"Настроение", p:"Грусть и слёзы первые 2 недели - бэби-блюз, это проходит. Если дольше или мешает ухаживать за малышом - это повод к врачу, а не слабость веры. Телефон для родителей 8-800-2000-122 (бесплатно), при угрозе жизни - 112."},
+  {t:"Осмотры", p:"Покажитесь в женской консультации после выписки и через 6-8 недель после родов."},
+  {t:"Грудное вскармливание", p:"Приложить в первый час, дальше по требованию 8-12 раз в сутки. Только грудь до 6 месяцев, потом - вместе с прикормом. Коран называет полный срок кормления - два года (2:233). Молока хватает, если с 5-6 дня 6 и больше мокрых подгузников в сутки и к 10-14 дню малыш вернул вес при рождении."},
+  {t:"Следующая беременность", p:"ВОЗ советует не меньше 2 лет между родами и следующей беременностью. Кормление грудью защищает от беременности только до 6 месяцев - если кормите только грудью днём и ночью и месячных нет."}
+];
+/* после потери беременности */
+var WC_LOSS_MED = "Обязательно покажитесь врачу и сделайте УЗИ, даже если кажется, что всё вышло. При резус-отрицательной крови скажите об этом сразу: может понадобиться укол иммуноглобулина в первые 72 часа. Звоните 103, если прокладка промокает за час, есть температура, сильная боль, выделения с запахом или обморок. Месячные обычно приходят через 4-6 недель; если их нет 8 недель или тест остаётся положительным - к врачу.";
+/* цикл: когда к гинекологу */
+var WC_GYN = [
+  "Месячные дольше 8 дней",
+  "Прокладка промокает за 1-2 часа, сгустки, слабость",
+  "Кровь между месячными или после близости",
+  "Месячных нет 3 месяца (если вы не беременны и не кормите грудью)",
+  "Боль, из-за которой пропускаете дела",
+  "Задержка, положительный тест и боль внизу живота - 103",
+  "Планируете беременность и не получается 12 месяцев, после 35 лет - 6 месяцев"
+];
+/* прибавка веса за беременность по ИМТ до беременности (клинрекомендации «Нормальная беременность», 2023) */
+var WC_WEIGHT = [[18.5, "12,5-18 кг"], [25, "11,5-16 кг"], [30, "7-11,5 кг"], [99, "5-9 кг"]];
+var WC_FOOD = ["Без сырого молока, мягких сыров с плесенью, паштетов, недожаренного мяса и сырых яиц", "Без тунца и рыбы-меч (ртуть)", "Кофе и чай - не больше 300 мг кофеина в день (2-3 чашки)", "Мыть овощи и фрукты, руки - после сырого мяса"];
 
 /* сумка в роддом */
 var WC_BAG = [
@@ -19017,7 +19080,7 @@ var HAID_DAYS = [
    src:"Аиша. Муслим 300"},
 
   {t:"Коран на её коленях",
-   p:"Пророк ﷺ читал Коран, опираясь на колени Аиши, когда она была в хайде. Женщине в эти дни нельзя читать Коран самой, но слушать его - можно и нужно.",
+   p:"Пророк ﷺ читал Коран, опираясь на колени Аиши, когда она была в хайде. Женщине в эти дни нельзя читать Коран самой, но слушать его - можно.",
    ar:"كَانَ يَتَّكِئُ فِي حَجْرِي وَأَنَا حَائِضٌ، ثُمَّ يَقْرَأُ الْقُرْآنَ",
    tr:"Кана яттаки’у фи хаджри ва ана ха’ид, сумма якра’уль-Кур’ан",
    ru:"Он опирался на мои колени, когда я была в хайде, и читал Коран.",
@@ -19135,7 +19198,7 @@ var HAID_ZIKR_PLAN = [
 
   {t:"Перед сном",
    p:"Сложить ладони, подуть в них, произнести суры «Аль-Ихлас», «Аль-Фаляк» и «Ан-Нас» и обтереть ладонями тело, начиная с головы и лица, три раза. В хайд - с намерением защиты и зикра, а не чтения Корана.",
-   src:"Аиша. Аль-Бухари 5017. Правило о намерении - ан-Навави, «Минхадж ат-талибин» [проверить формулировку для приложения]"}
+   src:"Аиша. Аль-Бухари 5017. Правило о намерении - ан-Навави, «Минхадж ат-талибин»"}
 ];
 
 var PREG_WEEKS = [
@@ -19174,7 +19237,7 @@ var PREG_WEEKS = [
    ru:"Потом Мы создали из капли сгусток крови, потом создали из сгустка крови разжеванный кусочек, потом создали из этого кусочка кости, и потом облекли кости мясом. Потом Мы вырастили его в другом творении. Благословен же Аллах, Наилучший из творцов!",
    src:"Сура «Аль-Му’минун», 23:14"},
 
-  {w:[10,16], t:"Сформировавшийся или нет",
+  {w:[10,16], t:"До назначенного срока",
    p:"Аллах говорит, что помещает в утробах то, что пожелает, до назначенного срока. Каждая беременность - в Его руке, и мольба о ней никогда не напрасна.",
    ar:"وَنُقِرُّ فِى ٱلْأَرْحَامِ مَا نَشَآءُ إِلَىٰٓ أَجَلٍ مُّسَمًّى",
    tr:"Ва нукырру филь-архами ма наша’у иля аджалин мусамма",
@@ -19393,7 +19456,7 @@ var NIFAS_DAYS = [
 
   {t:"Поминание в эти дни",
    p:"Намаз в нифас не совершается, но зикр, дуа и салават открыты. Пророк ﷺ сказал: «Опередили муфарридуны» - и объяснил, что это мужчины и женщины, много поминающие Аллаха. Короткие слова между кормлениями - тоже поминание.",
-   src:"Абу Хурайра. Муслим 2676. План зикра - как в дни хайда (раздел А3)"},
+   src:"Абу Хурайра. Муслим 2676. План зикра - как в дни хайда"},
 
   {t:"Помощь мужа - Сунна",
    p:"Аиша рассказывала, что Пророк ﷺ дома был занят делами своей семьи, а когда наступало время намаза, выходил на намаз. Помогать жене после родов - следовать его примеру.",
@@ -19434,16 +19497,19 @@ var WC_NIFAS_CARDS = NIFAS_DAYS;
 var WC_PREG_ISLAM = PREG_WEEKS;
 
 /* ============================================================
-   ЖЕНСКИЙ КАЛЕНДАРЬ (16.10.2026, просьба Заиры): месячные, нифас,
-   беременность - и всё это с точки зрения ислама: что значит день
-   цикла для намаза и поста, какой намаз восполнить, когда гусль,
-   сколько постов Рамадана в долг.
-   Данные - S.wcal - ТОЛЬКО на этом телефоне: в синхронизацию
-   с аккаунтом не входят (SY_KEYS их исключает), в файл копии -
-   входят, его человек хранит сам.
+   ЖЕНСКИЙ РАЗДЕЛ (16.10.2026, просьбы Заиры): календарь цикла,
+   календарь беременности, нифас - всё с точки зрения ислама:
+   что значит день для намаза и поста, какой намаз восполнить,
+   когда гусль, сколько постов Рамадана в долг.
+   Версия 2 - после разбора четырёх экспертов (UX, богослов-шафиит,
+   акушер и педиатр, инженер по приватности): разбор дней идёт
+   эпизодами, как у знающего (ас-сахб, истихада по привычке,
+   15 дней чистоты от последнего хайда, нифас до 60 дней).
+   Данные - S.wcal - только на этом телефоне: в синхронизацию
+   с аккаунтом не входят (SY_KEYS), в отчёты и статистику - тоже.
    ============================================================ */
 var WC_DEF = { on:0, goal:"cycle", per:[], log:{}, cyc:28, len:5, fert:1, home:1, remSoon:0, remDays:2, remFert:0, mute:0,
-  gusl:{}, qadaAdded:{}, qadaPrayer:{}, preg:{lmp:"", kicks:[], ct:[], bag:{}}, post:{birth:""} };
+  gusl:{}, qadaAdded:{}, qadaPrayer:{}, preg:{lmp:"", kicks:[], ct:[], bag:{}, ks:0, kn:0}, post:{birth:""} };
 function wcData(){
   var w = S.wcal;
   if(!w || typeof w !== "object") w = S.wcal = JSON.parse(JSON.stringify(WC_DEF));
@@ -19455,336 +19521,452 @@ function wcD(key){ return new Date(key + "T12:00:00"); }
 function wcAdd(key, n){ var d = wcD(key); d.setDate(d.getDate() + n); return dayKey(d); }
 function wcDiff(a, b){ return Math.round((wcD(b) - wcD(a)) / 86400000); }
 function wcFmt(key, opt){ return wcD(key).toLocaleDateString("ru-RU", opt || {day:"numeric", month:"long"}); }
+function wcShort(key){ return wcFmt(key, {day:"numeric", month:"short"}); }
 function wcPers(kind){
   var p = wcData().per.slice().sort(function(a, b){ return a.a < b.a ? -1 : a.a > b.a ? 1 : 0; });
   return kind ? p.filter(function(x){ return x.k === kind; }) : p;
 }
 function wcOpen(){ var p = wcPers(); for(var i = p.length - 1; i >= 0; i--) if(!p[i].b) return p[i]; return null; }
-function wcEndKey(p){ return p.b || todayKey(); }
+function wcEndKey(p){ var e = p.b || todayKey(); return wcDiff(p.a, e) > 120 ? wcAdd(p.a, 120) : e; }   /* защита от опечатки в годе */
 function wcHours(t){ if(!t) return null; var m = String(t).split(":"); var h = parseInt(m[0], 10), mi = parseInt(m[1], 10); return isNaN(h) ? null : h + (isNaN(mi) ? 0 : mi) / 60; }
-/* длительность в часах, если известны оба времени */
+/* время записано по телефону; времена намаза - по поясу выбранного города */
+function wcTz(key){ return -wcD(key).getTimezoneOffset() / 60; }
+function wcH(key, t){ var h = wcHours(t); if(h === null) return null; var c = currentCity(); return S.city === "gps" ? h : h + (c.tz - wcTz(key)); }
 function wcDurH(p){
   var ta = wcHours(p.at), tb = wcHours(p.bt);
   if(!p.b || ta === null || tb === null) return null;
   return wcDiff(p.a, p.b) * 24 + (tb - ta);
 }
+/* хиджра с кэшем; null - если браузер не знает исламский календарь */
+var WC_HJF = null, WC_HJC = {};
+function wcHj(key){
+  if(key in WC_HJC) return WC_HJC[key];
+  var r = null;
+  try{
+    if(!WC_HJF) WC_HJF = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {day:"numeric", month:"numeric", year:"numeric"});
+    if(String(WC_HJF.resolvedOptions().calendar).indexOf("islamic") === 0){
+      var p = {}; WC_HJF.formatToParts(wcD(key)).forEach(function(x){ p[x.type] = x.value; });
+      r = {d:parseInt(p.day, 10), m:parseInt(p.month, 10), y:parseInt(p.year, 10)};
+    }
+  }catch(e){}
+  WC_HJC[key] = r; return r;
+}
 
-/* ---------- прогноз цикла ---------- */
+/* ---------- разбор дней эпизодами (шафиитский мазхаб, выверка богослова 16.10) ----------
+   Хайд: не меньше суток и не больше 15 суток, после не менее 15 дней чистоты от прошлого признанного
+   хайда или нифаса. Ас-сахб: кровь в пределах 15 суток от начала хайда - вместе с днями чистоты между
+   ними хайд. Дольше 15 суток - хайд по привычке (обычные N дней), остальное истихада. Нифас: от родов
+   до 60 дней, кровь, вернувшаяся раньше 15 дней чистоты, - тоже нифас. */
+var WC_CL = null;
+function wcClassify(){
+  var w = wcData(), sig = JSON.stringify(w.per) + todayKey() + (w.preg.lmp || "");
+  if(WC_CL && WC_CL.sig === sig) return WC_CL;
+  var P = wcPers(), day = {}, eps = [], lastEnd = null, habit = 0, i = 0;
+  while(i < P.length){
+    var p = P[i], j, q, qe, k;
+    if(p.k === "n"){
+      var B = p.a, lim = wcAdd(B, 59), epn = { k:"n", S:B, E:null, parts:[], open:false, birth:B }, lastB = null;
+      j = i;
+      while(j < P.length){
+        q = P[j];
+        if(j > i){ if(q.k === "n" || q.a > lim) break; if(lastB && wcDiff(lastB, q.a) - 1 >= 15) break; }
+        epn.parts.push(q); qe = wcEndKey(q); if(!q.b) epn.open = true;
+        if(lastB) for(k = wcAdd(lastB, 1); k < q.a; k = wcAdd(k, 1)) if(k <= lim) day[k] = "n";
+        for(k = q.a; k <= qe; k = wcAdd(k, 1)) day[k] = k <= lim ? "n" : "i";
+        if(!lastB || qe > lastB) lastB = qe;
+        j++;
+      }
+      epn.E = lastB > lim ? lim : lastB; epn.over = lastB > lim; epn.last = lastB;
+      lastEnd = epn.E; eps.push(epn); i = j; continue;
+    }
+    var S = p.a, early = null;
+    if(lastEnd && wcDiff(lastEnd, p.a) - 1 < 15){ early = wcAdd(lastEnd, 16); S = early; }
+    var ep = { k:"h", S:S, firstA:p.a, parts:[], open:false, early:early }, lim15 = wcAdd(S, 14), lastBl = null, sumH = 0, known = true;
+    j = i;
+    while(j < P.length){
+      q = P[j];
+      if(q.k === "n") break;
+      if(j > i && q.a > lim15) break;
+      ep.parts.push(q); qe = wcEndKey(q); if(!q.b) ep.open = true;
+      var dh = wcDurH(q); if(dh === null) known = false; else sumH += dh;
+      if(!lastBl || qe > lastBl) lastBl = qe;
+      j++;
+    }
+    var short = known && !ep.open && sumH < 24;
+    var over = lastBl > lim15, E = null;
+    if(!short && lastBl >= S){
+      if(over){ E = habit ? wcAdd(S, Math.min(habit, 15) - 1) : lim15; ep.ist = { habit:habit, from:wcAdd(E, 1) }; }
+      else E = lastBl;
+    }
+    ep.E = E; ep.short = short; ep.over = over; ep.last = lastBl;
+    ep.parts.forEach(function(x){ var xe = wcEndKey(x); for(var kk = x.a; kk <= xe; kk = wcAdd(kk, 1)) day[kk] = (E && kk >= S && kk <= E) ? "h" : "i"; });
+    if(E){ for(k = S; k <= E; k = wcAdd(k, 1)) if(!day[k]) day[k] = "h"; lastEnd = E; if(!over && !early) habit = wcDiff(S, E) + 1; }
+    eps.push(ep); i = j;
+  }
+  WC_CL = { sig:sig, day:day, eps:eps, habit:habit };
+  return WC_CL;
+}
+function wcEps(kind){ var e = wcClassify().eps; return kind ? e.filter(function(x){ return x.k === kind; }) : e; }
+function wcHaydEps(){ return wcEps("h").filter(function(e){ return e.E && !e.early; }); }
+function wcLastEp(){ var e = wcEps(); return e.length ? e[e.length - 1] : null; }
+function wcNowEp(){ var e = wcLastEp(); return e && e.open ? e : null; }
+function wcHabit(){ return wcClassify().habit; }
+/* после родов, пока не было признанного хайда, - цикл восстанавливается */
+function wcPostRecover(){ var l = wcLastEp(); return !!(l && l.k === "n" && !l.open); }
+
+/* ---------- прогноз ---------- */
 function wcCycles(){
-  var h = wcPers("h"), out = [];
-  for(var i = 1; i < h.length; i++){ var n = wcDiff(h[i-1].a, h[i].a); if(n >= 15 && n <= 90) out.push(n); }
+  var h = wcHaydEps(), out = [];
+  for(var i = 1; i < h.length; i++){ var n = wcDiff(h[i-1].S, h[i].S); if(n >= 15 && n <= 90) out.push(n); }
   return out;
 }
-function wcAvgCyc(){
-  var c = wcCycles().slice(-6);
-  if(!c.length) return wcData().cyc || 28;
-  var s = 0; c.forEach(function(x){ s += x; }); return Math.round(s / c.length);
-}
+function wcAvgCyc(){ var c = wcCycles().slice(-6); if(!c.length) return wcData().cyc || 28; var s = 0; c.forEach(function(x){ s += x; }); return Math.round(s / c.length); }
 function wcAvgLen(){
-  var l = wcPers("h").filter(function(p){ return p.b; }).map(function(p){ return wcDiff(p.a, p.b) + 1; })
-    .filter(function(n){ return n >= 1 && n <= 15; }).slice(-6);
+  var l = wcHaydEps().filter(function(e){ return !e.open && !e.over; }).map(function(e){ return wcDiff(e.S, e.E) + 1; }).slice(-6);
   if(!l.length) return wcData().len || 5;
   var s = 0; l.forEach(function(x){ s += x; }); return Math.round(s / l.length);
 }
-/* обычная продолжительность - «привычка» (ада), нужна для истихады */
-function wcHabit(){ var l = wcPers("h").filter(function(p){ return p.b && wcDiff(p.a, p.b) < 15; }); return l.length ? wcDiff(l[l.length-1].a, l[l.length-1].b) + 1 : 0; }
-function wcLastH(){ var h = wcPers("h"); return h.length ? h[h.length - 1] : null; }
+function wcLastH(){ var h = wcHaydEps(); return h.length ? h[h.length - 1] : null; }
 function wcNext(){
+  var w = wcData(); if(w.goal === "preg" || wcPostRecover()) return null;
   var l = wcLastH(); if(!l) return null;
-  var c = wcAvgCyc(), nx = wcAdd(l.a, c), today = todayKey();
-  if(wcOpen()) return { key: nx, late: 0, inDays: wcDiff(today, nx), open: 1 };
-  return { key: nx, late: nx < today ? wcDiff(nx, today) : 0, inDays: nx >= today ? wcDiff(today, nx) : 0 };
+  var c = wcAvgCyc(), nx = wcAdd(l.S, c), today = todayKey();
+  if(l.open) return { key:nx, late:0, inDays:wcDiff(today, nx), open:1 };
+  return { key:nx, late: nx < today ? wcDiff(nx, today) : 0, inDays: nx >= today ? wcDiff(today, nx) : 0 };
 }
 function wcSpread(){ var c = wcCycles().slice(-6); if(c.length < 3) return 0; return Math.max.apply(null, c) - Math.min.apply(null, c); }
 /* состояние дня для календаря */
 function wcDay(key){
-  var p = wcPers(), today = todayKey();
-  for(var i = 0; i < p.length; i++){
-    var x = p[i], e = wcEndKey(x);
-    if(key >= x.a && key <= e){
-      if(x.k === "n") return wcDiff(x.a, key) >= 60 ? "i" : "n";
-      if(wcDiff(x.a, key) >= 15) return "i";
-      var prev = i > 0 ? p[i-1] : null;
-      if(prev && prev.k === "h" && x.k === "h" && wcDiff(prev.a, x.a) < 15) return wcDiff(prev.a, key) < 15 ? "h" : "i";   /* ас-сахб */
-      if(prev && prev.b && wcDiff(prev.b, key) <= 15) return "i";
-      var dur = wcDurH(x); if(dur !== null && dur < 24) return "i";
-      return "h";
-    }
-  }
-  var w = wcData(), op = wcOpen();
-  /* идут сейчас: оставшиеся обычные дни - как ожидаемые */
-  if(op && op.k === "h" && key > today && key < wcAdd(op.a, Math.max(wcAvgLen(), 1)) && w.goal !== "preg") return "pred";
-  if(key <= today) return wcSahbGap(key) ? "h" : "";
-  if(w.goal === "preg" || w.goal === "post") return "";
+  var cl = wcClassify(), st = cl.day[key], today = todayKey();
+  if(st) return st;
+  var w = wcData();
+  if(key < today || w.goal === "preg") return "";
+  var l = wcLastH();
+  if(l && l.open && w.goal !== "post"){ if(key > today && key <= wcAdd(l.S, Math.max(wcAvgLen(), 1) - 1)) return "pred"; }
   var nx = wcNext();
   if(nx){
     var c = wcAvgCyc(), len = wcAvgLen();
     for(var k = 0; k < 3; k++){
-      var st = wcAdd(nx.key, c * k);
       if(nx.late && k === 0) continue;
-      if(key >= st && key < wcAdd(st, len) && key > today) return "pred";
+      var stt = wcAdd(nx.key, c * k);
+      if(key >= stt && key < wcAdd(stt, len) && key > today) return "pred";
       if(w.fert || w.goal === "plan"){
-        var ov = wcAdd(st, -14);
-        if(key === ov && key > today) return "ov";
-        if(key >= wcAdd(ov, -5) && key <= wcAdd(ov, 1) && key > today) return "fert";
+        var ov = wcAdd(stt, -14);
+        if(key === ov) return "ov";
+        if(key >= wcAdd(ov, -5) && key <= wcAdd(ov, 1)) return "fert";
       }
     }
   }
   return "";
 }
-/* кровь хайда или нифаса сейчас - для паузы в трекере намаза */
-function wcBlood(key){ var s = wcDay(key || todayKey()); return s === "h" || s === "n"; }
+function wcBlood(key){ var s = wcClassify().day[key || todayKey()]; return s === "h" || s === "n"; }
 function wcPauseNow(){
   var w = S.wcal; if(!w || !w.on) return null;
-  var o = wcOpen(); if(!o || !wcBlood()) return null;
-  return { from: o.a, to: "", wc: 1 };
+  var e = wcNowEp(); if(!e || !wcBlood()) return null;
+  return { from: e.S, to: "", wc: 1 };
 }
 function wcMute(){ return !!(S.wcal && S.wcal.mute && wcPauseNow()); }
 
 /* ---------- намаз в начале и в конце крови ---------- */
-/* минут: время, достаточное для фарда. Порог низкий - лучше предложить лишний намаз, чем пропустить обязательный (выверка 16.10). */
-var WC_PRAY_MIN = 3;
-/* граница зухра и асра - по шафиитскому асру, даже если в настройках выбран ханафитский */
-function wcTimes(key){ var c = currentCity(); return prayerTimesMy(wcD(key), c.lat, c.lng, c.tz, S.method, 1); }
-/* в окно какого намаза попадает момент: {k, n, from, to} или null (между восходом и зухром) */
+/* минут: время, достаточное для фарда. Порог низкий - лучше предложить лишний намаз, чем пропустить обязательный. */
+var WC_PRAY_MIN = { fajr:2, dhuhr:3, asr:3, maghrib:3, isha:3 };
+/* граница зухра и асра - по шафиитскому асру, даже если выбран ханафитский; для метода «rt» - напрямую */
+function wcTimes(key){
+  var c = currentCity(), d = wcD(key), tz = S.city === "gps" ? wcTz(key) : c.tz;
+  try{ if(methodNow() === "rt" && typeof prayerTimesRT === "function") return prayerTimesRT(d, c.lat, c.lng, tz, 1); }catch(e){}
+  return prayerTimesMy(d, c.lat, c.lng, tz, S.method, 1);
+}
+/* окно намаза: {k,n,g,from,to}; null - между восходом и зухром; false - времена не посчитались */
 function wcWin(key, h){
   var t = wcTimes(key);
-  if(h < t.fajr){ var y = wcTimes(wcAdd(key, -1)); return {k:"isha", n:"иша", g:"иши", from:y.isha - 24, to:t.fajr, day:wcAdd(key, -1)}; }
-  if(h < t.sunrise) return {k:"fajr", n:"фаджр", g:"фаджра", from:t.fajr, to:t.sunrise, day:key};
+  if([t.fajr, t.sunrise, t.dhuhr, t.asr, t.maghrib, t.isha].some(function(x){ return x === undefined || isNaN(x); })) return false;
+  if(h < t.fajr){
+    var y = wcTimes(wcAdd(key, -1));
+    if(!isNaN(y.isha) && h + 24 < y.isha) return {k:"maghrib", n:"магриб", g:"магриба", from:y.maghrib - 24, to:y.isha - 24};
+    return {k:"isha", n:"иша", g:"иши", from:y.isha - 24, to:t.fajr};
+  }
+  if(h < t.sunrise) return {k:"fajr", n:"фаджр", g:"фаджра", from:t.fajr, to:t.sunrise};
   if(h < t.dhuhr) return null;
-  if(h < t.asr) return {k:"dhuhr", n:"зухр", g:"зухра", from:t.dhuhr, to:t.asr, day:key};
-  if(h < t.maghrib) return {k:"asr", n:"аср", g:"асра", from:t.asr, to:t.maghrib, day:key};
-  if(h < t.isha) return {k:"maghrib", n:"магриб", g:"магриба", from:t.maghrib, to:t.isha, day:key};
-  return {k:"isha", n:"иша", g:"иши", from:t.isha, to:t.fajr + 24, day:key};
+  if(h < t.asr) return {k:"dhuhr", n:"зухр", g:"зухра", from:t.dhuhr, to:t.asr};
+  if(h < t.maghrib) return {k:"asr", n:"аср", g:"асра", from:t.asr, to:t.maghrib};
+  if(h < t.isha) return {k:"maghrib", n:"магриб", g:"магриба", from:t.maghrib, to:t.isha};
+  return {k:"isha", n:"иша", g:"иши", from:t.isha, to:t.fajr + 24};
 }
-function wcStartNote(p){
-  var h = wcHours(p.at); if(h === null) return null;
+function wcStartNote(ep){
+  var p = ep.parts[0]; if(!p || ep.early) return null;
+  var h = wcH(p.a, p.at); if(h === null) return null;
   var w = wcWin(p.a, h); if(!w) return null;
   var passed = (h - w.from) * 60;
-  if(passed < WC_PRAY_MIN) return { k:w.k, need:0, txt:"Кровь пришла в самом начале времени " + w.g + " (" + hhmm(fixHour(w.from)) + "). Времени на намаз не было - восполнять его не нужно." };
+  if(passed < WC_PRAY_MIN[w.k]) return { k:w.k, need:0, txt:"Кровь пришла в самом начале времени " + w.g + " (" + hhmm(fixHour(w.from)) + "). Времени на намаз не было - восполнять его не нужно." };
   return { k:w.k, need:1, txt:"Кровь пришла в " + p.at + ", когда время " + w.g + " уже наступило (с " + hhmm(fixHour(w.from)) + "). Если вы не успели совершить " + w.n + " - его нужно восполнить после очищения." };
 }
-function wcEndNote(p){
-  var h = wcHours(p.bt); if(h === null || !p.b) return null;
+function wcEndNote(ep){
+  var p = ep.parts[ep.parts.length - 1]; if(!p || !p.b) return null;
+  var h = wcH(p.b, p.bt); if(h === null) return null;
   var w = wcWin(p.b, h);
+  if(w === false) return null;
   if(!w) return { list:[], txt:"Кровь прекратилась после восхода солнца и до зухра - в это время обязательного намаза нет. После гусля первым будет зухр." };
   var list = [w.k], txt = "Кровь прекратилась во время " + w.g + " - намаз " + w.n + " обязателен";
   if(w.k === "asr"){ list = ["dhuhr", "asr"]; txt = "Кровь прекратилась во время асра - обязательны аср и зухр этого дня"; }
-  if(w.k === "isha"){ list = ["maghrib", "isha"]; txt = "Кровь прекратилась во время иши - обязательны иша и магриб"; }
-  return { list:list, txt: txt + ". Совершите гусль и сразу эти намазы; если время уже вышло - восполните их." };
+  if(w.k === "isha"){ list = ["maghrib", "isha"]; txt = "Кровь прекратилась во время иши (в том числе после полуночи, до рассвета) - обязательны иша и магриб"; }
+  var night = "";
+  var t = wcTimes(p.b), hj = wcHj(p.b);
+  if(hj && hj.m === 9 && h < t.fajr) night = " Кровь прекратилась ночью - сегодняшний пост обязателен: сделайте намерение сейчас, после прекращения крови. Гусль можно и после рассвета, но до восхода - ради фаджра.";
+  return { list:list, txt: txt + ". Совершите гусль и сразу эти намазы; если время уже вышло - восполните их." + night };
 }
-/* Рамадан: сколько дней поста пришлось на кровь хайда или нифаса */
-function wcRamadan(p){
-  var n = 0, e = wcEndKey(p);
-  for(var k = p.a; k <= e; k = wcAdd(k, 1)){
-    var hj = hijriOf(wcD(k)); if(!hj || hj.m !== 9) continue;
-    var s = wcDay(k); if(s !== "h" && s !== "n") continue;
+/* Рамадан: сколько дней поста пришлось на кровь хайда или нифаса (и на короткую кровь, если не постилась) */
+function wcRamadan(ep){
+  var cl = wcClassify(), n = 0, first = ep.parts[0], last = ep.parts[ep.parts.length - 1], a = first.a, e = ep.last || wcEndKey(last);
+  if(wcDiff(a, e) > 75) e = wcAdd(a, 75);
+  for(var k = a; k <= e; k = wcAdd(k, 1)){
+    var hj = wcHj(k); if(!hj || hj.m !== 9) continue;
+    var s = cl.day[k], inBlood = ep.parts.some(function(x){ return k >= x.a && k <= wcEndKey(x); });
+    if(ep.short ? !inBlood : !(s === "h" || s === "n")) continue;
     var t = wcTimes(k);
-    if(k === p.a && wcHours(p.at) !== null && wcHours(p.at) >= t.maghrib) continue;   /* пришла после заката - пост этого дня цел */
-    if(p.b && k === p.b && wcHours(p.bt) !== null && wcHours(p.bt) < t.fajr) continue; /* закончилась до рассвета - день можно поститься */
+    if(k === first.a && wcH(k, first.at) !== null && wcH(k, first.at) >= t.maghrib) continue;   /* пришла после заката - пост этого дня цел */
+    if(last.b && k === last.b && wcH(k, last.bt) !== null && wcH(k, last.bt) < t.fajr) continue; /* закончилась до рассвета - день можно поститься */
     n++;
   }
-  /* ас-сахб: дни чистоты между кровями тоже хайд - их посты тоже в восполнение */
-  var hs = wcPers("h"), ix = -1; for(var j = 0; j < hs.length; j++) if(hs[j].a === p.a) ix = j;
-  if(ix > 0 && hs[ix-1].b && wcDiff(hs[ix-1].a, p.a) < 15)
-    for(var g = wcAdd(hs[ix-1].b, 1); g < p.a; g = wcAdd(g, 1)){ var hg = hijriOf(wcD(g)); if(hg && hg.m === 9) n++; }
   return n;
 }
+function wcHjOk(){ return !!wcHj(todayKey()); }
 
-/* ---------- исламские подсказки: что значит сегодняшний день ---------- */
+/* ---------- исламские подсказки на сегодня ---------- */
+function wcStatRows(kind){
+  return '<div class="wc-stat">'+[["Намаз", "не совершается и не восполняется"], ["Пост", "не совершается, потом восполняется"], ["Коран", "не читать с намерением чтения; глазами про себя и азкары - можно"],
+    ["Мусхаф, мечеть, близость", "после гусля"], ["Зикр, дуа, салават", "в любое время"]].map(function(r){ return '<div><b>'+r[0]+'</b><span>'+r[1]+'</span></div>'; }).join("")+'</div>';
+}
 function wcIslam(){
-  var w = wcData(), o = wcOpen(), out = [], today = todayKey();
-  if(o){
-    var d = wcDiff(o.a, today) + 1, st = wcDay(today);
+  var w = wcData(), ep = wcNowEp(), out = [], today = todayKey(), cl = wcClassify();
+  if(ep){
+    var st = cl.day[today], d = wcDiff(ep.S, today) + 1, preg = w.goal === "preg";
+    if(preg) out.push({ic:"!", t:"Сначала - к врачу", p:"Кровь при беременности - повод сразу позвонить врачу или в 103. Хайдом она может быть, если длится не меньше суток и не больше 15 и до неё было 15 дней чистоты; иначе это истихада, и намаз не оставляют. Спросите у знающего.", act:'<button class="btn sec sm" data-wcred="1">Когда к врачу сразу</button>'});
     if(st === "h" || st === "n"){
-      out.push({ic:"☾", t:(o.k === "n" ? "Нифас" : "Хайд") + ", " + d + "-й день",
-        p:"Намаз и пост сейчас не совершаются, намаз потом не восполняется, пост - восполняется. Коран вслух и наизусть, мусхаф, мечеть и близость - после очищения. Зикр, дуа, салават и слушание Корана - в любое время."});
-      var sn = wcStartNote(o);
-      if(sn && !w.qadaPrayer[o.a + ":s"]) out.push({ic:"◷", t:"Намаз, который пришёлся на начало", p:sn.txt, act: sn.need ? '<button class="btn sec sm" data-wcqp="'+esc(o.a)+':s:'+sn.k+'">Добавить '+esc(qadaName(sn.k).toLowerCase())+' в «Восполнение»</button>' : ''});
-      if(o.k === "h" && d >= 13) out.push({ic:"!", t:"Скоро 15 суток", p:"Наибольший срок хайда по шафиитскому мазхабу - 15 суток. Если кровь пойдёт дольше, это уже истихада: намаз и пост возвращаются, а сколько дней считать хайдом, зависит от вашей привычки. Спросите у знающего."});
-      if(o.k === "n" && d >= 55) out.push({ic:"!", t:"Скоро 60 дней", p:"Наибольший срок нифаса - 60 дней. Кровь после него - уже не нифас: спросите у знающего, как быть."});
+      out.push({ic:"☾", t:(ep.k === "n" ? "Нифас" : "Хайд") + ", " + d + "-й день", rows:1});
+      var sn = ep.k === "h" ? wcStartNote(ep) : null;
+      if(sn && !w.qadaPrayer[ep.S + ":s"]) out.push({ic:"◷", t:"Намаз, который пришёлся на начало", p:sn.txt, act: sn.need ? '<button class="btn sec sm" data-wcqp="'+esc(ep.S)+':s:'+sn.k+'">Добавить '+esc(qadaName(sn.k).toLowerCase())+' в «Восполнение»</button>' : ''});
+      if(ep.k === "h" && d === 1) out.push({ic:"i", t:"Первый день", p:"Если кровь прекратится, не набрав суток, это не хайд: тогда пропущенные намазы восполняют."});
+      var hb = wcHabit();
+      if(ep.k === "h" && hb && d >= hb - 1 && d < 13) out.push({ic:"i", t:"Обычные дни на исходе", p:"Проверяйте вату до конца времени каждого намаза: как только она чистая, без красного, бурого и желтоватого, - гусль и намаз этого времени."});
+      if(ep.k === "h" && d >= 13) out.push({ic:"!", t:"Скоро 15 суток", p:"Наибольший срок хайда - 15 суток. Если кровь пойдёт дольше, это истихада: хайдом считаются ваши обычные дни, остальное - намаз и пост обязательны. Календарь посчитает сам."});
+      if(ep.k === "n" && d >= 41 && d < 55) out.push({ic:"i", t:"Больше 40 дней", p:"Обычный срок нифаса - до 40 дней, наибольший - 60. Выделения после родов обычно идут 4-6 недель; кровь дольше 6 недель - к гинекологу."});
+      if(ep.k === "n" && d >= 55) out.push({ic:"!", t:"Скоро 60 дней", p:"Наибольший срок нифаса - 60 дней. Кровь после него - не нифас: спросите у знающего и покажитесь врачу."});
+      var hj = wcHj(today);
+      if(hj && hj.m === 9) out.push({ic:"☾", t:"Рамадан в эти дни", p:"Награда остаётся близкой: накормите постящегося - «тому, кто накормит постящегося, будет такая же награда, как ему» (ат-Тирмизи 807, хасан сахих). В последние десять ночей - дуа: «Аллахумма иннака 'афуввун тухиббуль-'афва фа'фу 'анни» (ат-Тирмизи 3513, хасан сахих)."});
     } else if(st === "i"){
-      out.push({ic:"!", t:"Похоже на истихаду", p:(wcDiff(o.a, today) >= 15 ? "Кровь идёт больше 15 суток. " : "С прошлых месячных не прошло 15 дней чистоты. ") +
-        "По шафиитскому мазхабу в дни истихады намаз и пост обязательны: омовение - на каждый обязательный намаз после наступления его времени, место перевязать. Сколько дней считать хайдом, решается по вашей привычке и цвету крови - уточните у знающего."});
+      if(ep.over && ep.ist){
+        var hb2 = ep.ist.habit;
+        out.push({ic:"!", t:"Кровь перешла 15 суток - истихада",
+          p: hb2 ? "По общему правилу шафиитского мазхаба хайд - ваши обычные " + plural(hb2, "день", "дня", "дней") + " (до " + wcFmt(wcAdd(ep.ist.from, -1)) + "). Совершите гусль один раз. Намазы с " + wcFmt(ep.ist.from) + " до сегодня восполните. Дальше - омовение после наступления времени каждого фарда и сразу намаз; одно омовение - один фард и любые нафиль. Проверьте у знающего и покажитесь врачу."
+            : "Кровь идёт дольше 15 суток, а обычной продолжительности в календаре пока нет. Как считать хайд и истихаду в вашем случае, обязательно спросите у знающего; покажитесь врачу.",
+          act: hb2 && !w.qadaPrayer[ep.S + ":i"] ? '<button class="btn sec sm" data-wcqi="'+esc(ep.S)+'">Добавить '+plural(Math.max(0, wcDiff(ep.ist.from, today)), "день", "дня", "дней")+' намазов в «Восполнение»</button>' : ''});
+      } else if(ep.early){
+        out.push({ic:"!", t:"Пока это истихада", p:"С прошлых месячных не прошло 15 дней чистоты. До " + wcFmt(ep.early) + " эта кровь - истихада: намаз и пост обязательны, омовение - после наступления времени каждого фарда, место перевязать. Если кровь продолжится после " + wcFmt(wcAdd(ep.early, -1)) + ", с этого дня может начаться хайд. Уточните у знающего."});
+      } else if(ep.k === "n"){
+        out.push({ic:"!", t:"Больше 60 дней", p:"Кровь дольше 60 дней - наибольшего срока нифаса. Спросите у знающего и покажитесь врачу."});
+      }
     }
   } else {
-    var l = wcPers().filter(function(p){ return p.b; }).pop();
-    if(l && wcDiff(l.b, today) <= 3 && !w.gusl[l.a]){
-      var en = wcEndNote(l);
-      out.push({ic:"◌", t:"Очищение: гусль", p:"Месячные закончились " + wcFmt(l.b) + ". Совершите полное омовение - гусль: намерение и омыть водой всё тело, включая волосы и кожу под ними. Конец - когда вата чистая, без красного, бурого и желтоватого. Пока гусль не сделан, всё запретное остаётся запретным, кроме поста. После гусля возвращаются намаз и чтение Корана." + (en ? " " + en.txt : ""),
-        act:'<button class="btn sm" data-wcgusl="'+esc(l.a)+'">Гусль совершён</button>' + (en && en.list.length && !w.qadaPrayer[l.a + ":e"] ? ' <button class="btn sec sm" data-wcqp="'+esc(l.a)+':e:'+en.list.join(",")+'">Не успела - в «Восполнение»</button>' : '')});
+    var l = wcLastEp();
+    if(l && l.last && wcDiff(l.last, today) <= 3 && !w.gusl[l.S]){
+      if(l.short){
+        out.push({ic:"!", t:"Меньше суток - не хайд", p:"Кровь шла меньше суток - пока это не хайд. Гусль не нужен: смойте кровь, сделайте омовение и молитесь. Если в течение 15 суток от начала кровь вернётся и в сумме наберёт сутки - всё станет хайдом. Если нет - намазы этих часов восполните, а день Рамадана, в который вы не постились, тоже в долг.",
+          act: !w.qadaPrayer[l.S + ":x"] ? '<button class="btn sec sm" data-wcgusl="'+esc(l.S)+'">Понятно</button>' : ''});
+      } else if(l.E){
+        var en = wcEndNote(l);
+        out.push({ic:"◌", t:"Очищение: гусль", p:(l.k === "n" ? "Нифас закончился " : "Месячные закончились ") + wcFmt(l.last) + ". Конец - когда вата чистая, без красного, бурого и желтоватого. Совершите гусль: намерение и омыть водой всё тело, включая корни волос. Пока гусль не сделан, всё запретное остаётся запретным, кроме поста." + (en ? " " + en.txt : ""),
+          act:'<button class="btn sm" data-wcgusl="'+esc(l.S)+'">Гусль совершён</button>' + (en && en.list.length && !w.qadaPrayer[l.S + ":e"] ? ' <button class="btn sec sm" data-wcqp="'+esc(l.S)+':e:'+en.list.join(",")+'">Не успела - в «Восполнение»</button>' : '')});
+      }
     }
-    if(l){ var dur = wcDurH(l); if(dur !== null && dur < 24 && l.k === "h") out.push({ic:"!", t:"Меньше суток - не хайд", p:"Кровь шла меньше 24 часов: по шафиитскому мазхабу это не хайд. Намазы этих часов нужно восполнить, а пост этого дня цел, если не было других причин."}); }
   }
-  /* Рамадан */
-  wcPers().forEach(function(p){
-    var n = wcRamadan(p), done = w.qadaAdded[p.a] || 0;
-    if(n > done) out.push({ic:"☪", t:"Пост Рамадана в долг", p:"На " + (p.k === "n" ? "нифас" : "месячные") + " с " + wcFmt(p.a) + " пришлось " + plural(n, "день", "дня", "дней") + " Рамадана. Эти посты восполняются до следующего Рамадана.",
-      act:'<button class="btn sm" data-wcqf="'+esc(p.a)+'">Добавить '+plural(n - done, "день", "дня", "дней")+' в «Восполнение»</button>'});
+  /* Рамадан: посты в долг за последний год */
+  if(wcHjOk()) wcEps().forEach(function(e){
+    if(wcDiff(e.S, today) > 400) return;
+    var n = wcRamadan(e), done = w.qadaAdded[e.S] || 0;
+    if(n > done) out.push({ic:"☾", t:"Пост Рамадана в долг", p:"На " + (e.k === "n" ? "нифас" : e.short ? "кровь" : "месячные") + " с " + wcFmt(e.S) + " пришлось " + plural(n, "день", "дня", "дней") + " Рамадана. Восполните до следующего Рамадана; если отложить без причины дальше - по шафиитам добавляется мудд еды за день, уточните у имама.",
+      act:'<button class="btn sm" data-wcqf="'+esc(e.S)+'">Добавить '+plural(n - done, "день", "дня", "дней")+' в «Восполнение»</button> <button class="btn ghost sm" data-wcqfx="'+esc(e.S)+'">Уже учтено</button>'});
   });
   return out;
 }
 
-/* ---------- кольцо цикла ---------- */
-function wcRing(frac, inner, sub){
+/* ---------- кольцо ---------- */
+function wcRing(frac, inner, sub, img){
   var r = 54, c = 2 * Math.PI * r, f = Math.max(0, Math.min(1, frac || 0));
   return '<div class="wc-ring"><svg viewBox="0 0 128 128" aria-hidden="true"><circle cx="64" cy="64" r="'+r+'" class="wc-rb"/>'+
     '<circle cx="64" cy="64" r="'+r+'" class="wc-rf" stroke-dasharray="'+(c * f).toFixed(1)+' '+c.toFixed(1)+'" transform="rotate(-90 64 64)"/></svg>'+
-    '<div class="wc-rt"><b>'+inner+'</b><span>'+sub+'</span></div></div>';
+    '<div class="wc-rt">'+(img || '')+'<b>'+inner+'</b><span>'+sub+'</span></div></div>';
 }
 
 /* ---------- месяц ---------- */
-function wcMonth(){
-  var off = V.wcM || 0, base = new Date(); base.setDate(1); base.setMonth(base.getMonth() + off);
-  var y = base.getFullYear(), m = base.getMonth(), first = new Date(y, m, 1), days = new Date(y, m + 1, 0).getDate();
-  var lead = (first.getDay() + 6) % 7, today = todayKey(), w = wcData(), cells = [];
-  for(var i = 0; i < lead; i++) cells.push('<span class="wc-c e"></span>');
-  for(var d = 1; d <= days; d++){
-    var key = y + "-" + pad(m + 1) + "-" + pad(d), st = wcDay(key), lg = w.log[key];
-    var hj = hijriOf(new Date(y, m, d, 12));
-    cells.push('<button class="wc-c '+st+(key === today ? ' t' : '')+(hj && hj.m === 9 ? ' rm' : '')+'" data-wcday="'+key+'" aria-label="'+esc(wcFmt(key))+(st ? ', '+esc(WC_ST[st]) : '')+'">'+d+
-      (lg && (lg.sy && lg.sy.length || lg.nt) ? '<i></i>' : '')+'</button>');
-  }
-  var title = base.toLocaleDateString("ru-RU", {month:"long", year:"numeric"});
-  var leg = ["h","pred","i","n"].concat(w.fert || w.goal === "plan" ? ["fert","ov"] : []);
-  return '<section class="card wc-cal">'+
-    '<div class="wc-mh"><button class="btn ghost sm" data-wcmon="-1" aria-label="Прошлый месяц">‹</button><b>'+esc(title)+'</b>'+
-      '<button class="btn ghost sm" data-wcmon="1" aria-label="Следующий месяц">›</button></div>'+
-    '<div class="wc-g wc-wd">'+["пн","вт","ср","чт","пт","сб","вс"].map(function(x){ return '<span>'+x+'</span>'; }).join("")+'</div>'+
-    '<div class="wc-g">'+cells.join("")+'</div>'+
-    '<div class="wc-leg">'+leg.map(function(k){ return '<span><i class="'+k+'"></i>'+WC_ST[k]+'</span>'; }).join("")+'<span><i class="rmk"></i>Рамадан</span></div>'+
-    '<div class="wc-terms">'+
-      '<p><b>Хайд</b> - месячные. По шафиитскому мазхабу - кровь не меньше суток и не дольше 15 суток, после не менее 15 дней чистоты. В эти дни не совершают намаз и не постятся.</p>'+
-      '<p><b>Истихада</b> - кровь вне хайда: дольше 15 суток, меньше суток или раньше, чем прошло 15 дней чистоты. Это как недомогание: намаз и пост обязательны, омовение - перед каждым обязательным намазом.</p>'+
-      '<p><b>Нифас</b> - кровь после родов. Обычно до 40 дней, наибольший срок - 60 дней. Как и в хайд, намаз и пост не совершаются; кровь закончилась раньше - гусль и снова намаз.</p>'+
-      (w.fert || w.goal === "plan" ? '<p><b>Дни зачатия</b> - дни, когда беременность наиболее вероятна; <b>овуляция</b> - выход яйцеклетки, примерно за 14 дней до следующих месячных. Это расчёт, а не точное знание.</p>' : "")+
-    '</div>'+
-    '<p class="note" style="margin:8px 0 0">Нажмите на день, чтобы отметить самочувствие или поправить даты.</p></section>';
-}
 var WC_ST = { h:"хайд", pred:"ожидаются", i:"истихада", n:"нифас", fert:"дни зачатия", ov:"овуляция" };
 var WC_SY = [["pain","Боль внизу живота"],["head","Голова"],["back","Поясница"],["breast","Грудь"],["tired","Усталость"],["acne","Кожа"],["bloat","Вздутие"],["nausea","Тошнота"],["sleep","Плохой сон"],["crave","Тянет на сладкое"]];
 var WC_MD = [["calm","Спокойно"],["happy","Радостно"],["sad","Грустно"],["anx","Тревожно"],["irr","Раздражение"]];
+var WC_COL = [["r","Красный"],["d","Тёмный, почти чёрный"],["b","Бурый"],["y","Желтоватый"]];
+function wcMonth(){
+  var off = V.wcM || 0, base = new Date(); base.setDate(1); base.setMonth(base.getMonth() + off);
+  var y = base.getFullYear(), m = base.getMonth(), first = new Date(y, m, 1), days = new Date(y, m + 1, 0).getDate();
+  var lead = (first.getDay() + 6) % 7, today = todayKey(), w = wcData(), cells = [], seen = {}, rm = false;
+  for(var i = 0; i < lead; i++) cells.push('<span class="wc-c e"></span>');
+  for(var d = 1; d <= days; d++){
+    var key = y + "-" + pad(m + 1) + "-" + pad(d), st = wcDay(key), lg = w.log[key], hj = wcHj(key);
+    if(st) seen[st] = 1; if(hj && hj.m === 9) rm = true;
+    cells.push('<button class="wc-c '+st+(key === today ? ' t' : '')+(hj && hj.m === 9 ? ' rm' : '')+'" data-wcday="'+key+'" aria-label="'+esc(wcFmt(key))+(st ? ', '+esc(WC_ST[st]) : '')+'">'+d+
+      (lg && (lg.sy && lg.sy.length || lg.nt || lg.fl) ? '<i></i>' : '')+'</button>');
+  }
+  var title = base.toLocaleDateString("ru-RU", {month:"long", year:"numeric"}).replace(/\s*г\.?$/, "");
+  var leg = ["h","pred","i","n","fert","ov"].filter(function(k){ return seen[k] || k === "h" || k === "pred"; });
+  return '<section class="card wc-cal">'+
+    '<div class="wc-mh"><button class="btn ghost sm wc-nav" data-wcmon="-1" aria-label="Прошлый месяц">‹</button><b>'+esc(title)+'</b>'+
+      '<button class="btn ghost sm wc-nav" data-wcmon="1" aria-label="Следующий месяц">›</button></div>'+
+    (off ? '<button class="wc-lnk2" data-wcmon="0">к сегодняшнему дню</button>' : '')+
+    '<div class="wc-g wc-wd">'+["пн","вт","ср","чт","пт","сб","вс"].map(function(x){ return '<span>'+x+'</span>'; }).join("")+'</div>'+
+    '<div class="wc-g">'+cells.join("")+'</div>'+
+    '<div class="wc-leg">'+leg.map(function(k){ return '<span><i class="'+k+'"></i>'+WC_ST[k]+'</span>'; }).join("")+(rm ? '<span><i class="rmk"></i>Рамадан</span>' : '')+'</div>'+
+    '<details class="wc-terms"><summary>Что значат цвета и слова</summary>'+
+      '<p><b>Хайд</b> - месячные. По шафиитскому мазхабу - кровь не меньше суток и не дольше 15 суток, если до неё было не менее 15 дней чистоты. В эти дни не совершают намаз и не постятся.</p>'+
+      '<p><b>Истихада</b> - кровь вне хайда: часть крови сверх хайда, если она шла дольше 15 суток, кровь меньше суток или раньше, чем прошло 15 дней чистоты. Намаз и пост обязательны; омовение - после наступления времени каждого обязательного намаза.</p>'+
+      '<p><b>Нифас</b> - кровь после родов. Обычно до 40 дней, наибольший срок - 60. Как и в хайд, намаз и пост не совершаются; кровь закончилась раньше - гусль и снова намаз.</p>'+
+      '<p><b>Дни зачатия</b> - дни, когда беременность наиболее вероятна; <b>овуляция</b> - выход яйцеклетки, примерно за 14 дней до следующих месячных. Это расчёт, а не точное знание.</p>'+
+    '</details>'+
+    (!wcHjOk() ? '<p class="note" style="margin:8px 0 0">Этот браузер не знает исламский календарь - Рамадан не определился. Посты в долг отметьте в «Восполнении» вручную.</p>' : '')+
+    '<p class="note" style="margin:8px 0 0">Нажмите на день, чтобы отметить самочувствие или поправить даты.</p></section>';
+}
 
-/* ---------- экран ---------- */
+/* ---------- экран цикла ---------- */
 function viewWcalRoute(){ return wcLocked() ? viewWcalLock() : viewWcal(); }
 function viewWcal(){
   var w = wcData(), h = ['<div class="stack">'];
   if(V.p === "preg" || (V.p !== "cycle" && w.goal === "preg")) return viewWcalPreg();
   if(!w.on) return viewWcalStart();
-  var o = wcOpen(), today = todayKey(), nx = wcNext(), c = wcAvgCyc();
-  /* герой */
-  var inner, sub, frac;
-  if(o && wcBlood()){ var dd = wcDiff(o.a, today) + 1; inner = dd + '<small>-й день</small>'; sub = o.k === "n" ? "нифас" : "месячные"; frac = dd / (o.k === "n" ? 40 : Math.max(wcAvgLen(), dd)); }
-  else if(wcLastH() && !o){ var cd = wcDiff(wcLastH().a, today) + 1; inner = cd + '<small>-й день</small>'; sub = "цикла"; frac = cd / c; }
-  else { inner = "-"; sub = "отметьте месячные"; frac = 0; }
-  var line = o ? (wcBlood() ? 'Началось ' + wcFmt(o.a) : 'Кровь дольше срока - см. ниже')
-    : nx ? (nx.late ? 'Задержка ' + plural(nx.late, "день", "дня", "дней") : (nx.inDays ? 'Следующие ≈ ' + wcFmt(nx.key) + ' · через ' + plural(nx.inDays, "день", "дня", "дней") : 'Следующие ожидаются сегодня'))
-    : 'Отметьте первый день последних месячных - и календарь начнёт считать';
+  var ep = wcNowEp(), today = todayKey(), nx = wcNext(), c = wcAvgCyc(), cl = wcClassify(), stToday = cl.day[today];
+  var inner, sub, frac, line, ask = "";
+  if(ep && (stToday === "h" || stToday === "n")){
+    var dd = wcDiff(ep.S, today) + 1;
+    inner = dd + '<small>-й день</small>'; sub = ep.k === "n" ? "нифас" : "месячные"; frac = dd / (ep.k === "n" ? 60 : 15);
+    line = ep.k === "n" ? 'После родов ' + wcFmt(ep.birth) + ' · обычно до 40 дней' : 'Начались ' + wcFmt(ep.S);
+    var al = wcAvgLen();
+    if(ep.k === "h" && wcHabit() && dd > al + 1 && V.wcAsk !== today)
+      ask = '<div class="wc-ask"><b>Ещё идут?</b><span>Обычно у вас '+plural(al, "день", "дня", "дней")+'. Если кровь прекратилась, отметьте - иначе календарь считает эти дни хайдом.</span>'+
+        '<div><button class="btn sm" data-wcaskok="1">Да, идут</button><button class="btn sec sm" data-wcend="1">Закончились</button></div></div>';
+  } else if(ep && stToday === "i"){ inner = "!"; sub = "истихада"; frac = 1; line = "Кровь вне срока хайда - см. ниже"; }
+  else if(wcPostRecover()){ var bd = wcDiff(wcLastEp().birth, today) + 1; inner = bd + '<small>-й день</small>'; sub = "после родов"; frac = Math.min(1, bd / 60); line = "Цикл восстанавливается после родов. Придут месячные - отметьте."; }
+  else if(wcLastH()){ var cd = wcDiff(wcLastH().S, today) + 1; inner = cd + '<small>-й день</small>'; sub = "цикла"; frac = cd / c;
+    line = nx ? (nx.late ? 'Задержка ' + plural(nx.late, "день", "дня", "дней") : (nx.inDays ? 'Следующие ≈ ' + wcFmt(nx.key) + ' · через ' + plural(nx.inDays, "день", "дня", "дней") : 'Следующие ожидаются сегодня')) : ''; }
+  else { inner = "-"; sub = "отметьте месячные"; frac = 0; line = 'Отметьте первый день последних месячных - и календарь начнёт считать'; }
   h.push('<section class="hx wc-hero">'+
-    '<div class="eyebrow">'+(w.goal === "post" ? "После родов" : "Женский календарь")+'</div>'+
+    '<div class="eyebrow">'+(w.goal === "post" || wcPostRecover() ? "После родов" : "Календарь цикла")+'</div>'+
     wcRing(frac, inner, sub)+
     '<div class="wc-line">'+line+'</div>'+
     (nx && !nx.late && wcSpread() > 7 ? '<div class="hx-sub" style="text-align:center">Цикл неровный - прогноз примерный</div>' : '')+
-    '<div class="wc-acts">'+(o ? '<button class="btn" data-wcend="1">Закончились</button>' : '<button class="btn" data-wcstart="1">'+(w.goal === "post" ? 'Пришла кровь' : 'Начались месячные')+'</button>')+
+    ask+
+    '<div class="wc-acts">'+(ep ? '<button class="btn" data-wcend="1">Закончились</button>' : '<button class="btn" data-wcstart="1">'+(wcPostRecover() || w.goal === "post" ? 'Пришла кровь' : 'Начались месячные')+'</button>')+
       '<button class="btn sec" data-wcday="'+today+'">Как я сегодня</button></div>'+
-    (nx && nx.late >= 7 && w.goal !== "post" ? '<div class="hx-sub" style="margin-top:10px;text-align:center">Если возможна беременность - <button class="wc-lnk" data-wcgoal="preg">включите режим беременности</button></div>' : '')+
+    (nx && nx.late >= 7 ? '<div class="hx-sub" style="margin-top:10px;text-align:center">Если возможна беременность - <button class="wc-lnk" data-zhen="preg">календарь беременности</button></div>' : '')+
   '</section>');
-  /* ислам */
+  /* сегодня: намаз и пост */
   var isl = wcIslam();
-  if(isl.length) h.push('<section class="card wc-isl"><div class="eyebrow" style="color:var(--accent-ink)">Намаз и пост сегодня</div>'+
-    isl.map(function(x){ return '<div class="wc-ii"><span class="wc-ic">'+x.ic+'</span><div><b>'+esc(x.t)+'</b><p>'+esc(x.p)+'</p>'+(x.act ? '<div class="wc-ia">'+x.act+'</div>' : '')+'</div></div>'; }).join("")+'</section>');
-  else h.push('<section class="card wc-isl"><div class="eyebrow" style="color:var(--accent-ink)">Намаз и пост сегодня</div><div class="wc-ii"><span class="wc-ic">✓</span><div><b>Дни чистоты</b><p>Намаз, пост и чтение Корана - как обычно. Когда придут месячные, нажмите «Начались месячные» и укажите время: календарь подскажет, какой намаз восполнить.</p></div></div></section>');
-  h.push(wcForecast());
+  h.push('<section class="card wc-isl"><div class="eyebrow" style="color:var(--accent-ink)">Намаз и пост сегодня</div>'+
+    (isl.length ? isl.map(function(x){ return '<div class="wc-ii"><span class="wc-ic">'+x.ic+'</span><div><b>'+esc(x.t)+'</b>'+(x.rows ? wcStatRows() : '<p>'+esc(x.p)+'</p>')+(x.act ? '<div class="wc-ia">'+x.act+'</div>' : '')+'</div></div>'; }).join("")
+      : '<div class="wc-ii"><span class="wc-ic">✓</span><div><b>Дни чистоты</b><p>Намаз, пост и чтение Корана - как обычно. Когда придут месячные, нажмите «Начались месячные» и укажите время: календарь подскажет, какой намаз восполнить.</p></div></div>')+'</section>');
   h.push(wcCard());
   h.push(wcMonth());
+  h.push(wcForecast());
+  if(w.goal === "post" || wcPostRecover() || (ep && ep.k === "n")) h.push(wcPostCard());
   h.push(wcStats());
   h.push('<div class="cats">'+
     '<button class="cat" data-guide="women"><div class="ic">☾</div><b>Хайд, нифас, истихада</b><span>правила по шафиитскому мазхабу</span></button>'+
     '<button class="cat" data-open="qada"><div class="ic">↺</div><b>Восполнение</b><span>долг постов и намазов</span></button>'+
-    (w.goal === "post" ? '<button class="cat" data-open="rzv"><div class="ic">❁</div><b>Развитие малыша</b><span>вехи, игры, воспитание</span></button>' : '<button class="cat" data-wcgoal="preg"><div class="ic">❀</div><b>Беременность</b><span>неделя за неделей</span></button>')+
-    '<button class="cat" data-wcset="1"><div class="ic">⚙</div><b>Настройки</b><span>цикл, напоминания, код</span></button></div>');
-  if(wcPers().length) h.push('<div class="cats">'+
-    '<button class="cat" data-wcshare="ask"><div class="ic">✉</div><b>Спросить знающую</b><span>отправить свои даты в сообщении</span></button>'+
-    '<button class="cat" data-wcshare="doc"><div class="ic">✚</div><b>Для врача</b><span>сводка циклов</span></button></div>');
-  if(w.goal === "post") h.push('<button class="cat-wide" data-wcislam="n"><span class="cw-ic">۞</span><span class="cw-t"><b>Нифас по Корану и Сунне</b><span>терпение, награда, что можно в эти дни</span></span><span class="cw-go">›</span></button>');
-  if(WC_HAYD_CARDS.length) h.push('<button class="cat-wide" data-wcislam="h"><span class="cw-ic">۞</span><span class="cw-t"><b>Дни хайда по Корану и Сунне</b><span>что это значит и чем наполнить эти дни</span></span><span class="cw-go">›</span></button>');
-  h.push('<p class="disclaimer">Календарь хранится только на этом телефоне и никуда не отправляется. Прогноз - по вашим прошлым циклам, он не заменяет врача и не годится как средство предохранения. Правила - по шафиитскому мазхабу; в сложных случаях (истихада, неровный цикл, выкидыш) спросите у знающего.</p>');
+    (wcPers().length ? '<button class="cat" data-wcshare="ask"><div class="ic">✉</div><b>Спросить знающую</b><span>свои даты в сообщении</span></button>'+
+      '<button class="cat" data-wcshare="doc"><div class="ic">✚</div><b>Для врача</b><span>сводка циклов</span></button>' : '')+
+    '<button class="cat" data-wcgyn="1"><div class="ic">!</div><b>Когда к гинекологу</b><span>признаки, которые нельзя терпеть</span></button>'+
+    '<button class="cat" data-wcset="1"><div class="ic">⚙</div><b>Настройки</b><span>цикл, код, копия</span></button></div>');
+  if(ep && ep.k === "n" || w.goal === "post") h.push('<button class="cat-wide" data-wcislam="n"><span class="cw-ic">۞</span><span class="cw-t"><b>Нифас по Корану и Сунне</b><span>терпение, награда, что можно в эти дни</span></span><span class="cw-go">›</span></button>');
+  h.push('<button class="cat-wide" data-wcislam="h"><span class="cw-ic">۞</span><span class="cw-t"><b>Дни хайда по Корану и Сунне</b><span>что это значит и чем наполнить эти дни</span></span><span class="cw-go">›</span></button>');
+  h.push('<p class="disclaimer">Отметки хранятся на этом телефоне. Если включены напоминания, сервер уведомлений знает только их время (текст нейтральный); облачная копия, если вы её включили, шифруется вашим кодом. Прогноз - по прошлым циклам: он не заменяет врача и не годится как средство предохранения. Правила - по шафиитскому мазхабу; в сложных случаях спросите у знающего.</p>');
   h.push('</div>');
   return h.join("");
 }
-/* карточка «слово на сегодня» из исламских карточек */
+/* «слово на этот день» - карточка по дню крови (без «последнего дня» в ротации) */
 function wcCard(){
-  var o = wcOpen(); if(!o || !wcBlood()) return "";
-  var list = o.k === "n" ? WC_NIFAS_CARDS : WC_HAYD_CARDS; if(!list || !list.length) return "";
-  var x = list[(wcDiff(o.a, todayKey())) % list.length];
+  var ep = wcNowEp(); if(!ep || !wcBlood()) return "";
+  var list = (ep.k === "n" ? WC_NIFAS_CARDS : WC_HAYD_CARDS).filter(function(x){ return !/^Последний день/.test(x.t); }); if(!list.length) return "";
+  var x = list[(wcDiff(ep.S, todayKey())) % list.length];
   return '<section class="card wc-word"><div class="eyebrow" style="color:var(--accent-ink)">Слово на этот день</div><b>'+esc(x.t)+'</b>'+
-    (x.ar ? '<div class="ar" dir="rtl">'+esc(x.ar)+'</div>' : '')+'<p>'+esc(x.p)+'</p>'+(x.src ? '<span class="wc-src">'+esc(x.src)+'</span>' : '')+'</section>';
+    (x.ar ? '<div class="ar" dir="rtl">'+esc(x.ar)+'</div>' : '')+(x.ru ? '<p><i>«'+esc(x.ru)+'»</i></p>' : '')+'<p>'+esc(x.p)+'</p>'+(x.src ? '<span class="wc-src">'+esc(x.src)+'</span>' : '')+'</section>';
 }
 function wcStats(){
-  var c = wcCycles().slice(-6), w = wcData();
-  if(!wcPers("h").length) return "";
+  var c = wcCycles().slice(-6);
+  if(!wcHaydEps().length) return "";
   var bars = c.map(function(n){ return '<div><i style="height:'+Math.round(Math.min(n, 45) / 45 * 100)+'%"></i><span>'+n+'</span></div>'; }).join("");
+  var odd = c.length >= 3 && (wcSpread() > 9 || c.some(function(n){ return n < 21 || n > 35; }));
   return '<section class="card"><div class="sec-h" style="margin:0 0 8px"><h3>Мой цикл</h3></div>'+
-    '<div class="wc-st"><div><b>'+wcAvgCyc()+'</b><span>дней цикл'+(c.length ? '' : ' (по умолчанию)')+'</span></div><div><b>'+wcAvgLen()+'</b><span>дней месячные</span></div><div><b>'+wcPers("h").length+'</b><span>отмечено</span></div></div>'+
-    (c.length >= 2 ? '<div class="wc-bars">'+bars+'</div><p class="note" style="margin:6px 0 0">Длина последних циклов, дней. Обычная норма - от 21 до 35 дней.</p>' : '<p class="note" style="margin:8px 0 0">После двух-трёх отмеченных циклов прогноз станет точнее.</p>')+
-    (c.length >= 3 && (wcSpread() > 9 || c.some(function(n){ return n < 21 || n > 35; })) ? '<p class="note" style="margin:6px 0 0;color:var(--accent-ink)">Циклы заметно разной длины или выходят за 21-35 дней - стоит показать календарь врачу.</p>' : '')+
+    '<div class="wc-st"><div><b>'+wcAvgCyc()+'</b><span>дней цикл'+(c.length ? '' : ' (по умолчанию)')+'</span></div><div><b>'+wcAvgLen()+'</b><span>дней месячные</span></div><div><b>'+wcHaydEps().length+'</b><span>отмечено</span></div></div>'+
+    (c.length >= 2 ? '<div class="wc-bars">'+bars+'</div><p class="note" style="margin:6px 0 0">Длина последних циклов, дней. Обычно - от 21 до 35 дней; в первые 2-3 года после первых месячных - до 45 дней.</p>' : '<p class="note" style="margin:8px 0 0">После двух-трёх отмеченных циклов прогноз станет точнее.</p>')+
+    (odd ? '<p class="note" style="margin:6px 0 0;color:var(--accent-ink)">Циклы заметно разной длины или выходят за 21-35 дней - стоит показать календарь врачу.</p>' : '')+
   '</section>';
 }
 
 /* ---------- первый вход ---------- */
 function viewWcalStart(){
-  return '<div class="stack"><section class="hx wc-hero"><div class="eyebrow">Женский календарь</div>'+
+  return '<div class="stack"><section class="hx wc-hero"><div class="eyebrow">Календарь цикла</div>'+
     '<div class="wc-ttl">Цикл, беременность и нифас - по Корану и Сунне</div>'+
     '<p class="hx-sub" style="margin-top:8px">Календарь не только считает дни. Он подскажет, какой намаз восполнить, если месячные начались или закончились в его время, напомнит о гусле, посчитает дни поста Рамадана в долг и поставит паузу в трекере намаза, чтобы серия не сгорала.</p>'+
-    '<div class="wc-priv">🔒 Всё хранится только на этом телефоне. Ни мы, ни кто-то другой эти данные не видим.</div></section>'+
+    '<div class="wc-priv">🔒 Отметки хранятся только на этом телефоне.</div></section>'+
     '<div class="sec-h"><h3>Что для вас сейчас главное?</h3></div>'+
     '<div class="wc-goals">'+
       [["cycle","☾","Следить за циклом","месячные, прогноз, намаз и пост"],["plan","✿","Планирую беременность","дни зачатия и овуляция"],["preg","❀","Я беременна","неделя за неделей"],["post","☼","После родов","нифас: 40 и 60 дней"]]
       .map(function(g){ return '<button class="wc-goal" data-wcgoal="'+g[0]+'"><span>'+g[1]+'</span><b>'+g[2]+'</b><i>'+g[3]+'</i></button>'; }).join("")+'</div></div>';
 }
+/* режим меняется только после подтверждения (беременность - когда указан срок, после родов - дата родов) */
 function wcSetGoal(g){
-  var w = wcData(); w.goal = g; wcPersist();
-  if(g === "preg"){ save(); if(!w.preg.lmp) sheetWcPreg(); else { w.on = 1; save(); render(); } return; }
-  if(g === "post"){ save(); sheetWcBirth(); return; }
-  w.on = 1; save();
-  if(!wcPers("h").length) sheetWcStart(true); else render();
+  var w = wcData(); wcPersist();
+  if(g === "preg"){ if(!w.preg.lmp){ sheetWcPreg(); return; } w.goal = "preg"; w.on = 1; save(); V.p = "preg"; render(); return; }
+  if(g === "post"){ sheetWcBirth(); return; }
+  w.goal = g; if(g === "plan") w.fert = 1;
+  w.on = 1; save(); V.p = "cycle";
+  if(!wcPers().length) sheetWcStart(true); else { closeSheet(); render(); }
 }
 
-/* ---------- листы ---------- */
+/* ---------- листы: начало и конец ---------- */
 function wcTimeNow(){ var d = new Date(); return pad(d.getHours()) + ":" + pad(d.getMinutes()); }
+function wcMinKey(){ return wcAdd(todayKey(), -730); }
 function sheetWcStart(first, key){
   var w = wcData(), today = todayKey();
   sheet('<h3>'+(first ? 'Когда начались последние месячные?' : 'Начались месячные')+'</h3>'+
-    '<p class="note" style="margin:0 0 10px">'+(first ? 'Укажите первый день - примерно, если точно не помните. Можно отметить и более ранние, нажимая на дни в календаре.' : 'Время нужно, чтобы подсказать, какой намаз восполнить.')+'</p>'+
-    '<label class="eyebrow" style="display:block">День</label><input type="date" id="wcA" class="search" style="margin-top:6px" value="'+esc(key || today)+'" max="'+today+'">'+
+    '<p class="note" style="margin:0 0 10px">'+(first ? 'Укажите первый день - примерно, если точно не помните. Более ранние месячные можно отметить, нажимая на дни в календаре.' : 'Время нужно, чтобы подсказать, какой намаз восполнить.')+'</p>'+
+    '<label class="eyebrow" style="display:block">День</label><input type="date" id="wcA" class="search" style="margin-top:6px" value="'+esc(key || today)+'" min="'+wcMinKey()+'" max="'+today+'">'+
     '<label class="eyebrow" style="display:block;margin-top:12px">Время, если знаете</label><input type="time" id="wcAt" class="search" style="margin-top:6px" value="'+(first || key ? '' : wcTimeNow())+'">'+
-    (first ? '<label class="eyebrow" style="display:block;margin-top:12px">Обычно цикл длится, дней</label><input id="wcCyc" class="search" inputmode="numeric" style="margin-top:6px" value="'+w.cyc+'">'+
-      '<label class="eyebrow" style="display:block;margin-top:12px">Месячные обычно идут, дней</label><input id="wcLen" class="search" inputmode="numeric" style="margin-top:6px" value="'+w.len+'">' : '')+
-    '<button class="btn" style="margin-top:14px" data-wcstartok="'+(first ? 2 : 1)+'">Сохранить</button>'+
+    (first ? '<label class="eyebrow" style="display:block;margin-top:12px">Обычно цикл длится, дней</label><input id="wcCyc" class="search" inputmode="numeric" style="margin-top:6px" value="'+esc(w.cyc)+'">'+
+      '<label class="eyebrow" style="display:block;margin-top:12px">Месячные обычно идут, дней</label><input id="wcLen" class="search" inputmode="numeric" style="margin-top:6px" value="'+esc(w.len)+'">' : '')+
+    '<button class="btn" style="margin-top:14px" data-wcstartok="'+(first ? 2 : key ? 3 : 1)+'">Сохранить</button>'+
     (first ? '<button class="btn ghost" style="margin-top:8px" data-wcstartok="0">Пропустить</button>' : '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>'));
 }
+/* mode: 1 - сейчас, 2 - первый вход, 3 - задним числом из дня календаря */
 function wcStartOk(mode){
   var w = wcData();
   if(mode === "0"){ closeSheet(); render(); return; }
   var a = (document.getElementById("wcA") || {}).value || todayKey(), at = (document.getElementById("wcAt") || {}).value || "";
   if(a > todayKey()) a = todayKey();
+  if(a < wcMinKey()){ toast("Проверьте год: дата больше двух лет назад"); return; }
   if(mode === "2"){
     var cy = parseInt((document.getElementById("wcCyc") || {}).value, 10), ln = parseInt((document.getElementById("wcLen") || {}).value, 10);
     if(cy >= 18 && cy <= 60) w.cyc = cy; if(ln >= 1 && ln <= 15) w.len = ln;
   }
-  if(wcPers().some(function(p){ return a >= p.a && a <= wcEndKey(p); })){ toast("На этот день уже отмечены месячные"); return; }
-  var open = wcOpen(); if(open){ open.b = wcAdd(a, -1) < open.a ? open.a : wcAdd(a, -1); }
-  /* прошлые месячные, отмеченные задним числом, закрываем обычной длиной */
-  var b = "";
-  if(mode === "2" && wcDiff(a, todayKey()) >= w.len) b = wcAdd(a, w.len - 1);
-  w.per.push({a:a, at:at, b:b, bt:"", k: w.goal === "post" ? "n" : "h"});
+  if(wcPers().some(function(p){ return a >= p.a && a <= wcEndKey(p); })){ toast("На этот день уже отмечена кровь"); return; }
+  var later = wcPers().filter(function(p){ return p.a > a; })[0], open = wcOpen(), b = "";
+  if(later || ((mode === "2" || mode === "3") && wcDiff(a, todayKey()) >= w.len)){
+    b = wcAdd(a, (wcPers("h").length ? wcAvgLen() : w.len) - 1);
+    if(later && b >= later.a) b = wcAdd(later.a, -1);
+    if(b > todayKey()) b = "";
+  } else if(open && open.a < a) open.b = wcAdd(a, -1);
+  w.per.push({a:a, at:at, b:b, bt:"", k:"h"});   /* кровь в пределах 60 дней после родов разбор сам отнесёт к нифасу */
   w.on = 1; save(); closeSheet(); render();
-  toast(b ? "Отмечено. Календарь начал считать" : "Отмечено. Пауза в трекере намаза включена");
+  toast(b ? "Отмечено. Если месячные шли дольше или короче - поправьте день конца" : "Отмечено. Пауза в трекере намаза включена");
 }
 function sheetWcEnd(key){
-  var o = wcOpen(); if(!o){ toast("Сейчас месячные не отмечены"); return; }
+  var o = wcOpen(); if(!o){ toast("Сейчас кровь не отмечена"); return; }
   var today = todayKey();
-  sheet('<h3>Месячные закончились</h3><p class="note" style="margin:0 0 10px">Укажите, когда вы увидели чистоту. По времени календарь подскажет, какие намазы теперь обязательны.</p>'+
+  sheet('<h3>Кровь прекратилась</h3><p class="note" style="margin:0 0 10px">Укажите, когда вата вышла чистой. По времени календарь подскажет, какие намазы теперь обязательны.</p>'+
     '<label class="eyebrow" style="display:block">День</label><input type="date" id="wcB" class="search" style="margin-top:6px" value="'+esc(key || today)+'" min="'+esc(o.a)+'" max="'+today+'">'+
     '<label class="eyebrow" style="display:block;margin-top:12px">Время</label><input type="time" id="wcBt" class="search" style="margin-top:6px" value="'+(key ? '' : wcTimeNow())+'">'+
     '<button class="btn" style="margin-top:14px" data-wcendok="1">Сохранить</button><button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
@@ -19794,38 +19976,46 @@ function wcEndOk(){
   var b = (document.getElementById("wcB") || {}).value || todayKey(), bt = (document.getElementById("wcBt") || {}).value || "";
   if(b < o.a) b = o.a; if(b > todayKey()) b = todayKey();
   o.b = b; o.bt = bt;
-  var w = wcData();
-  if(o.k === "n" && w.goal === "post"){ w.goal = "cycle"; }
   save(); closeSheet(); render();
-  toast("Записано. Не забудьте гусль");
+  var ep = wcLastEp();
+  toast(ep && ep.short ? "Записано: меньше суток - это пока не хайд" : "Записано. Не забудьте гусль");
 }
+
+/* ---------- лист дня ---------- */
 function sheetWcDay(key){
   var w = wcData(), lg = w.log[key] || {}, st = wcDay(key), today = todayKey();
   var inP = wcPers().filter(function(p){ return key >= p.a && key <= wcEndKey(p); })[0];
-  function chips(list, sel, attr){ return list.map(function(x){ var on = sel && (sel === x[0] || (sel.indexOf && sel.indexOf(x[0]) >= 0)); return '<button class="wc-chip'+(on ? ' on' : '')+'" '+attr+'="'+esc(key)+'|'+x[0]+'">'+esc(x[1])+'</button>'; }).join(""); }
+  function chips(list, sel, attr, multi){ return list.map(function(x){ var on = multi ? (sel || []).indexOf(x[0]) >= 0 : sel === x[0]; return '<button class="wc-chip'+(on ? ' on' : '')+'" aria-pressed="'+(on ? 'true' : 'false')+'" '+attr+'="'+esc(key)+'|'+x[0]+'">'+esc(x[1])+'</button>'; }).join(""); }
   var h = '<h3>'+esc(wcFmt(key, {weekday:"long", day:"numeric", month:"long"}))+'</h3>'+
     (st ? '<p class="note" style="margin:-4px 0 10px">'+esc(WC_ST[st][0].toUpperCase() + WC_ST[st].slice(1))+'</p>' : '');
   if(inP || st === "h" || st === "n" || st === "i"){
     h += '<div class="eyebrow">Выделения</div><div class="wc-chips">'+chips([["1","Мажущие"],["2","Умеренные"],["3","Обильные"]], lg.fl, "data-wcfl")+'</div>'+
-      '<div class="eyebrow" style="margin-top:10px">Цвет</div><div class="wc-chips">'+chips([["r","Красный, тёмный"],["b","Бурый"],["y","Желтоватый"]], lg.col, "data-wccol")+'</div>';
+      '<div class="eyebrow" style="margin-top:10px">Цвет</div><div class="wc-chips">'+chips(WC_COL, lg.col, "data-wccol")+'</div>';
   }
-  h += '<div class="eyebrow" style="margin-top:10px">Самочувствие</div><div class="wc-chips">'+chips(WC_SY, lg.sy || [], "data-wcsy")+'</div>'+
+  h += '<div class="eyebrow" style="margin-top:10px">Самочувствие</div><div class="wc-chips">'+chips(WC_SY, lg.sy, "data-wcsy", true)+'</div>'+
     '<div class="eyebrow" style="margin-top:10px">Настроение</div><div class="wc-chips">'+chips(WC_MD, lg.md, "data-wcmd")+'</div>'+
     '<textarea id="wcNote" class="search" rows="2" style="margin-top:10px" placeholder="Заметка для себя или для врача">'+esc(lg.nt || "")+'</textarea>'+
     '<button class="btn" style="margin-top:10px" data-wcnote="'+esc(key)+'">Сохранить</button>';
   if(key <= today){
-    if(inP) h += '<button class="btn ghost sm" style="width:100%;margin-top:8px" data-wcdel="'+esc(inP.a)+'">Удалить эти месячные ('+esc(wcFmt(inP.a))+(inP.b ? ' - '+esc(wcFmt(inP.b)) : '')+')</button>';
-    else if(!wcOpen() || key < wcOpen().a) h += '<button class="btn sec sm" style="width:100%;margin-top:8px" data-wcfrom="'+esc(key)+'">В этот день начались месячные</button>';
-    if(wcOpen() && key >= wcOpen().a) h += '<button class="btn sec sm" style="width:100%;margin-top:8px" data-wcto="'+esc(key)+'">В этот день закончились</button>';
+    if(inP) h += '<button class="btn ghost sm" style="width:100%;margin-top:8px" data-wcdel="'+esc(inP.a)+'">Удалить эту кровь ('+esc(wcFmt(inP.a))+(inP.b ? ' - '+esc(wcFmt(inP.b)) : '')+')</button>';
+    else h += '<button class="btn sec sm" style="width:100%;margin-top:8px" data-wcfrom="'+esc(key)+'">В этот день началась кровь</button>';
+    if(wcOpen() && key >= wcOpen().a) h += '<button class="btn sec sm" style="width:100%;margin-top:8px" data-wcto="'+esc(key)+'">В этот день кровь прекратилась</button>';
+    else if(inP && inP.b) h += '<button class="btn sec sm" style="width:100%;margin-top:8px" data-wcfix="'+esc(inP.a)+'|'+esc(key)+'">Последний день крови - этот</button>';
   }
-  h += '<p class="note" style="margin-top:10px">Бурые и желтоватые выделения в дни возможного хайда по шафиитскому мазхабу тоже считаются хайдом.</p>';
+  h += '<p class="note" style="margin-top:10px">Бурые и желтоватые выделения в пределах 15 суток по шафиитскому мазхабу тоже считаются хайдом. Цвет помогает знающему, если кровь идёт дольше 15 суток.</p>';
   sheet(h);
 }
+/* выбор чипа - на месте, без пересборки листа (заметка не теряется) */
 function wcLogSet(raw, field, multi){
   var i = raw.indexOf("|"), key = raw.slice(0, i), v = raw.slice(i + 1), w = wcData(), lg = w.log[key] || (w.log[key] = {});
   if(multi){ var a = lg[field] || (lg[field] = []), j = a.indexOf(v); if(j >= 0) a.splice(j, 1); else a.push(v); }
   else lg[field] = lg[field] === v ? "" : v;
-  save(); sheetWcDay(key);
+  save();
+  var attr = { fl:"data-wcfl", col:"data-wccol", sy:"data-wcsy", md:"data-wcmd" }[field];
+  [].forEach.call(document.querySelectorAll("[" + attr + "]"), function(b){
+    var bv = b.getAttribute(attr).split("|")[1], on = multi ? (lg[field] || []).indexOf(bv) >= 0 : lg[field] === bv;
+    b.classList.toggle("on", on); b.setAttribute("aria-pressed", on ? "true" : "false");
+  });
 }
 function wcNoteSave(key){
   var w = wcData(), lg = w.log[key] || (w.log[key] = {}), t = document.getElementById("wcNote");
@@ -19834,24 +20024,33 @@ function wcNoteSave(key){
   save(); closeSheet(); render(); toast("Сохранено");
 }
 function wcDel(a){
-  var w = wcData(); w.per = w.per.filter(function(p){ return p.a !== a; }); delete w.qadaAdded[a];
+  if(!confirm("Удалить эту отметку крови? Дни поста, уже добавленные из неё в «Восполнение», будут убраны.")) return;
+  var w = wcData(), n = Math.min(w.qadaAdded[a] || 0, qadaData().fast);
+  if(n) qadaChange("fast", -n);
+  w.per = w.per.filter(function(p){ return p.a !== a; }); delete w.qadaAdded[a];
   save(); closeSheet(); render(); toast("Удалено");
 }
+function wcFix(raw){
+  var m = raw.split("|"), w = wcData(), p = w.per.filter(function(x){ return x.a === m[0]; })[0]; if(!p) return;
+  p.b = m[1] < p.a ? p.a : m[1]; p.bt = ""; save(); closeSheet(); render(); toast("Исправлено");
+}
+
+/* ---------- настройки ---------- */
 function sheetWcSet(){
   var w = wcData();
-  function sw(k, t, s){ return '<button class="wc-sw'+(w[k] ? ' on' : '')+'" data-wcsw="'+k+'"><span><b>'+t+'</b><i>'+s+'</i></span><em></em></button>'; }
+  function sw(k, t, s){ return '<button class="wc-sw'+(w[k] ? ' on' : '')+'" role="switch" aria-checked="'+(w[k] ? 'true' : 'false')+'" data-wcsw="'+k+'"><span><b>'+t+'</b><i>'+s+'</i></span><em></em></button>'; }
   sheet('<h3>Настройки календаря</h3>'+
     '<div class="eyebrow">Режим</div><div class="wc-chips">'+[["cycle","Цикл"],["plan","Планирую"],["preg","Беременность"],["post","После родов"]].map(function(g){ return '<button class="wc-chip'+(w.goal === g[0] ? ' on' : '')+'" data-wcgoal="'+g[0]+'">'+g[1]+'</button>'; }).join("")+'</div>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">'+
-      '<label style="font-size:12px;color:var(--ink-3)">Цикл, дней<input id="wcCyc" class="search" inputmode="numeric" value="'+w.cyc+'" style="margin-top:4px"></label>'+
-      '<label style="font-size:12px;color:var(--ink-3)">Месячные, дней<input id="wcLen" class="search" inputmode="numeric" value="'+w.len+'" style="margin-top:4px"></label></div>'+
+      '<label style="font-size:12px;color:var(--ink-3)">Цикл, дней<input id="wcCyc" class="search" inputmode="numeric" value="'+esc(w.cyc)+'" style="margin-top:4px"></label>'+
+      '<label style="font-size:12px;color:var(--ink-3)">Месячные, дней<input id="wcLen" class="search" inputmode="numeric" value="'+esc(w.len)+'" style="margin-top:4px"></label></div>'+
     '<p class="note" style="margin:6px 0 10px">Эти числа нужны, пока отмечено мало циклов. Потом календарь считает по вашей истории.</p>'+
-    sw("fert", "Показывать дни зачатия", "овуляция и фертильное окно - примерно, по средней длине цикла")+
-    sw("home", "Строка на главной", "день цикла или неделя беременности под временем намаза")+
-
+    sw("fert", "Отмечать дни зачатия в календаре", "овуляция и фертильное окно - примерно, по средней длине цикла")+
+    sw("home", "Статус на главной", "день цикла или неделя беременности на плашке «Женский раздел» (при коде - скрыт)")+
     sw("mute", "Без азана в дни месячных", "уведомления о намазе не приходят, пока идёт хайд или нифас")+
     '<button class="btn sec sm" style="width:100%;margin-top:10px" data-wcpinopen="1">'+(w.pin ? "Изменить или убрать код" : "🔒 Поставить код на календарь")+'</button>'+
-    (w.goal === "preg" ? '<button class="btn ghost sm" style="width:100%;margin-top:8px" data-wcloss="1">Беременность прервалась</button>' : "")+
+    '<button class="btn sec sm" style="width:100%;margin-top:8px" data-wcbackup="1">Сохранить копию данных в файл</button>'+
+    (w.goal === "preg" ? '<button class="btn ghost sm" style="width:100%;margin-top:8px" data-wcloss="1">Беременность прервалась</button>' : '')+
     '<button class="btn" style="margin-top:12px" data-wcsetok="1">Готово</button>'+
     '<button class="btn ghost sm" style="width:100%;margin-top:10px;color:var(--danger,#c0392b)" data-wcwipe="1">Удалить все данные календаря</button>');
 }
@@ -19862,21 +20061,22 @@ function wcSetOk(){
 }
 function wcWipe(){
   if(!confirm("Удалить все отметки календаря на этом телефоне? Вернуть их будет нельзя, если нет файла копии.")) return;
-  S.wcal = JSON.parse(JSON.stringify(WC_DEF)); save(); pushSync(true); closeSheet(); render(); toast("Данные календаря удалены");
+  S.wcal = JSON.parse(JSON.stringify(WC_DEF)); WC_CL = null; V.wcUnlocked = 0; save(); pushSync(true); closeSheet(); render(); toast("Данные календаря удалены");
 }
 
 /* ---------- беременность ---------- */
 function wcPregInfo(){
-  var w = wcData(); if(!w.preg.lmp) return null;
+  var w = S.wcal; if(!w || !w.preg || !w.preg.lmp) return null;
   var days = wcDiff(w.preg.lmp, todayKey()); if(days < 0) days = 0;
   var wk = Math.floor(days / 7), dd = days % 7, due = wcAdd(w.preg.lmp, 280);
   return { days:days, wk:wk, dd:dd, due:due, left:wcDiff(todayKey(), due), tri: wk < 14 ? 0 : wk < 28 ? 1 : 2, conc: days - 14 };
 }
+function wcWeeks(n){ return plural(n, "неделя", "недели", "недель"); }
 function sheetWcPreg(){
   var w = wcData(), today = todayKey();
   sheet('<h3>Срок беременности</h3><p class="note" style="margin:0 0 10px">Укажите первый день последних месячных - так срок считают врачи. Если знаете только дату родов по УЗИ, введите её.</p>'+
-    '<label class="eyebrow" style="display:block">Первый день последних месячных</label><input type="date" id="wcLmp" class="search" style="margin-top:6px" value="'+esc(w.preg.lmp || "")+'" max="'+today+'">'+
-    '<label class="eyebrow" style="display:block;margin-top:12px">или предполагаемая дата родов</label><input type="date" id="wcDue" class="search" style="margin-top:6px" value="">'+
+    '<label class="eyebrow" style="display:block">Первый день последних месячных</label><input type="date" id="wcLmp" class="search" style="margin-top:6px" value="'+esc(w.preg.lmp || "")+'" min="'+wcAdd(today, -320)+'" max="'+today+'">'+
+    '<label class="eyebrow" style="display:block;margin-top:12px">или предполагаемая дата родов</label><input type="date" id="wcDue" class="search" style="margin-top:6px" value="" min="'+today+'" max="'+wcAdd(today, 300)+'">'+
     '<button class="btn" style="margin-top:14px" data-wcpregok="1">Сохранить</button><button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
 }
 function wcPregOk(){
@@ -19886,46 +20086,45 @@ function wcPregOk(){
   if(wcDiff(l, todayKey()) > 44 * 7 || l > todayKey()){ toast("Проверьте дату: срок получается больше 44 недель или в будущем"); return; }
   w.preg.lmp = l; w.goal = "preg"; w.on = 1;
   var o = wcOpen(); if(o && o.k === "h") o.b = o.b || o.a;
-  save(); closeSheet(); render(); toast("Срок записан");
+  save(); closeSheet(); V.p = "preg"; render(); toast("Срок записан");
 }
 function viewWcalPreg(){
   var w = wcData(), x = wcPregInfo(), h = ['<div class="stack">'];
-  if(!x){ sheetWcPreg(); return viewWcalStart(); }
+  if(!x) return '<div class="stack"><section class="hx wc-hero wc-preg"><div class="eyebrow">Календарь беременности</div>'+
+    '<div class="wc-ttl">Неделя за неделей - с заботой о вас и малыше</div>'+
+    '<p class="hx-sub" style="margin-top:8px">Размер малыша и что происходит на этой неделе, обследования, тревожные признаки, шевеления и схватки, сумка в роддом - и что говорят Коран и Сунна.</p>'+
+    '<button class="btn" style="margin-top:12px;width:100%" data-wcpregset="1">Указать срок</button></section></div>';
   var wk = Math.min(42, Math.max(4, x.wk)), wd = WC_WEEKS[wk] || WC_WEEKS[4];
   h.push('<section class="hx wc-hero wc-preg">'+
     '<div class="eyebrow">Беременность</div>'+
     wcRing(x.days / 280, x.wk + '<small> нед. ' + x.dd + ' дн.</small>', 'идёт ' + (x.wk + 1) + '-я неделя')+
-    '<div class="wc-line">'+(x.wk < 4 ? 'Срок пока совсем маленький' : 'Малыш размером с '+esc(wd.f)+' · '+esc(wd.s))+'</div>'+
-    '<div class="hx-st"><div><b>'+(x.tri + 1)+'</b><span>триместр</span></div><div><b>'+esc(wcFmt(x.due, {day:"numeric", month:"short"}))+'</b><span>ПДР</span></div><div><b>'+(x.left > 0 ? x.left : 0)+'</b><span>дней до ПДР</span></div></div>'+
+    '<div class="hx-st"><div><b>'+(x.tri + 1)+'</b><span>триместр</span></div><div><b>'+esc(wcShort(x.due))+'</b><span>ПДР</span></div><div><b>'+(x.left > 0 ? x.left : 0)+'</b><span>'+String(plural(Math.max(0, x.left), "день", "дня", "дней")).replace(/^[0-9]+ /, "")+' до ПДР</span></div></div>'+
   '</section>');
-  h.push('<section class="card wc-wk">'+wcFruitSvg(wk)+'<div class="wc-wkt"><div class="eyebrow" style="color:var(--accent-ink)">'+(x.wk >= 4 ? x.wk + ' недель' : 'Первые недели')+'</div>'+
-    '<b>Размером с '+esc(wd.f)+'</b><span>'+esc(wd.s)+'</span></div>'+
+  h.push('<section class="card wc-wk">'+wcFruitSvg(wk)+'<div class="wc-wkt"><div class="eyebrow" style="color:var(--accent-ink)">'+(x.wk >= 4 ? esc(wcWeeks(x.wk)) : 'Первые недели')+'</div>'+
+    '<b>Размером с '+esc(wd.fa || wd.f)+'</b><span>'+esc(wd.s)+'</span></div>'+
     '<p class="wc-wkd">'+esc(wd.d)+'</p></section>');
-  /* исламская отметка недели */
   var im = wcPregIslam(x);
   if(im) h.push('<section class="card wc-isl"><div class="eyebrow" style="color:var(--accent-ink)">По Корану и Сунне</div><div class="wc-ii"><span class="wc-ic">۞</span><div><b>'+esc(im.t)+'</b>'+
     (im.ar ? '<div class="ar" dir="rtl" style="margin:6px 0">'+esc(im.ar)+'</div>' : '')+(im.ru ? '<p><i>«'+esc(im.ru)+'»</i></p>' : '')+'<p>'+esc(im.p)+'</p>'+(im.src ? '<span class="wc-src">'+esc(im.src)+'</span>' : '')+'</div></div>'+
     '<p class="note" style="margin:0">Сроки стадий в хадисах учёные понимали по-разному. Это не медицинское описание развития плода.</p></section>');
-  /* инструменты */
   h.push('<div class="cats">'+
-    (x.wk >= 24 ? '<button class="cat" data-wckick="1"><div class="ic">✋</div><b>Шевеления</b><span>счёт до 10</span></button>' : '')+
+    (x.wk >= 24 ? '<button class="cat" data-wckick="1"><div class="ic">◎</div><b>Шевеления</b><span>дневник ритма</span></button>' : '')+
     (x.wk >= 30 ? '<button class="cat" data-wcct="1"><div class="ic">◷</div><b>Схватки</b><span>секундомер</span></button>' : '')+
-    '<button class="cat" data-wcbag="1"><div class="ic">◫</div><b>Сумка в роддом</b><span>'+wcBagCount()+'</span></button>'+
     '<button class="cat" data-wcred="1"><div class="ic">!</div><b>Когда к врачу сразу</b><span>тревожные признаки</span></button>'+
     '<button class="cat" data-wcpblood="1"><div class="ic">◉</div><b>Кровь при беременности</b><span>что делать</span></button>'+
+    '<button class="cat" data-wcwt="1"><div class="ic">⚖</div><b>Вес и питание</b><span>прибавка по ИМТ, что нельзя</span></button>'+
+    '<button class="cat" data-wcbag="1"><div class="ic">◫</div><b>Сумка в роддом</b><span>'+wcBagCount()+'</span></button>'+
     (WC_PREG_SHEET ? '<button class="cat" data-wcislam="preg"><div class="ic">❖</div><b>Ислам и беременность</b><span>аяты, хадисы, пост</span></button>' : '')+
-    '<button class="cat" data-wcborn="1"><div class="ic">☼</div><b>Малыш родился</b><span>перейти к нифасу</span></button></div>');
-  /* триместр */
+    (x.wk >= 22 ? '<button class="cat" data-wcborn="1"><div class="ic">☼</div><b>Малыш родился</b><span>перейти к нифасу</span></button>' : '')+'</div>');
   var t = WC_TRI[x.tri];
   h.push('<section class="card"><div class="sec-h" style="margin:0 0 6px"><h3>'+esc(t.n)+'</h3><span class="more" style="color:var(--ink-3)">'+esc(t.w)+'</span></div><ul class="ul">'+
     t.tips.map(function(s){ return '<li>'+esc(s)+'</li>'; }).join("")+'</ul></section>');
   h.push('<div class="cats"><button class="cat" data-wcpregset="1"><div class="ic">✎</div><b>Изменить срок</b><span>по месячным или УЗИ</span></button>'+
-    '<button class="cat" data-wcset="1"><div class="ic">⚙</div><b>Настройки</b><span>режим, данные</span></button></div>');
+    '<button class="cat" data-wcset="1"><div class="ic">⚙</div><b>Настройки</b><span>режим, код, данные</span></button></div>');
   h.push('<p class="disclaimer">Размеры и сроки - средние ориентиры, у каждого малыша свой темп. Календарь не заменяет врача: обследования и лекарства назначает он. Данные хранятся только на этом телефоне.</p>');
   h.push('</div>');
   return h.join("");
 }
-/* исламская отметка: ближайшая к сроку карточка из WC_PREG_ISLAM (по дням от зачатия или неделям) */
 function wcPregIslam(x){
   var wk = x.wk + 1, list = ((typeof WC_PREG_ISLAM !== "undefined" && WC_PREG_ISLAM) || []).filter(function(c){ return c.w && wk >= c.w[0] && wk <= c.w[1]; });
   if(!list.length) return null;
@@ -19936,59 +20135,96 @@ function sheetWcBag(){
   var w = wcData();
   sheet('<h3>Сумка в роддом</h3><p class="note" style="margin:0 0 8px">Соберите к 34-36 неделям. Список в каждом роддоме свой - уточните у них.</p>'+
     WC_BAG.map(function(g, gi){ return '<div class="eyebrow" style="margin-top:10px">'+esc(g.g)+'</div>'+g.it.map(function(s, ii){ var k = gi + ":" + ii, on = !!w.preg.bag[k];
-      return '<button class="wc-chk'+(on ? ' on' : '')+'" data-wcbagi="'+k+'"><i>'+(on ? '✓' : '')+'</i>'+esc(s)+'</button>'; }).join(""); }).join("")+
+      return '<button class="wc-chk'+(on ? ' on' : '')+'" role="checkbox" aria-checked="'+(on ? 'true' : 'false')+'" data-wcbagi="'+k+'"><i>'+(on ? '✓' : '')+'</i>'+esc(s)+'</button>'; }).join(""); }).join("")+
     '<button class="btn ghost" style="margin-top:12px" data-scrim="1">Закрыть</button>');
 }
-function sheetWcRed(){
-  sheet('<h3>Когда к врачу сразу</h3><p class="note" style="margin:0 0 8px">Не ждите планового приёма - звоните врачу, в роддом или 103, если:</p><ul class="ul">'+
-    WC_RED.map(function(s){ return '<li>'+esc(s)+'</li>'; }).join("")+'</ul><p class="note">Беречь себя и ребёнка - аманат. Пророк ﷺ велел лечиться: «Лечитесь, ибо Аллах не создал болезни, не создав для неё лекарства» (Абу Дауд, 3855; ат-Тирмизи, 2038 - хасан сахих).</p>'+
+function sheetWcList(title, lead, list, foot){
+  sheet('<h3>'+esc(title)+'</h3>'+(lead ? '<p class="note" style="margin:0 0 8px">'+lead+'</p>' : '')+'<ul class="ul">'+list.map(function(s){ return '<li>'+esc(s)+'</li>'; }).join("")+'</ul>'+(foot || '')+
     '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Закрыть</button>');
 }
-/* счётчик шевелений: сколько времени до 10 движений */
-var WC_KICK = null, WC_TICK = null;
+function sheetWcRed(){
+  sheetWcList("Когда к врачу сразу", "Не ждите планового приёма - звоните врачу, в роддом, 103 или 112 с мобильного, если:", WC_RED,
+    '<p class="note">Беречь себя и ребёнка - аманат. Пророк ﷺ велел лечиться: «Лечитесь, ибо Аллах не создал болезни, не создав для неё лекарства» (Абу Дауд, 3855; ат-Тирмизи, 2038 - хасан сахих).</p>');
+}
+function sheetWcGyn(){ sheetWcList("Когда к гинекологу", "Эти признаки нельзя терпеть - даже если календарь отмечает дни как хайд или истихаду:", WC_GYN); }
+function sheetWcPostRed(){ sheetWcList("После родов: когда к врачу сразу", "Звоните врачу или 103, если:", WC_POST_RED); }
+function sheetWcPostInfo(){
+  sheet('<h3>Для мамы после родов</h3><div class="wc-isl">'+WC_POST_INFO.map(function(x){ return '<div class="wc-ii"><span class="wc-ic">♡</span><div><b>'+esc(x.t)+'</b><p>'+esc(x.p)+'</p></div></div>'; }).join("")+'</div>'+
+    '<button class="btn sec sm" style="width:100%;margin-top:10px" data-wcpostred="1">Когда к врачу сразу</button><button class="btn ghost" style="margin-top:8px" data-scrim="1">Закрыть</button>');
+}
+function wcPostCard(){
+  return '<section class="card"><div class="sec-h" style="margin:0 0 6px"><h3>Для мамы после родов</h3></div>'+
+    '<p class="note" style="margin:0 0 8px">Выделения обычно идут 4-6 недель. Осмотр в консультации - после выписки и через 6-8 недель. Грусть первых двух недель проходит; если дольше - к врачу, телефон для родителей 8-800-2000-122.</p>'+
+    '<div class="wc-ia"><button class="btn sec sm" data-wcpostred="1">Когда к врачу сразу</button><button class="btn sec sm" data-wcpostinfo="1">Кормление, настроение, осмотры</button><button class="btn sec sm" data-open="rzv">Развитие малыша</button></div></section>';
+}
+function sheetWcWeight(){
+  sheet('<h3>Вес и питание</h3><p class="note" style="margin:0 0 8px">Сколько обычно прибавляют за беременность - зависит от веса до неё (клинические рекомендации «Нормальная беременность», 2023).</p>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><label style="font-size:12px;color:var(--ink-3)">Рост, см<input id="wcHt" class="search" inputmode="numeric" style="margin-top:4px"></label>'+
+    '<label style="font-size:12px;color:var(--ink-3)">Вес до беременности, кг<input id="wcWt" class="search" inputmode="decimal" style="margin-top:4px"></label></div>'+
+    '<button class="btn sec" style="margin-top:10px" data-wcwtcalc="1">Посчитать</button><div id="wcWtOut" class="wc-adv" style="display:none"></div>'+
+    '<div class="eyebrow" style="margin-top:14px">Что лучше не есть</div><ul class="ul">'+WC_FOOD.map(function(s){ return '<li>'+esc(s)+'</li>'; }).join("")+'</ul>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Закрыть</button>');
+}
+function wcWtCalc(){
+  var ht = parseFloat(String((document.getElementById("wcHt") || {}).value || "").replace(",", ".")), wt = parseFloat(String((document.getElementById("wcWt") || {}).value || "").replace(",", "."));
+  var o = document.getElementById("wcWtOut"); if(!o) return;
+  if(!(ht > 120 && ht < 220) || !(wt > 30 && wt < 250)){ o.style.display = "block"; o.textContent = "Проверьте рост и вес"; return; }
+  var bmi = wt / Math.pow(ht / 100, 2), r = WC_WEIGHT.filter(function(x){ return bmi < x[0]; })[0];
+  o.style.display = "block"; o.textContent = "Индекс массы тела до беременности - " + bmi.toFixed(1).replace(".", ",") + ". Обычная прибавка за всю беременность: " + r[1] + ". Точнее скажет врач.";
+}
+/* шевеления: дневник ритма, а не проверка (клинрекомендации 2023, RCOG) */
+var WC_TICK = null;
 function wcTicker(fn){ clearInterval(WC_TICK); WC_TICK = setInterval(function(){ if(!document.querySelector(".wc-live")){ clearInterval(WC_TICK); return; } fn(); }, 1000); }
 function wcMmss(ms){ var s = Math.max(0, Math.round(ms / 1000)); return Math.floor(s / 60) + ":" + pad(s % 60); }
 function sheetWcKick(){
-  var w = wcData(), last = w.preg.kicks.slice(-5).reverse();
-  if(!WC_KICK) WC_KICK = { s: Date.now(), n: 0 };
-  sheet('<h3>Шевеления</h3><p class="note" style="margin:0 0 8px">Лягте на бок в спокойное время и нажимайте на круг при каждом движении малыша. Обычно 10 движений набирается меньше чем за 2 часа.</p>'+
-    '<div class="wc-live wc-kick"><button class="wc-big" data-wckickn="1" aria-label="Шевеление"><b id="wcKn">'+WC_KICK.n+'</b><span>из 10</span></button><div class="wc-tm" id="wcKt">'+wcMmss(Date.now() - WC_KICK.s)+'</div></div>'+
-    '<button class="btn sec" style="margin-top:10px" data-wckickr="1">Начать заново</button>'+
-    (last.length ? '<div class="eyebrow" style="margin-top:12px">Прошлые счёты</div><div class="rows" style="margin-top:6px">'+last.map(function(k){ return '<div class="row" style="padding:9px 12px;font-size:13px">'+esc(new Date(k.at).toLocaleDateString("ru-RU",{day:"numeric",month:"short"}))+'<span class="val">10 за '+wcMmss(k.ms)+'</span></div>'; }).join("")+'</div>' : '')+
-    '<p class="note" style="margin-top:10px">Если за 2 часа меньше 10 движений или малыш шевелится заметно реже обычного - не ждите, сразу свяжитесь с врачом.</p>'+
+  var w = wcData(), last = w.preg.kicks.slice(-5).reverse(), p = w.preg;
+  if(p.ks && Date.now() - p.ks > 3 * 3600000){ p.ks = 0; p.kn = 0; save(); }
+  var on = !!p.ks, el = on ? Date.now() - p.ks : 0, late = on && el > 2 * 3600000 && p.kn < 10;
+  sheet('<h3>Шевеления</h3><div class="wc-adv" style="margin:0 0 10px"><b>Главное - знать обычный ритм вашего малыша.</b> Счётчик - дневник, а не проверка. Если кажется, что малыш шевелится меньше или слабее обычного, не считайте и не ждите - сразу звоните в роддом или 103, в любое время суток.</div>'+
+    '<div class="wc-live wc-kick">'+(on ? '<button class="wc-big" data-wckickn="1" aria-label="Отметить шевеление"><b id="wcKn">'+p.kn+'</b><span>шевелений</span></button><div class="wc-tm" id="wcKt">'+wcMmss(el)+'</div>'
+      : '<button class="wc-big" data-wckickgo="1"><b>▶</b><span>начать</span></button>')+'</div>'+
+    (late ? '<div class="wc-adv" style="color:var(--danger,#c0392b)">Прошло больше 2 часов, а шевелений меньше 10 - позвоните в роддом или 103 сейчас.</div>' : '')+
+    (on ? '<button class="btn sec" style="margin-top:10px" data-wckickr="1">Закончить</button>' : '')+
+    (last.length ? '<div class="eyebrow" style="margin-top:12px">Прошлые записи</div><div class="rows" style="margin-top:6px">'+last.map(function(k){ return '<div class="row" style="padding:9px 12px;font-size:13px">'+esc(new Date(k.at).toLocaleDateString("ru-RU",{day:"numeric",month:"short"}))+'<span class="val">'+(k.n || 10)+' за '+wcMmss(k.ms)+'</span></div>'; }).join("")+'</div>' : '')+
+    '<p class="note" style="margin-top:10px">Сразу в роддом, если шевелений меньше или они слабее, изменился привычный ритм или вы не чувствуете малыша. Не расшевеливайте его сладким или холодной водой. Перед родами шевеления не стихают.</p>'+
     '<button class="btn ghost" style="margin-top:6px" data-scrim="1">Закрыть</button>');
-  wcTicker(function(){ var e = document.getElementById("wcKt"); if(e && WC_KICK) e.textContent = wcMmss(Date.now() - WC_KICK.s); });
+  if(on) wcTicker(function(){ var e = document.getElementById("wcKt"); if(e && p.ks) e.textContent = wcMmss(Date.now() - p.ks); });
 }
+function wcKickGo(){ var p = wcData().preg; p.ks = Date.now(); p.kn = 0; save(); sheetWcKick(); }
 function wcKickN(){
-  if(!WC_KICK) WC_KICK = { s: Date.now(), n: 0 };
-  WC_KICK.n++;
-  if(WC_KICK.n >= 10){ var w = wcData(); w.preg.kicks.push({ at: Date.now(), ms: Date.now() - WC_KICK.s }); if(w.preg.kicks.length > 60) w.preg.kicks = w.preg.kicks.slice(-60); save(); toast("10 шевелений за " + wcMmss(Date.now() - WC_KICK.s) + ", машаАллах"); WC_KICK = null; sheetWcKick(); return; }
-  var e = document.getElementById("wcKn"); if(e) e.textContent = WC_KICK.n;
+  var w = wcData(), p = w.preg; if(!p.ks){ wcKickGo(); return; }
+  p.kn++; save();
+  if(p.kn === 10){ w.preg.kicks.push({ at: Date.now(), ms: Date.now() - p.ks, n: 10 }); if(w.preg.kicks.length > 60) w.preg.kicks = w.preg.kicks.slice(-60); toast("10 шевелений за " + wcMmss(Date.now() - p.ks)); p.ks = 0; p.kn = 0; save(); sheetWcKick(); return; }
+  var e = document.getElementById("wcKn"); if(e) e.textContent = p.kn;
 }
+function wcKickEnd(){ var w = wcData(), p = w.preg; if(p.ks && p.kn){ w.preg.kicks.push({ at: Date.now(), ms: Date.now() - p.ks, n: p.kn }); } p.ks = 0; p.kn = 0; save(); sheetWcKick(); }
 /* секундомер схваток */
 var WC_CT = null;
 function sheetWcCt(){
-  var w = wcData(), list = w.preg.ct.slice(-8).reverse(), on = WC_CT && WC_CT.s;
+  var w = wcData(), list = w.preg.ct.slice(-8).reverse();
+  if(WC_CT && Date.now() - WC_CT.s > 15 * 60000) WC_CT = null;   /* забытая схватка */
+  var on = WC_CT && WC_CT.s;
   var rows = list.map(function(c, i){ var nx = list[i + 1]; return '<div class="row" style="padding:8px 12px;font-size:13px">'+esc(new Date(c.s).toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"}))+
     '<span class="val">'+wcMmss(c.e - c.s)+(nx ? ' · через '+wcMmss(c.s - nx.s) : '')+'</span></div>'; }).join("");
   var adv = wcCtAdvice(w.preg.ct);
   sheet('<h3>Схватки</h3><p class="note" style="margin:0 0 8px">Нажмите, когда схватка началась, и ещё раз - когда закончилась. Календарь посчитает длительность и промежутки.</p>'+
-    '<div class="wc-live wc-kick"><button class="wc-big'+(on ? ' on' : '')+'" data-wcctt="1"><b id="wcCn">'+(on ? wcMmss(Date.now() - WC_CT.s) : '▶')+'</b><span>'+(on ? 'закончилась' : 'началась')+'</span></button></div>'+
+    '<div class="wc-live wc-kick"><button class="wc-big'+(on ? ' on' : '')+'" data-wcctt="1"><b id="wcCn">'+(on ? wcMmss(Date.now() - WC_CT.s) : '▶')+'</b><span>'+(on ? 'схватка закончилась' : 'схватка началась')+'</span></button></div>'+
     (adv ? '<div class="wc-adv">'+esc(adv)+'</div>' : '')+
     (rows ? '<div class="eyebrow" style="margin-top:12px">Последние</div><div class="rows" style="margin-top:6px">'+rows+'</div><button class="btn ghost sm" style="width:100%;margin-top:8px" data-wcctclr="1">Очистить</button>' : '')+
-    '<p class="note" style="margin-top:10px">Ориентир для первых родов: схватки по минуте каждые 5 минут в течение часа - пора звонить в роддом. При излитии вод, кровотечении или сильной боли - сразу, не дожидаясь. Ваш врач может дать свои правила - следуйте им.</p>'+
+    '<p class="note" style="margin-top:10px">Первые роды: схватки по минуте каждые 5 минут в течение часа - пора в роддом. Повторные или быстрые прошлые роды, роддом далеко - выезжайте при регулярных схватках каждые 10 минут. До 37 недель, при излитии вод, кровотечении или сильной боли - сразу. Если врач дал свои правила - следуйте им.</p>'+
     '<button class="btn ghost" style="margin-top:6px" data-scrim="1">Закрыть</button>');
   if(on) wcTicker(function(){ var e = document.getElementById("wcCn"); if(e && WC_CT) e.textContent = wcMmss(Date.now() - WC_CT.s); });
 }
 function wcCtAdvice(ct){
-  var l = ct.filter(function(c){ return Date.now() - c.s < 3600000; });
+  var l = ct.filter(function(c){ return Date.now() - c.s < 90 * 60000; });
   if(l.length < 4) return "";
   var gaps = [], durs = [];
   for(var i = 1; i < l.length; i++) gaps.push(l[i].s - l[i-1].s);
   l.forEach(function(c){ durs.push(c.e - c.s); });
-  var ag = gaps.reduce(function(a, b){ return a + b; }, 0) / gaps.length, ad = durs.reduce(function(a, b){ return a + b; }, 0) / durs.length;
-  if(ag <= 5.5 * 60000 && ad >= 45000) return "Схватки примерно каждые " + Math.round(ag / 60000) + " мин по " + Math.round(ad / 1000) + " с. Похоже, пора звонить в роддом или врачу.";
-  return "Сейчас в среднем каждые " + Math.round(ag / 60000) + " мин по " + Math.round(ad / 1000) + " с.";
+  var ag = gaps.reduce(function(a, b){ return a + b; }, 0) / gaps.length, ad = durs.reduce(function(a, b){ return a + b; }, 0) / durs.length, span = l[l.length - 1].s - l[0].s;
+  var base = "Сейчас в среднем каждые " + Math.round(ag / 60000) + " мин по " + Math.round(ad / 1000) + " с.";
+  if(ag <= 5.5 * 60000 && ad >= 45000) return span >= 50 * 60000 ? base + " Так уже около часа - пора в роддом." : base + " Если так продолжится около часа - пора в роддом; при повторных родах выезжайте сейчас.";
+  return base;
 }
 function wcCtTap(){
   var w = wcData();
@@ -19999,22 +20235,23 @@ function wcCtTap(){
 /* малыш родился -> нифас */
 function sheetWcBirth(){
   var today = todayKey();
-  sheet('<h3>Малыш родился</h3><p class="note" style="margin:0 0 10px">БаракаЛлаху ляки! Укажите дату родов - календарь начнёт считать дни нифаса.</p>'+
-    '<label class="eyebrow" style="display:block">Дата родов</label><input type="date" id="wcBirth" class="search" style="margin-top:6px" value="'+today+'" max="'+today+'">'+
+  sheet('<h3>Малыш родился</h3><p class="note" style="margin:0 0 10px">БаракаЛлаху ляки! Укажите дату родов - календарь начнёт считать дни нифаса. Роды обязывают гусль даже без крови; пост дня родов не засчитывается.</p>'+
+    '<label class="eyebrow" style="display:block">Дата родов</label><input type="date" id="wcBirth" class="search" style="margin-top:6px" value="'+today+'" min="'+wcAdd(today, -365)+'" max="'+today+'">'+
     '<label class="eyebrow" style="display:block;margin-top:12px">Время, если знаете</label><input type="time" id="wcBirthT" class="search" style="margin-top:6px" value="">'+
+    '<label class="eyebrow" style="display:block;margin-top:12px">Имя малыша - для раздела «Развитие ребёнка»</label><input id="wcKidN" class="search" style="margin-top:6px" maxlength="30" placeholder="можно позже">'+
     '<button class="btn" style="margin-top:14px" data-wcbornok="1">Сохранить</button><button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
 }
 function wcBornOk(){
-  var w = wcData(), b = (document.getElementById("wcBirth") || {}).value || todayKey(), t = (document.getElementById("wcBirthT") || {}).value || "";
+  var w = wcData(), b = (document.getElementById("wcBirth") || {}).value || todayKey(), t = (document.getElementById("wcBirthT") || {}).value || "", kn = String((document.getElementById("wcKidN") || {}).value || "").trim().slice(0, 30);
   if(b > todayKey()) b = todayKey();
+  if(w.per.some(function(p){ return p.k === "n" && p.a === b; })){ toast("Эти роды уже отмечены"); return; }
   var o = wcOpen(); if(o) o.b = wcAdd(b, -1) < o.a ? o.a : wcAdd(b, -1);
-  w.post.birth = b; w.goal = "post"; w.on = 1; w.preg.lmp = "";
+  w.post.birth = b; w.goal = "post"; w.on = 1; w.preg.lmp = ""; w.preg.ks = 0;
   w.per.push({ a:b, at:t, b:"", bt:"", k:"n" });
-  /* малыш - сразу в «Развитие ребёнка», имя мама поправит там */
-  try{ var rz = rzvData(); if(!rz.kids.some(function(k){ return k.b === b; })){ var kid = { id:"k" + Date.now().toString(36), n:"Малыш", b:b }; rz.kids.push(kid); rz.cur = kid.id; } }catch(e){}
-  save(); closeSheet(); render(); toast("Нифас: день 1. Пусть Аллах благословит малыша");
+  try{ var rz = rzvData(); if(!rz.kids.some(function(k){ return k.b === b; })){ var kid = { id:"k" + Date.now().toString(36), n:kn || "Малыш", b:b }; rz.kids.push(kid); rz.cur = kid.id; } }catch(e){}
+  save(); closeSheet(); V.p = null; render(); toast("Нифас: день 1. Пусть Аллах благословит малыша");
 }
-/* лист с исламскими карточками */
+/* исламские карточки */
 var WC_PREG_SHEET = 0;   /* лист «Ислам и беременность» - выключен до решения Заиры (16.10.2026) */
 function wcCardsHtml(list){
   return list.map(function(x){ return '<div class="wc-ii"><span class="wc-ic">۞</span><div><b>'+esc(x.t)+'</b>'+(x.ar ? '<div class="ar" dir="rtl" style="margin:6px 0">'+esc(x.ar)+'</div>' : '')+
@@ -20028,56 +20265,55 @@ function sheetWcIslam(kind){
     secs.map(function(s){ return (s[0] ? '<div class="eyebrow" style="margin:14px 0 6px;color:var(--accent-ink)">'+esc(s[0])+'</div>' : '')+'<div class="wc-isl">'+wcCardsHtml(s[1])+'</div>'; }).join("")+
     '<button class="btn ghost" style="margin-top:12px" data-scrim="1">Закрыть</button>');
 }
-/* в «Восполнение»: намаз начала / конца, посты Рамадана */
+/* в «Восполнение» */
 function wcQp(raw){
   var m = raw.split(":"), a = m[0], which = m[1], ks = (m[2] || "").split(","), w = wcData();
   ks.forEach(function(k){ if(k) qadaChange(k, 1); });
   w.qadaPrayer[a + ":" + which] = 1; save(); render();
   toast("Добавлено в «Восполнение»");
 }
+function wcQi(a){
+  var ep = wcEps().filter(function(e){ return e.S === a; })[0]; if(!ep || !ep.ist) return;
+  var w = wcData(), n = Math.max(0, wcDiff(ep.ist.from, todayKey()));
+  if(n){ var q = qadaData(); qadaKinds().forEach(function(f){ q.p[f.k] = (q.p[f.k] || 0) + n; }); qadaLog("days", n); }
+  w.qadaPrayer[a + ":i"] = 1; save(); render(); toast(n ? "Добавлено: " + plural(n, "день", "дня", "дней") + " намазов" : "Отмечено");
+}
 function wcQf(a){
-  var p = wcPers().filter(function(x){ return x.a === a; })[0]; if(!p) return;
-  var w = wcData(), n = wcRamadan(p) - (w.qadaAdded[a] || 0); if(n <= 0) return;
+  var ep = wcEps().filter(function(e){ return e.S === a; })[0]; if(!ep) return;
+  var w = wcData(), n = wcRamadan(ep) - (w.qadaAdded[a] || 0); if(n <= 0) return;
   qadaChange("fast", n); w.qadaAdded[a] = (w.qadaAdded[a] || 0) + n; save(); render();
   toast(plural(n, "день", "дня", "дней") + " поста - в «Восполнении»");
 }
-/* строка на главной */
-function wcHomeLine(){
-  var w = S.wcal; if(!w || !w.on || !w.home) return "";
-  var txt;
-  if(w.goal === "preg"){ var x = wcPregInfo(); if(!x) return ""; txt = x.wk + " нед. " + x.dd + " дн. · ПДР " + wcFmt(x.due, {day:"numeric", month:"short"}); }
-  else { var o = wcOpen(), nx = wcNext();
-    if(o && wcBlood()) txt = (o.k === "n" ? "Нифас" : "Месячные") + ": " + (wcDiff(o.a, todayKey()) + 1) + "-й день · намаз не совершается";
-    else if(o) txt = "Кровь дольше срока - откройте календарь";
-    else if(nx) txt = nx.late ? "Задержка " + plural(nx.late, "день", "дня", "дней") : "Следующие ≈ через " + plural(nx.inDays, "день", "дня", "дней");
-    else return ""; }
-  return '<button class="wc-home" data-open="wcal"><span class="wc-home-ic">'+(w.goal === "preg" ? "❀" : "☾")+'</span><span class="wc-home-t"><b>Женский календарь</b><span>'+esc(txt)+'</span></span><span class="wc-home-go">›</span></button>';
-}
-/* напоминание за 2 дня - нейтральным текстом */
+function wcQfx(a){ var ep = wcEps().filter(function(e){ return e.S === a; })[0]; if(!ep) return; wcData().qadaAdded[a] = wcRamadan(ep); save(); render(); }
+/* напоминания - нейтральный текст и общий тег: сервер уведомлений не отличает их от других */
 function wcPushItems(){
   var w = S.wcal, out = []; if(!w || !w.on || !(w.remSoon || w.remFert) || w.goal === "preg" || w.goal === "post") return out;
-  var nx = wcNext(); if(!nx || nx.late) return out;
+  var nx = wcNext(); if(!nx || nx.late || nx.open) return out;
   var d = wcD(wcAdd(nx.key, -(w.remDays || 2))); d.setHours(10, 0, 0, 0);
-  if(w.remSoon && d.getTime() > Date.now() && d.getTime() - Date.now() < 7 * 86400000) out.push({ at: d.toISOString(), title: "RIZQ", body: "Загляните в календарь", tag: "open-wcal" });
-  if(w.remFert){ var f = wcD(wcAdd(nx.key, -19)); f.setHours(9, 0, 0, 0); if(f.getTime() > Date.now() && f.getTime() - Date.now() < 7 * 86400000) out.push({ at: f.toISOString(), title: "RIZQ", body: "Загляните в календарь", tag: "open-wcal" }); }
+  if(w.remSoon && d.getTime() > Date.now() && d.getTime() - Date.now() < 7 * 86400000) out.push({ at: d.toISOString(), title: "RIZQ", body: "Загляните в календарь", tag: "rizq" });
+  if(w.remFert){ var f = wcD(wcAdd(nx.key, -19)); f.setHours(9, 0, 0, 0); if(f.getTime() > Date.now() && f.getTime() - Date.now() < 7 * 86400000) out.push({ at: f.toISOString(), title: "RIZQ", body: "Загляните в календарь", tag: "rizq" }); }
   return out;
 }
 
-/* ---------- замок на раздел (по разбору конкурентов: главное - приватность) ---------- */
+/* ---------- замок ---------- */
 function wcLocked(){ var w = S.wcal; return !!(w && w.pin && !V.wcUnlocked); }
 function viewWcalLock(){
-  return '<div class="stack"><section class="hx wc-hero"><div class="eyebrow">Женский календарь</div><div class="wc-ttl" style="text-align:center">🔒 Раздел закрыт кодом</div>'+
+  return '<div class="stack"><section class="hx wc-hero"><div class="eyebrow">Женский раздел</div><div class="wc-ttl" style="text-align:center">🔒 Раздел закрыт кодом</div>'+
     '<input id="wcPin" class="search" type="password" inputmode="numeric" maxlength="8" placeholder="Код" style="margin-top:12px;text-align:center;font-size:20px;letter-spacing:.3em">'+
     '<button class="btn" style="margin-top:10px;width:100%" data-wcpin="1">Открыть</button>'+
-    '<p class="hx-sub" style="margin-top:10px;text-align:center">Забыли код? В настройках телефона очистите данные сайта - но тогда пропадут и все отметки, если нет файла копии.</p></section></div>';
+    '<button class="btn ghost sm" style="margin-top:12px;width:100%" data-wcpinreset="1">Забыли код? Сбросить код и данные календаря</button></section></div>';
 }
 function wcPinTry(){
   var v = String((document.getElementById("wcPin") || {}).value || "");
   if(v && v === String(S.wcal.pin)){ V.wcUnlocked = 1; render(); } else toast("Код не подходит");
 }
+function wcPinReset(){
+  if(!confirm("Сбросить код? Все отметки календаря и беременности на этом телефоне будут удалены. Остальной RIZQ не пострадает.")) return;
+  S.wcal = JSON.parse(JSON.stringify(WC_DEF)); WC_CL = null; V.wcUnlocked = 0; save(); pushSync(true); render(); toast("Код и данные календаря сброшены");
+}
 function sheetWcPin(){
   var w = wcData();
-  sheet('<h3>Код на календарь</h3><p class="note" style="margin:0 0 10px">Код спрашивается при каждом открытии приложения. Он хранится только на этом телефоне.</p>'+
+  sheet('<h3>Код на женский раздел</h3><p class="note" style="margin:0 0 10px">Код спрашивается каждый раз, когда вы возвращаетесь в приложение. Пока он стоит, плашка на главной не показывает ваш статус. Код хранится на этом телефоне и в файл копии не попадает.</p>'+
     '<input id="wcPinNew" class="search" type="password" inputmode="numeric" maxlength="8" placeholder="4-8 цифр">'+
     '<button class="btn" style="margin-top:10px" data-wcpinset="1">Сохранить код</button>'+
     (w.pin ? '<button class="btn ghost" style="margin-top:8px" data-wcpinset="0">Убрать код</button>' : '')+
@@ -20090,19 +20326,26 @@ function wcPinSet(on){
   if(!/^[0-9]{4,8}$/.test(v)){ toast("Нужно от 4 до 8 цифр"); return; }
   w.pin = v; V.wcUnlocked = 1; save(); closeSheet(); render(); toast("Код установлен");
 }
+/* ушли из приложения - раздел снова закрыт */
+try{ document.addEventListener("visibilitychange", function(){ if(document.hidden){ if(S.wcal && S.wcal.pin){ V.wcUnlocked = 0; } } else if(S.wcal && S.wcal.pin && /^(wcal|zhen|rzv)$/.test(V.view || "")) render(); }); }catch(e){}
 
 /* ---------- сводка: спросить знающую или показать врачу - через «Поделиться», без сервера ---------- */
 function wcSummary(kind){
-  var p = wcPers().slice(-6), L = [], nl = String.fromCharCode(10);
+  var w = wcData(), p = wcPers().slice(-6), L = [], nl = String.fromCharCode(10);
+  var colN = {}; WC_COL.forEach(function(c){ colN[c[0]] = c[1].toLowerCase(); });
+  var flN = { "1":"мажущие", "2":"умеренные", "3":"обильные" };
   if(kind === "doc"){
-    L.push("Женский календарь RIZQ - сводка для врача");
+    L.push("Календарь цикла RIZQ - сводка для врача");
     L.push("Средний цикл: " + wcAvgCyc() + " дн., месячные: " + wcAvgLen() + " дн.");
     var c = wcCycles().slice(-6); if(c.length) L.push("Последние циклы, дней: " + c.join(", "));
   } else L.push("Вопрос о хайде. Мои последние отметки:");
   p.forEach(function(x){
-    L.push((x.k === "n" ? "Нифас: " : "Кровь: ") + wcFmt(x.a) + (x.at ? " " + x.at : "") + " - " + (x.b ? wcFmt(x.b) + (x.bt ? " " + x.bt : "") : "идёт") + (x.b ? " (" + (wcDiff(x.a, x.b) + 1) + " дн.)" : ""));
+    var dur = wcDurH(x);
+    L.push((x.k === "n" ? "Нифас (роды): " : "Кровь: ") + wcFmt(x.a) + (x.at ? " " + x.at : "") + " - " + (x.b ? wcFmt(x.b) + (x.bt ? " " + x.bt : "") : "идёт") +
+      (dur !== null ? " (" + (dur < 48 ? Math.round(dur) + " ч" : (wcDiff(x.a, x.b) + 1) + " дн.") + ")" : x.b ? " (" + (wcDiff(x.a, x.b) + 1) + " дн.)" : ""));
+    if(kind !== "doc") for(var k = x.a; k <= wcEndKey(x); k = wcAdd(k, 1)){ var lg = w.log[k]; if(lg && (lg.col || lg.fl)) L.push("  " + wcShort(k) + ": " + [lg.col ? colN[lg.col] : "", lg.fl ? flN[lg.fl] : ""].filter(Boolean).join(", ")); }
   });
-  if(kind !== "doc"){ var hb = wcHabit(); if(hb) L.push("Обычно месячные идут " + hb + " дн."); L.push("Мазхаб: шафиитский."); }
+  if(kind !== "doc"){ var hb = wcHabit(); if(hb) L.push("Обычно хайд " + hb + " дн."); L.push("Мазхаб: шафиитский."); }
   return L.join(nl);
 }
 function wcShare(kind){
@@ -20116,15 +20359,19 @@ function sheetWcLoss(){
   sheet('<h3>Беременность прервалась</h3>'+
     '<p style="font-size:14.5px;line-height:1.6;color:var(--ink-2)">Нам очень жаль. Пусть Аллах даст вам терпение, исцеление и воздаст лучшим.</p>'+
     '<div class="wc-isl" style="margin:8px 0">'+wcCardsHtml(typeof LOSS !== "undefined" ? LOSS : [])+'</div>'+
-    '<p class="note">Календарь перестанет показывать недели и размеры. Если кровь пошла после выкидыша, ответ, нифас это или нет, зависит от срока и того, сформировался ли плод, - это лучше спросить у знающего. Календарь отметит кровь, а сводку можно отправить.</p>'+
-    '<label class="eyebrow" style="display:block;margin-top:10px">Когда это случилось</label><input type="date" id="wcLoss" class="search" style="margin-top:6px" value="'+todayKey()+'" max="'+todayKey()+'">'+
-    '<button class="btn" style="margin-top:12px" data-wclossok="1">Перейти в обычный календарь</button><button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
+    '<div class="wc-adv">'+esc(WC_LOSS_MED)+'</div>'+
+    '<label class="eyebrow" style="display:block;margin-top:12px">Когда это случилось</label><input type="date" id="wcLoss" class="search" style="margin-top:6px" value="'+todayKey()+'" min="'+wcAdd(todayKey(), -120)+'" max="'+todayKey()+'">'+
+    '<p class="note" style="margin-top:10px">Врач сказал, что вышли ткани плода - даже сгусток или кусочек плоти, начало человека? Тогда кровь после - нифас, нужен гусль. Вышла только кровь - не нифас.</p>'+
+    '<button class="btn" style="margin-top:6px" data-wclossok="n">Да, вышли ткани - нифас</button>'+
+    '<button class="btn sec" style="margin-top:8px" data-wclossok="h">Нет или не знаю</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
 }
-function wcLossOk(){
+function wcLossOk(kind){
   var w = wcData(), d = (document.getElementById("wcLoss") || {}).value || todayKey();
-  w.preg.lmp = ""; w.goal = "cycle";
-  if(!wcOpen()) w.per.push({ a:d, at:"", b:"", bt:"", k:"h", loss:1 });
+  w.preg.lmp = ""; w.preg.ks = 0; w.goal = kind === "n" ? "post" : "cycle"; V.p = null;
+  if(!wcOpen()) w.per.push({ a:d, at:"", b:"", bt:"", k: kind === "n" ? "n" : "h", loss:1, ask: kind !== "n" ? 1 : 0 });
   save(); closeSheet(); render();
+  if(kind !== "n") toast("Записано. Спросите у знающего, как считать эту кровь");
 }
 
 /* подпись для пересборки расписания уведомлений */
@@ -20136,31 +20383,36 @@ function wcSigPart(){
 /* попросить браузер не стирать данные сайта (Safari чистит их у сайтов не на экране «Домой») */
 function wcPersist(){ try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); }catch(e){} }
 
-/* ---------- Женский раздел: одна плашка на главной, внутри три календаря (16.10.2026, Заира) ---------- */
+/* ---------- Женский раздел: одна плашка на главной, внутри три календаря ---------- */
 function zhenStatus(){
-  var w = S.wcal, out = { cycle:"хайд, намаз и пост, гусль, посты в долг", preg:"неделя за неделей, по Корану и Сунне", rzv:"от рождения до 14 лет" };
-  if(w && w.on){
-    var o = wcOpen(), nx = wcNext();
-    if(o && wcBlood()) out.cycle = (o.k === "n" ? "Нифас" : "Месячные") + ": " + (wcDiff(o.a, todayKey()) + 1) + "-й день";
+  var w = S.wcal, out = { cycle:"хайд, намаз и пост, прогноз, гусль", preg:"неделя за неделей, по Корану и Сунне", rzv:"от рождения до 14 лет" };
+  if(w && w.on && !wcLocked()){
+    var ep = wcNowEp(), nx = wcNext();
+    if(ep && wcBlood()) out.cycle = (ep.k === "n" ? "Нифас" : "Месячные") + ": " + (wcDiff(ep.S, todayKey()) + 1) + "-й день";
+    else if(wcPostRecover()) out.cycle = "Цикл восстанавливается после родов";
     else if(nx && !nx.open) out.cycle = nx.late ? "Задержка " + plural(nx.late, "день", "дня", "дней") : (nx.inDays ? "Следующие ≈ через " + plural(nx.inDays, "день", "дня", "дней") : "Следующие ожидаются сегодня");
-    var x = wcPregInfo(); if(x) out.preg = x.wk + " нед. " + x.dd + " дн. · ПДР " + wcFmt(x.due, {day:"numeric", month:"short"});
+    var x = wcPregInfo(); if(x) out.preg = x.wk + " нед. " + x.dd + " дн. · ПДР " + wcShort(x.due);
   }
   var kid = S.rzv && S.rzv.kids && S.rzv.kids.length ? rzvKid() : null;
-  if(kid) out.rzv = kid.n + ", " + rzvAgeTxt(kid.b);
+  if(kid && !wcLocked()) out.rzv = kid.n + ", " + rzvAgeTxt(kid.b);
   return out;
 }
 function zhenHomeTile(){
-  var st = zhenStatus(), w = S.wcal, sub = "календарь цикла, беременность, развитие ребёнка";
-  if(w && w.on && w.home !== 0){ if(wcPregInfo()) sub = "Беременность: " + st.preg; else if(wcLastH()) sub = st.cycle; }
+  var w = S.wcal, sub = "календарь цикла, беременность, развитие ребёнка";
+  if(w && w.on && w.home && !w.pin){ var st = zhenStatus(); if(wcPregInfo()) sub = "Беременность: " + st.preg; else if(wcLastEp()) sub = st.cycle; }
   return '<button class="wc-home" data-open="zhen"><span class="wc-home-ic">❀</span><span class="wc-home-t"><b>Женский раздел</b><span>'+esc(sub)+'</span></span><span class="wc-home-go">›</span></button>';
 }
+function viewZhenRoute(){ return wcLocked() ? viewWcalLock() : viewZhen(); }
 function viewZhen(){
-  var st = zhenStatus();
+  var st = zhenStatus(), w = S.wcal, ep = w && w.on ? wcNowEp() : null;
   function big(k, ic, t, s){ return '<button class="zh-btn zh-'+k+'" data-zhen="'+k+'"><span class="zh-ic">'+ic+'</span><span class="zh-t"><b>'+t+'</b><span>'+esc(s)+'</span></span><span class="zh-go">›</span></button>'; }
+  var today = '';
+  if(w && w.on && w.goal !== "preg" && wcLastEp()) today = '<div class="zh-today"><span>'+esc(st.cycle)+'</span>'+(ep ? '<button class="btn sm" data-wcend="1">Кровь прекратилась</button>' : '<button class="btn sm" data-wcstart="1">Начались месячные</button>')+'</div>';
   return '<div class="stack"><section class="hx wc-hero"><div class="eyebrow">Женский раздел</div>'+
     '<div class="wc-ttl">Цикл, беременность и дети - по Корану и Сунне</div>'+
     '<p class="hx-sub" style="margin-top:8px">Календарь подскажет, какой намаз восполнить и когда гусль, посчитает посты в долг, проведёт по неделям беременности и по возрастам ребёнка.</p>'+
-    '<div class="wc-priv">🔒 Всё хранится только на этом телефоне.</div></section>'+
+    today+
+    '<div class="wc-priv">🔒 Отметки хранятся только на этом телефоне. Можно поставить код.</div></section>'+
     big("cycle", "☾", "Календарь цикла", st.cycle)+
     big("preg", "❀", "Календарь беременности", st.preg)+
     big("rzv", "❁", "Развитие ребёнка", st.rzv)+
@@ -20171,42 +20423,39 @@ function zhenGo(k){
   V.zf = 1;
   if(k === "rzv"){ open("rzv", null); return; }
   var w = wcData(); wcPersist();
-  if(k === "preg"){
-    if(!w.preg.lmp){ w.goal = "preg"; save(); open("wcal", "preg"); sheetWcPreg(); return; }
-    open("wcal", "preg"); return;
-  }
+  if(k === "preg"){ open("wcal", "preg"); if(!w.preg.lmp) sheetWcPreg(); return; }
   if(!w.on){ w.goal = "cycle"; w.on = 1; save(); open("wcal", "cycle"); sheetWcStart(true); return; }
   open("wcal", "cycle");
 }
-function wcTitle(){ var w = S.wcal; return (V.p === "preg" || (V.p !== "cycle" && w && w.goal === "preg")) ? "Календарь беременности" : (w && w.goal === "post" && V.p !== "cycle") ? "После родов" : "Календарь цикла"; }
+function wcTitle(){ if(wcLocked()) return "Женский раздел"; var w = S.wcal; return (V.p === "preg" || (V.p !== "cycle" && w && w.goal === "preg")) ? "Календарь беременности" : (w && (w.goal === "post" || (w.on && wcPostRecover())) && V.p !== "cycle") ? "После родов" : "Календарь цикла"; }
 
-/* ---------- прогноз: месячные, овуляция, фертильные дни, фаза цикла, уведомления (16.10.2026, Заира) ---------- */
+/* ---------- прогноз: месячные, овуляция, фертильные дни, фаза, уведомления ---------- */
 function wcPhase(cd, c){
-  var ov = c - 14;
+  var ov = c - 13;   /* день овуляции: следующие месячные минус 14 дней */
   if(cd <= wcAvgLen()) return { n:"Менструальная фаза", p:"Организм обновляется. Больше отдыха, тепла и воды; зикр и дуа - лучшие спутники этих дней." };
   if(cd < ov - 1) return { n:"Фолликулярная фаза", p:"Обычно сил и настроения становится больше - хорошее время для дел, учёбы и спорта." };
   if(cd <= ov + 1) return { n:"Овуляция", p:"Самые вероятные дни для зачатия. У некоторых - лёгкая боль сбоку внизу живота." };
-  if(cd > c - 5) return { n:"Лютеиновая фаза, скоро месячные", p:"Возможен ПМС: раздражительность, тяга к сладкому, отёки. Это телу, а не вам: больше сна и меньше соли." };
+  if(cd > c - 5) return { n:"Лютеиновая фаза, скоро месячные", p:"Возможен ПМС: раздражительность, тяга к сладкому, отёки. Это гормоны, а не ваш характер: больше сна и меньше соли." };
   return { n:"Лютеиновая фаза", p:"Энергия постепенно снижается. Берегите сон и не перегружайте себя." };
 }
 function wcForecast(){
   var w = wcData(), l = wcLastH(), nx = wcNext(); if(!l || !nx || w.goal === "post") return "";
   var c = wcAvgCyc(), ov = wcAdd(nx.key, -14), f1 = wcAdd(ov, -5), f2 = wcAdd(ov, 1), today = todayKey();
   if(f2 < today && nx.key > today){ ov = wcAdd(wcAdd(nx.key, c), -14); f1 = wcAdd(ov, -5); f2 = wcAdd(ov, 1); }
-  var o = wcOpen(), cd = o ? wcDiff(o.a, today) + 1 : wcDiff(l.a, today) + 1, ph = wcPhase(cd, c);
-  var d = function(k){ return wcFmt(k, {day:"numeric", month:"short"}); };
+  var cd = wcDiff(l.S, today) + 1, ph = wcPhase(cd, c);
   var rows = [
-    ["☾", "Следующие месячные", d(nx.key) + " - " + d(wcAdd(nx.key, wcAvgLen() - 1)) + (nx.late ? " · задержка " + plural(nx.late, "день", "дня", "дней") : nx.inDays ? " · через " + plural(nx.inDays, "день", "дня", "дней") : " · сегодня")],
-    ["✿", "Овуляция", "≈ " + d(ov)],
-    ["❀", "Фертильные дни", d(f1) + " - " + d(f2)]
+    ["☾", "Следующие месячные", wcShort(nx.key) + " - " + wcShort(wcAdd(nx.key, wcAvgLen() - 1)) + (nx.late ? " · задержка " + plural(nx.late, "день", "дня", "дней") : nx.inDays ? " · через " + plural(nx.inDays, "день", "дня", "дней") : " · сегодня")],
+    ["✿", "Овуляция", "≈ " + wcShort(ov)],
+    ["❀", "Фертильные дни", wcShort(f1) + " - " + wcShort(f2)]
   ];
   return '<section class="card wc-fc"><div class="sec-h" style="margin:0 0 6px"><h3>Прогноз</h3><span class="more" style="color:var(--ink-3)">цикл ≈ '+c+' дн.</span></div>'+
     rows.map(function(x){ return '<div class="wc-fr"><span class="wc-ic">'+x[0]+'</span><span><b>'+x[1]+'</b><i>'+esc(x[2])+'</i></span></div>'; }).join("")+
-    '<div class="wc-ph"><b>'+esc(ph.n)+'</b><span>'+esc(ph.p)+'</span></div>'+
+    (nx.open ? '' : '<div class="wc-ph"><b>'+esc(ph.n)+'</b><span>'+esc(ph.p)+'</span></div>')+
+    (w.goal === "plan" ? '<p class="note" style="margin:8px 0 0">Планируете беременность: фолиевая кислота 400-800 мкг и йод - за 2-3 месяца до зачатия. Не получается 12 месяцев, после 35 лет - 6 месяцев: к гинекологу.</p>' : '')+
     '<div class="eyebrow" style="margin-top:12px">Уведомление о месячных</div><div class="wc-chips">'+
-      [["0","Не напоминать"],["1","За 1 день"],["2","За 2 дня"],["3","За 3 дня"]].map(function(x){ return '<button class="wc-chip'+(String(w.remSoon ? (w.remDays || 2) : 0) === x[0] ? ' on' : '')+'" data-wcrem="'+x[0]+'">'+x[1]+'</button>'; }).join("")+'</div>'+
-    '<button class="wc-sw'+(w.remFert ? ' on' : '')+'" data-wcsw="remFert" style="margin-top:6px"><span><b>Напоминать о фертильных днях</b><i>утром в первый день окна</i></span><em></em></button>'+
-    '<p class="note" style="margin:6px 0 0">Текст уведомления нейтральный: «Загляните в календарь». Прогноз - по вашим прошлым циклам, при неровном цикле он примерный и не годится как средство предохранения.</p></section>';
+      [["0","Не напоминать"],["1","За 1 день"],["2","За 2 дня"],["3","За 3 дня"]].map(function(x){ var on = String(w.remSoon ? (w.remDays || 2) : 0) === x[0]; return '<button class="wc-chip'+(on ? ' on' : '')+'" aria-pressed="'+(on ? 'true' : 'false')+'" data-wcrem="'+x[0]+'">'+x[1]+'</button>'; }).join("")+'</div>'+
+    '<button class="wc-sw'+(w.remFert ? ' on' : '')+'" role="switch" aria-checked="'+(w.remFert ? 'true' : 'false')+'" data-wcsw="remFert" style="margin-top:6px"><span><b>Напоминать о фертильных днях</b><i>утром в первый день окна</i></span><em></em></button>'+
+    '<p class="note" style="margin:6px 0 0">Текст уведомления нейтральный: «Загляните в календарь». Прогноз - по вашим прошлым циклам; при неровном цикле он примерный и не годится как средство предохранения.</p></section>';
 }
 function wcRem(n){
   var w = wcData(); n = parseInt(n, 10) || 0;
@@ -20217,17 +20466,8 @@ function wcRem(n){
 function sheetWcPBlood(){
   sheet('<h3>Кровь при беременности</h3>'+
     '<p style="font-size:14.5px;line-height:1.6"><b>Сначала - к врачу.</b> Любые кровянистые выделения при беременности - повод сразу позвонить врачу или в 103, не дожидаясь приёма.</p>'+
-    '<p class="note">По более сильному мнению шафиитов кровь при беременности может быть хайдом, если подходит по срокам. Но календарь хайд при беременности не прогнозирует: как быть с намазом в эти дни, лучше спросить у знающего, а сводку можно отправить кнопкой «Спросить знающую».</p>'+
+    '<p class="note">По более сильному мнению шафиитов кровь при беременности может быть хайдом, если длится не меньше суток и не больше 15 и до неё было 15 дней чистоты; иначе это истихада, и намаз не оставляют. Календарь хайд при беременности не прогнозирует - спросите у знающего, сводку можно отправить кнопкой «Спросить знающую».</p>'+
     '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Закрыть</button>');
-}
-/* ас-сахб: день чистоты между двумя кровями, если вторая началась в пределах 15 суток от начала первой */
-function wcSahbGap(key){
-  var h = wcPers("h");
-  for(var i = 1; i < h.length; i++){
-    var a = h[i-1], b = h[i];
-    if(a.b && key > a.b && key < b.a && wcDiff(a.a, b.a) < 15 && wcDiff(a.a, key) < 15) return true;
-  }
-  return false;
 }
 
 /* Развитие ребёнка по возрасту: вехи, занятия, режим, осмотры (16.10.2026).
@@ -20281,6 +20521,7 @@ var RAZVITIE = [
       vazhno: "Спать на спине, на ровном жёстком матрасе, без подушек, одеял и игрушек в кроватке (AAP)",
     },
     vrach: [
+      "Сразу к врачу или 103: температура 38° и выше до 3 месяцев; плохо сосёт, вялый; судороги; частое или стонущее дыхание, синие губы; желтуха в первые сутки, до ладоней или дольше 2 недель; рвота фонтаном или зелёным; меньше 6 мокрых подгузников после 5-го дня",
       "К 2 мес не смотрит в лицо, не улыбается, не следит глазами - обсудить с педиатром",
       "Не реагирует на громкие звуки - сказать педиатру",
       "Потерял навык, который уже был, - к врачу сразу",
@@ -20385,7 +20626,7 @@ var RAZVITIE = [
       "Первые шаги: держите за обе руки, толкайте вместе стул или коробку по полу",
       "Жесты: «пока-пока», «дай», «на» - называйте и показывайте",
       "Книжка каждый день: «Где кошка?» - пусть показывает пальчиком",
-      "Едим вместе: кусочки пальчиками, открытая чашка с вашей помощью",
+      "Едим вместе: мягкие кусочки пальчиками (без орехов, целого винограда, сырой моркови), открытая чашка с вашей помощью",
     ],
     rezhim: {
       son: "12-16 ч в сутки вместе с дневными снами (ВОЗ, AASM)",
@@ -20460,7 +20701,7 @@ var RAZVITIE = [
       "3 года: рисует круг, если показать; нанизывает крупные бусины; ест вилкой",
     ],
     igry: [
-      "Лепка из солёного теста (мука, соль, вода): колбаски, шарики, лепёшки",
+      "Лепка из солёного теста (мука, соль, вода): колбаски, шарики, лепёшки - следите, чтобы не ел",
       "Игры понарошку: накормить куклу, «полечить» мишку, «сварить» суп из кубиков",
       "Бусы из макарон на шнурке; сортировка по цвету: «Дай все красные»",
       "Разговор о дне: «Что мы видели на прогулке?» - спросите и дождитесь ответа",
@@ -20814,7 +21055,7 @@ var TARBIYA = [
    ar:"أُعِيذُكُمَا بِكَلِمَاتِ اللَّهِ التَّامَّةِ مِنْ كُلِّ شَيْطَانٍ وَهَامَّةٍ، وَمِنْ كُلِّ عَيْنٍ لَامَّةٍ",
    tr:"У‘изукума бикалимати-Ллахи-т-таммати мин кулли шайтанин ва хамматин ва мин кулли ‘айнин лямма",
    ru:"Прибегаю для вас двоих к совершенным словам Аллаха от всякого шайтана, от всякого ядовитого существа и от всякого дурного глаза.",
-   src:"Ибн Аббас, да будет доволен Аллах им и его отцом. Аль-Бухари 3371"}
+   src:"Ибн Аббас, да будет доволен Аллах им и его отцом. Абу Дауд 4737 (эта форма); у аль-Бухари 3371 - со словами «а‘узу»"}
  ],
  ne:[
   {t:"Не огорчаться рождению дочери", p:"Коран порицает тех, кто мрачнел от вести о девочке. Для того, кто был добр к дочерям, они станут защитой от Огня.",
@@ -20883,7 +21124,7 @@ var TARBIYA = [
    src:"Сура «Лукман», 31:13", jump:"open:kids"},
   {t:"Аллах видит даже маленькое", p:"Не «Аллах накажет», а «Аллах знает, какой ты хороший, даже когда никто не видит». Опора - слова Лукмана о горчичном зёрнышке.",
    src:"Сура «Лукман», 31:16"},
-  {t:"Короткие суры наизусть", p:"Аль-Фатиха, аль-Ихлас, аль-Фаляк, ан-Нас, затем другие короткие суры. По одному аяту в день, вместе, с повтором перед сном. Ибн Аббас к десяти годам знал наизусть все короткие суры последней части Корана.",
+  {t:"Короткие суры наизусть", p:"Аль-Фатиха, аль-Ихлас, аль-Фаляк, ан-Нас, затем другие короткие суры. По одному аяту в день, вместе, с повтором перед сном. Ибн Аббас к десяти годам знал наизусть суры «аль-муфассаль» - последние суры Корана, начиная примерно с суры «Каф».",
    ar:"خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ",
    tr:"Хайрукум ман та‘алляма-ль-Кур’ана ва ‘аллямаху",
    ru:"Лучшие из вас - те, кто изучает Коран и обучает ему.",
@@ -20930,7 +21171,7 @@ var TARBIYA = [
  items:[
   {t:"Намаз с семи лет", p:"С семи лет учат омовению и намазу: показывают, молятся вместе, хвалят. С десяти родители требуют строже. Как понимать эту строгость - ниже, в «Чего не делать».",
    ar:"عَلِّمُوا الصَّبِيَّ الصَّلَاةَ ابْنَ سَبْعِ سِنِينَ، وَاضْرِبُوهُ عَلَيْهَا ابْنَ عَشْرٍ",
-   ru:"Учите ребёнка намазу с семи лет, а с десяти лет наказывайте его за оставление намаза.",
+   ru:"Учите ребёнка намазу с семи лет, а с десяти лет наказывайте его (дословно - «бейте») за оставление намаза.",
    src:"Сабра ибн Ма'бад аль-Джухани, да будет доволен им Аллах. Ат-Тирмизи 407, ат-Тирмизи: хасан сахих; Абу Дауд 494. Ан-Навави: хасан"},
   {t:"Что говорят шафииты", p:"По шафиитскому мазхабу ребёнку, который различает хорошее и плохое, велят молиться с семи лет, а с десяти требуют строже. Ан-Навави передаёт от аш-Шафии и его учеников: родители обязаны учить детей тому, что станет обязательным после зрелости, - чистоте, намазу, посту, а также тому, что запретны ложь, воровство, опьяняющее, злословие.",
    src:"Ан-Навави, «Минхадж ат-талибин», книга о намазе; «аль-Маджму'», книга о намазе (пересказ смысла)"},
@@ -20960,8 +21201,8 @@ var TARBIYA = [
  ],
  ne:[
   {t:"О «строгости» с десяти лет", p:"В хадисе о намазе есть слово о наказании. Но сам Пророк ﷺ никогда никого не бил рукой - ни женщину, ни слугу, а Анаса за десять лет ни разу не упрекнул. Учёные ставили жёсткие условия: только чтобы научить, без вреда, никогда по лицу, и не там, где это не поможет. В RIZQ мы не советуем бить детей: метод - объяснение, пример, совместный намаз, похвала и напоминание. Как понимать «строже» в вашей семье, спросите у имама.",
-   ar:"مَا ضَرَبَ رَسُولُ اللَّهِ صلى الله عليه وسلم شَيْئًا قَطُّ بِيَدِهِ، وَلَا امْرَأَةً، وَلَا خَادِمًا",
-   ru:"Посланник Аллаха ﷺ никогда никого не ударил своей рукой - ни женщину, ни слугу.",
+   ar:"مَا ضَرَبَ رَسُولُ اللَّهِ صلى الله عليه وسلم شَيْئًا قَطُّ بِيَدِهِ، وَلَا امْرَأَةً، وَلَا خَادِمًا، إِلَّا أَنْ يُجَاهِدَ فِي سَبِيلِ اللَّهِ",
+   ru:"Посланник Аллаха ﷺ никогда никого не ударил своей рукой - ни женщину, ни слугу, кроме как сражаясь на пути Аллаха.",
    src:"Аиша. Муслим 2328. О лице - Абу Хурайра: аль-Бухари 2559, Муслим 2612. Об Анасе - аль-Бухари 6038, Муслим 2309"},
   {t:"Не позорить при людях", p:"Аль-Газали советует: за хорошее хвалить при людях, если ошибся один раз - сделать вид, что не заметили, и не раскрывать его; если повторил - сказать наедине. И не упрекать постоянно: от частых упрёков ребёнок перестаёт их слышать.",
    src:"Аль-Газали, «Ихья», «Рийадат ан-нафс» (пересказ смысла)"},
@@ -20973,7 +21214,7 @@ var TARBIYA = [
 {id:"10-14y", age:"10-14 лет", n:"Порог зрелости",
  goal:"Подготовить ребёнка к зрелости заранее, чтобы о её признаках он узнал от родителей, а не с улицы или из интернета. С первого дня зрелости он сам отвечает перед Аллахом: знает гусль, намаз, пост, аврат, а девочка - хайд и хиджаб.",
  items:[
-  {t:"Признаки зрелости по шафиитскому мазхабу", p:"Зрелость наступает с первым из трёх: исполнилось 15 лунных лет; появилось семяизвержение (во сне или наяву) - не раньше 9 лунных лет; у девочки - начало месячных, тоже не раньше примерно 9 лунных лет. Рост волос на теле у детей мусульман по основному мнению шафиитов признаком зрелости не считается. Опора для 15 лет - Ибн Умар: в 14 лет Пророк ﷺ не принял его в войско, а в 15 принял.",
+  {t:"Признаки зрелости по шафиитскому мазхабу", p:"Зрелость наступает с первым из трёх: исполнилось 15 лунных лет; появилось семяизвержение (во сне или наяву) - не раньше 9 лунных лет; у девочки - начало месячных, тоже не раньше примерно 9 лунных лет. Рост жёстких волос на лобке у детей мусульман по основному мнению шафиитов признаком зрелости не считается. Опора для 15 лет - Ибн Умар: в 14 лет Пророк ﷺ не принял его в войско, а в 15 принял.",
    src:"Ан-Навави, «Минхадж ат-талибин», глава об опеке над имуществом (пересказ). Ибн Умар: аль-Бухари 2664, Муслим 1868"},
   {t:"С зрелости - полная ответственность", p:"До зрелости грехи ребёнку не записываются, а намаз и пост родители прививают как привычку. После - это его обязанность перед Аллахом. Скажите об этом заранее, спокойно и с гордостью: «ты становишься взрослым».",
    ar:"رُفِعَ الْقَلَمُ عَنْ ثَلَاثَةٍ: عَنِ النَّائِمِ حَتَّى يَسْتَيْقِظَ، وَعَنِ الصَّبِيِّ حَتَّى يَحْتَلِمَ، وَعَنِ الْمَجْنُونِ حَتَّى يَعْقِلَ",
@@ -21090,7 +21331,15 @@ function viewRzv(){
   /* ступени */
   h.push('<div class="rzv-steps" role="tablist">'+RAZVITIE.map(function(s, i){
     return '<button class="rzv-st'+(i === si ? ' on' : '')+(kid && i === auto ? ' now' : '')+'" data-rzvst="'+i+'">'+esc(s.n)+'</button>'; }).join("")+'</div>');
-  if(kid && si !== auto) h.push('<button class="btn ghost sm" style="width:100%" data-rzvst="auto">Вернуться к возрасту '+esc(kid.n)+'</button>');
+  if(kid && si !== auto) h.push('<button class="btn ghost sm" style="width:100%" data-rzvst="auto">Вернуться к нынешнему возрасту</button>');
+  setTimeout(function(){ var el = document.querySelector(".rzv-st.on"); if(el && el.scrollIntoView) try{ el.scrollIntoView({inline:"center", block:"nearest"}); }catch(e){} }, 0);
+  /* вехи */
+  var okN = 0;
+  var vehi = st.vehi.map(function(v, i){ var k = (kid ? kid.id : "_") + ":" + st.id + ":" + i, on = !!r.ok[k]; if(on) okN++;
+    var m = v.match(/^([^:]{2,24}):\s*(.*)$/);
+    return '<button class="wc-chk'+(on ? ' on' : '')+'" data-rzvok="'+esc(k)+'"><i>'+(on ? '✓' : '')+'</i><span>'+(m ? '<em class="rzv-tag">'+esc(m[1])+'</em> '+esc(m[2]) : esc(v))+'</span></button>'; }).join("");
+  h.push('<section class="card"><div class="sec-h" style="margin:0 0 4px"><h3>Что обычно умеет</h3><span class="more" style="color:var(--ink-3)">'+okN+' из '+st.vehi.length+'</span></div>'+
+    '<p class="note" style="margin:0 0 6px">'+esc(st.vehiK || st.age)+'. Отмечайте то, что уже получается. Каждый ребёнок идёт своим темпом.</p>'+vehi+'</section>');
   /* ислам */
   var isl = (typeof RZV_ISLAM !== "undefined" && RZV_ISLAM[rzvIslamIdx(si)]) || null;
   if(isl) h.push('<section class="card wc-isl"><div class="eyebrow" style="color:var(--accent-ink)">Воспитание по Корану и Сунне · '+esc(isl.age)+'</div><b class="rzv-n">'+esc(isl.n)+'</b>'+
@@ -21099,13 +21348,6 @@ function viewRzv(){
       (x.jump ? '<button class="btn sec sm" style="margin-top:8px" data-jump="'+esc(x.jump)+'">'+esc(RZV_JN[x.jump.split(":")[1]] || "Открыть")+'</button>' : '')+'</div></div>'; }).join("")+
     (isl.ne && isl.ne.length ? '<div class="rzv-not"><b>Чего не делать</b><ul class="ul">'+isl.ne.map(function(x){ return '<li>'+esc(x.p || x)+(x.src ? ' <span class="wc-src" style="display:inline">'+esc(x.src)+'</span>' : '')+'</li>'; }).join("")+'</ul></div>' : '')+
   '</section>');
-  /* вехи */
-  var okN = 0;
-  var vehi = st.vehi.map(function(v, i){ var k = (kid ? kid.id : "_") + ":" + st.id + ":" + i, on = !!r.ok[k]; if(on) okN++;
-    var m = v.match(/^([^:]{2,24}):\s*(.*)$/);
-    return '<button class="wc-chk'+(on ? ' on' : '')+'" data-rzvok="'+esc(k)+'"><i>'+(on ? '✓' : '')+'</i><span>'+(m ? '<em class="rzv-tag">'+esc(m[1])+'</em> '+esc(m[2]) : esc(v))+'</span></button>'; }).join("");
-  h.push('<section class="card"><div class="sec-h" style="margin:0 0 4px"><h3>Что обычно умеет</h3><span class="more" style="color:var(--ink-3)">'+okN+' из '+st.vehi.length+'</span></div>'+
-    '<p class="note" style="margin:0 0 6px">'+esc(st.vehiK || st.age)+'. Отмечайте то, что уже получается. Каждый ребёнок идёт своим темпом.</p>'+vehi+'</section>');
   /* занятия */
   h.push('<section class="card"><div class="sec-h" style="margin:0 0 6px"><h3>Игры и занятия</h3></div><ul class="ul">'+st.igry.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul></section>');
   if(st.navyki && st.navyki.length) h.push('<section class="card"><div class="sec-h" style="margin:0 0 6px"><h3>Самостоятельность и характер</h3></div><ul class="ul">'+st.navyki.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul></section>');
@@ -21130,24 +21372,27 @@ function viewRzv(){
     '<button class="cat" data-open="kids"><div class="ic">✧</div><b>Детям</b><span>истории пророков, дуа, имена</span></button>'+
     (si >= 9 ? '<button class="cat" data-igra="1"><div class="ic">▦</div><b>Ильм-Крафт</b><span>игра о сире</span></button>' : '<button class="cat" data-guide="child"><div class="ic">☼</div><b>Родился ребёнок</b><span>азан, имя, акыка</span></button>')+
     '</div>');
-  if(kid) h.push('<button class="btn ghost sm" style="width:100%" data-rzvdel="'+esc(kid.id)+'">Убрать '+esc(kid.n)+' из раздела</button>');
+  if(kid) h.push('<div class="cats"><button class="cat" data-rzvedit="'+esc(kid.id)+'"><div class="ic">✎</div><b>Изменить имя и дату</b><span>'+esc(kid.n)+'</span></button>'+
+    '<button class="cat" data-rzvdel="'+esc(kid.id)+'"><div class="ic">✕</div><b>Убрать из раздела</b><span>'+esc(kid.n)+'</span></button></div>');
   h.push('<p class="disclaimer">Вехи - ориентир: их достигают 3 из 4 детей к указанному возрасту. Раздел не ставит диагнозов и не заменяет врача: если что-то тревожит - спросите педиатра. Имя и дата рождения хранятся только на этом телефоне.</p>');
   h.push('</div>');
   return h.join("");
 }
-function sheetRzvAdd(b){
-  var today = todayKey();
-  sheet('<h3>Ребёнок</h3><label class="eyebrow" style="display:block">Имя</label><input id="rzvN" class="search" style="margin-top:6px" maxlength="30" placeholder="Например, Марьям">'+
-    '<label class="eyebrow" style="display:block;margin-top:12px">Дата рождения</label><input type="date" id="rzvB" class="search" style="margin-top:6px" value="'+esc(b || "")+'" max="'+today+'">'+
-    '<button class="btn" style="margin-top:14px" data-rzvaddok="1">Сохранить</button><button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
+function sheetRzvAdd(b, id){
+  var today = todayKey(), k = id ? rzvData().kids.filter(function(x){ return x.id === id; })[0] : null;
+  sheet('<h3>'+(k ? 'Изменить' : 'Ребёнок')+'</h3><label class="eyebrow" style="display:block">Имя</label><input id="rzvN" class="search" style="margin-top:6px" maxlength="30" placeholder="Например, Марьям" value="'+esc(k ? k.n : "")+'">'+
+    '<label class="eyebrow" style="display:block;margin-top:12px">Дата рождения</label><input type="date" id="rzvB" class="search" style="margin-top:6px" value="'+esc(k ? k.b : (b || ""))+'" max="'+today+'">'+
+    '<button class="btn" style="margin-top:14px" data-rzvaddok="'+esc(id || "1")+'">Сохранить</button><button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
 }
-function rzvAddOk(){
+function rzvAddOk(id){
   var r = rzvData(), n = String((document.getElementById("rzvN") || {}).value || "").trim().slice(0, 30), b = (document.getElementById("rzvB") || {}).value || "";
   if(!n){ toast("Напишите имя"); return; }
   if(!b || b > todayKey()){ toast("Укажите дату рождения"); return; }
   if(rzvMonths(b) > 15 * 12){ toast("Раздел - для детей до 14 лет"); return; }
-  var id = "k" + Date.now().toString(36);
-  r.kids.push({ id:id, n:n, b:b }); r.cur = id; V.rzs = null;
+  var ex = id && id !== "1" ? r.kids.filter(function(x){ return x.id === id; })[0] : null;
+  if(ex){ ex.n = n; ex.b = b; r.cur = ex.id; }
+  else { var nid = "k" + Date.now().toString(36); r.kids.push({ id:nid, n:n, b:b }); r.cur = nid; }
+  V.rzs = null;
   save(); closeSheet(); render(); toast("Добавлено");
 }
 function rzvDel(id){
@@ -31517,6 +31762,7 @@ function backupData(){
     var k = BK_KEYS[i];
     if(k in S) o.data[k] = S[k];
   }
+  if(o.data.wcal && o.data.wcal.pin){ o.data.wcal = JSON.parse(JSON.stringify(o.data.wcal)); delete o.data.wcal.pin; }
   return o;
 }
 function backupName(){
@@ -33644,7 +33890,7 @@ function renderCore(){
   else if(V.view==="book2ch") html = viewBook2Ch();
   else if(V.view==="wcal") html = viewWcalRoute();
   else if(V.view==="rzv") html = viewRzv();
-  else if(V.view==="zhen") html = viewZhen();
+  else if(V.view==="zhen") html = viewZhenRoute();
   else if(V.tab==="quran") html = viewQuranHome();
   else if(V.tab==="home") html = viewHome();
   else if(V.tab==="dua") html = viewDua();
@@ -33798,7 +34044,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-zhen],[data-rzvkid],[data-rzvadd],[data-rzvaddok],[data-rzvst],[data-rzvok],[data-rzvdel],[data-rzvluq],[data-rzvosn],[data-wcgoal],[data-wcstart],[data-wcstartok],[data-wcend],[data-wcendok],[data-wcday],[data-wcfl],[data-wccol],[data-wcsy],[data-wcmd],[data-wcnote],[data-wcdel],[data-wcfrom],[data-wcto],[data-wcset],[data-wcsetok],[data-wcsw],[data-wcwipe],[data-wcmon],[data-wcgusl],[data-wcqp],[data-wcqf],[data-wcpregok],[data-wcpregset],[data-wckick],[data-wckickn],[data-wckickr],[data-wcct],[data-wcctt],[data-wcctclr],[data-wcbag],[data-wcbagi],[data-wcred],[data-wcislam],[data-wcborn],[data-wcbornok],[data-wcpin],[data-wcpinset],[data-wcpinopen],[data-wcshare],[data-wcloss],[data-wclossok],[data-wcrem],[data-wcpblood],[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-nafl],[data-naflnotif],[data-naflall],[data-igra],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-namesall],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
+  var node = t.closest ? t.closest("[data-zhen],[data-rzvkid],[data-rzvadd],[data-rzvaddok],[data-rzvst],[data-rzvok],[data-rzvdel],[data-rzvluq],[data-rzvosn],[data-rzvedit],[data-wcgoal],[data-wcstart],[data-wcstartok],[data-wcend],[data-wcendok],[data-wcday],[data-wcfl],[data-wccol],[data-wcsy],[data-wcmd],[data-wcnote],[data-wcdel],[data-wcfrom],[data-wcto],[data-wcset],[data-wcsetok],[data-wcsw],[data-wcwipe],[data-wcmon],[data-wcgusl],[data-wcqp],[data-wcqf],[data-wcpregok],[data-wcpregset],[data-wckick],[data-wckickn],[data-wckickr],[data-wcct],[data-wcctt],[data-wcctclr],[data-wcbag],[data-wcbagi],[data-wcred],[data-wcislam],[data-wcborn],[data-wcbornok],[data-wcpin],[data-wcpinset],[data-wcpinopen],[data-wcshare],[data-wcloss],[data-wclossok],[data-wcrem],[data-wcpblood],[data-wcqi],[data-wcqfx],[data-wcfix],[data-wcaskok],[data-wcgyn],[data-wcpostred],[data-wcpostinfo],[data-wcwt],[data-wcwtcalc],[data-wckickgo],[data-wcbackup],[data-wcpinreset],[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-nafl],[data-naflnotif],[data-naflall],[data-igra],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-namesall],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -34092,7 +34338,8 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.kidname){ var kn = kidStore().names, ki = kn.indexOf(d.kidname); if(ki >= 0) kn.splice(ki, 1); else kn.push(d.kidname); save(); render(); return; }
   if(d.rzvkid){ rzvData().cur = d.rzvkid; V.rzs = null; save(); render(); return; }
   if(d.rzvadd){ sheetRzvAdd(); return; }
-  if(d.rzvaddok){ rzvAddOk(); return; }
+  if(d.rzvaddok){ rzvAddOk(d.rzvaddok); return; }
+  if(d.rzvedit){ sheetRzvAdd(null, d.rzvedit); return; }
   if(d.rzvst){ V.rzs = d.rzvst === "auto" ? null : parseInt(d.rzvst, 10); renderInPlace(); return; }
   if(d.rzvok){ var ro = rzvData().ok; ro[d.rzvok] = ro[d.rzvok] ? 0 : 1; if(!ro[d.rzvok]) delete ro[d.rzvok]; save(); renderInPlace(); return; }
   if(d.rzvdel){ rzvDel(d.rzvdel); return; }
@@ -34125,7 +34372,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.wcpregset){ sheetWcPreg(); return; }
   if(d.wckick){ sheetWcKick(); return; }
   if(d.wckickn){ wcKickN(); return; }
-  if(d.wckickr){ WC_KICK = null; sheetWcKick(); return; }
+  if(d.wckickr){ wcKickEnd(); return; }
   if(d.wcct){ sheetWcCt(); return; }
   if(d.wcctt){ wcCtTap(); return; }
   if(d.wcctclr){ wcData().preg.ct = []; WC_CT = null; save(); sheetWcCt(); return; }
@@ -34140,9 +34387,21 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.wcpinset){ wcPinSet(d.wcpinset); return; }
   if(d.wcshare){ wcShare(d.wcshare); return; }
   if(d.wcloss){ sheetWcLoss(); return; }
-  if(d.wclossok){ wcLossOk(); return; }
+  if(d.wclossok){ wcLossOk(d.wclossok); return; }
   if(d.wcrem !== undefined){ wcRem(d.wcrem); return; }
   if(d.wcpblood){ sheetWcPBlood(); return; }
+  if(d.wcqi){ wcQi(d.wcqi); return; }
+  if(d.wcqfx){ wcQfx(d.wcqfx); return; }
+  if(d.wcfix){ wcFix(d.wcfix); return; }
+  if(d.wcaskok){ V.wcAsk = todayKey(); renderInPlace(); return; }
+  if(d.wcgyn){ sheetWcGyn(); return; }
+  if(d.wcpostred){ sheetWcPostRed(); return; }
+  if(d.wcpostinfo){ sheetWcPostInfo(); return; }
+  if(d.wcwt){ sheetWcWeight(); return; }
+  if(d.wcwtcalc){ wcWtCalc(); return; }
+  if(d.wckickgo){ wcKickGo(); return; }
+  if(d.wcbackup){ closeSheet(); backupSave(); return; }
+  if(d.wcpinreset){ wcPinReset(); return; }
   if(d.tripmode){ tripData().mode = d.tripmode; save(); V.tripOpen = tripCurrent(); render(); return; }
   if(d.tripopen){ V.tripOpen = V.tripOpen === d.tripopen ? null : d.tripopen; render(); return; }
   if(d.trip){ var tdn = tripData().done; tdn[d.trip] = !tdn[d.trip]; save(); render(); return; }
@@ -34951,6 +35210,7 @@ utmCapture();
    в настройках - тогда не уходит ничего. */
 var ST_KEY = "rizq.stat";
 function stSection(){
+  if(/^(wcal|zhen|rzv)$/.test(V.view)) return "other";
   var v = V.view ? String(V.view) : "tab:" + V.tab;
   if(V.view === "arabic" && V.p){ var ap = String(V.p); v = "arabic:" + (ap.indexOf(":") > 0 ? ap.split(":")[0] : ap); }
   return v.toLowerCase().replace(/[^a-z0-9:_-]/g, "").slice(0, 40) || "other";
