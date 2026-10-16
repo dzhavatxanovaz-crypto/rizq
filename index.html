@@ -457,6 +457,93 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .cat-wide.igra .cw-t b em{font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#4E1119;background:#E6C868;border-radius:6px;padding:2px 6px;margin-left:6px;vertical-align:2px}
 .cat-wide.igra .cw-t span{color:rgba(247,239,227,.82)}
 .cat-wide.igra .cw-go{color:#E6C868}
+/* INST-CSS-BEGIN */
+/* На экран телефона: схема (16.10.2026) */
+.hx.ig-hero{background:radial-gradient(120% 120% at 20% 10%,#2E3C80 0%,#1E2A5A 45%,#0E1636 100%)}
+.ig-tabs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.ig-tabs::-webkit-scrollbar{display:none}
+.ig-tab{flex:none;display:flex;flex-direction:column;align-items:flex-start;min-height:44px;padding:8px 13px;border-radius:14px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);text-align:left}
+.ig-tab b{font-size:13.5px;white-space:nowrap}.ig-tab span{font-size:11.5px;color:var(--ink-3);white-space:nowrap}
+.ig-tab.on{background:var(--accent-ink);border-color:var(--accent-ink);color:var(--bg,#0E1636)}.ig-tab.on span{color:inherit;opacity:.8}
+.ig-card-st{padding:16px 10px}
+.ig-stage{display:flex;flex-direction:column;align-items:center}
+.ig-ph{position:relative;width:min(250px,68vw);aspect-ratio:9/19.3;border-radius:34px;background:#0B0B12;padding:9px;box-shadow:0 18px 40px rgba(0,0,0,.28),inset 0 0 0 2px #2A2A36}
+.ig-notch{position:absolute;top:15px;left:50%;width:30%;height:18px;margin-left:-15%;border-radius:12px;background:#000;z-index:5}
+.ig-sc{position:relative;width:100%;height:100%;border-radius:26px;overflow:hidden;background:#F4F1EA;font-family:-apple-system,"Segoe UI",Roboto,sans-serif;color:#1A1A22}
+.ig-finger{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:rgba(255,255,255,.55);border:2.5px solid rgba(30,42,90,.85);box-shadow:0 4px 12px rgba(0,0,0,.3);z-index:8;pointer-events:none;transition:transform .12s;left:50%;top:60%;opacity:0}
+.ig-finger.press{transform:scale(.72);background:rgba(212,175,55,.75)}
+.ig-ripple{position:absolute;width:56px;height:56px;border-radius:50%;border:3px solid #D4AF37;z-index:7;pointer-events:none;opacity:0}
+.ig-ph .ig-finger,.ig-ph .ig-ripple{margin-left:0}
+.ig-dots{display:flex;gap:6px;margin-top:12px}.ig-dot{width:8px;height:8px;border-radius:50%;background:var(--line)}.ig-dot.on{background:var(--accent-ink);width:20px;border-radius:4px}
+.ig-cap{min-height:44px;margin:10px 4px 0;text-align:center;font-size:15px;line-height:1.45;font-weight:600;color:var(--ink)}
+.ig-ctl{display:flex;justify-content:center;gap:8px;margin-top:8px}.ig-ctl .btn{min-height:44px;min-width:48px}
+/* экран-приложение */
+.ig-app{position:absolute;left:0;right:0;bottom:0;padding:26px 8px 0;background:#F4F1EA}
+.ig-ah{display:flex;align-items:center;gap:6px;padding:6px 6px 8px}
+.ig-ah img{width:18px;height:18px;border-radius:5px}.ig-ah b{font-size:11px;letter-spacing:.12em;color:#1E2A5A}.ig-ah i{margin-left:auto;width:16px;height:16px;border-radius:50%;background:#E3DED2}.ig-ah i+i{margin-left:4px}
+.ig-card{background:#fff;border-radius:12px;padding:10px;margin-bottom:8px;display:flex;flex-direction:column;gap:6px}
+.ig-card.navy{background:linear-gradient(140deg,#2E3C80,#1E2A5A);height:22%}
+.ig-card span{display:block;height:7px;border-radius:4px;background:#E6E1D6;width:80%}.ig-card span.s{width:45%}.ig-card span.m{width:62%}
+.ig-card.navy span{background:rgba(244,235,208,.35)}
+.ig-dim{position:absolute;inset:0;background:rgba(10,12,24,.35);z-index:2}
+/* панели браузеров */
+.ig-bar26{position:absolute;left:6%;right:6%;bottom:3.2%;height:7%;display:flex;align-items:center;gap:6px;z-index:3}
+.ig-b{flex:none;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 2px 8px rgba(0,0,0,.15);display:grid;place-items:center;font-size:16px;color:#333}
+.ig-b.sm{width:22px;height:22px;font-size:12px;box-shadow:none;background:transparent}
+.ig-pill{flex:1;min-width:0;height:30px;border-radius:15px;background:rgba(255,255,255,.92);box-shadow:0 2px 8px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center}
+.ig-pill.w{box-shadow:none;background:#ECE8DF;height:24px}.ig-pill.l{justify-content:flex-start;padding-left:8px}
+.ig-url{font-size:9.5px;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ig-top{position:absolute;left:0;right:0;top:0;height:11%;padding:26px 8px 4px;display:flex;align-items:flex-end;gap:4px;background:#F7F5F0;z-index:3;border-bottom:1px solid #E3DED2}
+.ig-top.and{background:#fff}.ig-top.inapp{background:#fff}
+.ig-tool{position:absolute;left:0;right:0;bottom:0;height:8.5%;display:flex;align-items:center;justify-content:space-around;background:#F7F5F0;border-top:1px solid #E3DED2;z-index:3;font-size:15px;color:#2563EB}
+.ig-tool.c{color:#555}
+.ig-pop{position:absolute;z-index:4;background:rgba(250,250,250,.97);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:4px 0;display:flex;flex-direction:column}
+.ig-pop b,.ig-list b{display:block;font-weight:500;font-size:10.5px;padding:8px 12px;border-bottom:1px solid #EEE;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ig-pop.and{border-radius:6px;padding:4px 0}.ig-pop.and b{border-bottom:0;padding:9px 12px}
+.ig-sheet{position:absolute;left:0;right:0;bottom:0;z-index:4;background:#F2F2F6;border-radius:18px 18px 0 0;padding:10px 8px}
+.ig-sh-h{display:flex;align-items:center;gap:8px;padding:2px 4px 8px}.ig-sh-h img{width:26px;height:26px;border-radius:7px}
+.ig-sh-h b{display:block;font-size:10px}.ig-sh-h i{display:block;font-style:normal;font-size:8.5px;color:#888}
+.ig-row{display:flex;justify-content:space-around;padding:6px 0}
+.ig-av{width:30px;height:30px;border-radius:50%;background:#D5D5DC}
+.ig-ap{width:30px;height:30px;border-radius:9px}
+.ig-acts{display:flex;justify-content:space-around;padding:6px 0;margin-top:2px}
+.ig-acts span{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:8px;color:#444}
+.ig-acts i{width:30px;height:30px;border-radius:50%;background:#fff;display:grid;place-items:center;font-style:normal;font-size:13px}
+.ig-list{background:#fff;border-radius:12px;margin-top:6px;overflow:hidden}
+.ig-white{position:absolute;inset:0;background:#F2F2F6;padding:30px 10px 0}
+.ig-nav{display:flex;align-items:center;justify-content:space-between;font-size:10px;padding:2px 2px 12px}.ig-nav b{font-size:11px}.ig-nav span{color:#2563EB}
+.ig-nav span.hi{background:#2563EB;color:#fff;border-radius:12px;padding:4px 10px;font-weight:600}
+.ig-addrow{display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:10px}
+.ig-addrow img{width:34px;height:34px;border-radius:9px}.ig-addrow b{display:block;font-size:11px}.ig-addrow i{display:block;font-style:normal;font-size:8.5px;color:#999}
+.ig-tog{display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:12px;padding:10px;margin-top:10px;font-size:10px}
+.ig-tog em{width:30px;height:18px;border-radius:9px;background:#34C759;position:relative}.ig-tog em::after{content:"";position:absolute;right:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff}
+.ig-white p{font-size:8.5px;color:#888;margin:6px 4px 0;line-height:1.4}
+.ig-kb{position:absolute;left:0;right:0;bottom:0;height:30%;background:#D1D3D9;display:flex;flex-direction:column;gap:6px;padding:10px}
+.ig-kb i{flex:1;border-radius:6px;background:rgba(255,255,255,.7)}
+.ig-dlg{position:absolute;left:8%;right:8%;top:38%;z-index:4;background:#fff;border-radius:22px;padding:16px 14px 12px;box-shadow:0 12px 30px rgba(0,0,0,.3)}
+.ig-dlg > b{display:block;font-size:12px;margin-bottom:10px}.ig-dlg .ig-addrow{padding:4px 0}
+.ig-dlg-b{display:flex;justify-content:flex-end;gap:14px;margin-top:12px;font-size:10.5px;color:#1A73E8;font-weight:600}
+.ig-dlg-b span.hi{background:#1A73E8;color:#fff;border-radius:16px;padding:6px 12px}
+.ig-home{position:absolute;inset:0;background:linear-gradient(160deg,#3B4C8C,#7A4E8C 55%,#C77B6A);padding:44px 12px 0}
+.ig-home.and{background:linear-gradient(160deg,#1F5E59,#2E3C80)}
+.ig-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 8px}
+.ig-ic{display:flex;flex-direction:column;align-items:center;gap:4px}
+.ig-ic i{width:38px;height:38px;border-radius:10px;display:block;opacity:.9}
+.ig-ic em{display:block;width:26px;height:5px;border-radius:3px;background:rgba(255,255,255,.5)}
+.ig-ic.rizq img{width:38px;height:38px;border-radius:10px;box-shadow:0 0 0 3px rgba(212,175,55,.9),0 6px 16px rgba(0,0,0,.35);animation:igPop 1.2s ease}
+.ig-home.and .ig-ic.rizq img{border-radius:50%}
+.ig-ic.rizq em{width:auto;height:auto;background:none;font-style:normal;font-size:9px;color:#fff;font-weight:600}
+.ig-dock{position:absolute;left:6%;right:6%;bottom:3%;height:9%;border-radius:20px;background:rgba(255,255,255,.25);display:flex;justify-content:space-around;align-items:center}
+.ig-dock i{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.55)}
+@keyframes igPop{0%{transform:scale(.2);opacity:0}60%{transform:scale(1.15);opacity:1}100%{transform:scale(1)}}
+.ig-sc .hi{transition:background .25s,color .25s}
+.ig-sc .hi.on{background:#FFF3C4!important;color:#1A1A22!important}
+.ig-sc .ig-nav span.hi.on,.ig-sc .ig-dlg-b span.hi.on{background:#D4AF37!important;color:#1A1A22!important}
+.ig-sc .ig-b.hi.on{box-shadow:0 0 0 3px #D4AF37}
+.ig-tip{text-align:center}.ig-tip img{width:64px;height:64px;border-radius:16px;margin:4px auto 8px;display:block;box-shadow:0 8px 20px rgba(0,0,0,.2)}
+.ig-tip p{font-size:14.5px;line-height:1.55;color:var(--ink-2);margin:6px 0 14px}
+.ig-ph.and{border-radius:28px}.ig-ph.and .ig-notch{width:12px;height:12px;margin-left:-6px;border-radius:50%;top:16px}.ig-ph.and .ig-sc{border-radius:20px}
+/* INST-CSS-END */
 /* WCAL-CSS-BEGIN */
 /* женский календарь (16.10.2026) */
 .hx.wc-hero{background:radial-gradient(120% 120% at 20% 10%,#7A2E52 0%,#4A1838 48%,#22102A 100%);border-color:rgba(241,190,200,.45)}
@@ -591,6 +678,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .wc-stat{grid-template-columns:1fr 1fr}
 .wc-stat > div:nth-child(3){grid-column:1/-1}
 :root[data-fs="xl"] .wc-stat,:root[data-fs="xxl"] .wc-stat{grid-template-columns:1fr}
+.wc-chip,.wc-chk,.rzv-st,.wc-terms summary{min-height:44px}
+.sheet .btn.sm{min-height:44px}
+.wc-ask2{border-color:var(--accent-ink)}.wc-ask2 b{display:block;font-family:var(--f-display);font-size:16px}.wc-ask2 span{display:block;font-size:13.5px;line-height:1.5;color:var(--ink-2);margin-top:4px}
 /* развитие ребёнка (16.10.2026) */
 .hx.rzv-hero{background:radial-gradient(120% 120% at 20% 10%,#3A5A8C 0%,#253E6B 48%,#121F3E 100%)}
 .rzv-kid b{display:block;font-family:var(--f-display);font-size:26px;line-height:1.2;color:#F7E7B4;margin-top:6px}
@@ -3475,9 +3565,7 @@ function a2hsCard(){
   var ios = isIOS();
   return '<section class="card a2hs"><div class="a2hs-h"><span>⤓</span><div><b>Добавьте RIZQ на экран «Домой»</b>'+
     '<span>В магазинах приложений его нет: оно открывается из браузера, а на экран ставится за три касания.</span></div></div>'+
-    '<ol class="a2hs-l">'+(ios
-      ? '<li>Откройте эту страницу в Safari</li><li>Нажмите «Поделиться» - квадрат со стрелкой вверх</li><li>Выберите «На экран «Домой»» и нажмите «Добавить»</li>'
-      : '<li>Откройте меню браузера - три точки</li><li>Выберите «Установить приложение» или «Добавить на главный экран»</li><li>Подтвердите</li>')+'</ol>'+
+    '<button class="btn sm" style="margin-top:10px" data-open="install">Показать, как - на схеме</button>'+
     '<p class="a2hs-n">Так приложение открывается на весь экран и работает без интернета. И главное: пока оно только в браузере, телефон может стереть ваши отметки, если вы не заходили неделю.</p>'+
     '<button class="btn sm sec" data-a2hs="1">Уже добавила, скрыть</button></section>';
 }
@@ -7410,6 +7498,7 @@ function renderHdr(){
         : V.view==="wcal" ? wcTitle()
         : V.view==="rzv" ? "Развитие ребёнка"
         : V.view==="zhen" ? "Женский раздел"
+        : V.view==="install" ? "На экран телефона"
         : V.view==="settings" ? "Настройки"
         : V.view==="spl" ? "Плеер сур"
         : V.view==="khatms" ? "Хатм вместе"
@@ -8296,7 +8385,7 @@ var SHARE_TEXT = "Ассаламу алейкум! Нашла приложени
 /* Экраны, которые можно открыть ссылкой. Белый список, а не любое значение:
    по чужой ссылке приложение не должно оказываться где угодно. */
 var DEEP_VIEWS = ["courses","sadaqa","zakat","names","hadith","sira","book1","qibla",
-                  "calendar","tasbih","suras","halal","top","qduas","duaall","report","share","consulting","live","zhen","rzv","wcal","book2","umrah","installment","kids","hajjtrip","salahpics","arabic"];
+                  "calendar","tasbih","suras","halal","top","qduas","duaall","report","share","consulting","live","install","zhen","rzv","wcal","book2","umrah","installment","kids","hajjtrip","salahpics","arabic"];
 var DEEP_TABS  = ["home","quran","dua","journal","income","prof"];
 
 var PAYR = { timer:null, until:0, id:"" };
@@ -8365,6 +8454,7 @@ function sheetHomeTip(){
   sheet('<h3>Чтобы приложение было всегда под рукой</h3>'+
     '<p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 14px">'+t+'</p>'+
     (INST.evt ? '<button class="btn" data-acc="instgo">Установить</button>' : '')+
+    '<button class="btn sec" style="margin-top:8px" data-open="install">Показать на схеме</button>'+
     '<button class="btn'+(INST.evt ? ' ghost' : '')+'" style="margin-top:8px" data-scrim="1">Понятно</button>'+
     '<a class="btn ghost" style="margin-top:8px;display:block;text-align:center;text-decoration:none" target="_blank" rel="noopener" href="https://oporamyshleniya.ru/ekran">Подробная инструкция</a>');
 }
@@ -8440,7 +8530,7 @@ function deepOpen(qArg){
       quran:["quran", null], azkar:["azkar", null], kniga:["book1", null], book:["book1", null],
       duas:["duas", null], khatms:["khatms", null], dms:["dms", null],
       studio:["vmake", null], video:["vmake", null],
-      rassrochka:["installment", null], installment:["installment", null], nastavnik:["nastavnik", null], kalendar:["wcal", null], beremennost:["wcal", "preg"], razvitie:["rzv", null], zhenskiy:["zhen", null] };   /* сайт и посты об исламской рассрочке */   /* кодовое слово СТУДИЯ */
+      rassrochka:["installment", null], installment:["installment", null], nastavnik:["nastavnik", null], kalendar:["wcal", null], beremennost:["wcal", "preg"], razvitie:["rzv", null], zhenskiy:["zhen", null], ekran:["install", null], install:["install", null] };   /* сайт и посты об исламской рассрочке */   /* кодовое слово СТУДИЯ */
     /* ?post=<id> - открыть запись журнала (ссылка «Поделиться») */
     /* ?finreq=<номер> - заявка на рассрочку с сайта: показываем её в «Моих заявках» (03.10.2026) */
     var mfr = q.match(/[?&]finreq=([a-f0-9]{32})/);
@@ -8665,8 +8755,8 @@ function viewShare(){
     '<div style="margin-top:16px;padding:15px 16px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line)">'+
       '<div style="font-family:var(--f-display);font-size:15px;font-weight:600;margin-bottom:9px"> iPhone и iPad</div>'+
       '<ol style="font-size:14.5px;line-height:1.7;color:var(--ink-2);padding-left:19px;margin:0">'+
-        '<li>Откройте ссылку <b>в Safari</b>. В Chrome не сработает</li>'+
-        '<li>Нажмите кнопку «Поделиться» внизу экрана: квадрат со стрелкой вверх</li>'+
+        '<li>Откройте ссылку <b>в Safari</b> (или в Chrome - там «Поделиться» в строке адреса)</li>'+
+        '<li>Нажмите «Поделиться» - квадрат со стрелкой вверх. На iOS 26 - сначала «⋯» внизу справа, затем «Поделиться»</li>'+
         '<li>Пролистайте список вниз до пункта <b>«На экран «Домой»»</b></li>'+
         '<li>Нажмите «Добавить» в правом верхнем углу</li>'+
       '</ol>'+
@@ -8682,6 +8772,7 @@ function viewShare(){
       '</ol>'+
       '<p style="font-size:13px;color:var(--ink-3);margin:10px 0 0;line-height:1.5">'+
       'Иногда Chrome сам предлагает установку внизу экрана - тогда достаточно нажать на это предложение.</p>'+
+      '<button class="btn sec" data-open="install" style="width:100%;margin-top:12px">Показать на схеме</button>'+
     '</div>'+
 
     '<p style="font-size:13.5px;color:var(--ink-3);margin:12px 0 0;line-height:1.55">'+
@@ -8812,9 +8903,10 @@ function buildIndex(){
    ["Размер текста","крупный шрифт для чтения","open:settings","шрифт размер крупный текст мелко зрение увеличить плохо вижу буквы"],
    ["Умра - малый хадж","путеводитель: сезоны, вещи, ихрам, таваф, са'й","open:umrah","умра умру малый хадж паломничество мекка медина ихрам микат таваф сай сафа марва кааба путеводитель чек-лист вещи виза нусук"],
    ["Девушка, которая смогла","книга Заиры Джаватхановой, бизнес-роман","open:book2","книга девушка которая смогла бизнес роман амина читать купить книгу"],
-   ["Женский календарь","месячные, беременность, нифас - по шафиитскому мазхабу","open:wcal","женский календарь месячные цикл хайд нифас истихада критические дни менструация беременность беременна ПДР роды овуляция гусль трекер"],
+   ["Календарь цикла","месячные, хайд, намаз и пост - по шафиитскому мазхабу","open:wcal","женский календарь месячные цикл хайд нифас истихада критические дни менструация беременность беременна ПДР роды овуляция гусль трекер"],
    ["Развитие ребёнка","по возрасту от рождения до 14 лет: вехи, игры, воспитание по Сунне","open:rzv","развитие ребенка ребёнка малыш младенец возраст вехи навыки игры занятия воспитание тарбия намаз детям сон режим педиатр осмотры"],
    ["Женский раздел","календарь месячных, беременность, развитие ребёнка","open:zhen","женский раздел женщинам для женщин мама мамам"],
+   ["На экран телефона","как поставить RIZQ на экран «Домой» - iPhone и Android","open:install","установить приложение на экран домой главный экран значок иконка ярлык скачать iphone android safari chrome как сохранить"],
    ["Восполнение","пропущенные намазы и посты","open:qada","каза восполнение пропущенный намаз пост долг восполнить казаа qada"],
    ["Куда помочь","открытые сборы в Tooba","open:sadaqa","садака милостыня помочь сбор пожертвование благотворительность нуждающимся закят раздать туба tooba"],
   ].forEach(function(x){ add(x[0], x[1], x[2], x[3], "Разделы"); });
@@ -18959,12 +19051,12 @@ var WC_POST_RED = [
 var WC_POST_INFO = [
   {t:"Выделения после родов", p:"Обычно идут 4-6 недель: сначала ярко-красные, потом светлеют. Кровь дольше 6 недель - к гинекологу."},
   {t:"Настроение", p:"Грусть и слёзы первые 2 недели - бэби-блюз, это проходит. Если дольше или мешает ухаживать за малышом - это повод к врачу, а не слабость веры. Телефон для родителей 8-800-2000-122 (бесплатно), при угрозе жизни - 112."},
-  {t:"Осмотры", p:"Покажитесь в женской консультации после выписки и через 6-8 недель после родов."},
+  {t:"Осмотры", p:"Покажитесь в женской консультации после выписки и через 6-8 недель после родов. Если у вас резус-отрицательная кровь, а у малыша положительная, иммуноглобулин вводят в первые 72 часа после родов - напомните об этом в роддоме."},
   {t:"Грудное вскармливание", p:"Приложить в первый час, дальше по требованию 8-12 раз в сутки. Только грудь до 6 месяцев, потом - вместе с прикормом. Коран называет полный срок кормления - два года (2:233). Молока хватает, если с 5-6 дня 6 и больше мокрых подгузников в сутки и к 10-14 дню малыш вернул вес при рождении."},
   {t:"Следующая беременность", p:"ВОЗ советует не меньше 2 лет между родами и следующей беременностью. Кормление грудью защищает от беременности только до 6 месяцев - если кормите только грудью днём и ночью и месячных нет."}
 ];
 /* после потери беременности */
-var WC_LOSS_MED = "Обязательно покажитесь врачу и сделайте УЗИ, даже если кажется, что всё вышло. При резус-отрицательной крови скажите об этом сразу: может понадобиться укол иммуноглобулина в первые 72 часа. Звоните 103, если прокладка промокает за час, есть температура, сильная боль, выделения с запахом или обморок. Месячные обычно приходят через 4-6 недель; если их нет 8 недель или тест остаётся положительным - к врачу.";
+var WC_LOSS_MED = "Обязательно покажитесь врачу и сделайте УЗИ, даже если кажется, что всё вышло. При резус-отрицательной крови скажите об этом сразу: может понадобиться укол иммуноглобулина в первые 72 часа. Звоните 103, если прокладка промокает за час, есть температура, сильная боль, выделения с запахом или обморок. Месячные обычно приходят через 4-6 недель. Тест остаётся положительным через 3-4 недели или месячных нет 8 недель - к врачу.";
 /* цикл: когда к гинекологу */
 var WC_GYN = [
   "Месячные дольше 8 дней",
@@ -18977,7 +19069,7 @@ var WC_GYN = [
 ];
 /* прибавка веса за беременность по ИМТ до беременности (клинрекомендации «Нормальная беременность», 2023) */
 var WC_WEIGHT = [[18.5, "12,5-18 кг"], [25, "11,5-16 кг"], [30, "7-11,5 кг"], [99, "5-9 кг"]];
-var WC_FOOD = ["Без сырого молока, мягких сыров с плесенью, паштетов, недожаренного мяса и сырых яиц", "Без тунца и рыбы-меч (ртуть)", "Кофе и чай - не больше 300 мг кофеина в день (2-3 чашки)", "Мыть овощи и фрукты, руки - после сырого мяса"];
+var WC_FOOD = ["Без сырого молока, мягких сыров с плесенью, паштетов, печени, недожаренного мяса, сырых яиц и рыбы холодного копчения", "Рыба 2 раза в неделю - полезна; тунец не чаще раза в неделю, без рыбы-меч и акулы (ртуть)", "Кофе и чай - не больше 300 мг кофеина в день (2-3 чашки)", "Мыть овощи и фрукты, руки - после сырого мяса"];
 
 /* сумка в роддом */
 var WC_BAG = [
@@ -19328,7 +19420,7 @@ var PREG_MOTHER = [
    ar:"وَالْمَرْأَةُ تَمُوتُ بِجُمْعٍ شَهِيدٌ",
    tr:"Валь-мар’ату тамуту би-джум‘ин шахид",
    ru:"И женщина, которая умирает беременной или в родах, - шахид.",
-   src:"Джабир ибн Атик. Абу Дауд 3111, ан-Насаи 1846, Ибн Маджа 2803. Степень: Ибн Хиббан включил в «Сахих», аль-Хаким назвал достоверным [проверить по изданиям]"},
+   src:"Джабир ибн Атик. Абу Дауд 3111, ан-Насаи 1846, Ибн Маджа 2803. Степень: Ибн Хиббан включил в «Сахих», аль-Хаким назвал достоверным"},
 
   {t:"Мать и финик",
    p:"Бедная женщина получила от Аиши три финика, дала дочерям по одному, а третий, который поднесла ко рту, разделила между ними. Пророк ﷺ сказал: «Аллах сделал ей за это обязательным Рай».",
@@ -19350,7 +19442,7 @@ var PREG_MOTHER = [
 
   {t:"О прерывании беременности",
    p:"Жизнь ребёнка - аманат. После вдувания души (около 120 дней от зачатия) прерывание беременности запрещено единогласно. До этого срока у шафиитских учёных есть разные мнения, и надёжное правило одно: не делать этого без крайней необходимости, установленной врачом, и только после вопроса к знающему учёному.",
-   src:"Хадис о 120 днях - аль-Бухари 3208, Муслим 2643. Формулировка - по общему положению шафиитских книг; конкретный случай - только к учёному [проверить формулировку у знающего до выпуска]"}
+   src:"Хадис о 120 днях - аль-Бухари 3208, Муслим 2643. Формулировка - по общему положению шафиитских книг; конкретный случай - только к учёному"}
 ];
 
 var BIRTH = [
@@ -19407,7 +19499,7 @@ var NEWBORN = [
    ar:"كُلُّ غُلَامٍ رَهِينَةٌ بِعَقِيقَتِهِ، تُذْبَحُ عَنْهُ يَوْمَ سَابِعِهِ، وَيُحْلَقُ، وَيُسَمَّى",
    tr:"Куллю гулямин рахинатун би-‘акыкатихи, тузбаху ‘анху яума саби‘ихи, ва юхляку, ва юсамма",
    ru:"Каждый ребёнок связан своей акыкой: её режут за него на седьмой день, его бреют и дают ему имя.",
-   src:"Самура ибн Джундуб. Абу Дауд 2838, ан-Насаи 4220, ат-Тирмизи 1522 (ат-Тирмизи: «хасан сахих») [проверить по печатному изданию ат-Тирмизи]. Два и один - Аиша, ат-Тирмизи 1513 («хасан сахих»); Умм Курз, ат-Тирмизи 1516 («хасан сахих»)"},
+   src:"Самура ибн Джундуб. Абу Дауд 2838, ан-Насаи 4220, ат-Тирмизи 1522 (ат-Тирмизи: «хасан сахих»). Два и один - Аиша, ат-Тирмизи 1513 («хасан сахих»); Умм Курз, ат-Тирмизи 1516 («хасан сахих»)"},
 
   {t:"Бритьё головы и садака",
    p:"На седьмой день ребёнку бреют голову и раздают милостыню серебром по весу волос. Шафииты считают это желательным.",
@@ -19508,7 +19600,7 @@ var WC_PREG_ISLAM = PREG_WEEKS;
    Данные - S.wcal - только на этом телефоне: в синхронизацию
    с аккаунтом не входят (SY_KEYS), в отчёты и статистику - тоже.
    ============================================================ */
-var WC_DEF = { on:0, goal:"cycle", per:[], log:{}, cyc:28, len:5, fert:1, home:1, remSoon:0, remDays:2, remFert:0, mute:0,
+var WC_DEF = { on:0, goal:"cycle", per:[], log:{}, cyc:28, len:5, fert:1, home:0, remSoon:0, remDays:2, remFert:0, mute:0,
   gusl:{}, qadaAdded:{}, qadaPrayer:{}, preg:{lmp:"", kicks:[], ct:[], bag:{}, ks:0, kn:0}, post:{birth:""} };
 function wcData(){
   var w = S.wcal;
@@ -19587,20 +19679,28 @@ function wcClassify(){
       q = P[j];
       if(q.k === "n") break;
       if(j > i && q.a > lim15) break;
+      if(j > i && early && lastBl < S) break;   /* ранняя кровь кончилась до начала возможного хайда - новая кровь отдельно */
       ep.parts.push(q); qe = wcEndKey(q); if(!q.b) ep.open = true;
-      var dh = wcDurH(q); if(dh === null) known = false; else sumH += dh;
+      var dh = wcDurH(q);
+      if(early && q.a < S){ if(qe >= S) known = false; }   /* часы до начала возможного хайда не считаются */
+      else if(dh === null) known = false; else sumH += dh;
       if(!lastBl || qe > lastBl) lastBl = qe;
       j++;
     }
-    var short = known && !ep.open && sumH < 24;
+    var short = known && !ep.open && sumH < 24 && lastBl >= S;
     var over = lastBl > lim15, E = null;
+    /* если известны часы - 15 суток считаются как 360 часов */
+    var pf = ep.parts[0], pl = ep.parts[ep.parts.length - 1];
+    if(!early && pf && pl && pl.b && wcHours(pf.at) !== null && wcHours(pl.bt) !== null){ var spanH = wcDiff(pf.a, pl.b) * 24 + wcHours(pl.bt) - wcHours(pf.at); over = spanH > 360; }
     if(!short && lastBl >= S){
       if(over){ E = habit ? wcAdd(S, Math.min(habit, 15) - 1) : lim15; ep.ist = { habit:habit, from:wcAdd(E, 1) }; }
       else E = lastBl;
     }
     ep.E = E; ep.short = short; ep.over = over; ep.last = lastBl;
+    if(over && E && E > lim15) E = lim15;
+    ep.E = E;
     ep.parts.forEach(function(x){ var xe = wcEndKey(x); for(var kk = x.a; kk <= xe; kk = wcAdd(kk, 1)) day[kk] = (E && kk >= S && kk <= E) ? "h" : "i"; });
-    if(E){ for(k = S; k <= E; k = wcAdd(k, 1)) if(!day[k]) day[k] = "h"; lastEnd = E; if(!over && !early) habit = wcDiff(S, E) + 1; }
+    if(E){ for(k = S; k <= E; k = wcAdd(k, 1)) if(!day[k]) day[k] = "h"; lastEnd = E; if(!over && !early && !ep.open) habit = wcDiff(S, E) + 1; }
     eps.push(ep); i = j;
   }
   WC_CL = { sig:sig, day:day, eps:eps, habit:habit };
@@ -19617,7 +19717,8 @@ function wcPostRecover(){ var l = wcLastEp(); return !!(l && l.k === "n" && !l.o
 /* ---------- прогноз ---------- */
 function wcCycles(){
   var h = wcHaydEps(), out = [];
-  for(var i = 1; i < h.length; i++){ var n = wcDiff(h[i-1].S, h[i].S); if(n >= 15 && n <= 90) out.push(n); }
+  function lossy(e){ return e.parts.some(function(x){ return x.loss; }); }
+  for(var i = 1; i < h.length; i++){ if(lossy(h[i-1]) || lossy(h[i])) continue; var n = wcDiff(h[i-1].S, h[i].S); if(n >= 15 && n <= 90) out.push(n); }
   return out;
 }
 function wcAvgCyc(){ var c = wcCycles().slice(-6); if(!c.length) return wcData().cyc || 28; var s = 0; c.forEach(function(x){ s += x; }); return Math.round(s / c.length); }
@@ -19632,7 +19733,9 @@ function wcNext(){
   var l = wcLastH(); if(!l) return null;
   var c = wcAvgCyc(), nx = wcAdd(l.S, c), today = todayKey();
   if(l.open) return { key:nx, late:0, inDays:wcDiff(today, nx), open:1 };
-  return { key:nx, late: nx < today ? wcDiff(nx, today) : 0, inDays: nx >= today ? wcDiff(today, nx) : 0 };
+  var late = nx < today ? wcDiff(nx, today) : 0;
+  if(late > 60) return { key:nx, late:late, inDays:0, stale:1 };
+  return { key:nx, late:late, inDays: nx >= today ? wcDiff(today, nx) : 0 };
 }
 function wcSpread(){ var c = wcCycles().slice(-6); if(c.length < 3) return 0; return Math.max.apply(null, c) - Math.min.apply(null, c); }
 /* состояние дня для календаря */
@@ -19712,6 +19815,8 @@ function wcEndNote(ep){
   var night = "";
   var t = wcTimes(p.b), hj = wcHj(p.b);
   if(hj && hj.m === 9 && h < t.fajr) night = " Кровь прекратилась ночью - сегодняшний пост обязателен: сделайте намерение сейчас, после прекращения крови. Гусль можно и после рассвета, но до восхода - ради фаджра.";
+  var hjn = wcHj(wcAdd(p.b, 1));
+  if(h >= t.maghrib && hjn && hjn.m === 9) night = " Кровь прекратилась вечером - завтрашний пост Рамадана обязателен: сделайте намерение ночью, после прекращения крови. Гусль можно и после рассвета, но до восхода - ради фаджра.";
   return { list:list, txt: txt + ". Совершите гусль и сразу эти намазы; если время уже вышло - восполните их." + night };
 }
 /* Рамадан: сколько дней поста пришлось на кровь хайда или нифаса (и на короткую кровь, если не постилась) */
@@ -19721,7 +19826,8 @@ function wcRamadan(ep){
   for(var k = a; k <= e; k = wcAdd(k, 1)){
     var hj = wcHj(k); if(!hj || hj.m !== 9) continue;
     var s = cl.day[k], inBlood = ep.parts.some(function(x){ return k >= x.a && k <= wcEndKey(x); });
-    if(ep.short ? !inBlood : !(s === "h" || s === "n")) continue;
+    var tooLong = ep.over && ep.k === "h" && k >= ep.S && k <= wcAdd(ep.S, 14) && inBlood;
+    if(ep.short ? !inBlood : !(s === "h" || s === "n" || tooLong)) continue;
     var t = wcTimes(k);
     if(k === first.a && wcH(k, first.at) !== null && wcH(k, first.at) >= t.maghrib) continue;   /* пришла после заката - пост этого дня цел */
     if(last.b && k === last.b && wcH(k, last.bt) !== null && wcH(k, last.bt) < t.fajr) continue; /* закончилась до рассвета - день можно поститься */
@@ -19734,7 +19840,7 @@ function wcHjOk(){ return !!wcHj(todayKey()); }
 /* ---------- исламские подсказки на сегодня ---------- */
 function wcStatRows(kind){
   return '<div class="wc-stat">'+[["Намаз", "не совершается и не восполняется"], ["Пост", "не совершается, потом восполняется"], ["Коран", "не читать с намерением чтения; глазами про себя и азкары - можно"],
-    ["Мусхаф, мечеть, близость", "после гусля"], ["Зикр, дуа, салават", "в любое время"]].map(function(r){ return '<div><b>'+r[0]+'</b><span>'+r[1]+'</span></div>'; }).join("")+'</div>';
+    ["Мусхаф (касание и ношение), мечеть, близость и ласки между пупком и коленями без преграды", "после гусля"], ["Зикр, дуа, салават", "в любое время"]].map(function(r){ return '<div><b>'+r[0]+'</b><span>'+r[1]+'</span></div>'; }).join("")+'</div>';
 }
 function wcIslam(){
   var w = wcData(), ep = wcNowEp(), out = [], today = todayKey(), cl = wcClassify();
@@ -19743,6 +19849,8 @@ function wcIslam(){
     if(preg) out.push({ic:"!", t:"Сначала - к врачу", p:"Кровь при беременности - повод сразу позвонить врачу или в 103. Хайдом она может быть, если длится не меньше суток и не больше 15 и до неё было 15 дней чистоты; иначе это истихада, и намаз не оставляют. Спросите у знающего.", act:'<button class="btn sec sm" data-wcred="1">Когда к врачу сразу</button>'});
     if(st === "h" || st === "n"){
       out.push({ic:"☾", t:(ep.k === "n" ? "Нифас" : "Хайд") + ", " + d + "-й день", rows:1});
+      if(ep.k === "h" && ep.parts.length > 1 && today >= ep.parts[1].a) out.push({ic:"i", t:"Кровь вернулась в пределах 15 суток", p:"По шафиитскому мазхабу дни чистоты между ними тоже хайд: намазы этих дней не восполняются, посты Рамадана - восполняются."});
+      if(ep.parts.some(function(x){ return x.ask; })) out.push({ic:"?", t:"Кровь после прерывания беременности", p:"Как считать эту кровь - хайд, нифас или истихада, - зависит от того, что вышло. Спросите у знающего; сводку можно отправить кнопкой «Спросить знающую»."});
       var sn = ep.k === "h" ? wcStartNote(ep) : null;
       if(sn && !w.qadaPrayer[ep.S + ":s"]) out.push({ic:"◷", t:"Намаз, который пришёлся на начало", p:sn.txt, act: sn.need ? '<button class="btn sec sm" data-wcqp="'+esc(ep.S)+':s:'+sn.k+'">Добавить '+esc(qadaName(sn.k).toLowerCase())+' в «Восполнение»</button>' : ''});
       if(ep.k === "h" && d === 1) out.push({ic:"i", t:"Первый день", p:"Если кровь прекратится, не набрав суток, это не хайд: тогда пропущенные намазы восполняют."});
@@ -19757,21 +19865,27 @@ function wcIslam(){
       if(ep.over && ep.ist){
         var hb2 = ep.ist.habit;
         out.push({ic:"!", t:"Кровь перешла 15 суток - истихада",
-          p: hb2 ? "По общему правилу шафиитского мазхаба хайд - ваши обычные " + plural(hb2, "день", "дня", "дней") + " (до " + wcFmt(wcAdd(ep.ist.from, -1)) + "). Совершите гусль один раз. Намазы с " + wcFmt(ep.ist.from) + " до сегодня восполните. Дальше - омовение после наступления времени каждого фарда и сразу намаз; одно омовение - один фард и любые нафиль. Проверьте у знающего и покажитесь врачу."
+          p: hb2 ? "По общему правилу шафиитского мазхаба хайд - ваши обычные " + plural(hb2, "день", "дня", "дней") + " (до " + wcFmt(wcAdd(ep.ist.from, -1)) + "). Совершите гусль один раз. Намазы с " + wcFmt(ep.ist.from) + " по " + wcFmt(wcAdd(ep.S, 14)) + " восполните." + (wcDiff(ep.S, today) >= wcAvgCyc() ? " Подошло время вашего обычного хайда - как считать эти дни, спросите у знающего." : "") + " Дальше - омовение после наступления времени каждого фарда и сразу намаз; одно омовение - один фард и любые нафиль. Проверьте у знающего и покажитесь врачу."
             : "Кровь идёт дольше 15 суток, а обычной продолжительности в календаре пока нет. Как считать хайд и истихаду в вашем случае, обязательно спросите у знающего; покажитесь врачу.",
-          act: hb2 && !w.qadaPrayer[ep.S + ":i"] ? '<button class="btn sec sm" data-wcqi="'+esc(ep.S)+'">Добавить '+plural(Math.max(0, wcDiff(ep.ist.from, today)), "день", "дня", "дней")+' намазов в «Восполнение»</button>' : ''});
+          act: hb2 && !w.qadaPrayer[ep.S + ":i"] ? '<button class="btn sec sm" data-wcqi="'+esc(ep.S)+'">Добавить '+plural(wcIstDays(ep), "день", "дня", "дней")+' намазов в «Восполнение»</button>' : ''});
       } else if(ep.early){
-        out.push({ic:"!", t:"Пока это истихада", p:"С прошлых месячных не прошло 15 дней чистоты. До " + wcFmt(ep.early) + " эта кровь - истихада: намаз и пост обязательны, омовение - после наступления времени каждого фарда, место перевязать. Если кровь продолжится после " + wcFmt(wcAdd(ep.early, -1)) + ", с этого дня может начаться хайд. Уточните у знающего."});
+        out.push({ic:"!", t:"Пока это истихада", p:"С прошлых месячных не прошло 15 дней чистоты. До " + wcFmt(ep.early) + " эта кровь - истихада: намаз и пост обязательны, омовение - после наступления времени каждого фарда, место перевязать. Если кровь будет идти и " + wcFmt(ep.early) + ", с этого дня начнётся хайд. Уточните у знающего."});
       } else if(ep.k === "n"){
-        out.push({ic:"!", t:"Больше 60 дней", p:"Кровь дольше 60 дней - наибольшего срока нифаса. Спросите у знающего и покажитесь врачу."});
+        out.push({ic:"!", t:"Больше 60 дней", p:"Кровь дольше 60 дней - наибольшего срока нифаса. С 61-го дня - гусль, намаз и пост обязательны, омовение - после наступления времени каждого фарда. Как считать дни до 60-го - спросите у знающего; покажитесь врачу."});
       }
     }
   } else {
     var l = wcLastEp();
     if(l && l.last && wcDiff(l.last, today) <= 3 && !w.gusl[l.S]){
-      if(l.short){
+      if(l.over && l.k === "h" && l.ist){
+        out.push({ic:"!", t:"Кровь истихады прекратилась", p:"Хайд по привычке закончился " + wcFmt(l.E) + ": если гусль после него ещё не сделан - совершите его один раз; за конец истихады нового гусля не нужно. Намазы с " + wcFmt(l.ist.from) + " по " + wcFmt(wcAdd(l.S, 14)) + " восполните.",
+          act:'<button class="btn sm" data-wcgusl="'+esc(l.S)+'">Понятно</button>' + (!w.qadaPrayer[l.S + ":i"] ? ' <button class="btn sec sm" data-wcqi="'+esc(l.S)+'">Добавить '+plural(wcIstDays(l), "день", "дня", "дней")+' намазов в «Восполнение»</button>' : '')});
+      } else if(l.over && l.k === "n"){
+        out.push({ic:"!", t:"Кровь после 60 дней прекратилась", p:"Нифас закончился на 60-й день (" + wcFmt(l.E) + "). Если гусль тогда не сделан - совершите его; за конец крови после 60 дней нового гусля не нужно. Спросите у знающего о намазах дней после 60-го.",
+          act:'<button class="btn sm" data-wcgusl="'+esc(l.S)+'">Понятно</button>'});
+      } else if(l.short){
         out.push({ic:"!", t:"Меньше суток - не хайд", p:"Кровь шла меньше суток - пока это не хайд. Гусль не нужен: смойте кровь, сделайте омовение и молитесь. Если в течение 15 суток от начала кровь вернётся и в сумме наберёт сутки - всё станет хайдом. Если нет - намазы этих часов восполните, а день Рамадана, в который вы не постились, тоже в долг.",
-          act: !w.qadaPrayer[l.S + ":x"] ? '<button class="btn sec sm" data-wcgusl="'+esc(l.S)+'">Понятно</button>' : ''});
+          act:'<button class="btn sec sm" data-wcshortok="'+esc(l.S)+'">Понятно</button>'});
       } else if(l.E){
         var en = wcEndNote(l);
         out.push({ic:"◌", t:"Очищение: гусль", p:(l.k === "n" ? "Нифас закончился " : "Месячные закончились ") + wcFmt(l.last) + ". Конец - когда вата чистая, без красного, бурого и желтоватого. Совершите гусль: намерение и омыть водой всё тело, включая корни волос. Пока гусль не сделан, всё запретное остаётся запретным, кроме поста." + (en ? " " + en.txt : ""),
@@ -19850,6 +19964,7 @@ function viewWcal(){
         '<div><button class="btn sm" data-wcaskok="1">Да, идут</button><button class="btn sec sm" data-wcend="1">Закончились</button></div></div>';
   } else if(ep && stToday === "i"){ inner = "!"; sub = "истихада"; frac = 1; line = "Кровь вне срока хайда - см. ниже"; }
   else if(wcPostRecover()){ var bd = wcDiff(wcLastEp().birth, today) + 1; inner = bd + '<small>-й день</small>'; sub = "после родов"; frac = Math.min(1, bd / 60); line = "Цикл восстанавливается после родов. Придут месячные - отметьте."; }
+  else if(nx && nx.stale){ inner = "?"; sub = "давно нет отметок"; frac = 0; line = "Отметьте последние месячные - и прогноз оживёт"; }
   else if(wcLastH()){ var cd = wcDiff(wcLastH().S, today) + 1; inner = cd + '<small>-й день</small>'; sub = "цикла"; frac = cd / c;
     line = nx ? (nx.late ? 'Задержка ' + plural(nx.late, "день", "дня", "дней") : (nx.inDays ? 'Следующие ≈ ' + wcFmt(nx.key) + ' · через ' + plural(nx.inDays, "день", "дня", "дней") : 'Следующие ожидаются сегодня')) : ''; }
   else { inner = "-"; sub = "отметьте месячные"; frac = 0; line = 'Отметьте первый день последних месячных - и календарь начнёт считать'; }
@@ -19859,9 +19974,9 @@ function viewWcal(){
     '<div class="wc-line">'+line+'</div>'+
     (nx && !nx.late && wcSpread() > 7 ? '<div class="hx-sub" style="text-align:center">Цикл неровный - прогноз примерный</div>' : '')+
     ask+
-    '<div class="wc-acts">'+(ep ? '<button class="btn" data-wcend="1">Закончились</button>' : '<button class="btn" data-wcstart="1">'+(wcPostRecover() || w.goal === "post" ? 'Пришла кровь' : 'Начались месячные')+'</button>')+
+    '<div class="wc-acts">'+(ep ? (ask ? '' : '<button class="btn" data-wcend="1">Закончились</button>') : '<button class="btn" data-wcstart="1">'+(wcPostRecover() || w.goal === "post" ? 'Пришла кровь' : 'Начались месячные')+'</button>')+
       '<button class="btn sec" data-wcday="'+today+'">Как я сегодня</button></div>'+
-    (nx && nx.late >= 7 ? '<div class="hx-sub" style="margin-top:10px;text-align:center">Если возможна беременность - <button class="wc-lnk" data-zhen="preg">календарь беременности</button></div>' : '')+
+    (nx && nx.late >= 7 && !nx.stale ? '<div class="hx-sub" style="margin-top:10px;text-align:center">Если возможна беременность - <button class="wc-lnk" data-zhen="preg">календарь беременности</button></div>' : '')+
   '</section>');
   /* сегодня: намаз и пост */
   var isl = wcIslam();
@@ -19882,7 +19997,7 @@ function viewWcal(){
     '<button class="cat" data-wcset="1"><div class="ic">⚙</div><b>Настройки</b><span>цикл, код, копия</span></button></div>');
   if(ep && ep.k === "n" || w.goal === "post") h.push('<button class="cat-wide" data-wcislam="n"><span class="cw-ic">۞</span><span class="cw-t"><b>Нифас по Корану и Сунне</b><span>терпение, награда, что можно в эти дни</span></span><span class="cw-go">›</span></button>');
   h.push('<button class="cat-wide" data-wcislam="h"><span class="cw-ic">۞</span><span class="cw-t"><b>Дни хайда по Корану и Сунне</b><span>что это значит и чем наполнить эти дни</span></span><span class="cw-go">›</span></button>');
-  h.push('<p class="disclaimer">Отметки хранятся на этом телефоне. Если включены напоминания, сервер уведомлений знает только их время (текст нейтральный); облачная копия, если вы её включили, шифруется вашим кодом. Прогноз - по прошлым циклам: он не заменяет врача и не годится как средство предохранения. Правила - по шафиитскому мазхабу; в сложных случаях спросите у знающего.</p>');
+  h.push('<p class="disclaimer">Отметки хранятся на этом телефоне. Если включены напоминания, сервер уведомлений знает только их время (текст нейтральный); облачная копия, если вы её включили, шифруется кодом восстановления облачной копии. Прогноз - по прошлым циклам: он не заменяет врача и не годится как средство предохранения. Правила - по шафиитскому мазхабу; в сложных случаях спросите у знающего.</p>');
   h.push('</div>');
   return h.join("");
 }
@@ -19920,6 +20035,7 @@ function viewWcalStart(){
 /* режим меняется только после подтверждения (беременность - когда указан срок, после родов - дата родов) */
 function wcSetGoal(g){
   var w = wcData(); wcPersist();
+  if(w.goal === "preg" && w.preg.lmp && g !== "preg"){ sheetWcPregEnd(g); return; }
   if(g === "preg"){ if(!w.preg.lmp){ sheetWcPreg(); return; } w.goal = "preg"; w.on = 1; save(); V.p = "preg"; render(); return; }
   if(g === "post"){ sheetWcBirth(); return; }
   w.goal = g; if(g === "plan") w.fert = 1;
@@ -19948,6 +20064,7 @@ function wcStartOk(mode){
   var a = (document.getElementById("wcA") || {}).value || todayKey(), at = (document.getElementById("wcAt") || {}).value || "";
   if(a > todayKey()) a = todayKey();
   if(a < wcMinKey()){ toast("Проверьте год: дата больше двух лет назад"); return; }
+  if((mode === "1" || mode === "2") && wcDiff(a, todayKey()) > 45 && !confirm("Дата " + wcFmt(a, {day:"numeric", month:"long", year:"numeric"}) + " - больше полутора месяцев назад. Всё верно?")) return;
   if(mode === "2"){
     var cy = parseInt((document.getElementById("wcCyc") || {}).value, 10), ln = parseInt((document.getElementById("wcLen") || {}).value, 10);
     if(cy >= 18 && cy <= 60) w.cyc = cy; if(ln >= 1 && ln <= 15) w.len = ln;
@@ -20047,8 +20164,8 @@ function sheetWcSet(){
     '<p class="note" style="margin:6px 0 10px">Эти числа нужны, пока отмечено мало циклов. Потом календарь считает по вашей истории.</p>'+
     sw("fert", "Отмечать дни зачатия в календаре", "овуляция и фертильное окно - примерно, по средней длине цикла")+
     sw("home", "Статус на главной", "день цикла или неделя беременности на плашке «Женский раздел» (при коде - скрыт)")+
-    sw("mute", "Без азана в дни месячных", "уведомления о намазе не приходят, пока идёт хайд или нифас")+
-    '<button class="btn sec sm" style="width:100%;margin-top:10px" data-wcpinopen="1">'+(w.pin ? "Изменить или убрать код" : "🔒 Поставить код на календарь")+'</button>'+
+    sw("mute", "Без азана в дни месячных", "уведомления о намазе не приходят, пока идёт хайд или нифас; сервер уведомлений при этом видит перерыв в расписании")+
+    '<button class="btn sec sm" style="width:100%;margin-top:10px" data-wcpinopen="1">'+(w.pin || w.pinH ? "Изменить или убрать код" : "🔒 Поставить код на календарь")+'</button>'+
     '<button class="btn sec sm" style="width:100%;margin-top:8px" data-wcbackup="1">Сохранить копию данных в файл</button>'+
     (w.goal === "preg" ? '<button class="btn ghost sm" style="width:100%;margin-top:8px" data-wcloss="1">Беременность прервалась</button>' : '')+
     '<button class="btn" style="margin-top:12px" data-wcsetok="1">Готово</button>'+
@@ -20095,6 +20212,7 @@ function viewWcalPreg(){
     '<p class="hx-sub" style="margin-top:8px">Размер малыша и что происходит на этой неделе, обследования, тревожные признаки, шевеления и схватки, сумка в роддом - и что говорят Коран и Сунна.</p>'+
     '<button class="btn" style="margin-top:12px;width:100%" data-wcpregset="1">Указать срок</button></section></div>';
   var wk = Math.min(42, Math.max(4, x.wk)), wd = WC_WEEKS[wk] || WC_WEEKS[4];
+  if(x.wk >= 42) h.push('<section class="card wc-ask2"><b>Малыш уже родился?</b><span>Отметьте роды - календарь начнёт считать нифас и откроет раздел для мамы. Если ещё нет - поезжайте в роддом сегодня.</span><div class="wc-ia"><button class="btn sm" data-wcborn="1">Да, родился</button></div></section>');
   h.push('<section class="hx wc-hero wc-preg">'+
     '<div class="eyebrow">Беременность</div>'+
     wcRing(x.days / 280, x.wk + '<small> нед. ' + x.dd + ' дн.</small>', 'идёт ' + (x.wk + 1) + '-я неделя')+
@@ -20202,7 +20320,8 @@ function wcKickEnd(){ var w = wcData(), p = w.preg; if(p.ks && p.kn){ w.preg.kic
 var WC_CT = null;
 function sheetWcCt(){
   var w = wcData(), list = w.preg.ct.slice(-8).reverse();
-  if(WC_CT && Date.now() - WC_CT.s > 15 * 60000) WC_CT = null;   /* забытая схватка */
+  if(!WC_CT && w.preg.cto) WC_CT = { s: w.preg.cto };
+  if(WC_CT && Date.now() - WC_CT.s > 15 * 60000){ WC_CT = null; w.preg.cto = 0; save(); }   /* забытая схватка */
   var on = WC_CT && WC_CT.s;
   var rows = list.map(function(c, i){ var nx = list[i + 1]; return '<div class="row" style="padding:8px 12px;font-size:13px">'+esc(new Date(c.s).toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"}))+
     '<span class="val">'+wcMmss(c.e - c.s)+(nx ? ' · через '+wcMmss(c.s - nx.s) : '')+'</span></div>'; }).join("");
@@ -20228,8 +20347,8 @@ function wcCtAdvice(ct){
 }
 function wcCtTap(){
   var w = wcData();
-  if(WC_CT && WC_CT.s){ w.preg.ct.push({ s: WC_CT.s, e: Date.now() }); if(w.preg.ct.length > 40) w.preg.ct = w.preg.ct.slice(-40); WC_CT = null; save(); }
-  else WC_CT = { s: Date.now() };
+  if(WC_CT && WC_CT.s){ w.preg.ct.push({ s: WC_CT.s, e: Date.now() }); if(w.preg.ct.length > 40) w.preg.ct = w.preg.ct.slice(-40); WC_CT = null; w.preg.cto = 0; save(); }
+  else { WC_CT = { s: Date.now() }; w.preg.cto = WC_CT.s; save(); }
   sheetWcCt();
 }
 /* малыш родился -> нифас */
@@ -20238,6 +20357,7 @@ function sheetWcBirth(){
   sheet('<h3>Малыш родился</h3><p class="note" style="margin:0 0 10px">БаракаЛлаху ляки! Укажите дату родов - календарь начнёт считать дни нифаса. Роды обязывают гусль даже без крови; пост дня родов не засчитывается.</p>'+
     '<label class="eyebrow" style="display:block">Дата родов</label><input type="date" id="wcBirth" class="search" style="margin-top:6px" value="'+today+'" min="'+wcAdd(today, -365)+'" max="'+today+'">'+
     '<label class="eyebrow" style="display:block;margin-top:12px">Время, если знаете</label><input type="time" id="wcBirthT" class="search" style="margin-top:6px" value="">'+
+    '<label class="eyebrow" style="display:block;margin-top:12px">Кровь после родов уже прекратилась? Когда</label><input type="date" id="wcBirthEnd" class="search" style="margin-top:6px" value="" max="'+today+'">'+
     '<label class="eyebrow" style="display:block;margin-top:12px">Имя малыша - для раздела «Развитие ребёнка»</label><input id="wcKidN" class="search" style="margin-top:6px" maxlength="30" placeholder="можно позже">'+
     '<button class="btn" style="margin-top:14px" data-wcbornok="1">Сохранить</button><button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
 }
@@ -20245,9 +20365,12 @@ function wcBornOk(){
   var w = wcData(), b = (document.getElementById("wcBirth") || {}).value || todayKey(), t = (document.getElementById("wcBirthT") || {}).value || "", kn = String((document.getElementById("wcKidN") || {}).value || "").trim().slice(0, 30);
   if(b > todayKey()) b = todayKey();
   if(w.per.some(function(p){ return p.k === "n" && p.a === b; })){ toast("Эти роды уже отмечены"); return; }
+  var be = (document.getElementById("wcBirthEnd") || {}).value || "";
+  if(be && be < b) be = b;
+  if(!be && wcDiff(b, todayKey()) > 60){ toast("Роды больше 60 дней назад: укажите, когда прекратилась кровь"); return; }
   var o = wcOpen(); if(o) o.b = wcAdd(b, -1) < o.a ? o.a : wcAdd(b, -1);
   w.post.birth = b; w.goal = "post"; w.on = 1; w.preg.lmp = ""; w.preg.ks = 0;
-  w.per.push({ a:b, at:t, b:"", bt:"", k:"n" });
+  w.per.push({ a:b, at:t, b:be, bt:"", k:"n" });
   try{ var rz = rzvData(); if(!rz.kids.some(function(k){ return k.b === b; })){ var kid = { id:"k" + Date.now().toString(36), n:kn || "Малыш", b:b }; rz.kids.push(kid); rz.cur = kid.id; } }catch(e){}
   save(); closeSheet(); V.p = null; render(); toast("Нифас: день 1. Пусть Аллах благословит малыша");
 }
@@ -20272,9 +20395,10 @@ function wcQp(raw){
   w.qadaPrayer[a + ":" + which] = 1; save(); render();
   toast("Добавлено в «Восполнение»");
 }
+function wcIstDays(ep){ if(!ep.ist) return 0; var end = wcAdd(ep.S, 15), lastNext = wcAdd(ep.last || todayKey(), 1), t1 = wcAdd(todayKey(), 1); if(lastNext < end) end = lastNext; if(t1 < end) end = t1; return Math.max(0, wcDiff(ep.ist.from, end)); }
 function wcQi(a){
   var ep = wcEps().filter(function(e){ return e.S === a; })[0]; if(!ep || !ep.ist) return;
-  var w = wcData(), n = Math.max(0, wcDiff(ep.ist.from, todayKey()));
+  var w = wcData(), n = wcIstDays(ep);
   if(n){ var q = qadaData(); qadaKinds().forEach(function(f){ q.p[f.k] = (q.p[f.k] || 0) + n; }); qadaLog("days", n); }
   w.qadaPrayer[a + ":i"] = 1; save(); render(); toast(n ? "Добавлено: " + plural(n, "день", "дня", "дней") + " намазов" : "Отмечено");
 }
@@ -20285,7 +20409,7 @@ function wcQf(a){
   toast(plural(n, "день", "дня", "дней") + " поста - в «Восполнении»");
 }
 function wcQfx(a){ var ep = wcEps().filter(function(e){ return e.S === a; })[0]; if(!ep) return; wcData().qadaAdded[a] = wcRamadan(ep); save(); render(); }
-/* напоминания - нейтральный текст и общий тег: сервер уведомлений не отличает их от других */
+/* напоминания - нейтральный текст и общий тег; сервер уведомлений знает время и текст «Загляните в календарь» - об этом сказано в карточке прогноза */
 function wcPushItems(){
   var w = S.wcal, out = []; if(!w || !w.on || !(w.remSoon || w.remFert) || w.goal === "preg" || w.goal === "post") return out;
   var nx = wcNext(); if(!nx || nx.late || nx.open) return out;
@@ -20296,7 +20420,7 @@ function wcPushItems(){
 }
 
 /* ---------- замок ---------- */
-function wcLocked(){ var w = S.wcal; return !!(w && w.pin && !V.wcUnlocked); }
+function wcLocked(){ var w = S.wcal; return !!(w && (w.pin || w.pinH) && !V.wcUnlocked); }
 function viewWcalLock(){
   return '<div class="stack"><section class="hx wc-hero"><div class="eyebrow">Женский раздел</div><div class="wc-ttl" style="text-align:center">🔒 Раздел закрыт кодом</div>'+
     '<input id="wcPin" class="search" type="password" inputmode="numeric" maxlength="8" placeholder="Код" style="margin-top:12px;text-align:center;font-size:20px;letter-spacing:.3em">'+
@@ -20304,8 +20428,9 @@ function viewWcalLock(){
     '<button class="btn ghost sm" style="margin-top:12px;width:100%" data-wcpinreset="1">Забыли код? Сбросить код и данные календаря</button></section></div>';
 }
 function wcPinTry(){
-  var v = String((document.getElementById("wcPin") || {}).value || "");
-  if(v && v === String(S.wcal.pin)){ V.wcUnlocked = 1; render(); } else toast("Код не подходит");
+  var v = String((document.getElementById("wcPin") || {}).value || ""), w = S.wcal; if(!v) return;
+  if(w.pin && v === String(w.pin)){ wcHash(v, function(hh){ if(hh){ w.pinH = hh; w.pin = ""; save(); } }); V.wcUnlocked = 1; render(); return; }
+  wcHash(v, function(hh){ if(hh && hh === w.pinH){ V.wcUnlocked = 1; render(); } else toast("Код не подходит"); });
 }
 function wcPinReset(){
   if(!confirm("Сбросить код? Все отметки календаря и беременности на этом телефоне будут удалены. Остальной RIZQ не пострадает.")) return;
@@ -20316,18 +20441,18 @@ function sheetWcPin(){
   sheet('<h3>Код на женский раздел</h3><p class="note" style="margin:0 0 10px">Код спрашивается каждый раз, когда вы возвращаетесь в приложение. Пока он стоит, плашка на главной не показывает ваш статус. Код хранится на этом телефоне и в файл копии не попадает.</p>'+
     '<input id="wcPinNew" class="search" type="password" inputmode="numeric" maxlength="8" placeholder="4-8 цифр">'+
     '<button class="btn" style="margin-top:10px" data-wcpinset="1">Сохранить код</button>'+
-    (w.pin ? '<button class="btn ghost" style="margin-top:8px" data-wcpinset="0">Убрать код</button>' : '')+
+    (w.pin || w.pinH ? '<button class="btn ghost" style="margin-top:8px" data-wcpinset="0">Убрать код</button>' : '')+
     '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
 }
 function wcPinSet(on){
   var w = wcData();
-  if(on === "0"){ w.pin = ""; save(); closeSheet(); render(); toast("Код убран"); return; }
+  if(on === "0"){ w.pin = ""; w.pinH = ""; save(); closeSheet(); render(); toast("Код убран"); return; }
   var v = String((document.getElementById("wcPinNew") || {}).value || "");
   if(!/^[0-9]{4,8}$/.test(v)){ toast("Нужно от 4 до 8 цифр"); return; }
-  w.pin = v; V.wcUnlocked = 1; save(); closeSheet(); render(); toast("Код установлен");
+  wcHash(v, function(hh){ if(!hh){ toast("Этот браузер не умеет хранить код безопасно"); return; } w.pinH = hh; w.pin = ""; V.wcUnlocked = 1; save(); closeSheet(); render(); toast("Код установлен"); });
 }
 /* ушли из приложения - раздел снова закрыт */
-try{ document.addEventListener("visibilitychange", function(){ if(document.hidden){ if(S.wcal && S.wcal.pin){ V.wcUnlocked = 0; } } else if(S.wcal && S.wcal.pin && /^(wcal|zhen|rzv)$/.test(V.view || "")) render(); }); }catch(e){}
+try{ document.addEventListener("visibilitychange", function(){ if(document.hidden){ if(S.wcal && (S.wcal.pin || S.wcal.pinH)){ V.wcUnlocked = 0; if(/^(wcal|zhen|rzv)$/.test(V.view || "")) closeSheet(); } } else if(S.wcal && (S.wcal.pin || S.wcal.pinH) && /^(wcal|zhen|rzv)$/.test(V.view || "")) render(); }); }catch(e){}
 
 /* ---------- сводка: спросить знающую или показать врачу - через «Поделиться», без сервера ---------- */
 function wcSummary(kind){
@@ -20361,15 +20486,22 @@ function sheetWcLoss(){
     '<div class="wc-isl" style="margin:8px 0">'+wcCardsHtml(typeof LOSS !== "undefined" ? LOSS : [])+'</div>'+
     '<div class="wc-adv">'+esc(WC_LOSS_MED)+'</div>'+
     '<label class="eyebrow" style="display:block;margin-top:12px">Когда это случилось</label><input type="date" id="wcLoss" class="search" style="margin-top:6px" value="'+todayKey()+'" min="'+wcAdd(todayKey(), -120)+'" max="'+todayKey()+'">'+
+    '<label class="eyebrow" style="display:block;margin-top:12px">Кровь уже прекратилась? Когда</label><input type="date" id="wcLossEnd" class="search" style="margin-top:6px" value="" max="'+todayKey()+'">'+
     '<p class="note" style="margin-top:10px">Врач сказал, что вышли ткани плода - даже сгусток или кусочек плоти, начало человека? Тогда кровь после - нифас, нужен гусль. Вышла только кровь - не нифас.</p>'+
     '<button class="btn" style="margin-top:6px" data-wclossok="n">Да, вышли ткани - нифас</button>'+
     '<button class="btn sec" style="margin-top:8px" data-wclossok="h">Нет или не знаю</button>'+
     '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
 }
 function wcLossOk(kind){
-  var w = wcData(), d = (document.getElementById("wcLoss") || {}).value || todayKey();
+  var w = wcData(), d = (document.getElementById("wcLoss") || {}).value || todayKey(), de = (document.getElementById("wcLossEnd") || {}).value || "";
+  if(de && de < d) de = d;
+  if(!de && wcDiff(d, todayKey()) > 15){ toast("Это было больше 15 дней назад: укажите, когда прекратилась кровь"); return; }
   w.preg.lmp = ""; w.preg.ks = 0; w.goal = kind === "n" ? "post" : "cycle"; V.p = null;
-  if(!wcOpen()) w.per.push({ a:d, at:"", b:"", bt:"", k: kind === "n" ? "n" : "h", loss:1, ask: kind !== "n" ? 1 : 0 });
+  var op = wcOpen();
+  if(op && kind === "n"){ op.b = wcAdd(d, -1) < op.a ? op.a : wcAdd(d, -1); op = null; if(op === null && wcPers().some(function(p){ return p.a === d; })) w.per = w.per.filter(function(p){ return p.a !== d; }); }
+  if(op){ op.ask = kind !== "n" ? 1 : 0; op.loss = 1; }
+  else w.per.push({ a:d, at:"", b:de, bt:"", k: kind === "n" ? "n" : "h", loss:1, ask: kind !== "n" ? 1 : 0 });
+  WC_CL = null;
   save(); closeSheet(); render();
   if(kind !== "n") toast("Записано. Спросите у знающего, как считать эту кровь");
 }
@@ -20391,7 +20523,7 @@ function zhenStatus(){
     if(ep && wcBlood()) out.cycle = (ep.k === "n" ? "Нифас" : "Месячные") + ": " + (wcDiff(ep.S, todayKey()) + 1) + "-й день";
     else if(wcPostRecover()) out.cycle = "Цикл восстанавливается после родов";
     else if(nx && !nx.open) out.cycle = nx.late ? "Задержка " + plural(nx.late, "день", "дня", "дней") : (nx.inDays ? "Следующие ≈ через " + plural(nx.inDays, "день", "дня", "дней") : "Следующие ожидаются сегодня");
-    var x = wcPregInfo(); if(x) out.preg = x.wk + " нед. " + x.dd + " дн. · ПДР " + wcShort(x.due);
+    var x = w.goal === "preg" ? wcPregInfo() : null; if(x) out.preg = x.wk + " нед. " + x.dd + " дн. · ПДР " + wcShort(x.due);
   }
   var kid = S.rzv && S.rzv.kids && S.rzv.kids.length ? rzvKid() : null;
   if(kid && !wcLocked()) out.rzv = kid.n + ", " + rzvAgeTxt(kid.b);
@@ -20399,7 +20531,7 @@ function zhenStatus(){
 }
 function zhenHomeTile(){
   var w = S.wcal, sub = "календарь цикла, беременность, развитие ребёнка";
-  if(w && w.on && w.home && !w.pin){ var st = zhenStatus(); if(wcPregInfo()) sub = "Беременность: " + st.preg; else if(wcLastEp()) sub = st.cycle; }
+  if(w && w.on && w.home && !w.pin && !w.pinH){ var st = zhenStatus(); if(w.goal === "preg" && wcPregInfo()) sub = "Беременность: " + st.preg; else if(wcLastEp()) sub = st.cycle; }
   return '<button class="wc-home" data-open="zhen"><span class="wc-home-ic">❀</span><span class="wc-home-t"><b>Женский раздел</b><span>'+esc(sub)+'</span></span><span class="wc-home-go">›</span></button>';
 }
 function viewZhenRoute(){ return wcLocked() ? viewWcalLock() : viewZhen(); }
@@ -20439,7 +20571,7 @@ function wcPhase(cd, c){
   return { n:"Лютеиновая фаза", p:"Энергия постепенно снижается. Берегите сон и не перегружайте себя." };
 }
 function wcForecast(){
-  var w = wcData(), l = wcLastH(), nx = wcNext(); if(!l || !nx || w.goal === "post") return "";
+  var w = wcData(), l = wcLastH(), nx = wcNext(); if(!l || !nx || nx.stale || w.goal === "post") return "";
   var c = wcAvgCyc(), ov = wcAdd(nx.key, -14), f1 = wcAdd(ov, -5), f2 = wcAdd(ov, 1), today = todayKey();
   if(f2 < today && nx.key > today){ ov = wcAdd(wcAdd(nx.key, c), -14); f1 = wcAdd(ov, -5); f2 = wcAdd(ov, 1); }
   var cd = wcDiff(l.S, today) + 1, ph = wcPhase(cd, c);
@@ -20455,7 +20587,7 @@ function wcForecast(){
     '<div class="eyebrow" style="margin-top:12px">Уведомление о месячных</div><div class="wc-chips">'+
       [["0","Не напоминать"],["1","За 1 день"],["2","За 2 дня"],["3","За 3 дня"]].map(function(x){ var on = String(w.remSoon ? (w.remDays || 2) : 0) === x[0]; return '<button class="wc-chip'+(on ? ' on' : '')+'" aria-pressed="'+(on ? 'true' : 'false')+'" data-wcrem="'+x[0]+'">'+x[1]+'</button>'; }).join("")+'</div>'+
     '<button class="wc-sw'+(w.remFert ? ' on' : '')+'" role="switch" aria-checked="'+(w.remFert ? 'true' : 'false')+'" data-wcsw="remFert" style="margin-top:6px"><span><b>Напоминать о фертильных днях</b><i>утром в первый день окна</i></span><em></em></button>'+
-    '<p class="note" style="margin:6px 0 0">Текст уведомления нейтральный: «Загляните в календарь». Прогноз - по вашим прошлым циклам; при неровном цикле он примерный и не годится как средство предохранения.</p></section>';
+    '<p class="note" style="margin:6px 0 0">Текст уведомления нейтральный: «Загляните в календарь». Сервер уведомлений знает только время и этот текст. Прогноз - по вашим прошлым циклам; при неровном цикле он примерный и не годится как средство предохранения.</p></section>';
 }
 function wcRem(n){
   var w = wcData(); n = parseInt(n, 10) || 0;
@@ -20468,6 +20600,23 @@ function sheetWcPBlood(){
     '<p style="font-size:14.5px;line-height:1.6"><b>Сначала - к врачу.</b> Любые кровянистые выделения при беременности - повод сразу позвонить врачу или в 103, не дожидаясь приёма.</p>'+
     '<p class="note">По более сильному мнению шафиитов кровь при беременности может быть хайдом, если длится не меньше суток и не больше 15 и до неё было 15 дней чистоты; иначе это истихада, и намаз не оставляют. Календарь хайд при беременности не прогнозирует - спросите у знающего, сводку можно отправить кнопкой «Спросить знающую».</p>'+
     '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Закрыть</button>');
+}
+
+function sheetWcPregEnd(g){
+  sheet('<h3>Беременность завершилась?</h3><p class="note" style="margin:0 0 10px">Чтобы календарь считал верно, скажите, что произошло.</p>'+
+    '<button class="btn" data-wcborn="1">Малыш родился</button>'+
+    '<button class="btn sec" style="margin-top:8px" data-wcloss="1">Беременность прервалась</button>'+
+    '<button class="btn sec" style="margin-top:8px" data-wcpregerr="'+esc(g)+'">Беременности не было - отметила по ошибке</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Отмена</button>');
+}
+function wcPregErr(g){ var w = wcData(); w.preg.lmp = ""; w.goal = g === "post" ? "cycle" : (g || "cycle"); save(); closeSheet(); V.p = "cycle"; render(); toast("Срок беременности убран"); }
+/* черновик заметки дня - сохраняется по мере ввода */
+try{ document.addEventListener("input", function(e){ var t = e.target; if(!t || t.id !== "wcNote") return; var b = document.querySelector("[data-wcnote]"); if(!b) return;
+  var key = b.getAttribute("data-wcnote"), w = wcData(), lg = w.log[key] || (w.log[key] = {}); lg.nt = String(t.value || "").slice(0, 500); clearTimeout(WC_NT); WC_NT = setTimeout(save, 600); }); }catch(e){}
+var WC_NT = null;
+/* код - хэш SHA-256, а не открытый текст */
+function wcHash(s, cb){
+  try{ crypto.subtle.digest("SHA-256", new TextEncoder().encode("rizq-wcal:" + s)).then(function(b){ cb(Array.prototype.map.call(new Uint8Array(b), function(x){ return ("0" + x.toString(16)).slice(-2); }).join("")); }, function(){ cb(""); }); }catch(e){ cb(""); }
 }
 
 /* Развитие ребёнка по возрасту: вехи, занятия, режим, осмотры (16.10.2026).
@@ -21413,7 +21562,215 @@ function sheetRzvOsn(){
   sheet('<h3>Основы воспитания</h3><div class="wc-isl">'+wcCardsHtml(TARBIYA_OSNOVA)+'</div><button class="btn ghost" style="margin-top:12px" data-scrim="1">Закрыть</button>');
 }
 
+function viewRzvRoute(){ return (typeof wcLocked === "function" && wcLocked()) ? viewWcalLock() : viewRzv(); }
+
 /* WCAL-END */
+/* INST-BEGIN */
+/* ============================================================
+   НА ЭКРАН ТЕЛЕФОНА (16.10.2026, просьба Заиры): схематичная анимация,
+   как поставить RIZQ на экран «Домой» на iPhone и Android, и окно
+   при первом входе с кнопкой «Посмотреть, как». Та же анимация
+   записывается в видео 9:16 (scripts/install-video.js).
+   Без личных данных: контакты в листе «Поделиться» - серые кружки.
+   ============================================================ */
+var IG = { k:"", t0:0, raf:0, paused:0, pt:0, last:-1, icon:"icons/icon-192.png", tc:{} };
+function igTapPos(root, key, def){
+  if(IG.tc[key]) return IG.tc[key];
+  var ph = root.querySelector(".ig-ph"), sc = root.querySelector(".ig-sc"), tg = sc ? sc.querySelector(".hi") : null;
+  if(!ph || !tg) return def;
+  var pr = ph.getBoundingClientRect(), tr = tg.getBoundingClientRect();
+  if(!pr.width || !tr.width) return def;
+  var pos = [(tr.left + tr.width / 2 - pr.left) / pr.width * 100, (tr.top + tr.height / 2 - pr.top) / pr.height * 100];
+  IG.tc[key] = pos; return pos;
+}
+var IG_FLOWS = {
+  ios26: { n:"iPhone · Safari", sub:"iOS 26", steps:[
+    { s:"page26", tap:[88, 93], c:"Откройте rizq.javattigroup.ru в Safari и нажмите «⋯» внизу справа" },
+    { s:"menu26", tap:[66, 61], c:"Выберите «Поделиться»" },
+    { s:"share26", tap:[88, 85], c:"Нажмите «Ещё», чтобы раскрыть весь список" },
+    { s:"list", tap:[44, 77], c:"Выберите «На экран «Домой»»" },
+    { s:"add", tap:[85, 8], c:"«Открыть как веб-приложение» - оставьте включённым. Нажмите «Добавить»" },
+    { s:"home", tap:null, c:"Готово: RIZQ на экране и открывается как приложение" } ] },
+  ios: { n:"iPhone · Safari", sub:"iOS 18 и раньше", steps:[
+    { s:"pageios", tap:[50, 94], c:"Откройте сайт в Safari и нажмите «Поделиться» - квадрат со стрелкой внизу" },
+    { s:"shareios", tap:[44, 79], c:"Пролистайте вниз и выберите «На экран «Домой»»" },
+    { s:"add", tap:[85, 8], c:"Нажмите «Добавить»" },
+    { s:"home", tap:null, c:"Готово: RIZQ на экране «Домой»" } ] },
+  iosc: { n:"iPhone · Chrome", sub:"", steps:[
+    { s:"pagechi", tap:[86, 7.5], c:"Откройте сайт в Chrome и нажмите «Поделиться» в строке адреса" },
+    { s:"shareios", tap:[44, 79], c:"Выберите «На экран «Домой»»" },
+    { s:"add", tap:[85, 8], c:"Нажмите «Добавить»" },
+    { s:"home", tap:null, c:"Готово: RIZQ на экране «Домой»" } ] },
+  and: { n:"Android · Chrome", sub:"", steps:[
+    { s:"pageand", tap:[93, 7.5], c:"Откройте сайт в Chrome и нажмите три точки вверху справа" },
+    { s:"menuand", tap:[66, 45], c:"Выберите «Добавить на главный экран» или «Установить приложение»" },
+    { s:"addand", tap:[74, 60], c:"Нажмите «Установить»" },
+    { s:"homeand", tap:null, c:"Готово: значок RIZQ на главном экране" } ] },
+  inapp: { n:"Instagram, Telegram", sub:"", steps:[
+    { s:"pageinapp", tap:[90, 7.5], c:"Ссылка открылась внутри Instagram или Telegram? Нажмите «⋯» вверху" },
+    { s:"menuinapp", tap:[50, 66], c:"Выберите «Открыть в браузере» (Safari или Chrome)" },
+    { s:"page26", tap:null, c:"Сайт открылся в браузере - дальше по инструкции для вашего телефона" } ] }
+};
+var IG_STEP = 2900, IG_MOVE = 1000, IG_PRESS = 450, IG_HOLD = 3600;
+function igKind(){
+  var ua = navigator.userAgent || "";
+  if(/Instagram|FBAN|FBAV|FB_IAB|WhatsApp|Telegram|Line[/]|MailRu|GSA[/]|; wv[)]/i.test(ua)) return "inapp";
+  if(/CriOS/.test(ua)) return "iosc";
+  if(/iPhone|iPad|iPod/.test(ua)){ var m = ua.match(/Version[/](\d+)/); return m && parseInt(m[1], 10) >= 26 ? "ios26" : "ios"; }
+  if(/Android/.test(ua)) return "and";
+  return "ios26";
+}
+function igEsc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;"}[c]; }); }
+/* --- экраны: примитивы схемы --- */
+function igApp(top){
+  return '<div class="ig-app" style="top:'+(top || 0)+'%"><div class="ig-ah"><img src="'+IG.icon+'" alt=""><b>RIZQ</b><i></i><i></i></div>'+
+    '<div class="ig-card navy"><span></span><span class="s"></span><span class="m"></span></div>'+
+    '<div class="ig-card"><span class="s"></span><span></span></div><div class="ig-card"><span></span><span class="m"></span><span class="s"></span></div></div>';
+}
+function igDim(){ return '<div class="ig-dim"></div>'; }
+function igHome(and){
+  var cells = "", cols = ["#F2A65A","#5BB0E6","#7BC96F","#E86A6A","#B98AE8","#F2D35A","#6AD1C4","#8E9AAF","#F28FB8","#5A7BE6","#9CCB5A","#E6A35B"];
+  for(var i = 0; i < 16; i++){
+    if(i === 13) cells += '<span class="ig-ic rizq"><img src="'+IG.icon+'" alt=""><em>RIZQ</em></span>';
+    else cells += '<span class="ig-ic"><i style="background:'+cols[i % cols.length]+';'+(and ? 'border-radius:50%' : '')+'"></i><em></em></span>';
+  }
+  return '<div class="ig-home'+(and ? ' and' : '')+'"><div class="ig-grid">'+cells+'</div><div class="ig-dock"><i></i><i></i><i></i><i></i></div></div>';
+}
+function igScreen(s){
+  var url = '<span class="ig-url">rizq.javattigroup.ru</span>';
+  switch(s){
+    case "page26": return igApp(0) + '<div class="ig-bar26"><span class="ig-b">‹</span><span class="ig-pill">'+url+'</span><span class="ig-b dots hi">⋯</span></div>';
+    case "menu26": return igApp(0) + igDim() + '<div class="ig-pop" style="right:4%;bottom:12%;width:62%"><b class="hi">⇪  Поделиться</b><b>☆  Добавить в закладки</b><b>＋ Новая вкладка</b><b>◐  Частный доступ</b></div>' +
+      '<div class="ig-bar26"><span class="ig-b">‹</span><span class="ig-pill">'+url+'</span><span class="ig-b dots">⋯</span></div>';
+    case "share26": return igApp(0) + igDim() + '<div class="ig-sheet" style="top:40%"><div class="ig-sh-h"><img src="'+IG.icon+'" alt=""><div><b>RIZQ: намаз и Коран</b><i>rizq.javattigroup.ru</i></div></div>'+
+      igRowAv() + igRowApps() +
+      '<div class="ig-acts"><span><i>⧉</i>Скопировать</span><span><i>☆</i>Закладки</span><span><i>∞</i>Список</span><span class="hi"><i>˅</i>Ещё</span></div></div>';
+    case "list": return igApp(0) + igDim() + '<div class="ig-sheet" style="top:30%"><div class="ig-sh-h"><img src="'+IG.icon+'" alt=""><div><b>RIZQ: намаз и Коран</b><i>rizq.javattigroup.ru</i></div></div>'+ igRowAv() +
+      '<div class="ig-list"><b>☆  Добавить в Избранное</b><b>⌕  Найти на странице</b><b>▤  Добавить закладку в папку</b><b class="hi">⊞  На экран «Домой»</b><b>✎  Разметка</b></div></div>';
+    case "add": return '<div class="ig-white"><div class="ig-nav"><span>Отменить</span><b>На экран «Домой»</b><span class="hi">Добавить</span></div>'+
+      '<div class="ig-addrow"><img src="'+IG.icon+'" alt=""><div><b>RIZQ</b><i>rizq.javattigroup.ru</i></div></div>'+
+      '<div class="ig-tog"><span>Открыть как веб-приложение</span><em></em></div><p>На экран «Домой» будет добавлен значок для быстрого перехода на этот сайт.</p>'+
+      '<div class="ig-kb"><i></i><i></i><i></i></div></div>';
+    case "home": return igHome(false);
+    case "pageios": return '<div class="ig-top"><span class="ig-pill w">'+url+'</span></div>' + igApp(9) + '<div class="ig-tool"><span>‹</span><span>›</span><span class="hi share">⇪</span><span>▯</span><span>⧉</span></div>';
+    case "shareios": return igApp(0) + igDim() + '<div class="ig-sheet" style="top:32%"><div class="ig-sh-h"><img src="'+IG.icon+'" alt=""><div><b>RIZQ: намаз и Коран</b><i>rizq.javattigroup.ru</i></div></div>'+ igRowAv() +
+      '<div class="ig-list"><b>⧉  Скопировать</b><b>☆  Добавить в Избранное</b><b>▤  Добавить закладку</b><b class="hi">⊞  На экран «Домой»</b><b>⌕  Найти на странице</b></div></div>';
+    case "pagechi": return '<div class="ig-top"><span class="ig-pill w l">'+url+'</span><span class="ig-b sm hi">⇪</span></div>' + igApp(9) + '<div class="ig-tool c"><span>‹</span><span>›</span><span>＋</span><span>▢</span><span>⋯</span></div>';
+    case "pageand": return '<div class="ig-top and"><span class="ig-b sm">⌂</span><span class="ig-pill w l">'+url+'</span><span class="ig-b sm">▢</span><span class="ig-b sm dots hi">⋮</span></div>' + igApp(9);
+    case "menuand": return '<div class="ig-top and"><span class="ig-b sm">⌂</span><span class="ig-pill w l">'+url+'</span><span class="ig-b sm">▢</span><span class="ig-b sm dots">⋮</span></div>' + igApp(9) +
+      '<div class="ig-pop and" style="right:2%;top:7%;width:66%"><b>Новая вкладка</b><b>История</b><b>Скачанные файлы</b><b>Закладки</b><b class="hi">Добавить на главный экран</b><b>Настройки</b></div>';
+    case "addand": return '<div class="ig-top and"><span class="ig-b sm">⌂</span><span class="ig-pill w l">'+url+'</span><span class="ig-b sm">▢</span><span class="ig-b sm dots">⋮</span></div>' + igApp(9) + igDim() +
+      '<div class="ig-dlg"><b>Установить приложение</b><div class="ig-addrow"><img src="'+IG.icon+'" alt=""><div><b>RIZQ</b><i>rizq.javattigroup.ru</i></div></div><div class="ig-dlg-b"><span>Отмена</span><span class="hi">Установить</span></div></div>';
+    case "homeand": return igHome(true);
+    case "pageinapp": return '<div class="ig-top inapp"><span class="ig-b sm">✕</span><span class="ig-pill w l">'+url+'</span><span class="ig-b sm dots hi">⋯</span></div>' + igApp(9);
+    case "menuinapp": return '<div class="ig-top inapp"><span class="ig-b sm">✕</span><span class="ig-pill w l">'+url+'</span><span class="ig-b sm dots">⋯</span></div>' + igApp(9) + igDim() +
+      '<div class="ig-sheet" style="top:52%"><div class="ig-list"><b>⧉  Копировать ссылку</b><b class="hi">⤴  Открыть в браузере</b><b>⇪  Поделиться</b><b>↻  Обновить</b></div></div>';
+  }
+  return "";
+}
+function igRowAv(){ var h = '<div class="ig-row">'; for(var i = 0; i < 4; i++) h += '<span class="ig-av"></span>'; return h + '</div>'; }
+function igRowApps(){ var c = ["#3B82F6","#22C55E","#60A5FA","#F59E0B"], h = '<div class="ig-row">'; for(var i = 0; i < 4; i++) h += '<span class="ig-ap" style="background:'+c[i]+'"></span>'; return h + '</div>'; }
+/* --- анимация: состояние в момент t (детерминированно - для видео) --- */
+function igTotal(k){ var f = IG_FLOWS[k]; return (f.steps.length - 1) * IG_STEP + IG_HOLD; }
+function igRenderAt(k, t, root){
+  var f = IG_FLOWS[k]; if(!f) return;
+  root = root || document;
+  var sc = root.querySelector(".ig-sc"), fg = root.querySelector(".ig-finger"), cap = root.querySelector(".ig-cap"), dots = root.querySelectorAll(".ig-dot");
+  if(!sc) return;
+  var n = f.steps.length, i = Math.min(n - 1, Math.floor(t / IG_STEP)), lt = t - i * IG_STEP;
+  var st = f.steps[i];
+  var key = k + ":" + i;
+  if(sc.getAttribute("data-k") !== key){ sc.innerHTML = igScreen(st.s); sc.setAttribute("data-k", key); if(cap) cap.textContent = (i + 1) + ". " + st.c; for(var d = 0; d < dots.length; d++) dots[d].classList.toggle("on", d === i); }
+  if(!fg) return;
+  if(!st.tap){ fg.style.opacity = "0"; var rp0 = root.querySelector(".ig-ripple"); if(rp0) rp0.style.opacity = "0"; return; }
+  /* палец идёт к подсвеченной кнопке схемы - её центр в процентах от корпуса телефона */
+  var tap = igTapPos(root, key, st.tap), prev = i > 0 && f.steps[i-1].tap ? (IG.tc[k + ":" + (i - 1)] || f.steps[i-1].tap) : [50, 60];
+  st = { tap: tap };
+  var p = Math.min(1, lt / IG_MOVE), e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+  var x = prev[0] + (st.tap[0] - prev[0]) * e, y = prev[1] + (st.tap[1] - prev[1]) * e + (1 - e) * 6;
+  var press = lt > IG_MOVE && lt < IG_MOVE + IG_PRESS, after = lt >= IG_MOVE + IG_PRESS;
+  fg.style.opacity = lt < 150 ? String(lt / 150) : (lt > IG_STEP - 250 ? String(Math.max(0, (IG_STEP - lt) / 250)) : "1");
+  fg.style.left = x + "%"; fg.style.top = y + "%";
+  fg.classList.toggle("press", press);
+  var rp = root.querySelector(".ig-ripple");
+  if(rp){ var rt = lt - IG_MOVE; if(rt > 0 && rt < 700){ rp.style.left = st.tap[0] + "%"; rp.style.top = st.tap[1] + "%"; rp.style.opacity = String(1 - rt / 700); rp.style.transform = "translate(-50%,-50%) scale(" + (0.3 + rt / 700 * 1.4) + ")"; } else rp.style.opacity = "0"; }
+  var hi = sc.querySelectorAll(".hi"); for(var h = 0; h < hi.length; h++) hi[h].classList.toggle("on", lt > IG_MOVE - 200);
+}
+function igLoop(){
+  cancelAnimationFrame(IG.raf);
+  var root = document.querySelector(".ig-stage"); if(!root){ return; }
+  if(!IG.paused){
+    var t = Date.now() - IG.t0, tot = igTotal(IG.k);
+    if(t >= tot){ IG.t0 = Date.now(); t = 0; }
+    igRenderAt(IG.k, t, root);
+  }
+  IG.raf = requestAnimationFrame(igLoop);
+}
+function igStart(k){ IG.k = k; IG.t0 = Date.now(); IG.paused = 0; IG.tc = {}; setTimeout(igLoop, 30); }
+function igStageHtml(k){
+  var f = IG_FLOWS[k], d = "";
+  for(var i = 0; i < f.steps.length; i++) d += '<i class="ig-dot'+(i === 0 ? ' on' : '')+'"></i>';
+  return '<div class="ig-stage"><div class="ig-ph'+(k === "and" ? ' and' : '')+'"><div class="ig-notch"></div><div class="ig-sc"></div><div class="ig-ripple"></div><div class="ig-finger"></div></div>'+
+    '<div class="ig-dots">'+d+'</div><p class="ig-cap" aria-live="polite"></p></div>';
+}
+/* --- экран «На экран телефона» --- */
+function viewInstall(){
+  var k = V.igk || igKind(), f = IG_FLOWS[k], h = ['<div class="stack">'];
+  var done = typeof isStandalone === "function" && isStandalone();
+  h.push('<section class="hx ig-hero"><div class="eyebrow">На экран телефона</div><div class="wc-ttl">RIZQ - как обычное приложение</div>'+
+    '<p class="hx-sub" style="margin-top:8px">Значок на экране, запуск во весь экран, работа без интернета. И главное: пока RIZQ только в браузере, телефон может стереть ваши отметки, если вы не заходили неделю.</p>'+
+    (done ? '<div class="wc-priv">✓ RIZQ уже стоит на экране - вы открыли его со значка.</div>' : '')+
+    (typeof INST !== "undefined" && INST.evt && !done ? '<button class="btn" style="margin-top:12px;width:100%" data-acc="instgo">Установить в одно касание</button>' : '')+
+  '</section>');
+  h.push('<div class="ig-tabs" role="tablist">'+["ios26","ios","iosc","and","inapp"].map(function(x){ var g = IG_FLOWS[x];
+    return '<button class="ig-tab'+(x === k ? ' on' : '')+'" role="tab" aria-selected="'+(x === k ? 'true' : 'false')+'" data-igk="'+x+'"><b>'+igEsc(g.n)+'</b>'+(g.sub ? '<span>'+igEsc(g.sub)+'</span>' : '')+'</button>'; }).join("")+'</div>');
+  h.push('<section class="card ig-card-st">'+igStageHtml(k)+
+    '<div class="ig-ctl"><button class="btn ghost sm" data-igstep="-1" aria-label="Предыдущий шаг">‹</button><button class="btn sec sm" data-igplay="1">'+(IG.paused ? '▶ Смотреть' : '❚❚ Пауза')+'</button><button class="btn ghost sm" data-igstep="1" aria-label="Следующий шаг">›</button></div></section>');
+  h.push('<section class="card"><div class="sec-h" style="margin:0 0 6px"><h3>По шагам</h3></div><ol class="a2hs-l" style="margin:0">'+
+    f.steps.map(function(s){ return '<li>'+igEsc(s.c)+'</li>'; }).join("")+'</ol></section>');
+  if(k === "and") h.push('<section class="card"><div class="sec-h" style="margin:0 0 6px"><h3>Другие браузеры на Android</h3></div><ul class="ul">'+
+    '<li><b>Яндекс Браузер:</b> меню (три точки или три полоски) - «Добавить ярлык» или «На главный экран» - «Добавить».</li>'+
+    '<li><b>Samsung Internet:</b> меню (три полоски внизу) - «Добавить страницу на» - «Главный экран».</li>'+
+    '<li>Нет такого пункта - обновите браузер или откройте ссылку в Chrome.</li></ul></section>');
+  if(k === "ios26" || k === "ios" || k === "iosc") h.push('<section class="card"><div class="sec-h" style="margin:0 0 6px"><h3>Важно на iPhone</h3></div><ul class="ul">'+
+    '<li>Значок RIZQ на экране «Домой» - отдельное от Safari приложение. Если у вас уже есть отметки в браузере, перед установкой сохраните копию (Профиль - «Копия данных») или войдите в аккаунт - и они перенесутся.</li>'+
+    '<li>Нет пункта «На экран «Домой»» - нажмите «Ещё» или «Изменить действия» внизу списка и добавьте его.</li></ul></section>');
+  h.push('<p class="disclaimer">В магазинах приложений RIZQ пока нет: он ставится из браузера и обновляется сам. Если что-то не получается - напишите нам из профиля, поможем.</p>');
+  h.push('</div>');
+  setTimeout(function(){ igStart(k); }, 0);
+  return h.join("");
+}
+function igStep(d){
+  var tot = igTotal(IG.k), t = IG.paused ? IG.pt : Date.now() - IG.t0;
+  var i = Math.floor(t / IG_STEP) + parseInt(d, 10), n = IG_FLOWS[IG.k].steps.length;
+  if(i < 0) i = 0; if(i > n - 1) i = n - 1;
+  if(IG.paused){ var nt = Math.min(tot - 1, i * IG_STEP + IG_MOVE + IG_PRESS + 50); IG.pt = nt; igRenderAt(IG.k, nt, document.querySelector(".ig-stage")); }
+  else IG.t0 = Date.now() - i * IG_STEP;   /* шаг - с начала движения пальца */
+}
+function igPlay(){
+  if(IG.paused){ IG.paused = 0; IG.t0 = Date.now() - IG.pt; }
+  else { IG.paused = 1; IG.pt = Date.now() - IG.t0; }
+  var b = document.querySelector("[data-igplay]"); if(b) b.textContent = IG.paused ? "▶ Смотреть" : "❚❚ Пауза";
+}
+/* --- первый вход: окно с кнопкой «Посмотреть, как» (один раз), если RIZQ ещё не на экране --- */
+function instTipMaybe(){
+  if(typeof isStandalone === "function" && isStandalone()) return;
+  if(S.instTip) return;
+  var n = 0, tm = setInterval(function(){
+    if(++n > 60 || S.instTip || isStandalone()){ clearInterval(tm); return; }
+    if(!S.welcomed || document.querySelector(".scrim") || V.view === "install") return;
+    clearInterval(tm); S.instTip = Date.now(); save(); sheetInstTip();
+  }, 2000);
+}
+function sheetInstTip(){
+  sheet('<div class="ig-tip"><img src="'+IG.icon+'" alt=""><h3>Поставьте RIZQ на экран «Домой»</h3>'+
+    '<p>Тогда он откроется со значка, как обычное приложение, будет работать без интернета и не потеряет ваши отметки. Это три касания - покажем на схеме.</p>'+
+    '<button class="btn" data-open="install">Посмотреть, как сохранить</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Позже</button>'+
+    '<p class="note" style="margin-top:8px">Инструкция всегда есть в профиле: «На экран телефона».</p></div>');
+}
+
+/* INST-END */
 function tripData(){
   if(!S.trip || typeof S.trip !== "object") S.trip = {};
   var t = S.trip;
@@ -31538,6 +31895,8 @@ function viewProf(){
   if(!accOn()) h.push(accLoginCard());
   Object.keys(SCHOOL_EXT).forEach(function(k){ h.push(schoolBigBtn(k)); });
   h.push(homeTipRow());
+  /* igProfileRow: «На экран телефона» - всем, пока RIZQ не на экране */
+  if(!isStandalone() && !schoolAny()) h.push('<button class="row row-link" data-open="install" style="margin-top:8px;width:100%"><span class="ic">⌂</span>На экран телефона<span class="val">как поставить значок RIZQ</span><span class="go">›</span></button>');
 
   /* 2. покупки: сначала то, что ждёт оплаты, потом то, что уже открыто */
   h.push('<div class="sec-h"><h3>Мои покупки</h3></div>');
@@ -31762,7 +32121,7 @@ function backupData(){
     var k = BK_KEYS[i];
     if(k in S) o.data[k] = S[k];
   }
-  if(o.data.wcal && o.data.wcal.pin){ o.data.wcal = JSON.parse(JSON.stringify(o.data.wcal)); delete o.data.wcal.pin; }
+  if(o.data.wcal && (o.data.wcal.pin || o.data.wcal.pinH)){ o.data.wcal = JSON.parse(JSON.stringify(o.data.wcal)); delete o.data.wcal.pin; delete o.data.wcal.pinH; }
   return o;
 }
 function backupName(){
@@ -33889,8 +34248,9 @@ function renderCore(){
   else if(V.view==="book2") html = viewBook2();
   else if(V.view==="book2ch") html = viewBook2Ch();
   else if(V.view==="wcal") html = viewWcalRoute();
-  else if(V.view==="rzv") html = viewRzv();
+  else if(V.view==="rzv") html = viewRzvRoute();
   else if(V.view==="zhen") html = viewZhenRoute();
+  else if(V.view==="install") html = viewInstall();
   else if(V.tab==="quran") html = viewQuranHome();
   else if(V.tab==="home") html = viewHome();
   else if(V.tab==="dua") html = viewDua();
@@ -34044,7 +34404,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-zhen],[data-rzvkid],[data-rzvadd],[data-rzvaddok],[data-rzvst],[data-rzvok],[data-rzvdel],[data-rzvluq],[data-rzvosn],[data-rzvedit],[data-wcgoal],[data-wcstart],[data-wcstartok],[data-wcend],[data-wcendok],[data-wcday],[data-wcfl],[data-wccol],[data-wcsy],[data-wcmd],[data-wcnote],[data-wcdel],[data-wcfrom],[data-wcto],[data-wcset],[data-wcsetok],[data-wcsw],[data-wcwipe],[data-wcmon],[data-wcgusl],[data-wcqp],[data-wcqf],[data-wcpregok],[data-wcpregset],[data-wckick],[data-wckickn],[data-wckickr],[data-wcct],[data-wcctt],[data-wcctclr],[data-wcbag],[data-wcbagi],[data-wcred],[data-wcislam],[data-wcborn],[data-wcbornok],[data-wcpin],[data-wcpinset],[data-wcpinopen],[data-wcshare],[data-wcloss],[data-wclossok],[data-wcrem],[data-wcpblood],[data-wcqi],[data-wcqfx],[data-wcfix],[data-wcaskok],[data-wcgyn],[data-wcpostred],[data-wcpostinfo],[data-wcwt],[data-wcwtcalc],[data-wckickgo],[data-wcbackup],[data-wcpinreset],[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-nafl],[data-naflnotif],[data-naflall],[data-igra],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-namesall],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
+  var node = t.closest ? t.closest("[data-igk],[data-igstep],[data-igplay],[data-wcpregerr],[data-wcshortok],[data-zhen],[data-rzvkid],[data-rzvadd],[data-rzvaddok],[data-rzvst],[data-rzvok],[data-rzvdel],[data-rzvluq],[data-rzvosn],[data-rzvedit],[data-wcgoal],[data-wcstart],[data-wcstartok],[data-wcend],[data-wcendok],[data-wcday],[data-wcfl],[data-wccol],[data-wcsy],[data-wcmd],[data-wcnote],[data-wcdel],[data-wcfrom],[data-wcto],[data-wcset],[data-wcsetok],[data-wcsw],[data-wcwipe],[data-wcmon],[data-wcgusl],[data-wcqp],[data-wcqf],[data-wcpregok],[data-wcpregset],[data-wckick],[data-wckickn],[data-wckickr],[data-wcct],[data-wcctt],[data-wcctclr],[data-wcbag],[data-wcbagi],[data-wcred],[data-wcislam],[data-wcborn],[data-wcbornok],[data-wcpin],[data-wcpinset],[data-wcpinopen],[data-wcshare],[data-wcloss],[data-wclossok],[data-wcrem],[data-wcpblood],[data-wcqi],[data-wcqfx],[data-wcfix],[data-wcaskok],[data-wcgyn],[data-wcpostred],[data-wcpostinfo],[data-wcwt],[data-wcwtcalc],[data-wckickgo],[data-wcbackup],[data-wcpinreset],[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-nafl],[data-naflnotif],[data-naflall],[data-igra],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-namesall],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -34402,6 +34762,11 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.wckickgo){ wcKickGo(); return; }
   if(d.wcbackup){ closeSheet(); backupSave(); return; }
   if(d.wcpinreset){ wcPinReset(); return; }
+  if(d.wcpregerr){ wcPregErr(d.wcpregerr); return; }
+  if(d.wcshortok){ wcData().gusl[d.wcshortok] = 1; save(); render(); return; }
+  if(d.igk){ V.igk = d.igk; IG.paused = 0; render(); return; }
+  if(d.igstep){ igStep(d.igstep); return; }
+  if(d.igplay){ igPlay(); return; }
   if(d.tripmode){ tripData().mode = d.tripmode; save(); V.tripOpen = tripCurrent(); render(); return; }
   if(d.tripopen){ V.tripOpen = V.tripOpen === d.tripopen ? null : d.tripopen; render(); return; }
   if(d.trip){ var tdn = tripData().done; tdn[d.trip] = !tdn[d.trip]; save(); render(); return; }
@@ -35306,6 +35671,9 @@ if(MOVE_IN){
     toast("Вставьте код переноса - он уже скопирован");
   }, 600);
 }
+
+/* «На экран телефона»: один раз предлагаем посмотреть схему установки (16.10.2026) */
+setTimeout(instTipMaybe, 25000);
 
 /* первый запуск: пока город не выбран, время намаза чужое */
 if(!S.welcomed && !OLD_HOST) setTimeout(function(){ if(!S.welcomed) sheetWelcome(); }, 700);
