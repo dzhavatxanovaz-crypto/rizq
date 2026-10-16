@@ -457,6 +457,23 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .cat-wide.igra .cw-t b em{font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#4E1119;background:#E6C868;border-radius:6px;padding:2px 6px;margin-left:6px;vertical-align:2px}
 .cat-wide.igra .cw-t span{color:rgba(247,239,227,.82)}
 .cat-wide.igra .cw-go{color:#E6C868}
+/* SHY-CSS-BEGIN */
+/* вопросы, о которых стыдно спросить (16.10.2026) */
+.hx.shy-hero{background:radial-gradient(120% 120% at 20% 10%,#5A3A6E 0%,#3A2450 48%,#1E1430 100%)}
+.shy-ar{font-family:var(--f-ar);font-size:20px;line-height:1.9;color:#E6C868;margin-top:8px}
+.shy-h{display:flex;align-items:center;gap:10px;margin-bottom:6px}.shy-h b{flex:1;font-family:var(--f-display);font-size:16px}
+.shy-k{font-style:normal;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:8px}
+.shy-k.f{background:rgba(212,175,55,.18);color:var(--accent-ink)}.shy-k.m{background:rgba(70,170,140,.18);color:var(--emerald)}
+.shy-q{border-top:1px solid var(--line-soft)}
+.shy-q summary{cursor:pointer;min-height:44px;display:flex;align-items:center;padding:10px 2px;font-size:14.5px;line-height:1.4;font-weight:600;list-style:none}
+.shy-q summary::-webkit-details-marker{display:none}
+.shy-q summary::after{content:"+";margin-left:auto;padding-left:10px;color:var(--accent-ink);font-size:18px}
+.shy-q[open] summary::after{content:"−"}
+.shy-a{padding:0 2px 12px}.shy-a p{margin:0 0 6px;font-size:14px;line-height:1.6;color:var(--ink-2)}
+.shy-when{font-size:13.5px!important}.shy-ask{font-size:13px!important;color:var(--accent-ink)!important}
+.cat-wide.shyw{border-color:rgba(130,90,170,.45);background:linear-gradient(135deg,rgba(130,90,170,.16),rgba(130,90,170,.04))}
+.cat-wide.shyw .cw-ic{background:rgba(130,90,170,.2);color:#B79AD8}
+/* SHY-CSS-END */
 /* INST-CSS-BEGIN */
 /* На экран телефона: схема (16.10.2026) */
 .hx.ig-hero{background:radial-gradient(120% 120% at 20% 10%,#2E3C80 0%,#1E2A5A 45%,#0E1636 100%)}
@@ -543,6 +560,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .ig-tip{text-align:center}.ig-tip img{width:64px;height:64px;border-radius:16px;margin:4px auto 8px;display:block;box-shadow:0 8px 20px rgba(0,0,0,.2)}
 .ig-tip p{font-size:14.5px;line-height:1.55;color:var(--ink-2);margin:6px 0 14px}
 .ig-ph.and{border-radius:28px}.ig-ph.and .ig-notch{width:12px;height:12px;margin-left:-6px;border-radius:50%;top:16px}.ig-ph.and .ig-sc{border-radius:20px}
+.ig-video{display:block;width:100%;max-width:320px;margin:0 auto;aspect-ratio:9/16;border-radius:18px;background:#0B1130;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+.ig-vcard .ig-video{max-width:260px}
+.sheet .ig-video{max-width:min(250px,62vw)}
 /* INST-CSS-END */
 /* WCAL-CSS-BEGIN */
 /* женский календарь (16.10.2026) */
@@ -3565,7 +3585,7 @@ function a2hsCard(){
   var ios = isIOS();
   return '<section class="card a2hs"><div class="a2hs-h"><span>⤓</span><div><b>Добавьте RIZQ на экран «Домой»</b>'+
     '<span>В магазинах приложений его нет: оно открывается из браузера, а на экран ставится за три касания.</span></div></div>'+
-    '<button class="btn sm" style="margin-top:10px" data-open="install">Показать, как - на схеме</button>'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn sm" data-igvid="auto">▶ Видео: как сохранить</button><button class="btn sm sec" data-open="install">По шагам</button></div>'+
     '<p class="a2hs-n">Так приложение открывается на весь экран и работает без интернета. И главное: пока оно только в браузере, телефон может стереть ваши отметки, если вы не заходили неделю.</p>'+
     '<button class="btn sm sec" data-a2hs="1">Уже добавила, скрыть</button></section>';
 }
@@ -7185,7 +7205,7 @@ function back(){
   if(V.view==="trread" && V.p !== null && V.p !== undefined && V.p !== ""){ V.p=null; render(); $screen.scrollTop = 0; return; }
   if(V.view==="hadithOne"){ V.view="hadith"; V.p=null; V.q=""; render(); return; }
   if(V.view==="course"){ V.view="courses"; V.p=null; render(); return; }
-  if((V.view==="wcal" || V.view==="rzv") && V.zf){ V.zf = 0; V.view = "zhen"; V.p = null; render(); return; }
+  if((V.view==="wcal" || V.view==="rzv" || V.view==="shy") && V.zf){ V.zf = 0; V.view = "zhen"; V.p = null; render(); return; }
   if(V.view==="seriya" && V.serRet){ V.serRet = 0; V.view="serii"; V.p=null; render(); $screen.scrollTop = 0; return; }
   if(V.view==="kidstory"){ kidStop(); V.view="kids"; V.p=null; render(); return; }
   V.view=null; V.p=null; V.q=""; render();
@@ -7499,6 +7519,7 @@ function renderHdr(){
         : V.view==="rzv" ? "Развитие ребёнка"
         : V.view==="zhen" ? "Женский раздел"
         : V.view==="install" ? "На экран телефона"
+        : V.view==="shy" ? "Стыдно спросить"
         : V.view==="settings" ? "Настройки"
         : V.view==="spl" ? "Плеер сур"
         : V.view==="khatms" ? "Хатм вместе"
@@ -8385,7 +8406,7 @@ var SHARE_TEXT = "Ассаламу алейкум! Нашла приложени
 /* Экраны, которые можно открыть ссылкой. Белый список, а не любое значение:
    по чужой ссылке приложение не должно оказываться где угодно. */
 var DEEP_VIEWS = ["courses","sadaqa","zakat","names","hadith","sira","book1","qibla",
-                  "calendar","tasbih","suras","halal","top","qduas","duaall","report","share","consulting","live","install","zhen","rzv","wcal","book2","umrah","installment","kids","hajjtrip","salahpics","arabic"];
+                  "calendar","tasbih","suras","halal","top","qduas","duaall","report","share","consulting","live","shy","install","zhen","rzv","wcal","book2","umrah","installment","kids","hajjtrip","salahpics","arabic"];
 var DEEP_TABS  = ["home","quran","dua","journal","income","prof"];
 
 var PAYR = { timer:null, until:0, id:"" };
@@ -8454,7 +8475,7 @@ function sheetHomeTip(){
   sheet('<h3>Чтобы приложение было всегда под рукой</h3>'+
     '<p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 14px">'+t+'</p>'+
     (INST.evt ? '<button class="btn" data-acc="instgo">Установить</button>' : '')+
-    '<button class="btn sec" style="margin-top:8px" data-open="install">Показать на схеме</button>'+
+    '<button class="btn sec" style="margin-top:8px" data-igvid="auto">Смотреть видео</button>'+
     '<button class="btn'+(INST.evt ? ' ghost' : '')+'" style="margin-top:8px" data-scrim="1">Понятно</button>'+
     '<a class="btn ghost" style="margin-top:8px;display:block;text-align:center;text-decoration:none" target="_blank" rel="noopener" href="https://oporamyshleniya.ru/ekran">Подробная инструкция</a>');
 }
@@ -8530,7 +8551,7 @@ function deepOpen(qArg){
       quran:["quran", null], azkar:["azkar", null], kniga:["book1", null], book:["book1", null],
       duas:["duas", null], khatms:["khatms", null], dms:["dms", null],
       studio:["vmake", null], video:["vmake", null],
-      rassrochka:["installment", null], installment:["installment", null], nastavnik:["nastavnik", null], kalendar:["wcal", null], beremennost:["wcal", "preg"], razvitie:["rzv", null], zhenskiy:["zhen", null], ekran:["install", null], install:["install", null] };   /* сайт и посты об исламской рассрочке */   /* кодовое слово СТУДИЯ */
+      rassrochka:["installment", null], installment:["installment", null], nastavnik:["nastavnik", null], kalendar:["wcal", null], beremennost:["wcal", "preg"], razvitie:["rzv", null], zhenskiy:["zhen", null], ekran:["install", null], install:["install", null], styd:["shy", null] };   /* сайт и посты об исламской рассрочке */   /* кодовое слово СТУДИЯ */
     /* ?post=<id> - открыть запись журнала (ссылка «Поделиться») */
     /* ?finreq=<номер> - заявка на рассрочку с сайта: показываем её в «Моих заявках» (03.10.2026) */
     var mfr = q.match(/[?&]finreq=([a-f0-9]{32})/);
@@ -8772,7 +8793,7 @@ function viewShare(){
       '</ol>'+
       '<p style="font-size:13px;color:var(--ink-3);margin:10px 0 0;line-height:1.5">'+
       'Иногда Chrome сам предлагает установку внизу экрана - тогда достаточно нажать на это предложение.</p>'+
-      '<button class="btn sec" data-open="install" style="width:100%;margin-top:12px">Показать на схеме</button>'+
+      '<button class="btn" data-igvid="auto" style="width:100%;margin-top:12px">▶ Смотреть видео</button><button class="btn sec" data-open="install" style="width:100%;margin-top:8px">Показать на схеме</button>'+
     '</div>'+
 
     '<p style="font-size:13.5px;color:var(--ink-3);margin:12px 0 0;line-height:1.55">'+
@@ -8907,6 +8928,7 @@ function buildIndex(){
    ["Развитие ребёнка","по возрасту от рождения до 14 лет: вехи, игры, воспитание по Сунне","open:rzv","развитие ребенка ребёнка малыш младенец возраст вехи навыки игры занятия воспитание тарбия намаз детям сон режим педиатр осмотры"],
    ["Женский раздел","календарь месячных, беременность, развитие ребёнка","open:zhen","женский раздел женщинам для женщин мама мамам"],
    ["На экран телефона","как поставить RIZQ на экран «Домой» - iPhone и Android","open:install","установить приложение на экран домой главный экран значок иконка ярлык скачать iphone android safari chrome как сохранить"],
+   ["Вопросы, о которых стыдно спросить","хайд, гусль, близость, выделения - отвечают богослов и врач","open:shy","стыдно спросить вопросы женщинам гусль после близости выделения интимное супруги дуа перед близостью джунуб белые выделения"],
    ["Восполнение","пропущенные намазы и посты","open:qada","каза восполнение пропущенный намаз пост долг восполнить казаа qada"],
    ["Куда помочь","открытые сборы в Tooba","open:sadaqa","садака милостыня помочь сбор пожертвование благотворительность нуждающимся закят раздать туба tooba"],
   ].forEach(function(x){ add(x[0], x[1], x[2], x[3], "Разделы"); });
@@ -20548,12 +20570,14 @@ function viewZhen(){
     big("cycle", "☾", "Календарь цикла", st.cycle)+
     big("preg", "❀", "Календарь беременности", st.preg)+
     big("rzv", "❁", "Развитие ребёнка", st.rzv)+
+    (typeof shyCount === "function" && shyCount() ? '<button class="cat-wide shyw" data-zhen="shy"><span class="cw-ic">?</span><span class="cw-t"><b>Вопросы, о которых стыдно спросить</b><span>'+(typeof shyCount === "function" && shyCount() ? shyCount() + ' ответов богослова и врача' : '')+'</span></span><span class="cw-go">›</span></button>' : '')+
     '<button class="cat-wide" data-guide="women"><span class="cw-ic">۞</span><span class="cw-t"><b>Хайд, нифас и истихада</b><span>правила по шафиитскому мазхабу</span></span><span class="cw-go">›</span></button>'+
     '</div>';
 }
 function zhenGo(k){
   V.zf = 1;
   if(k === "rzv"){ open("rzv", null); return; }
+  if(k === "shy"){ open("shy", null); return; }
   var w = wcData(); wcPersist();
   if(k === "preg"){ open("wcal", "preg"); if(!w.preg.lmp) sheetWcPreg(); return; }
   if(!w.on){ w.goal = "cycle"; w.on = 1; save(); open("wcal", "cycle"); sheetWcStart(true); return; }
@@ -21722,6 +21746,10 @@ function viewInstall(){
     (done ? '<div class="wc-priv">✓ RIZQ уже стоит на экране - вы открыли его со значка.</div>' : '')+
     (typeof INST !== "undefined" && INST.evt && !done ? '<button class="btn" style="margin-top:12px;width:100%" data-acc="instgo">Установить в одно касание</button>' : '')+
   '</section>');
+  h.push('<section class="card ig-vcard"><div class="sec-h" style="margin:0 0 8px"><h3>Видео за 20 секунд</h3></div>'+
+    '<video class="ig-video" src="video/rizq-na-ekran-'+(k === "and" ? "android" : "iphone")+'.mp4" muted loop playsinline controls preload="metadata"></video>'+
+    '<div class="wc-ia" style="justify-content:center"><button class="btn sec sm" data-igvid="iphone">Видео для iPhone</button><button class="btn sec sm" data-igvid="android">Видео для Android</button></div></section>');
+  h.push('<div class="sec-h"><h3>Пошагово, со схемой</h3></div>');
   h.push('<div class="ig-tabs" role="tablist">'+["ios26","ios","iosc","and","inapp"].map(function(x){ var g = IG_FLOWS[x];
     return '<button class="ig-tab'+(x === k ? ' on' : '')+'" role="tab" aria-selected="'+(x === k ? 'true' : 'false')+'" data-igk="'+x+'"><b>'+igEsc(g.n)+'</b>'+(g.sub ? '<span>'+igEsc(g.sub)+'</span>' : '')+'</button>'; }).join("")+'</div>');
   h.push('<section class="card ig-card-st">'+igStageHtml(k)+
@@ -21765,12 +21793,80 @@ function instTipMaybe(){
 function sheetInstTip(){
   sheet('<div class="ig-tip"><img src="'+IG.icon+'" alt=""><h3>Поставьте RIZQ на экран «Домой»</h3>'+
     '<p>Тогда он откроется со значка, как обычное приложение, будет работать без интернета и не потеряет ваши отметки. Это три касания - покажем на схеме.</p>'+
-    '<button class="btn" data-open="install">Посмотреть, как сохранить</button>'+
+    '<button class="btn" data-igvid="auto">▶ Смотреть видео, как сохранить</button>'+
+    '<button class="btn sec" style="margin-top:8px" data-open="install">Пошагово, со схемой</button>'+
     '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Позже</button>'+
     '<p class="note" style="margin-top:8px">Инструкция всегда есть в профиле: «На экран телефона».</p></div>');
 }
 
+/* --- видео «как поставить на экран» (те же схемы, 9:16): окно с плеером --- */
+function igVidKind(){ var k = igKind(); return (k === "and") ? "android" : (k === "inapp" ? (/Android/.test(navigator.userAgent || "") ? "android" : "iphone") : "iphone"); }
+function sheetIgVideo(kind){
+  kind = kind || igVidKind();
+  sheet('<h3>Как поставить RIZQ на экран</h3>'+
+    '<div class="ig-tabs" style="margin-bottom:10px">'+[["iphone","iPhone"],["android","Android"]].map(function(x){ return '<button class="ig-tab'+(x[0] === kind ? ' on' : '')+'" data-igvid="'+x[0]+'"><b>'+x[1]+'</b></button>'; }).join("")+'</div>'+
+    '<video class="ig-video" src="video/rizq-na-ekran-'+kind+'.mp4" autoplay muted loop playsinline controls preload="auto"></video>'+
+    (igKind() === "inapp" ? '<p class="note" style="margin-top:8px">Сейчас ссылка открыта внутри Instagram или Telegram: сначала нажмите «⋯» и «Открыть в браузере».</p>' : '')+
+    '<button class="btn sec" style="margin-top:10px" data-open="install">Пошагово, со схемой</button>'+
+    '<button class="btn ghost" style="margin-top:8px" data-scrim="1">Закрыть</button>');
+}
+function igVidBtn(cls, label){ return '<button class="btn '+(cls || "sec")+'" data-igvid="auto">▶ '+(label || "Смотреть видео, как сохранить")+'</button>'; }
+
 /* INST-END */
+/* SHY-BEGIN */
+/* Вопросы, о которых стыдно спросить: ответы экспертов (заполняется после выверки). */
+var SHY_INTRO = null;
+var SHY_FIQH = [];
+var SHY_MED = [];
+
+/* ============================================================
+   ВОПРОСЫ, О КОТОРЫХ СТЫДНО СПРОСИТЬ (16.10.2026, просьба Заиры):
+   разделы с вопросами, которые женщины стесняются задать, и разбор
+   богослова-шафиита (SHY_FIQH) и врача-гинеколога (SHY_MED).
+   Плашка - внизу «Женского раздела». Что человек открывал - нигде
+   не сохраняется и никуда не отправляется.
+   ============================================================ */
+function shyAll(){
+  var f = typeof SHY_FIQH !== "undefined" ? SHY_FIQH : [], m = typeof SHY_MED !== "undefined" ? SHY_MED : [];
+  return f.map(function(s){ return { id:"f-" + s.id, n:s.n, ic:s.ic || "۞", kind:"f", items:s.items }; })
+    .concat(m.map(function(s){ return { id:"m-" + s.id, n:s.n, ic:s.ic || "✚", kind:"m", items:s.items }; }));
+}
+function shyCount(){ var n = 0; shyAll().forEach(function(s){ n += s.items.length; }); return n; }
+function viewShy(){
+  var all = shyAll(), q = String(V.shyq || "").toLowerCase().trim(), tab = V.shyt || "all", h = ['<div class="stack">'];
+  var I = typeof SHY_INTRO !== "undefined" ? SHY_INTRO : null;
+  h.push('<section class="hx wc-hero shy-hero"><div class="eyebrow">Женский раздел</div><div class="wc-ttl">Вопросы, о которых стыдно спросить</div>'+
+    (I ? '<p class="hx-sub" style="margin-top:8px">'+esc(I.p)+'</p>'+(I.ar ? '<div class="ar shy-ar" dir="rtl">'+esc(I.ar)+'</div>' : '')+(I.ru ? '<p class="hx-sub"><i>«'+esc(I.ru)+'»</i></p>' : '')+(I.src ? '<span class="wc-src" style="color:rgba(244,235,208,.7)">'+esc(I.src)+'</span>' : '')
+       : '<p class="hx-sub" style="margin-top:8px">Отвечают богослов по шафиитскому мазхабу и врач-гинеколог. Спокойно, без стыда и без лишних подробностей.</p>')+
+    '<div class="wc-priv">🔒 Что вы читаете, нигде не сохраняется и никуда не отправляется.</div></section>');
+  h.push('<input class="search" id="shyQ" placeholder="Найти: гусль, выделения, близость, пост..." value="'+esc(V.shyq || "")+'">');
+  h.push('<div class="ig-tabs">'+[["all","Все"],["f","По исламу"],["m","Врач отвечает"]].map(function(t){ return '<button class="ig-tab'+(tab === t[0] ? ' on' : '')+'" data-shyt="'+t[0]+'"><b>'+t[1]+'</b></button>'; }).join("")+'</div>');
+  var shown = 0;
+  all.forEach(function(s){
+    if(tab !== "all" && s.kind !== tab) return;
+    var items = s.items.filter(function(x){ return !q || (x.q + " " + x.a).toLowerCase().indexOf(q) >= 0; });
+    if(!items.length) return;
+    shown += items.length;
+    h.push('<section class="card shy-sec"><div class="shy-h"><span class="wc-ic">'+esc(s.ic)+'</span><b>'+esc(s.n)+'</b><em class="shy-k '+s.kind+'">'+(s.kind === "f" ? "по исламу" : "врач")+'</em></div>'+
+      items.map(function(x){
+        return '<details class="shy-q"><summary>'+esc(x.q)+'</summary><div class="shy-a"><p>'+esc(x.a)+'</p>'+
+          (x.when ? '<p class="shy-when"><b>К врачу:</b> '+esc(x.when)+'</p>' : '')+
+          (x.ask ? '<p class="shy-ask">Это зависит от обстоятельств - уточните у знающего.</p>' : '')+
+          (x.med ? '<p class="shy-ask">Медицинскую сторону посмотрите в разделе «Врач отвечает».</p>' : '')+
+          (x.src ? '<span class="wc-src">'+esc(x.src)+'</span>' : '')+'</div></details>';
+      }).join("")+'</section>');
+  });
+  if(!shown) h.push('<p class="note" style="text-align:center">Ничего не нашлось. Попробуйте другое слово.</p>');
+  h.push('<div class="cats"><button class="cat" data-guide="women"><div class="ic">☾</div><b>Хайд, нифас, истихада</b><span>правила</span></button>'+
+    '<button class="cat" data-open="wcal"><div class="ic">◷</div><b>Календарь цикла</b><span>намаз и пост по дням</span></button></div>');
+  h.push('<p class="disclaimer">Ответы - общие. В своём случае спросите у знающего и у врача. По фикху - шафиитский мазхаб; медицина - по клиническим рекомендациям Минздрава России и ВОЗ.</p>');
+  h.push('</div>');
+  return h.join("");
+}
+/* поиск - на месте, по мере ввода */
+try{ document.addEventListener("input", function(e){ var t = e.target; if(!t || t.id !== "shyQ") return; V.shyq = t.value; clearTimeout(V.shyT); V.shyT = setTimeout(function(){ var pos = t.selectionStart; renderInPlace(); var n = document.getElementById("shyQ"); if(n){ n.focus(); try{ n.setSelectionRange(pos, pos); }catch(x){} } }, 350); }); }catch(e){}
+
+/* SHY-END */
 function tripData(){
   if(!S.trip || typeof S.trip !== "object") S.trip = {};
   var t = S.trip;
@@ -34251,6 +34347,7 @@ function renderCore(){
   else if(V.view==="rzv") html = viewRzvRoute();
   else if(V.view==="zhen") html = viewZhenRoute();
   else if(V.view==="install") html = viewInstall();
+  else if(V.view==="shy") html = viewShy();
   else if(V.tab==="quran") html = viewQuranHome();
   else if(V.tab==="home") html = viewHome();
   else if(V.tab==="dua") html = viewDua();
@@ -34404,7 +34501,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-igk],[data-igstep],[data-igplay],[data-wcpregerr],[data-wcshortok],[data-zhen],[data-rzvkid],[data-rzvadd],[data-rzvaddok],[data-rzvst],[data-rzvok],[data-rzvdel],[data-rzvluq],[data-rzvosn],[data-rzvedit],[data-wcgoal],[data-wcstart],[data-wcstartok],[data-wcend],[data-wcendok],[data-wcday],[data-wcfl],[data-wccol],[data-wcsy],[data-wcmd],[data-wcnote],[data-wcdel],[data-wcfrom],[data-wcto],[data-wcset],[data-wcsetok],[data-wcsw],[data-wcwipe],[data-wcmon],[data-wcgusl],[data-wcqp],[data-wcqf],[data-wcpregok],[data-wcpregset],[data-wckick],[data-wckickn],[data-wckickr],[data-wcct],[data-wcctt],[data-wcctclr],[data-wcbag],[data-wcbagi],[data-wcred],[data-wcislam],[data-wcborn],[data-wcbornok],[data-wcpin],[data-wcpinset],[data-wcpinopen],[data-wcshare],[data-wcloss],[data-wclossok],[data-wcrem],[data-wcpblood],[data-wcqi],[data-wcqfx],[data-wcfix],[data-wcaskok],[data-wcgyn],[data-wcpostred],[data-wcpostinfo],[data-wcwt],[data-wcwtcalc],[data-wckickgo],[data-wcbackup],[data-wcpinreset],[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-nafl],[data-naflnotif],[data-naflall],[data-igra],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-namesall],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
+  var node = t.closest ? t.closest("[data-igvid],[data-shyt],[data-igk],[data-igstep],[data-igplay],[data-wcpregerr],[data-wcshortok],[data-zhen],[data-rzvkid],[data-rzvadd],[data-rzvaddok],[data-rzvst],[data-rzvok],[data-rzvdel],[data-rzvluq],[data-rzvosn],[data-rzvedit],[data-wcgoal],[data-wcstart],[data-wcstartok],[data-wcend],[data-wcendok],[data-wcday],[data-wcfl],[data-wccol],[data-wcsy],[data-wcmd],[data-wcnote],[data-wcdel],[data-wcfrom],[data-wcto],[data-wcset],[data-wcsetok],[data-wcsw],[data-wcwipe],[data-wcmon],[data-wcgusl],[data-wcqp],[data-wcqf],[data-wcpregok],[data-wcpregset],[data-wckick],[data-wckickn],[data-wckickr],[data-wcct],[data-wcctt],[data-wcctclr],[data-wcbag],[data-wcbagi],[data-wcred],[data-wcislam],[data-wcborn],[data-wcbornok],[data-wcpin],[data-wcpinset],[data-wcpinopen],[data-wcshare],[data-wcloss],[data-wclossok],[data-wcrem],[data-wcpblood],[data-wcqi],[data-wcqfx],[data-wcfix],[data-wcaskok],[data-wcgyn],[data-wcpostred],[data-wcpostinfo],[data-wcwt],[data-wcwtcalc],[data-wckickgo],[data-wcbackup],[data-wcpinreset],[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-nafl],[data-naflnotif],[data-naflall],[data-igra],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-namesall],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -34705,6 +34802,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.rzvdel){ rzvDel(d.rzvdel); return; }
   if(d.rzvluq){ sheetRzvLuq(); return; }
   if(d.rzvosn){ sheetRzvOsn(); return; }
+  if(d.shyt){ V.shyt = d.shyt; renderInPlace(); return; }
   if(d.zhen){ zhenGo(d.zhen); return; }
   if(d.wcgoal){ wcSetGoal(d.wcgoal); return; }
   if(d.wcstart){ sheetWcStart(false); return; }
@@ -34764,6 +34862,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.wcpinreset){ wcPinReset(); return; }
   if(d.wcpregerr){ wcPregErr(d.wcpregerr); return; }
   if(d.wcshortok){ wcData().gusl[d.wcshortok] = 1; save(); render(); return; }
+  if(d.igvid){ sheetIgVideo(d.igvid === "auto" ? null : d.igvid); return; }
   if(d.igk){ V.igk = d.igk; IG.paused = 0; render(); return; }
   if(d.igstep){ igStep(d.igstep); return; }
   if(d.igplay){ igPlay(); return; }
