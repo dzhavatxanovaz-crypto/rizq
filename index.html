@@ -8433,7 +8433,7 @@ var PAYR = { timer:null, until:0, id:"" };
    как программа называется и куда входить. course - номер курса на платформе:
    вход сразу ведёт в него, а не в общий список. start - когда открываются уроки. */
 var SCHOOL_EXT = {
-  masshtab: { n:"Опора мышления", to:"тренингу", course:10, start:"2026-10-21T10:00:00+03:00", startText:"21 октября в 10:00 по Москве" }
+  masshtab: { n:"Опора мышления", to:"тренингу", course:10, start:"2026-10-23T10:00:00+03:00", startText:"23 октября в 10:00 по Москве" }
 };
 function payReturnTitle(id){ return id === BOOK2.id ? BOOK2.n : id === BOOK1.id ? BOOK1.n : (COURSES.filter(function(c){ return c.id === id; })[0] || SCHOOL_EXT[id] || {}).n || ""; }
 /* «Название» в кавычках, но без двойных, если кавычки уже есть в самом названии */
