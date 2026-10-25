@@ -7108,12 +7108,12 @@ var $tabbar = document.getElementById("tabbar");
 function go(tab){
   if(V.view === "vmake" && VM.busy) vmStop();
   if(tab === "quran" && V.view === "qsettings" && V.qsRet){ qsRetBack(); return; }
-  V.ret = null; V.b1ret = null; if(V.view==="arabic") arStop();
+  V.ret = null; V.b1ret = null; V.vidRet = 0; if(V.view==="arabic") arStop();
   if(V.view==="reader"){ qStop(); autoScrollOff(); }
   V.tab=tab; V.view=null; V.p=null; V.q=""; render(); $screen.scrollTop=0;
   hdrShow(); tabbarShow(); /* новый экран открываем с видимыми панелями */
 }
-function open(view,p){ V.view=view; V.p=p; render(); $screen.scrollTop=0; hdrShow(); tabbarShow(); }
+function open(view,p){ if(V.view==="video" && view!=="video") V.vidRet = 1; V.view=view; V.p=p; render(); $screen.scrollTop=0; hdrShow(); tabbarShow(); }
 /* Найденная дуа лежит внутри длинного списка: без прокрутки человек
    попадает в категорию и снова ищет глазами то, что уже нашёл. */
 function scrollToDua(id){
@@ -7211,6 +7211,8 @@ function back(){
   if((V.view==="wcal" || V.view==="rzv" || V.view==="shy") && V.zf){ V.zf = 0; V.view = "zhen"; V.p = null; render(); return; }
   if(V.view==="seriya" && V.serRet){ V.serRet = 0; V.view="serii"; V.p=null; render(); $screen.scrollTop = 0; return; }
   if(V.view==="kidstory"){ kidStop(); V.view="kids"; V.p=null; render(); return; }
+  /* открыли из «Видео и рилсы» - туда и возвращаемся */
+  if(V.vidRet && V.view!=="video"){ V.vidRet = 0; V.view="video"; V.p=null; render(); $screen.scrollTop = 0; return; }
   V.view=null; V.p=null; V.q=""; render();
 }
 
@@ -7547,6 +7549,7 @@ function renderHdr(){
         : V.view==="dms" ? "Личные сообщения"
         : V.view==="dm" ? (CH.dmc && CH.dmc.pub === V.p && CH.dmc.name ? CH.dmc.name : "Сообщения")
         : V.view==="vmake" ? "Видеостудия JAVATTI"
+        : V.view==="video" ? "Видео и рилсы"
         : V.view==="trread" ? (V.p !== null && V.p !== undefined && V.p !== "" && QSUR[V.p] ? QSUR[V.p][2] : "Перевод смыслов") : "";
     $hdr.innerHTML = '<header class="hdr"><div class="hdr-row">'+
       '<button class="back" data-back="1" aria-label="Назад">‹</button>'+
@@ -8307,6 +8310,7 @@ function viewHomeMain(){
       '<div class="eyebrow" style="margin-bottom:7px">Достигнуто - альхамду лиЛлях</div>'+
       '<div class="rows">'+ doneGoals.map(function(g){ return goalRow(g); }).join("") +'</div></div>' : '')))+
   '</section>');
+  h.push('<div class="sec-h"><h3>Видео и рилсы</h3><button class="more" data-open="video">Всё видео ›</button></div>');
   h.push(vmHomePlate());
 
   /* быстрый доступ */
@@ -8568,7 +8572,7 @@ function deepOpen(qArg){
     var GO_LINKS = { qw:["arabic", "qw"], club:["arabic", "club"], arabic:["arabic", null],
       quran:["quran", null], azkar:["azkar", null], kniga:["book1", null], book:["book1", null],
       duas:["duas", null], khatms:["khatms", null], dms:["dms", null],
-      studio:["vmake", null], video:["vmake", null],
+      studio:["vmake", null], video:["vmake", null], rilsy:["video", null], reels:["video", null],
       rassrochka:["installment", null], installment:["installment", null], nastavnik:["nastavnik", null], kalendar:["wcal", null], beremennost:["wcal", "preg"], razvitie:["rzv", null], zhenskiy:["zhen", null], ekran:["install", null], install:["install", null], styd:["shy", null] };   /* сайт и посты об исламской рассрочке */   /* кодовое слово СТУДИЯ */
     /* ?post=<id> - открыть запись журнала (ссылка «Поделиться») */
     /* ?finreq=<номер> - заявка на рассрочку с сайта: показываем её в «Моих заявках» (03.10.2026) */
@@ -8933,6 +8937,7 @@ function buildIndex(){
    ["Ильм-Крафт","игра-путешествие во времена Пророка для детей","igra","игра игры ильм крафт майнкрафт дети детям путешествие сира караван"],
    ["Детям","истории пророков, перед сном, дуа, имена","open:kids","дети детям ребенок ребёнок истории пророков сказки перед сном на ночь дуа для детей имена имя для ребенка мальчику девочке"],
    ["Исламская рассрочка","партнёры и покупка товара в рассрочку","open:installment","рассрочка исламская халяль мурабаха кредит без процентов частями взносы купить в рассрочку партнерское финансирование"],
+   ["Видео и рилсы","студия, мои ролики, сериал, Мекка онлайн","open:video","видео рилсы рилс reels ролики мои ролики сериал наши герои мекка онлайн эфир видеоурок смотреть"],
    ["Видеостудия JAVATTI","ролик для Reels: аяты, азкары, дуа","open:vmake","студия видео ролик рилс reels shorts tiktok аяты азкары дуа фон контент инстаграм"],
    ["Перевод смыслов","перевод Кулиева целиком, сура за сурой","open:trread","перевод смыслов кулиев тафсир читать по-русски текст корана целиком"],
    ["Личные сообщения","переписка с сёстрами из круга","open:dms","личные сообщения переписка написать сестре чат"],
@@ -17167,6 +17172,32 @@ function vmHomePlate(){
     '<span class="vm-home-s">Голос чтеца, фон Каабы или Медины, готовый текст для поста</span>'+
     '<span class="vm-home-go">Создать ролик ›</span></button>';
 }
+/* ---------- «Видео и рилсы» (25.10.2026): всё видео RIZQ в одном месте ----------
+   Студия и «Мои ролики» - прямо здесь; сериал, Мекка онлайн, видео «на экран»
+   и видеоуроки клуба открываются своими экранами, «Назад» возвращает сюда (V.vidRet). */
+function viewVideo(){
+  var h = ['<div class="stack">'];
+  h.push('<p class="note" style="margin:0">Рилсы с Кораном для Reels, Shorts и TikTok, ваши ролики, сериал и эфир из Мекки - всё видео RIZQ здесь.</p>');
+  h.push(vmHomePlate());
+  h.push('<div class="pill-row" style="justify-content:flex-start">'+
+    [["ayah", "Аяты"], ["qdua", "Дуа из Корана"], ["dua", "Азкары и дуа"], ["name", "99 имён"], ["post", "Тема из журнала"], ["guide", "Тема из «Знаний»"]].map(function(x){
+      return '<button class="pill" data-vm="kind:'+x[0]+'">'+x[1]+'</button>'; }).join("")+'</div>');
+  h.push('<div class="sec-h"><h3>Мои ролики</h3><button class="more" data-open="vmake">Новый ролик ›</button></div><div id="vmClips">'+vmClipsHtml()+'</div>');
+  h.push('<div class="sec-h"><h3>Смотреть</h3></div>');
+  if(serList().length) h.push(serBanner());
+  var sub = function(t){ return '<span style="display:block;font-size:12px;color:var(--ink-3)">'+t+'</span>'; };
+  h.push('<div class="rows">'+
+    (serList().length ? '<button class="row" data-open="serii"><span class="ic">▶</span><span style="flex:1">Сериал «Наши герои»'+sub('все серии: '+plural(serList().length, "серия", "серии", "серий"))+'</span><span class="val">›</span></button>'
+      : '<div class="row" style="opacity:.75"><span class="ic">▶</span><span style="flex:1">Сериал «Наши герои»'+sub('короткие истории о деле, деньгах и семье')+'</span><span class="val">скоро</span></div>')+
+    '<button class="row" data-open="live"><span class="ic">🕋</span><span style="flex:1">Мекка онлайн'+sub('прямой эфир из Харама')+'</span><span class="val">›</span></button>'+
+    (clubHas() ? '<button class="row" data-ar="club"><span class="ic">◎</span><span style="flex:1">Видеоуроки клуба'+sub('разговорный арабский: '+plural(CLUB_VIDEO_N, "встреча", "встречи", "встреч")+' с видео')+'</span><span class="val">›</span></button>' : '')+
+    '</div>');
+  h.push('<div class="sec-h"><h3>Как поставить RIZQ на экран</h3></div>');
+  h.push('<div class="pill-row" style="justify-content:flex-start"><button class="pill" data-igvid="iphone">▶ Видео для iPhone</button><button class="pill" data-igvid="android">▶ Видео для Android</button></div>');
+  h.push('<p class="disclaimer">Ролики хранятся только на этом телефоне. Сериал и эфир смотрятся онлайн, для них нужен интернет.</p>');
+  h.push('</div>');
+  return h.join("");
+}
 
 function viewVmake(){
   vmRestore();
@@ -17290,7 +17321,8 @@ function vmCmd(c){
   var p = c.split(":"), k = p[0], v = p.slice(1).join(":");
   if(k === "kind"){ vmStop(); VM.kind = v; if(v === "qdua" && VM.qd === undefined) VM.qd = 0; if(v === "name" && VM.nm === undefined) VM.nm = 1; VM.off = {}; VM.hook = "";
     if(v === "post" && !VM.post){ var pf = postsAll()[0]; if(pf) VM.post = pf.id; }
-    if(v === "guide" && !VM.guide) VM.guide = "salah"; if(v === "dua" && !VM.dua){ var first = DUAS.filter(function(d){ return d.ar; })[0]; if(first) VM.dua = first.id; } renderInPlace(); return; }
+    if(v === "guide" && !VM.guide) VM.guide = "salah"; if(v === "dua" && !VM.dua){ var first = DUAS.filter(function(d){ return d.ar; })[0]; if(first) VM.dua = first.id; }
+    if(V.view === "vmake") renderInPlace(); else open("vmake", null); return; }
   if(k === "set"){
     var sk = parseInt(v, 10), st = VM_SETS[sk]; if(!st) return;
     VM.setI = VM.setI || {}; var si = VM.setI[sk] = (VM.setK === sk ? ((VM.setI[sk] || 0) + 1) : (VM.setI[sk] || 0)) % st[2].length;
@@ -17330,7 +17362,7 @@ function vmCmd(c){
   if(k === "clip"){ var cl = (VM.clips || []).filter(function(x){ return x.id === v; })[0]; if(!cl) return;
     vmClipGet(v).then(function(o){ if(!o || !o.blob){ toast("Видео этого ролика не сохранилось"); return; } var full = {}; for(var kk in cl) full[kk] = cl[kk]; full.blob = o.blob; sheetClip(full); }); return; }
   if(k === "cshare" || k === "csave"){ vmShareCur(); return; }
-  if(k === "cdel"){ if(!confirm("Удалить ролик с телефона?")) return; vmClipDel(v).then(function(){ closeSheet(); VM.clips = null; if(V.view === "vmake") renderInPlace(); toast("Ролик удалён"); }); return; }
+  if(k === "cdel"){ if(!confirm("Удалить ролик с телефона?")) return; vmClipDel(v).then(function(){ closeSheet(); VM.clips = null; if(V.view === "vmake" || V.view === "video") renderInPlace(); toast("Ролик удалён"); }); return; }
   if(k === "ayah"){ var ai = parseInt(v, 10), as = surahOf(ai); VM.kind = "ayah"; VM.sura = as + 1; VM.from = Math.max(1, ayahInSurah(ai)); VM.to = Math.min(surahAyatCount(as), VM.from + 2); closeSheet(); V.tab = "quran"; open("vmake", null); return; }
   if(k === "dua"){ VM.kind = "dua"; VM.dua = v; closeSheet(); open("vmake", null); return; }
 }
@@ -28915,7 +28947,7 @@ var ST_NAMES = { "tab:home":"Главная", "tab:quran":"Коран: огла�
   "cat":"Азкары и дуа", "names":"99 имён", "name":"Разбор имени", "namex":"Имя Аллаха", "tasbih":"Тасбих", "qduas":"Дуа из Корана", "hadith":"40 хадисов",
   "hadithone":"Хадис", "sira":"Сира", "calendar":"Календарь", "qibla":"Кибла", "zakat":"Закят", "kids":"Детям", "kidstory":"Детская история",
   "courses":"Программы обучения", "course":"Программа", "planner":"Планер", "finance":"Финансы", "settings":"Настройки", "admin":"Управление",
-  "post":"Запись журнала", "serii":"Серии: список", "seriya":"Серия", "suras":"Короткие суры", "live":"Мекка онлайн", "mydua":"Мои дуа", "hifz":"Заучивание", "tajwid":"Таджвид",
+  "post":"Запись журнала", "serii":"Серии: список", "seriya":"Серия", "suras":"Короткие суры", "live":"Мекка онлайн", "video":"Видео и рилсы", "mydua":"Мои дуа", "hifz":"Заучивание", "tajwid":"Таджвид",
   "report":"Отчёт за месяц", "qsettings":"Настройки чтения", "qsearch":"Поиск по Корану", "salahpics":"Как совершать намаз", "hajjtrip":"Хадж и умра",
   "sadaqa":"Садака", "qada":"Возмещение намазов", "duaall":"Все дуа", "shukr":"Дневник шукра", "guide":"Руководства", "know":"Знания: статья" };
 function stName(k){ return ST_NAMES[k] || k; }
@@ -34371,6 +34403,7 @@ function renderCore(){
   else if(V.view==="dm") html = viewDm();
   else if(V.view==="trread") html = viewTrRead();
   else if(V.view==="vmake") html = viewVmake();
+  else if(V.view==="video") html = viewVideo();
   else if(V.view==="sadaqa") html = viewSadaqa();
   else if(V.view==="qada") html = viewQada();
   else if(V.view==="salahpics") html = viewSalahPics();
