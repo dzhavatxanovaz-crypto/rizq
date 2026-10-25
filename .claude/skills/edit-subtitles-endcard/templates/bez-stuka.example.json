@@ -1,0 +1,16 @@
+{
+  "fonts": {"sub": "Roboto Condensed", "card": "Roboto Condensed"},
+  "lines": [
+    {"start": 2.0, "end": 3.9, "text": "— Зарплату на стол!"},
+    {"start": 4.1, "end": 5.6, "text": "— Марат… не надо."},
+    {"start": 5.8, "end": 8.0, "text": "— Мы тебя двадцать лет кормили!"},
+    {"start": 8.2, "end": 11.0, "text": "— А ей — что не слышишь ты. В пятнадцать гормоны скачут, а тормоз в голове дозреет только к двадцати пяти."}
+  ],
+  "end_card": {
+    "duration": 3.0,
+    "lines": [
+      {"text": "@ramin.abakov", "style": "CardBig"},
+      {"text": "без стука", "style": "CardSmall"}
+    ]
+  }
+}

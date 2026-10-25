@@ -1,0 +1,16 @@
+{
+  "fonts": {"sub": "Bebas Neue", "light": "Montserrat"},
+  "lines": [
+    {"start": 2.0, "end": 4.6, "text": "Самое страшное — он этого не замечает", "side": "right"},
+    {"start": 5.0, "end": 7.4, "text": "Каждый день всё глубже", "side": "left"},
+    {"start": 8.0, "end": 10.5, "text": "Мне нужно чтобы зацепила", "side": "right", "y": 0.78}
+  ],
+  "end_card": {
+    "aphorism": "Тысяча одинаковых дней — это один день.",
+    "aphorism_duration": 2.8,
+    "kicker": "КУРС ОБУЧЕНИЯ НЕЙРОСЕТЯМ",
+    "brand": "· AI CREATOR ·",
+    "cta": "подробности в директ",
+    "duration": 3.0
+  }
+}
