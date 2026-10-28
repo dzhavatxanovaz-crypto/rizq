@@ -1,7 +1,7 @@
 /* Ризк - офлайн-кэш. Меняйте номер версии при каждом обновлении приложения. */
-var CACHE = "rizq-v357";
+var CACHE = "rizq-v358";
+/* "./" отдельно не кладём: это тот же index.html, и при каждом выпуске он качался дважды (28.10.2026) */
 var ASSETS = [
-  "./",
   "./index.html",
   "./fonts.css",
   /* основные наборы шрифтов - чтобы без интернета текст выглядел так же; остальные наборы кэшируются при первом использовании */
@@ -29,13 +29,19 @@ var ASSETS = [
      Азан сохраняется в кэш при первом проигрывании (общее правило ниже). */
 ];
 
-/* каждый файл кладём отдельно: один недоступный адрес не должен ломать весь кэш */
+/* Главная страница обязательна: если она не докачалась, установка проваливается, старая версия
+   продолжает работать офлайн, а браузер повторит позже (раньше новый кэш мог остаться без неё,
+   а старый удалялся - и без интернета приложение не открывалось). Берём её мимо HTTP-кэша браузера.
+   Остальные файлы - каждый отдельно: один недоступный адрес не должен ломать весь кэш. */
+var CRITICAL = ["./index.html"];
 self.addEventListener("install", function (e) {
   e.waitUntil(
     caches.open(CACHE).then(function (c) {
-      return Promise.all(ASSETS.map(function (url) {
-        return c.add(url).catch(function () { return null; });
-      }));
+      return c.addAll(CRITICAL.map(function (u) { return new Request(u, { cache: "reload" }); })).then(function () {
+        return Promise.all(ASSETS.filter(function (u) { return CRITICAL.indexOf(u) < 0; }).map(function (url) {
+          return c.add(url).catch(function () { return null; });
+        }));
+      });
     }).then(function () { return self.skipWaiting(); })
   );
 });
@@ -144,6 +150,24 @@ self.addEventListener("fetch", function (e) {
      Раньше копия страницы могла осесть в кэше, и телефон с RIZQ показывал старую версию сайта (03.10.2026). */
   if (/^\/(kniga|rassrochka|igra)(\/|$)/.test(url.pathname)) return;
 
+  /* Перевод Кулиева, таджвид и список чтецов - большие и меняются редко: держим в rizq-static,
+     который выпуск не стирает (раньше после каждого выпуска их качали заново). Отдаём из кэша сразу,
+     а свежую копию тихо подтягиваем в фоне - правка файла дойдёт со следующего открытия. */
+  if (/\/(ru-kuliev|tajweed|mp3quran-chtecy)\.json$/.test(url.pathname)) {
+    e.respondWith(
+      caches.open("rizq-static").then(function (c) {
+        return c.match(e.request, { ignoreSearch: true }).then(function (hit) {
+          var net = fetch(e.request).then(function (resp) {
+            if (resp && resp.status === 200) c.put(e.request, resp.clone());
+            return resp;
+          });
+          if (hit) { e.waitUntil(net.catch(function () {})); return hit; }
+          return net;
+        });
+      })
+    );
+    return;
+  }
   /* Журнал и подборка сборов обновляются без пересборки приложения, поэтому
      для них сначала сеть, а кэш - запасной вариант. Иначе правка файла на
      хостинге не дошла бы до тех, у кого он уже лежит в кэше. */
@@ -185,7 +209,7 @@ self.addEventListener("fetch", function (e) {
           }
           return resp;
         }).catch(function () {
-          return caches.match("./index.html").then(function (h) { return h || caches.match("./"); });
+          return caches.match("./index.html");
         });
       })
     );
@@ -202,7 +226,8 @@ self.addEventListener("fetch", function (e) {
         }
         return resp;
       }).catch(function () {
-        return caches.match("./index.html");
+        /* картинка, звук или файл данных без сети - честная ошибка, а не главная страница под видом ответа */
+        return Response.error();
       });
     })
   );
