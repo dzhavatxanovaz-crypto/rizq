@@ -8240,8 +8240,16 @@ function viewHomeMain(){
   /* азкары: тонкая плашка со «своим» набором по времени суток (просьба Заиры 22.09).
      До полудня - утренние, днём - вечерние, поздним вечером - перед сном. */
   (function(){
-    var hh = new Date().getHours();
-    var cid = hh < 12 ? "morning" : "evening"; /* до полудня утренние, после - вечерние */
+    /* azkByPrayer: по времени намаза своего города */
+    var cid = "morning";
+    try{
+      var tz0 = timesNow().t, hn = nowHours();
+      var evDone = DUAS.filter(function(d){ return d.c === "evening"; }).every(function(d){ return !!S.read[d.id]; });
+      if(hn < tz0.fajr) cid = "sleep";
+      else if(hn < tz0.dhuhr) cid = "morning";
+      else if(hn >= tz0.isha && evDone) cid = "sleep";
+      else cid = "evening";
+    }catch(e){ cid = new Date().getHours() < 12 ? "morning" : "evening"; }
     var cat = CATS.filter(function(c){ return c.id === cid; })[0];
     if(!cat) return;
     var list = DUAS.filter(function(d){ return d.c === cid; });
@@ -31577,7 +31585,16 @@ function pushItems(){
   /* женский календарь: напоминание за 2 дня, нейтральным текстом (16.10.2026) */
   try{ items = items.concat(wcPushItems()); }catch(e){}
   items.sort(function(a, b){ return a.at < b.at ? -1 : a.at > b.at ? 1 : 0; });
-  return items.slice(0, 80);
+  items = items.slice(0, 79);
+  /* расписание строится на неделю и обновляется только при входе: в конце недели просим открыть приложение,
+     иначе напоминания о намазе тихо заканчиваются у тех, кто не заходил */
+  if(items.length && (S.notifPrayer || S.notifAzkar)){
+    var endD = new Date(); endD.setDate(endD.getDate() + 6); endD.setHours(13, 0, 0, 0);
+    var lastAt = items[items.length - 1].at, endIso = endD.toISOString();
+    if(endD.getTime() > now) items.push({ at: endIso < lastAt ? endIso : lastAt, title: "RIZQ", body: "Откройте приложение, чтобы напоминания о намазе шли и на следующей неделе", tag: "rizq-open" });
+    items.sort(function(a, b){ return a.at < b.at ? -1 : a.at > b.at ? 1 : 0; });
+  }
+  return items;
 }
 /* Что влияет на расписание. Если это поменялось - отправляем сразу,
    иначе не чаще раза в шесть часов. */
