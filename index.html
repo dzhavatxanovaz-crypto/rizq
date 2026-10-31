@@ -1506,6 +1506,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .tb-z{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-height:58px;padding:10px 11px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);text-align:left;color:var(--ink)}
 .tb-z b{font-size:13.5px;font-weight:600;line-height:1.3;padding-right:26px}
 .tb-z span{font-size:12px;color:var(--ink-2)}
+.tb-z .tb-zr{font-style:normal;font-size:12px;line-height:1.35;color:var(--ink-2)}
 .tb-z em{position:absolute;top:8px;right:8px;font-style:normal;font-size:11px;font-weight:700;color:var(--accent-ink);font-variant-numeric:tabular-nums}
 .tb-z.on{border-color:var(--gold);background:linear-gradient(140deg,rgba(212,175,55,.2),rgba(212,175,55,.06));box-shadow:0 0 0 1px rgba(212,175,55,.4) inset}
 /* кибла */
@@ -2326,6 +2327,7 @@ details.more[open]>summary:after{content:"⌄"}
 .mdn-w.now{background:rgba(62,155,114,.22)}
 .mdn-w:active{background:rgba(212,175,55,.3)}
 .mdn-end{color:#8A6D12}
+.mdn-fnum{font-family:"Amiri Quran",var(--f-quran);font-size:.82em;padding:0 .12em;white-space:nowrap}
 .mdn-sura{justify-content:center;gap:10px;margin:0 2px;border:1.5px solid rgba(160,128,50,.6);border-radius:10px;
   background:linear-gradient(180deg,rgba(212,175,55,.16),rgba(212,175,55,.05));height:1.7em;margin-top:.12em;margin-bottom:.13em}
 .mdn-sura span{font-family:"Amiri Quran",var(--f-ar);font-size:.9em;color:#6B5413}
@@ -9570,7 +9572,7 @@ function viewTasbih(){
     '<section class="card"><div class="eyebrow">Выберите зикр</div><div class="tb-grid">'+ ZIKRS.map(function(zz,i){
       var c = S.tasbih["z"+i] || 0;
       return '<button class="tb-z'+(i===V.zikr?" on":"")+'" data-zikr="'+i+'"'+(i===V.zikr?' aria-current="true"':'')+'>'+
-        '<b>'+esc(zz.pl || zz.ru.split(" -")[0])+'</b><span>круг - '+zz.goal+' раз</span>'+
+        '<b>'+esc(zz.pl || zz.ru.split(" -")[0])+'</b>'+(zz.tr && zz.pl === zz.tr ? '<i class="tb-zr">'+esc(zz.ru)+'</i>' : '')+'<span>круг - '+zz.goal+' раз</span>'+
         '<em data-tzc="'+i+'">'+(c || "")+'</em></button>';
     }).join("") +'</div></section>'+
   '</div>';
@@ -15093,7 +15095,7 @@ function tjdExplain(i){
 }
 function mushafText(i){
   var t = QA[i];
-  if(qTajOn()){ if(TJD) return tjdRender(i, true); tjdLoad(); return tajweed(t); }
+  if(qTajOn()){ if(TJD) return tjdRender(i, true); tjdLoad(); return tajweed(qaShow(i)); }
   return qWordsHtml(i, true);
 }
 /* перейти на страницу мусхафа */
@@ -15172,6 +15174,16 @@ function mdnLoad(p){
   }
 }
 var MDN_BISM = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
+/* слово страницы. В «Аль-Фатихе» знаки конца аята из шрифта страницы - печатный счёт с басмалой (١-٧),
+   а у нас басмала без номера (решение Заиры 28.09): после басмалы знака нет, дальше наш номер */
+function mdnW(w, tj){
+  var cls = 'mdn-w'+(w[2] ? ' mdn-end' : '')+(tj && w[3] ? ' tjw-'+w[3] : '')+(isMark(w[1]) ? ' mark' : '');
+  if(w[2] && w[1] < QSUR[0][4]){
+    if(!ayahInSurah(w[1])) return '';
+    return '<span class="'+cls+' mdn-fnum" data-mayah="'+w[1]+'">'+esc("﴿"+arNum(ayahInSurah(w[1]))+"﴾")+'</span>';
+  }
+  return '<span class="'+cls+'" data-mayah="'+w[1]+'">'+esc(w[0])+'</span>';
+}
 /* строки страницы: заголовок суры, басмала или слова */
 var MDN_K = [1, 1.25, 1.5, 1.8];
 function mdnSize(){ var s = S.mdnSize | 0; return s < 0 ? 0 : s > 3 ? 3 : s; }
@@ -15184,13 +15196,11 @@ function mdnPageHtml(p){
   for(var ln = 1; ln <= max; ln++){
     if(hs[ln]){
       var s = QSUR[hs[ln] - 1];
-      out += '<div class="mdn-line mdn-sura"><span>'+esc(s[1])+'</span><em>'+esc(s[2])+' · '+s[4]+'</em></div>';
+      out += '<div class="mdn-line mdn-sura"><span>'+esc(s[1])+'</span><em>'+esc(s[2])+' · '+surahAyatCount(hs[ln] - 1)+'</em></div>';
     } else if(bs[ln]){
       out += '<div class="mdn-line mdn-bism">'+esc(MDN_BISM)+'</div>';
     } else if(by[ln]){
-      out += '<div class="mdn-line'+(j.c ? ' mdn-c' : '')+'" style="font-family:\''+fam+'\'">'+by[ln].map(function(w){
-        return '<span class="mdn-w'+(w[2] ? ' mdn-end' : '')+(tj && w[3] ? ' tjw-'+w[3] : '')+(isMark(w[1]) ? ' mark' : '')+'" data-mayah="'+w[1]+'">'+esc(w[0])+'</span>';
-      }).join("")+'</div>';
+      out += '<div class="mdn-line'+(j.c ? ' mdn-c' : '')+'" style="font-family:\''+fam+'\'">'+by[ln].map(function(w){ return mdnW(w, tj); }).join("")+'</div>';
     } else out += '<div class="mdn-line"></div>';
   }
   return out;
@@ -15204,10 +15214,9 @@ function mdnFlowHtml(p){
   function flush(){ if(buf.length){ out += '<div class="mdn-flow" style="font-family:\''+fam+'\'">'+buf.join(" ")+'</div>'; buf = []; } }
   for(var ln = 1; ln <= max; ln++){
     if(hs[ln]){ flush(); var s = QSUR[hs[ln] - 1];
-      out += '<div class="mdn-line mdn-sura"><span>'+esc(s[1])+'</span><em>'+esc(s[2])+' · '+s[4]+'</em></div>'; }
+      out += '<div class="mdn-line mdn-sura"><span>'+esc(s[1])+'</span><em>'+esc(s[2])+' · '+surahAyatCount(hs[ln] - 1)+'</em></div>'; }
     else if(bs[ln]){ flush(); out += '<div class="mdn-line mdn-bism">'+esc(MDN_BISM)+'</div>'; }
-    else if(by[ln]){ by[ln].forEach(function(w){
-      buf.push('<span class="mdn-w'+(w[2] ? ' mdn-end' : '')+(tj && w[3] ? ' tjw-'+w[3] : '')+(isMark(w[1]) ? ' mark' : '')+'" data-mayah="'+w[1]+'">'+esc(w[0])+'</span>'); }); }
+    else if(by[ln]){ by[ln].forEach(function(w){ var x = mdnW(w, tj); if(x) buf.push(x); }); }
   }
   flush();
   return out;
@@ -24270,7 +24279,7 @@ function b1Body(i, text){
 /* аят в конце главы: арабский из мусхафа, перевод смыслов, переход в Коран */
 function b1AyahCard(m){
   var s = +m[1], a = +m[2], b = m[3] ? +m[3] : a, ar = [];
-  if(QSUR[s - 1]) for(var k = a; k <= b && k <= QSUR[s - 1][4]; k++) ar.push(qaShow(ayahGlobal(s, k)) + " ﴿" + k + "﴾");
+  if(QSUR[s - 1]) for(var k = a; k <= b && k <= surahAyatCount(s - 1); k++) ar.push(qaShow(ayahGlobal(s, k)) + " ﴿" + k + "﴾");
   var ref = s + ":" + a + (b > a ? "-" + b : "");
   return '<div class="b1-ayah"><span><i>۞</i>Коран · ' + esc(QSUR[s - 1] ? QSUR[s - 1][2] : "") + ', ' + ref + '</span>' +
     (ar.length ? '<p class="b1-ayah-ar" dir="rtl" lang="ar">' + esc(ar.join(" ")) + '</p>' : '') +
