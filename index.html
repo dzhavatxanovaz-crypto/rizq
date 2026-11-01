@@ -730,6 +730,42 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .cat-wide.rzvw .cw-ic{background:rgba(90,130,200,.2);color:#8FB0E8}
 .cat-wide.rzvw .cw-t b em{font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:#3A5A8C;border-radius:6px;padding:2px 6px;margin-left:6px;vertical-align:2px}
 /* WCAL-CSS-END */
+.hm-rate{display:flex;align-items:center;gap:13px;width:100%;text-align:left;padding:15px 16px;border-radius:20px;border:1px solid rgba(212,175,55,.55);background:linear-gradient(135deg,#E9C766,#B8912F);color:#2A1E05;box-shadow:0 8px 22px rgba(184,145,47,.28)}
+.hm-rate-ic{flex:none;width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-size:21px;background:rgba(42,30,5,.12)}
+.hm-rate-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.hm-rate-t b{font-family:var(--f-display);font-size:17px;line-height:1.2}
+.hm-rate-t span{font-size:12.5px;opacity:.78;line-height:1.35}
+.hm-rate-n{flex:none;font-family:var(--f-display);font-weight:800;font-size:22px;line-height:1;text-align:center}
+.hm-rate-n i{display:block;font-style:normal;font-size:11px;font-weight:600;opacity:.75;margin-top:3px}
+.hm-rate-go{flex:none;font-size:20px;opacity:.7}
+.hm-tiles>:last-child:nth-child(odd){grid-column:1 / -1}
+.hm-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hm-grid.odd>:last-child{grid-column:1 / -1}
+.hmt{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-height:122px;padding:13px 13px 12px;border-radius:20px;text-align:left;border:1px solid transparent;color:#fff;box-shadow:0 6px 18px rgba(20,24,40,.14);overflow:hidden}
+.hmt-ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-size:17px;margin-bottom:auto;background:rgba(255,255,255,.16)}
+.hmt b{font-family:var(--f-display);font-size:15px;line-height:1.22;font-weight:700;margin-top:10px}
+.hmt-s{font-size:12px;line-height:1.35;opacity:.8;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hmt-b{position:absolute;top:12px;right:12px;font-style:normal;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 7px;border-radius:7px;background:var(--gold);color:#1a1405}
+.hmt-igra{background:linear-gradient(140deg,#8C2433,#4E1119)}
+.hmt-igra .hmt-ic{color:#E6C868}
+.hmt-zhen{background:linear-gradient(140deg,#B4486C,#6E2440)}
+.hmt-dua{background:linear-gradient(140deg,#1F5C4A,#0E3A2E)}
+.hmt-ns{background:linear-gradient(140deg,#3E4C7A,#232B4E)}
+.hmt-pod{background:linear-gradient(140deg,var(--sapphire),var(--sapphire-3));border-color:rgba(212,175,55,.45)}
+.hmt-pod .hmt-ic{color:var(--gold)}
+.hmt-wrap{position:relative;display:flex}
+.hmt-wrap .hmt{flex:1;width:100%}
+.hmt-play{position:absolute;right:11px;bottom:11px;width:40px;height:40px;border-radius:50%;border:0;display:grid;place-items:center;background:var(--gold);color:#1a1405;font-size:13px;box-shadow:0 4px 12px rgba(212,175,55,.35)}
+.hmt-wrap .hmt-s{padding-right:44px}
+.md-head{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;padding:0;text-align:left;color:inherit;cursor:pointer}
+.md-ch{flex:none;color:var(--ink-3);font-size:13px}
+.md-fold{padding-top:13px;padding-bottom:13px}
+.md-fold b{font-family:var(--f-display);font-size:15px}
+.md-dots{display:flex;gap:5px;margin-left:auto}
+.md-dots i{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--line)}
+.md-dots i.on{background:var(--emerald);border-color:var(--emerald)}
+.md-n{font-family:var(--f-display);font-weight:700;font-size:15px;color:var(--accent-ink)}
+.md-n.ok{color:var(--emerald)}
 .igra-home{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;border-radius:18px;padding:15px 14px;background:linear-gradient(135deg,#8C2433,#4E1119);color:#F7EFE3;box-shadow:0 10px 26px rgba(78,17,25,.40);cursor:pointer}
 .igra-home:active{transform:scale(.99)}
 .igra-home-ic{flex:none;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:21px;background:rgba(230,200,104,.18);color:#E6C868}
@@ -1456,6 +1492,40 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .pod-card p{margin:0;font-size:14px;line-height:1.55;color:var(--ink-2)}
 .pod-read{align-self:flex-start}
 .jr-pod{margin-top:2px}
+.pod-wrap{display:flex;flex-direction:column;gap:8px}
+.pod-bar u{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:rgba(10,20,50,.55);text-decoration:none}
+.pod-all{display:flex;gap:8px;align-items:center;margin:0 0 10px;flex-wrap:wrap}
+.pod-all-b{display:flex;align-items:center;gap:9px;padding:11px 18px;border-radius:24px;border:0;background:var(--gold);color:#1a1405;font-size:15px;font-weight:700}
+.pod-all-b i{font-style:normal;font-size:13px}
+.pod-auto{padding:9px 13px;border-radius:20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.85);font-size:13px}
+.pod-auto.on{border-color:var(--gold);color:#fff}
+.pod-share{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12.5px;color:var(--ink-3)}
+.pod-share span{margin-right:2px}
+.pod-share button{padding:7px 11px;border-radius:16px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:13px;font-weight:600}
+.pod-share button.wa{border-color:#25d366;color:#128c4a}
+.pod-share button.tg{border-color:#2aabee;color:#1a7fb5}
+.pod-home{display:flex;align-items:center;gap:13px;padding:13px 14px;border-radius:20px;background:linear-gradient(150deg,var(--sapphire),var(--sapphire-3));border:1px solid rgba(212,175,55,.45);color:#fff;box-shadow:var(--shadow)}
+.pod-home-pl{flex:none;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:#1a1405;border:0;font-size:16px;box-shadow:0 4px 14px rgba(212,175,55,.35)}
+.pod-home-pl i{font-style:normal}
+.pod-home-t{flex:1;min-width:0;text-align:left;background:none;border:0;padding:0;color:inherit;display:flex;flex-direction:column;gap:2px}
+.pod-home-e{font-size:12px;font-weight:600;color:var(--gold-soft)}
+.pod-home-t b{font-family:var(--f-display);font-size:15.5px;line-height:1.3}
+.pod-home-s{font-size:12.5px;color:rgba(255,255,255,.72)}
+.pod-sched{display:flex;gap:10px;align-items:flex-start;margin:0 0 10px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(212,175,55,.35);font-size:13.5px;line-height:1.45;color:rgba(255,255,255,.88)}
+.pod-sched i{font-style:normal;color:var(--gold);font-size:16px;line-height:1.3}
+.pod-sched b{display:inline;font-family:inherit;font-size:inherit;margin:0;color:#fff}
+.pod-newb{font-style:normal;display:inline-block;margin-left:4px;padding:1px 7px;border-radius:8px;background:var(--gold);color:#1a1405;font-size:11px;font-weight:700;letter-spacing:.02em;vertical-align:1px}
+.pod-card.hi{outline:2px solid var(--gold);outline-offset:2px}
+.pod-acts{display:flex;gap:8px;flex-wrap:wrap}
+.pod-nx{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:11px 14px;border-radius:16px;background:var(--surface-2,rgba(212,175,55,.1));border:1px solid rgba(212,175,55,.45);color:var(--ink)}
+.pod-nx span{flex:none;font-size:12px;color:var(--ink-2)}
+.pod-nx b{flex:1;min-width:0;font-size:14px;line-height:1.3}
+.pod-nx i{font-style:normal;flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:#1a1405;font-size:12px}
+.pod-chs{border-radius:14px;background:var(--surface-2,rgba(0,0,0,.03));padding:2px 4px}
+.pod-chs summary{cursor:pointer;padding:9px 10px;font-size:13.5px;font-weight:600;color:var(--ink-2)}
+.pod-chs button{display:flex;gap:12px;width:100%;text-align:left;padding:9px 10px;border:0;background:none;border-radius:10px;color:var(--ink);font-size:14px;line-height:1.35}
+.pod-chs button i{font-style:normal;flex:none;min-width:38px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.pod-chs button.cur{background:rgba(212,175,55,.16);font-weight:600}
 .jr-sum{border-radius:20px;padding:16px 18px;background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(212,175,55,.05));border:1px solid rgba(212,175,55,.5)}
 .jr-sum h4{margin:0 0 10px;font-family:var(--f-display);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink)}
 .jr-sum ol{margin:0;padding:0;list-style:none;counter-reset:js}
@@ -8195,6 +8265,35 @@ function homeCtx(vault){
   }
   return "";
 }
+/* Разделы на главной - сетка одинаковых плиток (01.11.2026). Подкасты - podHomeCard() (блок подкастов). */
+function homeTile(cls, attr, ic, title, sub, badge){
+  return '<button class="hmt hmt-'+cls+'" '+attr+'><span class="hmt-ic">'+ic+'</span>'+
+    (badge ? '<em class="hmt-b">'+esc(badge)+'</em>' : '')+
+    '<b>'+esc(title)+'</b><span class="hmt-s">'+esc(sub)+'</span></button>';
+}
+function homeTiles(){
+  var w = S.wcal, zsub = "цикл, беременность, дети";
+  if(w && w.on && w.home && !w.pin && !w.pinH){ try{ var zs = zhenStatus(); if(w.goal === "preg" && wcPregInfo()) zsub = "Беременность: " + zs.preg; else if(wcLastEp()) zsub = zs.cycle; }catch(e){} }
+  var me = accOn() && CM.me ? CM.me.dua : null;
+  var tiles = [
+    homeTile("igra", 'data-igra="1"', "▦", "Ильм-Крафт", "игра для детей во времена Пророка ﷺ", "игра"),
+    homeTile("zhen", 'data-open="zhen"', "❀", "Женский раздел", zsub, ""),
+    podHomeCard(),
+    homeTile("dua", 'data-open="duas"', "♡", "Дуа друг за друга", me ? "ваша просьба видна сёстрам" : "попросите сестёр о дуа", "")
+  ];
+  if(nsOn()) tiles.push(homeTile("ns", 'data-nsopen="1"', "♡", "Наставник для души", "разобраться в себе по Корану и Сунне", ""));
+  tiles = tiles.filter(Boolean);
+  return '<div class="hm-grid'+(tiles.length % 2 ? ' odd' : '')+'">'+tiles.join("")+'</div>';
+}
+/* «Рейтинг» на главной - одна большая кнопка под «Мой день» (01.11.2026) */
+function homeRateBtn(){
+  var sc = scoreState(), me = S.scoreMe, pts = S.points || 0;
+  var sub = sc.on && me && me.place ? "ваше место - " + me.place + " · баллы за неделю" : "баллы за азкары, Коран и зикр - за неделю";
+  return '<button class="hm-rate" data-open="top"><span class="hm-rate-ic">◈</span>'+
+    '<span class="hm-rate-t"><b>Рейтинг недели</b><span>'+esc(sub)+'</span></span>'+
+    (pts ? '<span class="hm-rate-n">'+pts+'<i>'+plural(pts, "балл", "балла", "баллов").replace(/^[0-9 ]+/, "")+'</i></span>' : '<span class="hm-rate-go">›</span>')+
+    '</button>';
+}
 function viewHomeMain(){
   OFF_HOME_ONE = false; /* одна карточка предложения на всю главную */
   var h = ['<div class="stack">'];
@@ -8244,12 +8343,8 @@ function viewHomeMain(){
     '<div class="city-row"><span>📍 '+esc(tn.city.n)+' · '+esc(METHODS[methodNow()].n)+(Math.abs(tn.city.lat) > 65 ? ' · по широте 65°, где солнце всходит и заходит круглый год' : '')+
     (methodNow() === "rt" ? ' · в мечетях зухр в 12:00, фаджр в '+hhmm(tn.t.sunrise - 91/60) : '')+(ptAdjAny() ? ' · время поправлено вручную' : '')+'</span>'+
     '<button data-open="settings" style="margin-left:auto">Изменить</button></div></section>');
-  /* игра «Ильм-Крафт» - кнопка сразу под временем намаза, тёмно-бордовая, как плитка в «Знаниях» (просьбы Заиры 11.10.2026) */
-  h.push('<button class="igra-home" data-igra="1"><span class="igra-home-ic">▦</span>'+
-    '<span class="igra-home-t"><b>Ильм-Крафт <em>игра</em></b><span>Игра-путешествие для детей во времена Пророка (саллаллаху алейхи ва саллям)</span></span>'+
-    '<span class="igra-home-go">›</span></button>');
-  /* Женский раздел - одна розовая плашка (16.10.2026) */
-  h.push(zhenHomeTile());
+  /* разделы - сетка плиток под намазом (01.11.2026, раньше - четыре кнопки подряд) */
+  h.push(homeTiles());
   if(nsOn()) h.push('<button class="ns-home" data-nsopen="1"><span class="ns-home-ic">♡</span>'+
     '<span class="ns-home-t"><b>Наставник для души</b><span>Разобраться в себе с опорой на Коран и Сунну</span></span>'+
     '<span class="igra-home-go">›</span></button>');
@@ -8301,12 +8396,17 @@ function viewHomeMain(){
   syncSalahFlag();
   var tk = todayKey(), rec = dayRec(tk), done = dayCount(tk), st = dailyStreak();
   var day = salahDay(tk), pz = pauseNow() || ((S.wcal && !S.wcal.pin && !S.wcal.pinH) ? wcPauseNow() : null);
+  if(S.dayFold){
+    h.push('<section class="card md-fold"><button class="md-head" data-dayfold="1" aria-expanded="false">'+
+      '<b>Мой день</b><span class="md-dots">'+DAILY.map(function(x){ return '<i'+(rec[x.k] ? ' class="on"' : '')+'></i>'; }).join("")+'</span>'+
+      '<span class="md-n'+(done === 5 ? ' ok' : '')+'">'+done+' / 5</span><span class="md-ch">▾</span></button></section>');
+  } else
   h.push('<section class="card">'+
-    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:13px">'+
+    '<button class="md-head" data-dayfold="1" aria-expanded="true" style="margin-bottom:13px">'+
       '<b style="font-family:var(--f-display);font-size:15px">Мой день</b>'+
       (pz ? '<span style="font-size:11.5px;padding:2px 9px;border-radius:10px;border:1px solid var(--line);color:var(--ink-3)">пауза</span>' : '')+
       '<span style="margin-left:auto;font-family:var(--f-display);font-weight:700;font-size:16.5px;color:'+(done===5?"var(--emerald)":"var(--accent-ink)")+'">'+done+' / 5</span>'+
-    '</div>'+
+    '<span class="md-ch">▴</span></button>'+
     (pz ?
       '<div style="display:flex;align-items:center;gap:10px;margin:-2px 0 13px;padding:10px 12px;border-radius:10px;background:var(--surface-2);border:1px dashed var(--line)">'+
         '<span style="font-size:12.5px;line-height:1.45;color:var(--ink-2)">Пауза с '+esc(pauseDate(pz.from))+'. Серия сохраняется, пропуском эти дни не считаются.</span>'+
@@ -8388,6 +8488,7 @@ function viewHomeMain(){
       (pz ? '' : '<button class="btn ghost sm" style="flex:1" data-pauseopen="1" aria-label="Пауза в трекере">Пауза</button>')+
       '<button class="btn ghost sm" style="flex:1" data-open="report">Отчёт за месяц</button>'+
     '</div></section>');
+  h.push(homeRateBtn());
   h.push(offerDayCard(done));
   /* благодарность - всегда на виду, а не спрятана за галочкой шукра */
   shukrMigrate();
@@ -8419,29 +8520,10 @@ function viewHomeMain(){
 
 
   h.push(hbEvening());
-  h.push(hbAyahCard());
   /* вместе с сёстрами: круги, дуа за сестру, «Дуа друг за друга» */
   var cmH = cmHomeCard(), sisH = hbSisterCard();
-  h.push('<div class="sec-h"><h3>Вместе с сёстрами</h3></div>');
-  h.push(cmH); h.push(sisH);
-  h.push(cmDuaPlate());
-  h.push('<div class="sec-h"><h3>Моё</h3></div>');
-  /* цели и намерения - личный список, растёт со временем, как «Мои дуа» */
-  var openGoals = S.goals.filter(function(g){ return !g.done; });
-  var doneGoals = S.goals.filter(function(g){ return g.done; });
-  h.push('<section class="card">'+
-    '<button class="hm-fold" data-goalsopen="1"><b>Мои цели и намерения ради Аллаха</b>'+
-      (openGoals.length ? '<span class="chip">'+openGoals.length+'</span>' : '')+
-      '<span class="hm-fold-i">'+(S.goalsOpen ? "▴" : "▾")+'</span></button>'+
-    (!S.goalsOpen ? '<div class="hm-fold-s">'+(openGoals.length ? esc(openGoals[0].t) : 'Чего вы хотите достичь ради Аллаха?')+'</div>' : (
-    '<div style="text-align:right;margin-top:8px"><button class="chip" data-open="planner" style="cursor:pointer;border:none">Цели и планы →</button></div>'+
-    '<textarea class="search" id="goalInput" rows="2" style="resize:none;font-family:var(--f-body);margin-top:11px" placeholder="Чего вы хотите достичь ради Аллаха?"></textarea>'+
-    '<button class="btn sec sm" style="margin-top:9px" data-addgoal="1">Добавить цель</button>'+
-    (openGoals.length ? '<div class="rows" style="margin-top:12px">'+ openGoals.map(function(g){ return goalRow(g); }).join("") +'</div>' : '')+
-    (doneGoals.length ? '<div style="margin-top:11px;padding-top:10px;border-top:1px solid var(--line-soft)">'+
-      '<div class="eyebrow" style="margin-bottom:7px">Достигнуто - альхамду лиЛлях</div>'+
-      '<div class="rows">'+ doneGoals.map(function(g){ return goalRow(g); }).join("") +'</div></div>' : '')))+
-  '</section>');
+  if(cmH || sisH){ h.push('<div class="sec-h"><h3>Вместе с сёстрами</h3></div>'); h.push(cmH); h.push(sisH); }
+  /* цели и намерения - в «Ризкъ» → «Цели и планы» (01.11.2026, с главной убраны по просьбе Заиры) */
   h.push(vmHomePlate());
 
   /* быстрый доступ */
@@ -8483,7 +8565,6 @@ function viewHomeMain(){
     var T = [
       ['<span dir="rtl" lang="ar">أَفْهَمُ</span>', "Понимать Коран", qn ? "вы понимаете " + qp.pct + "% слов" : "600 слов - " + Math.round(QW_COVERED / QW_TOTAL * 100) + "% Корана", 'data-ar="qw"'],
       ['<span dir="rtl" lang="ar">عَرَبِي</span>', "Арабский с JAVATTI", "уроки с нуля", 'data-ar="home"'],
-      ["◈", "Рейтинг", scH.on && scMe && scMe.place ? "ваше место " + scMe.place : "баллы за неделю", 'data-open="top"'],
       ["☪", "Халяль рядом", "еда, магазины, мечети", 'data-open="halal"']
     ];
     h.push('<div class="hm-tiles">' + T.map(function(t){
@@ -8742,7 +8823,11 @@ function deepOpen(qArg){
     }
     /* ?go=istoriya - сразу последняя серия «Наших героев» (слово ИСТОРИЯ в ChatPlace), ?go=serii - список серий */
     /* ?go=podcasty - экран подкастов (01.11.2026) */
-    if(mg && mg[1] === "podcasty"){ S.welcomed = 1; save(); V.tab = "journal"; open("podcasty", null); return true; }
+    if(mg && mg[1] === "podcasty"){ S.welcomed = 1; save(); V.tab = "journal";
+      var mpod = q.match(/[?&]pod=([a-z0-9-]+)/); POD.hi = mpod && podById(mpod[1]) ? mpod[1] : "";
+      open("podcasty", null);
+      if(POD.hi) setTimeout(function(){ var el = document.getElementById("pod-" + POD.hi); if(el && el.scrollIntoView) el.scrollIntoView({ block: "center" }); }, 350);
+      return true; }
     if(mg && (mg[1] === "istoriya" || mg[1] === "serii")){
       S.welcomed = 1; save(); V.tab = "journal";
       var sl = mg[1] === "istoriya" ? serLast() : null;
@@ -27874,7 +27959,7 @@ function viewJournal(){ jrLikesLoad();
   if(used.length > 1){
     /* рубрики - одной строкой с прокруткой: раньше 7 кнопок занимали три строки над записями */
     h.push('<div class="jr-chips">'+
-      '<button data-rub="" class="jr-chip'+(V.rub ? '' : ' on')+'">Все</button>'+(serList().length ? '<button data-open="serii" class="jr-chip">▶ Серии</button>' : '')+(podList().length ? '<button data-open="podcasty" class="jr-chip">🎧 Подкасты</button>' : '')+
+      '<button data-rub="" class="jr-chip'+(V.rub ? '' : ' on')+'">Все</button>'+(serList().length ? '<button data-open="serii" class="jr-chip">▶ Серии</button>' : '')+(podList().length ? '<button data-open="podcasty" class="jr-chip">🎧 Подкасты'+(podNewCount() ? ' <em class="pod-newb">'+podNewCount()+'</em>' : '')+'</button>' : '')+
       used.map(function(r){ return '<button data-rub="'+r.id+'" class="jr-chip'+(V.rub === r.id ? ' on' : '')+'">'+esc(r.n)+'</button>'; }).join("")+
       (favN ? '<button data-rub="_fav" class="jr-chip'+(V.rub === "_fav" ? " on" : "")+'">★ Сохранённые · '+favN+'</button>' : '')+
       '</div>');
@@ -27920,25 +28005,95 @@ function viewJournal(){ jrLikesLoad();
 
 /* ---------- Подкасты (01.11.2026) ----------
    Записи журнала голосом Заиры: в начале записи кнопка «Прослушать как подкаст»,
-   отдельный экран «Подкасты» (чип в журнале, ?go=podcasty). Плеер один на всё
-   приложение (new Audio, не в разметке), поэтому звук не обрывается при переходах;
+   отдельный экран «Подкасты» (чип в журнале, ?go=podcasty, ?go=podcasty&pod=<id>). Плеер один
+   на всё приложение (new Audio, не в разметке), поэтому звук не обрывается при переходах;
    на других экранах - мини-плеер над нижней панелью. Место остановки помнится
    (S.podPos), Коран и подкаст друг друга ставят на паузу.
-   Новый выпуск: mp3 в www/podcast/, строка в PODCASTS (post - id записи журнала). */
+   Разбор группой экспертов 01.11: главы с переходом по нажатию, график «пн, ср, пт в 9:00»
+   и отсчёт до следующего выпуска, метка «Новый», «Дальше» после выпуска, таймер сна,
+   «Поделиться выпуском», счёт прослушанных.
+   Новый выпуск: mp3 в www/podcast/, строка в НАЧАЛО PODCASTS (post - id записи журнала,
+   at - выход по Москве «ГГГГ-ММ-ДДTЧЧ:ММ», ch - главы [секунда, название]). */
 var PODCASTS = [
-  { id:"privyazhi-verblyudicu", post:"privyazhi-verblyudicu", d:"2026-11-01", dur:373,
+  { id:"zaveshchanie-kak-napisat", post:"zaveshchanie-kak-napisat", at:"2026-11-02T09:00", dur:347,
+    n:"Завещание: две ночи",
+    s:"Почему Сунна велит не откладывать завещание, чем оно отличается от наследства, почему долги идут первыми и что почти все забывают записать.",
+    src:"podcast/zaveshchanie-kak-napisat.mp3", ch:[[0,"Две ночи"],[64,"Завещание и наследство - не одно и то же"],[86,"Треть - и это много"],[148,"Сначала долги"],[199,"Что записать"],[253,"Как оформить по закону"]] },
+  { id:"istigfar-rizk", post:"istigfar-rizk", at:"2026-11-02T09:00", dur:290,
+    n:"Истигфар: прощение и удел",
+    s:"Аят, где просьба о прощении стоит рядом с дождём, имуществом и детьми. Почему это не сделка, а разговор, и как сделать истигфар привычкой.",
+    src:"podcast/istigfar-rizk.mp3", ch:[[0,"Одно слово рядом с дождём"],[38,"Слова пророка Нуха, мир ему"],[100,"Не сделка, а разговор"],[144,"Последняя треть ночи"],[181,"Как сделать привычкой"]] },
+  { id:"mysli-o-dengah", post:"mysli-o-dengah", at:"2026-11-01T18:00", dur:362,
+    n:"Мысли о деньгах, которые звучат не вашим голосом",
+    s:"Четыре фразы о деньгах, которые мы слышим с детства, - и что о них сказано в Коране и Сунне. В конце - способ поймать такую мысль за десять секунд.",
+    src:"podcast/mysli-o-dengah.mp3", ch:[[0,"Четыре фразы из детства"],[54,"Деньги - это грязь?"],[121,"Богатые все жадные?"],[172,"Хотеть денег - эгоизм?"],[240,"У нас в семье так заведено"],[291,"Способ за десять секунд"]] },
+  { id:"privyazhi-verblyudicu", post:"privyazhi-verblyudicu", at:"2026-11-01T09:00", dur:450,
     n:"Привяжи верблюдицу",
     s:"Где кончается труд и начинается упование: люди, ушедшие в хадж без припасов, птицы, которые вылетают утром, и пещера Саур. В конце - задание на один вечер.",
-    src:"podcast/privyazhi-verblyudicu.mp3" }
+    src:"podcast/privyazhi-verblyudicu.mp3?v=2", ch:[[0,"Две ошибки рядом"],[57,"Сначала решение, потом упование"],[86,"Хадж без припасов"],[124,"Птицы вылетают утром"],[163,"А что же верблюдица?"],[194,"Пещера Саур"],[255,"Две колонки: моё и у Аллаха"],[380,"Задание на вечер"]] }
 ];
-var POD = { a:null, id:"", playing:false, raf:0 };
+var POD = { a:null, id:"", playing:false, saved:0, sleep:"", sleepAt:0, hi:"" };
 var POD_RATES = [1, 1.25, 1.5, 0.75];
-function podList(){ var t = todayKey(); return PODCASTS.filter(function(p){ return !p.d || p.d <= t; }); }
+var POD_SLEEP = ["", "15", "30", "end"];
+/* график выхода (решение Заиры 01.11.2026): понедельник, среда, пятница, 9:00 по Москве */
+var POD_DAYS = [1, 3, 5], POD_HOUR = 9;
+function podAt(p){ return p.at ? Date.parse(p.at + ":00+03:00") : 0; }
+function podList(){ var now = Date.now(); return PODCASTS.filter(function(p){ return podAt(p) <= now; }); }
 function podById(id){ return PODCASTS.filter(function(p){ return p.id === id; })[0] || null; }
 function podForPost(pid){ return podList().filter(function(p){ return p.post === pid; })[0] || null; }
 function podTime(s){ s = Math.max(0, Math.round(s || 0)); return Math.floor(s / 60) + ":" + ("0" + (s % 60)).slice(-2); }
 function podPos(id){ return (S.podPos && S.podPos[id]) || 0; }
 function podDur(p){ return (POD.id === p.id && POD.a && POD.a.duration > 0) ? POD.a.duration : p.dur; }
+function podDone(id){ return !!(S.podDone && S.podDone[id]); }
+function podNew(p){ return !podDone(p.id) && !podPos(p.id) && !(S.podStart && S.podStart[p.id]) && Date.now() - podAt(p) < 7 * 864e5; }
+function podNewCount(){ return podList().filter(podNew).length; }
+/* следующий выход: ближайший заранее заготовленный выпуск или ближайший пн/ср/пт 9:00 по Москве */
+function podNextAt(){
+  var now = Date.now(), fut = PODCASTS.filter(function(p){ return podAt(p) > now; }).map(podAt).sort();
+  if(fut.length) return fut[0];
+  for(var k = 0; k < 8; k++){
+    var m = new Date(now + 3 * 36e5 + k * 864e5);   /* сутки по Москве */
+    var t = Date.UTC(m.getUTCFullYear(), m.getUTCMonth(), m.getUTCDate(), POD_HOUR - 3, 0, 0);
+    if(POD_DAYS.indexOf(m.getUTCDay()) > -1 && t > now) return t;
+  }
+  return 0;
+}
+function podNextLabel(){
+  var t = podNextAt(); if(!t) return "";
+  var m = new Date(t + 3 * 36e5), now = new Date(Date.now() + 3 * 36e5);
+  var dd = Math.round((Date.UTC(m.getUTCFullYear(), m.getUTCMonth(), m.getUTCDate()) - Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())) / 864e5);
+  var wd = ["в воскресенье", "в понедельник", "во вторник", "в среду", "в четверг", "в пятницу", "в субботу"][m.getUTCDay()];
+  var mon = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"][m.getUTCMonth()];
+  return (dd === 0 ? "сегодня" : dd === 1 ? "завтра" : wd + ", " + m.getUTCDate() + " " + mon) + " в " + POD_HOUR + ":00";
+}
+/* что слушать дальше: следующий непрослушанный, сначала более старые после текущего */
+function podNext(id){
+  var l = podList(), i = -1;
+  for(var k = 0; k < l.length; k++) if(l[k].id === id) i = k;
+  var rest = l.slice(i + 1).concat(l.slice(0, Math.max(0, i)));
+  return rest.filter(function(p){ return !podDone(p.id); })[0] || null;
+}
+/* «подряд» (просьба Заиры 01.11): выпуски идут один за другим сверху вниз по списку,
+   прослушанные пропускаются - для пробежки и машины. S.podAuto = 0 - выключено. */
+function podAutoOn(){ return S.podAuto !== 0; }
+function podQueueNext(id){
+  var l = podList(), i = -1;
+  for(var k = 0; k < l.length; k++) if(l[k].id === id) i = k;
+  return l.slice(i + 1).filter(function(p){ return !podDone(p.id); })[0] || null;
+}
+function podQueuePrev(id){
+  var l = podList();
+  for(var k = 1; k < l.length; k++) if(l[k].id === id) return l[k - 1];
+  return null;
+}
+function podAll(){
+  var l = podList(), p = l.filter(function(x){ return !podDone(x.id); })[0] || l[0];
+  if(!p) return;
+  if(S.podAuto === 0){ S.podAuto = 1; save(); }
+  if(POD.id === p.id && POD.playing) return;
+  podPlay(p.id);
+}
+function podAutoToggle(){ S.podAuto = podAutoOn() ? 0 : 1; save(); toast(podAutoOn() ? "Выпуски будут идти подряд" : "Подряд выключено: после выпуска - пауза"); try{ renderInPlace(); }catch(e){ render(); } }
 function podSavePos(){
   if(!POD.a || !POD.id) return;
   if(!S.podPos) S.podPos = {};
@@ -27949,25 +28104,34 @@ function podSavePos(){
 function podPause(){
   if(POD.a && POD.playing){ POD.a.pause(); POD.playing = false; podSavePos(); podPaint(); }
 }
-function podPlay(id){
+function podPlay(id, from){
   var p = podById(id); if(!p) return;
   if(POD.id === id && POD.a){
-    if(POD.playing){ podPause(); return; }
+    if(POD.playing && from === undefined){ podPause(); return; }
+    if(from !== undefined){ try{ POD.a.currentTime = from; }catch(e){} }
   } else {
     if(POD.a){ podSavePos(); POD.a.pause(); }
     if(!POD.a){
       POD.a = new Audio();
       POD.a.preload = "metadata";
-      POD.a.addEventListener("timeupdate", function(){ podPaint(); if(Date.now() - (POD.saved || 0) > 10000){ POD.saved = Date.now(); podSavePos(); } });
-      POD.a.addEventListener("ended", function(){ POD.playing = false; if(!S.podDone) S.podDone = {}; S.podDone[POD.id] = todayKey(); podSavePos(); podPaint(); });
+      POD.a.addEventListener("timeupdate", function(){
+        if(POD.sleepAt && Date.now() >= POD.sleepAt){ POD.sleep = ""; POD.sleepAt = 0; podPause(); toast("Таймер сна: подкаст на паузе"); return; }
+        podPaint(); if(Date.now() - POD.saved > 10000){ POD.saved = Date.now(); podSavePos(); } });
+      POD.a.addEventListener("ended", function(){
+        POD.playing = false; if(!S.podDone) S.podDone = {}; S.podDone[POD.id] = todayKey(); podSavePos();
+        try{ rTrack("podcast_done", POD.id); }catch(e){}
+        var nxq = podQueueNext(POD.id);
+        if(POD.sleep === "end"){ POD.sleep = ""; POD.sleepAt = 0; nxq = null; }
+        if(nxq && podAutoOn()){ toast("Дальше: " + nxq.n); podPlay(nxq.id, 0); return; }
+        podPaint(); });
       POD.a.addEventListener("pause", function(){ if(POD.playing){ POD.playing = false; podSavePos(); podPaint(); } });
       POD.a.addEventListener("error", function(){ if(POD.id){ POD.playing = false; podPaint(); toast("Не удалось загрузить подкаст. Проверьте интернет."); } });
       POD.a.addEventListener("loadedmetadata", function(){ podPaint(); });
     }
     POD.id = id;
     POD.a.src = p.src;
-    var from = podPos(id);
-    if(from > 0){ var seek = function(){ try{ POD.a.currentTime = from; }catch(e){} POD.a.removeEventListener("loadedmetadata", seek); }; POD.a.addEventListener("loadedmetadata", seek); }
+    var st = from !== undefined ? from : podPos(id);
+    if(st > 0){ var seek = function(){ try{ POD.a.currentTime = st; }catch(e){} POD.a.removeEventListener("loadedmetadata", seek); }; POD.a.addEventListener("loadedmetadata", seek); }
   }
   /* одновременно звучит что-то одно: Коран и другие плееры - на паузу */
   try{ if(typeof QP !== "undefined" && QP.audio && QP.playing){ QP.audio.pause(); QP.playing = false; paintPlayer(); } }catch(e){}
@@ -27988,7 +28152,30 @@ function podRate(){
   if(POD.a) POD.a.playbackRate = S.podRate;
   podPaint();
 }
-function podStop(){ if(POD.a){ podSavePos(); POD.a.pause(); } POD.playing = false; POD.id = ""; podPaint(); }
+function podSleep(){
+  var i = POD_SLEEP.indexOf(POD.sleep);
+  POD.sleep = POD_SLEEP[(i + 1) % POD_SLEEP.length];
+  POD.sleepAt = /^[0-9]+$/.test(POD.sleep) ? Date.now() + POD.sleep * 6e4 : 0;
+  toast(POD.sleep === "" ? "Таймер сна выключен" : POD.sleep === "end" ? "Остановлю в конце выпуска" : "Остановлю через " + POD.sleep + " минут");
+  podPaint();
+}
+function podSleepLabel(){ return POD.sleep === "" ? "☾" : POD.sleep === "end" ? "☾ конец" : "☾ " + POD.sleep; }
+function podStop(){ if(POD.a){ podSavePos(); POD.a.pause(); } POD.playing = false; POD.id = ""; POD.sleep = ""; POD.sleepAt = 0; podPaint(); }
+/* «Поделиться выпуском» (просьба Заиры 01.11): WhatsApp, Telegram, «Ещё» - системное меню телефона
+   (Instagram, ВКонтакте, сообщения), «Ссылка» - скопировать. Ссылка открывает выпуск в приложении. */
+function podShareData(id){
+  var p = podById(id); if(!p) return null;
+  return { p: p, url: APP_URL + "?go=podcasty&pod=" + encodeURIComponent(p.id) + "&utm_source=share&utm_medium=podcast",
+    text: "Подкаст «" + p.n + "» - голосом Заиры Джаватхановой, " + podTime(p.dur) + ". Слушать бесплатно в приложении RIZQ:" };
+}
+function podShare(id, to){
+  var w = podShareData(id); if(!w) return;
+  try{ rTrack("podcast_share", id + ":" + (to || "more")); }catch(e){}
+  if(to === "wa"){ window.open("https://wa.me/?text=" + encodeURIComponent(w.text + " " + w.url), "_blank", "noopener"); return; }
+  if(to === "tg"){ window.open("https://t.me/share/url?url=" + encodeURIComponent(w.url) + "&text=" + encodeURIComponent(w.text), "_blank", "noopener"); return; }
+  if(to !== "copy" && navigator.share){ navigator.share({ title: w.p.n, text: w.text, url: w.url }).catch(function(){}); return; }
+  copyText(w.text + " " + w.url); toast(to === "copy" ? "Ссылка на выпуск скопирована" : "Ссылка скопирована - вставьте её в Instagram или куда удобно");
+}
 function podMedia(p){
   try{
     if(!("mediaSession" in navigator)) return;
@@ -27998,43 +28185,68 @@ function podMedia(p){
     navigator.mediaSession.setActionHandler("pause", function(){ podPause(); });
     navigator.mediaSession.setActionHandler("seekbackward", function(){ podSeek(-15); });
     navigator.mediaSession.setActionHandler("seekforward", function(){ podSeek(15); });
-    try{ navigator.mediaSession.setActionHandler("previoustrack", null); navigator.mediaSession.setActionHandler("nexttrack", null); }catch(e){}
+    try{
+      navigator.mediaSession.setActionHandler("nexttrack", podQueueNext(p.id) ? function(){ var n = podQueueNext(POD.id); if(n) podPlay(n.id, 0); } : null);
+      navigator.mediaSession.setActionHandler("previoustrack", function(){ var pv = podQueuePrev(POD.id); if(POD.a && POD.a.currentTime > 10 || !pv) podSeekTo(0); else podPlay(pv.id, 0); });
+    }catch(e){}
     try{ navigator.mediaSession.setActionHandler("stop", function(){ podStop(); }); }catch(e){}
   }catch(e){}
 }
+/* текущая глава - по времени */
+function podChapterIx(p, t){ var ix = -1; (p.ch || []).forEach(function(c, k){ if(t >= c[0] - 0.5) ix = k; }); return ix; }
 /* кнопка-плеер: в записи журнала и на экране «Подкасты»; обновляется без перерисовки экрана */
 function podPlayerHtml(p, big){
   var on = POD.id === p.id, pos = on && POD.a ? POD.a.currentTime : podPos(p.id), dur = podDur(p);
-  var pct = dur ? Math.min(100, pos / dur * 100) : 0, started = pos > 0 || on;
-  var done = S.podDone && S.podDone[p.id];
-  return '<div class="pod-pl'+(big ? ' big' : '')+(on && POD.playing ? ' on' : '')+'" data-podui="'+esc(p.id)+'">'+
+  var pct = dur ? Math.min(100, pos / dur * 100) : 0, started = pos > 0;
+  var done = podDone(p.id), nx = done && !(on && POD.playing) ? podNext(p.id) : null;
+  var chs = p.ch || [], cix = podChapterIx(p, pos);
+  return '<div class="pod-wrap" data-podui="'+esc(p.id)+'"'+(big ? ' data-big="1"' : '')+'>'+
+    '<div class="pod-pl'+(big ? ' big' : '')+(on && POD.playing ? ' on' : '')+'">'+
     '<button class="pod-play" data-pod="'+esc(p.id)+'" aria-label="'+(on && POD.playing ? 'Пауза' : 'Слушать')+'"><i>'+(on && POD.playing ? '❚❚' : '▶')+'</i></button>'+
     '<div class="pod-mid">'+
-      '<b>'+(on && POD.playing ? 'Слушаете подкаст' : started && pos > 0 ? 'Продолжить подкаст' : 'Прослушать как подкаст')+'</b>'+
-      '<span class="pod-sub">'+(done && !on ? '✓ прослушан · ' : '')+'голос автора · '+podTime(dur)+'</span>'+
-      '<div class="pod-bar" data-podbar="'+esc(p.id)+'"><i style="width:'+pct.toFixed(1)+'%"></i></div>'+
+      '<b>'+(on && POD.playing ? 'Слушаете подкаст' : started ? 'Продолжить подкаст' : 'Прослушать как подкаст')+'</b>'+
+      '<span class="pod-sub">'+(done && !on ? '✓ прослушан · ' : '')+'голос автора · '+podTime(dur)+
+        (on && cix > -1 ? ' · <span data-podchn>'+esc(chs[cix][1])+'</span>' : '')+'</span>'+
+      '<div class="pod-bar" data-podbar="'+esc(p.id)+'"><i style="width:'+pct.toFixed(1)+'%"></i>'+
+        chs.slice(1).map(function(c){ return dur ? '<u style="left:'+(c[0] / dur * 100).toFixed(1)+'%"></u>' : ''; }).join("")+'</div>'+
       '<div class="pod-tm"><span data-podcur>'+podTime(pos)+'</span>'+
-        (on ? '<span class="pod-ctl"><button data-podskip="-15" aria-label="Назад на 15 секунд">-15</button><button data-podskip="15" aria-label="Вперёд на 15 секунд">+15</button><button data-podrate="1" aria-label="Скорость">'+String(S.podRate || 1).replace(".", ",")+'×</button></span>' : '')+
+        (on ? '<span class="pod-ctl"><button data-podskip="-15" aria-label="Назад на 15 секунд">-15</button><button data-podskip="15" aria-label="Вперёд на 15 секунд">+15</button>'+
+          '<button data-podrate="1" aria-label="Скорость">'+String(S.podRate || 1).replace(".", ",")+'×</button>'+
+          '<button data-podsleep="1" aria-label="Таймер сна">'+podSleepLabel()+'</button></span>' : '')+
         '<span>'+podTime(dur)+'</span></div>'+
-    '</div></div>';
+    '</div></div>'+
+    (nx ? '<button class="pod-nx" data-pod="'+esc(nx.id)+'"><span>Слушать дальше</span><b>'+esc(nx.n)+'</b><i>▶</i></button>' : '')+
+    (chs.length > 1 ? '<details class="pod-chs"'+(big && on ? ' open' : '')+'><summary>Главы · '+chs.length+'</summary>'+
+      chs.map(function(c, k){ return '<button data-podch="'+esc(p.id)+':'+c[0]+'"'+(on && k === cix ? ' class="cur"' : '')+'><i>'+podTime(c[0])+'</i><span>'+esc(c[1])+'</span></button>'; }).join("")+'</details>' : '')+
+    '</div>';
 }
 function podPaint(){
   var els = document.querySelectorAll("[data-podui]");
   for(var i = 0; i < els.length; i++){
     var p = podById(els[i].getAttribute("data-podui")); if(!p) continue;
-    var on = POD.id === p.id;
-    /* тот же подкаст и та же разметка кнопок - двигаем только полосу и время, иначе перерисовываем карточку */
-    var hasCtl = !!els[i].querySelector(".pod-ctl");
-    if(on === hasCtl && els[i].classList.contains("on") === (on && POD.playing)){
-      var pos = on && POD.a ? POD.a.currentTime : podPos(p.id), dur = podDur(p);
+    var on = POD.id === p.id, pl = els[i].querySelector(".pod-pl");
+    var pos = on && POD.a ? POD.a.currentTime : podPos(p.id), dur = podDur(p);
+    /* тот же вид кнопок - двигаем только полосу, время и главу, иначе перерисовываем карточку */
+    var same = pl && (!!els[i].querySelector(".pod-ctl")) === on && pl.classList.contains("on") === (on && POD.playing) &&
+      (!!els[i].querySelector(".pod-nx")) === !!(podDone(p.id) && !(on && POD.playing) && podNext(p.id));
+    var chEl = els[i].querySelector("[data-podchn]"), cix = podChapterIx(p, pos);
+    if(same && on && (p.ch || []).length && (!chEl || chEl.textContent !== (cix > -1 ? p.ch[cix][1] : ""))) same = false;
+    if(same){
       var bar = els[i].querySelector(".pod-bar i"); if(bar) bar.style.width = (dur ? Math.min(100, pos / dur * 100) : 0).toFixed(1) + "%";
       var cur = els[i].querySelector("[data-podcur]"); if(cur) cur.textContent = podTime(pos);
       var rb = els[i].querySelector("[data-podrate]"); if(rb) rb.textContent = String(S.podRate || 1).replace(".", ",") + "×";
+      var sb = els[i].querySelector("[data-podsleep]"); if(sb) sb.textContent = podSleepLabel();
     } else {
-      var big = els[i].classList.contains("big");
-      var tmp = document.createElement("div"); tmp.innerHTML = podPlayerHtml(p, big);
-      els[i].parentNode.replaceChild(tmp.firstChild, els[i]);
+      var det = els[i].querySelector("details"), wasOpen = det && det.open;
+      var tmp = document.createElement("div"); tmp.innerHTML = podPlayerHtml(p, els[i].getAttribute("data-big") === "1");
+      var nw = tmp.firstChild; if(wasOpen){ var d2 = nw.querySelector("details"); if(d2) d2.open = true; }
+      els[i].parentNode.replaceChild(nw, els[i]);
     }
+  }
+  /* карточка на главной: перерисовать, если сменился выпуск или пауза */
+  var hc = document.querySelector("[data-podhome]");
+  if(hc && hc.getAttribute("data-podhome") !== podHomeKey()){
+    var tmh = document.createElement("div"); tmh.innerHTML = podHomeCard(); if(tmh.firstChild) hc.parentNode.replaceChild(tmh.firstChild, hc);
   }
   /* мини-плеер на остальных экранах */
   var mp = document.getElementById("podmini");
@@ -28049,20 +28261,42 @@ function podPaint(){
     } else mp.hidden = true;
   }
 }
+/* карточка «Подкасты» на главной (просьба Заиры 01.11): что слушать сейчас + «Слушать подряд» */
+function podHomeKey(){ return POD.id + ":" + (POD.playing ? 1 : 0); }
+function podHomeCard(){
+  var l = podList(); if(!l.length) return "";
+  var cur = POD.id ? podById(POD.id) : null, on = cur && POD.playing;
+  var nw = podNewCount();
+  return '<div class="hmt-wrap" data-podhome="'+esc(podHomeKey())+'">'+
+    '<button class="hmt hmt-pod" data-open="podcasty"><span class="hmt-ic">🎧</span>'+
+      (nw ? '<em class="hmt-b">'+(nw === 1 ? 'новый' : nw + ' новых')+'</em>' : '')+
+      '<b>Подкасты</b><span class="hmt-s">с Заирой Джаватхановой</span></button>'+
+    '<button class="hmt-play" '+(cur ? 'data-pod="'+esc(cur.id)+'"' : 'data-podall="1"')+' aria-label="'+(on ? 'Пауза' : 'Слушать подряд')+'">'+(on ? '❚❚' : '▶')+'</button>'+
+    '</div>';
+}
 function viewPodcasty(){
-  var list = podList();
+  var list = podList(), heard = list.filter(function(p){ return podDone(p.id); }).length, nxt = podNextLabel();
   var h = ['<div class="stack">'];
   h.push('<section class="pod-hero"><span class="jr-meta">Журнал · слушать</span><b>Подкасты</b>'+
-    '<p>Темы журнала голосом Заиры Джаватхановой - живым рассказом, а не чтением с листа. Слушайте в дороге, на кухне, перед сном.</p>'+
-    '<span class="pod-n">'+plural(list.length, "выпуск", "выпуска", "выпусков")+'</span></section>');
+    '<p>Темы журнала с Заирой Джаватхановой - живым рассказом, а не чтением с листа. Слушайте в дороге, на кухне, перед сном.</p>'+
+    '<div class="pod-sched"><i>◷</i><span>Новые выпуски - <b>по понедельникам, средам и пятницам в 9:00</b> (Москва)'+(nxt ? '<br>Следующий: '+esc(nxt) : '')+'</span></div>'+
+    '<div class="pod-all"><button class="pod-all-b" data-podall="1"><i>▶</i>Слушать все подряд</button>'+
+      '<button class="pod-auto'+(podAutoOn() ? ' on' : '')+'" data-podauto="1" role="switch" aria-checked="'+(podAutoOn() ? 'true' : 'false')+'">Подряд: '+(podAutoOn() ? 'вкл' : 'выкл')+'</button></div>'+
+    '<span class="pod-n">'+plural(list.length, "выпуск", "выпуска", "выпусков")+(heard ? ' · прослушано '+heard+' из '+list.length : '')+'</span></section>');
   if(!list.length) h.push('<div class="empty"><b>Первый выпуск скоро</b></div>');
   list.forEach(function(p, k){
-    var post = postsAll().filter(function(x){ return x.id === p.post; })[0], r = post ? rubric(post.r) : null;
-    h.push('<section class="pod-card">'+
-      '<span class="jr-meta">Выпуск '+(list.length - k)+(r ? ' · '+esc(r.n) : '')+' <i>· '+esc(postDate(p.d))+'</i></span>'+
+    var post = postsAll().filter(function(x){ return x.id === p.post; })[0], r = post ? rubric(p.r || (post && post.r)) : null;
+    h.push('<section class="pod-card'+(POD.hi === p.id ? ' hi' : '')+'" id="pod-'+esc(p.id)+'">'+
+      '<span class="jr-meta">Выпуск '+(list.length - k)+(r ? ' · '+esc(r.n) : '')+' <i>· '+esc(postDate(p.at.slice(0, 10)))+'</i>'+(podNew(p) ? ' <em class="pod-newb">Новый</em>' : '')+'</span>'+
       '<h3>'+esc(p.n)+'</h3><p>'+esc(p.s)+'</p>'+
       podPlayerHtml(p, true)+
-      (post ? '<button class="btn sec sm pod-read" data-post="'+esc(post.id)+'">Читать запись в журнале ›</button>' : '')+
+      '<div class="pod-acts">'+(post ? '<button class="btn sec sm" data-post="'+esc(post.id)+'">Читать запись ›</button>' : '')+
+      '</div>'+
+      '<div class="pod-share"><span>Поделиться:</span>'+
+        '<button data-podshare="'+esc(p.id)+':wa" class="wa">WhatsApp</button>'+
+        '<button data-podshare="'+esc(p.id)+':tg" class="tg">Telegram</button>'+
+        '<button data-podshare="'+esc(p.id)+':more">Instagram и ещё</button>'+
+        '<button data-podshare="'+esc(p.id)+':copy">Ссылка</button></div>'+
       '</section>');
   });
   h.push('</div>');
@@ -31163,7 +31397,7 @@ function viewPlanner(){
   h.push('<div class="sec-h" style="margin-top:14px"><h3>Мои цели</h3>'+
     '<span class="more" style="color:var(--ink-3)">'+goalsOpen.length+' в работе</span></div>');
   h.push('<div class="card flat" style="padding:13px 15px;font-size:13.5px;color:var(--ink-2);line-height:1.55">'+
-    'Это те же цели и намерения, что вы записываете на главной. Здесь к каждой можно привязать задачи '+
+    'Цели и намерения ради Аллаха. К каждой можно привязать задачи '+
     'и видеть, сколько шагов уже сделано.</div>');
 
   h.push('<section class="card">'+
@@ -34881,7 +35115,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-bk-save],[data-bk-copy],[data-bk-paste],[data-bk-apply],[data-nset],[data-igvid],[data-shyt],[data-igk],[data-igstep],[data-igplay],[data-wcpregerr],[data-wcshortok],[data-zhen],[data-rzvkid],[data-rzvadd],[data-rzvaddok],[data-rzvst],[data-rzvok],[data-rzvdel],[data-rzvluq],[data-rzvosn],[data-rzvedit],[data-wcgoal],[data-wcstart],[data-wcstartok],[data-wcend],[data-wcendok],[data-wcday],[data-wcfl],[data-wccol],[data-wcsy],[data-wcmd],[data-wcnote],[data-wcdel],[data-wcfrom],[data-wcto],[data-wcset],[data-wcsetok],[data-wcsw],[data-wcwipe],[data-wcmon],[data-wcgusl],[data-wcqp],[data-wcqf],[data-wcpregok],[data-wcpregset],[data-wckick],[data-wckickn],[data-wckickr],[data-wcct],[data-wcctt],[data-wcctclr],[data-wcbag],[data-wcbagi],[data-wcred],[data-wcislam],[data-wcborn],[data-wcbornok],[data-wcpin],[data-wcpinset],[data-wcpinopen],[data-wcshare],[data-wcloss],[data-wclossok],[data-wcrem],[data-wcpblood],[data-wcqi],[data-wcqfx],[data-wcfix],[data-wcaskok],[data-wcgyn],[data-wcpostred],[data-wcpostinfo],[data-wcwt],[data-wcwtcalc],[data-wckickgo],[data-wcbackup],[data-wcpinreset],[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-nafl],[data-naflnotif],[data-naflall],[data-igra],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-pod],[data-podskip],[data-podrate],[data-podbar],[data-podmini],[data-podstop],[data-podopen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-namesall],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
+  var node = t.closest ? t.closest("[data-bk-save],[data-bk-copy],[data-bk-paste],[data-bk-apply],[data-nset],[data-igvid],[data-shyt],[data-igk],[data-igstep],[data-igplay],[data-wcpregerr],[data-wcshortok],[data-zhen],[data-rzvkid],[data-rzvadd],[data-rzvaddok],[data-rzvst],[data-rzvok],[data-rzvdel],[data-rzvluq],[data-rzvosn],[data-rzvedit],[data-wcgoal],[data-wcstart],[data-wcstartok],[data-wcend],[data-wcendok],[data-wcday],[data-wcfl],[data-wccol],[data-wcsy],[data-wcmd],[data-wcnote],[data-wcdel],[data-wcfrom],[data-wcto],[data-wcset],[data-wcsetok],[data-wcsw],[data-wcwipe],[data-wcmon],[data-wcgusl],[data-wcqp],[data-wcqf],[data-wcpregok],[data-wcpregset],[data-wckick],[data-wckickn],[data-wckickr],[data-wcct],[data-wcctt],[data-wcctclr],[data-wcbag],[data-wcbagi],[data-wcred],[data-wcislam],[data-wcborn],[data-wcbornok],[data-wcpin],[data-wcpinset],[data-wcpinopen],[data-wcshare],[data-wcloss],[data-wclossok],[data-wcrem],[data-wcpblood],[data-wcqi],[data-wcqfx],[data-wcfix],[data-wcaskok],[data-wcgyn],[data-wcpostred],[data-wcpostinfo],[data-wcwt],[data-wcwtcalc],[data-wckickgo],[data-wcbackup],[data-wcpinreset],[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-nafl],[data-naflnotif],[data-naflall],[data-igra],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-pod],[data-podskip],[data-podrate],[data-podsleep],[data-podall],[data-podauto],[data-podch],[data-podshare],[data-podbar],[data-podmini],[data-podstop],[data-podopen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-dayfold],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-namesall],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -34931,6 +35165,11 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.pod){ podPlay(d.pod); return; }
   if(d.podskip){ podSeek(+d.podskip); return; }
   if(d.podrate){ podRate(); return; }
+  if(d.podsleep){ podSleep(); return; }
+  if(d.podall){ podAll(); return; }
+  if(d.podauto){ podAutoToggle(); return; }
+  if(d.podch){ var pci = d.podch.lastIndexOf(":"); podPlay(d.podch.slice(0, pci), +d.podch.slice(pci + 1)); return; }
+  if(d.podshare){ var psi = d.podshare.lastIndexOf(":"); podShare(d.podshare.slice(0, psi), d.podshare.slice(psi + 1)); return; }
   if(d.podbar){ if(POD.id !== d.podbar){ podPlay(d.podbar); return; } var bb = node.getBoundingClientRect(); podSeekTo((ev.clientX - bb.left) / bb.width); return; }
   if(d.podmini){ if(POD.id) podPlay(POD.id); return; }
   if(d.podstop){ podStop(); return; }
@@ -35267,6 +35506,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.pauseend!==undefined){ pauseEnd(); return; }
   if(d.pausedel){ pauseDel(d.pausedel); return; }
   if(d.salahopen!==undefined){ S.salahOpen = !S.salahOpen; save(); renderInPlace(); return; }
+  if(d.dayfold){ S.dayFold = !S.dayFold; save(); renderInPlace(); return; }
   if(d.dayopen!==undefined){ S.dayOpen = !S.dayOpen; save(); renderInPlace(); return; }
   if(d.repperiod){ V.repPeriod = d.repperiod; render(); return; }
   if(d.repmonth){ V.repMonth = d.repmonth; V.repDay = null; render(); return; }
