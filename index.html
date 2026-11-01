@@ -1432,6 +1432,30 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .jr-hero h2{font-family:var(--f-display);font-size:24px;line-height:1.25;font-weight:700;margin:8px 0 10px}
 .jr-hero .jr-lead{font-size:16px;line-height:1.6;color:var(--ink-2);margin:0}
 .jr-acts{display:flex;gap:8px;margin-top:14px}.jr-acts .btn{flex:1}
+.pod-pl{display:flex;align-items:center;gap:13px;padding:13px 14px;border-radius:20px;background:linear-gradient(150deg,var(--sapphire),var(--sapphire-3));border:1px solid rgba(212,175,55,.45);color:#fff;box-shadow:var(--shadow)}
+.pod-play{flex:none;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:#1a1405;border:0;font-size:17px;box-shadow:0 4px 14px rgba(212,175,55,.35)}
+.pod-play i{font-style:normal;margin-left:2px}
+.pod-pl.on .pod-play i{margin-left:0;font-size:14px}
+.pod-mid{flex:1;min-width:0}
+.pod-mid b{display:block;font-size:15.5px;line-height:1.3}
+.pod-sub{display:block;font-size:12.5px;color:rgba(255,255,255,.72);margin-top:2px}
+.pod-bar{position:relative;height:6px;border-radius:3px;background:rgba(255,255,255,.18);margin:10px 0 6px;cursor:pointer;touch-action:none}
+.pod-bar::before{content:"";position:absolute;left:0;right:0;top:-10px;bottom:-10px}
+.pod-bar i{display:block;height:100%;border-radius:3px;background:var(--gold);transition:width .25s linear}
+.pod-tm{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:12px;color:rgba(255,255,255,.72);font-variant-numeric:tabular-nums}
+.pod-ctl{display:flex;gap:6px}
+.pod-ctl button{min-width:40px;height:28px;padding:0 8px;border-radius:9px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:12.5px;font-weight:600}
+.pod-pl.big .pod-play{width:58px;height:58px;font-size:19px}
+.pod-hero{border-radius:24px;padding:20px 18px;background:linear-gradient(150deg,var(--sapphire),var(--sapphire-3));color:#fff;border:1px solid rgba(212,175,55,.45);box-shadow:var(--shadow)}
+.pod-hero .jr-meta{color:var(--gold-soft)}
+.pod-hero b{display:block;font-family:var(--f-display);font-size:28px;line-height:1.2;margin:6px 0 8px}
+.pod-hero p{margin:0 0 10px;font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.85)}
+.pod-hero .pod-n{display:block;font-size:12.5px;font-weight:600;color:var(--gold-soft)}
+.pod-card{border-radius:22px;padding:16px 16px 14px;background:var(--surface);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}
+.pod-card h3{margin:0;font-family:var(--f-display);font-size:20px;line-height:1.28}
+.pod-card p{margin:0;font-size:14px;line-height:1.55;color:var(--ink-2)}
+.pod-read{align-self:flex-start}
+.jr-pod{margin-top:2px}
 .jr-sum{border-radius:20px;padding:16px 18px;background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(212,175,55,.05));border:1px solid rgba(212,175,55,.5)}
 .jr-sum h4{margin:0 0 10px;font-family:var(--f-display);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink)}
 .jr-sum ol{margin:0;padding:0;list-style:none;counter-reset:js}
@@ -3173,6 +3197,12 @@ button.chip::after{content:"";position:absolute;left:0;right:0;top:-8px;bottom:-
       <span class="mp-txt" id="mpTxt"></span>
       <button class="mp-btn" data-mpplay="1" id="mpPlayBtn">❚❚</button>
       <button class="mp-btn mp-close" data-mpstop="1">✕</button>
+    </div>
+    <div class="miniplayer" id="podmini" hidden>
+      <span class="mp-ic">🎧</span>
+      <button class="mp-txt" id="podMiniTxt" data-podopen="1" style="text-align:left;color:inherit;background:none;border:0;padding:0"></button>
+      <button class="mp-btn" data-podmini="1" id="podMiniBtn" aria-label="Пауза">❚❚</button>
+      <button class="mp-btn mp-close" data-podstop="1" aria-label="Закрыть подкаст">✕</button>
     </div>
     <nav class="tabbar" id="tabbar"></nav>
   </div>
@@ -7042,6 +7072,7 @@ function qStop(){
   paintPlayer();
 }
 function qPlay(i){
+  podPause();
   if(SPL.audio && SPL.playing){ SPL.audio.pause(); SPL.playing = false; }
   if(!QP.audio){
     QP.audio = new Audio();
@@ -7075,7 +7106,7 @@ function qPlay(i){
 function qToggle(i){
   if(QP.playing && QP.cur === i){ QP.audio.pause(); QP.playing = false; paintPlayer(); return; }
   if(!QP.playing && QP.cur === i && QP.audio && QP.rec !== S.qReciter){ qPlay(i); return; }
-  if(!QP.playing && QP.cur === i && QP.audio){ QP.audio.playbackRate = S.qSpeed || 1; QP.audio.play(); QP.playing = true; qWordRun(); paintPlayer(); return; }
+  if(!QP.playing && QP.cur === i && QP.audio){ podPause(); QP.audio.playbackRate = S.qSpeed || 1; QP.audio.play(); QP.playing = true; qWordRun(); paintPlayer(); return; }
   qPlay(i);
 }
 function paintPlayer(){
@@ -7566,6 +7597,7 @@ function renderHdr(){
     var t = V.view==="cat" ? (CATS.filter(function(c){return c.id===V.p})[0]||{}).n
         : V.view==="nastavnik" ? "Наставник для души"
         : V.view==="serii" ? "Наши герои"
+        : V.view==="podcasty" ? "Подкасты"
         : V.view==="seriya" ? "Серия " + ((serById(V.p) || {}).n || "")
         : V.view==="names" ? "Имена Всевышнего"
         : V.view==="name" ? "Разбор имени"
@@ -8709,6 +8741,8 @@ function deepOpen(qArg){
       return true;
     }
     /* ?go=istoriya - сразу последняя серия «Наших героев» (слово ИСТОРИЯ в ChatPlace), ?go=serii - список серий */
+    /* ?go=podcasty - экран подкастов (01.11.2026) */
+    if(mg && mg[1] === "podcasty"){ S.welcomed = 1; save(); V.tab = "journal"; open("podcasty", null); return true; }
     if(mg && (mg[1] === "istoriya" || mg[1] === "serii")){
       S.welcomed = 1; save(); V.tab = "journal";
       var sl = mg[1] === "istoriya" ? serLast() : null;
@@ -27840,7 +27874,7 @@ function viewJournal(){ jrLikesLoad();
   if(used.length > 1){
     /* рубрики - одной строкой с прокруткой: раньше 7 кнопок занимали три строки над записями */
     h.push('<div class="jr-chips">'+
-      '<button data-rub="" class="jr-chip'+(V.rub ? '' : ' on')+'">Все</button>'+(serList().length ? '<button data-open="serii" class="jr-chip">▶ Серии</button>' : '')+
+      '<button data-rub="" class="jr-chip'+(V.rub ? '' : ' on')+'">Все</button>'+(serList().length ? '<button data-open="serii" class="jr-chip">▶ Серии</button>' : '')+(podList().length ? '<button data-open="podcasty" class="jr-chip">🎧 Подкасты</button>' : '')+
       used.map(function(r){ return '<button data-rub="'+r.id+'" class="jr-chip'+(V.rub === r.id ? ' on' : '')+'">'+esc(r.n)+'</button>'; }).join("")+
       (favN ? '<button data-rub="_fav" class="jr-chip'+(V.rub === "_fav" ? " on" : "")+'">★ Сохранённые · '+favN+'</button>' : '')+
       '</div>');
@@ -27884,6 +27918,157 @@ function viewJournal(){ jrLikesLoad();
   return h.join("");
 }
 
+/* ---------- Подкасты (01.11.2026) ----------
+   Записи журнала голосом Заиры: в начале записи кнопка «Прослушать как подкаст»,
+   отдельный экран «Подкасты» (чип в журнале, ?go=podcasty). Плеер один на всё
+   приложение (new Audio, не в разметке), поэтому звук не обрывается при переходах;
+   на других экранах - мини-плеер над нижней панелью. Место остановки помнится
+   (S.podPos), Коран и подкаст друг друга ставят на паузу.
+   Новый выпуск: mp3 в www/podcast/, строка в PODCASTS (post - id записи журнала). */
+var PODCASTS = [
+  { id:"privyazhi-verblyudicu", post:"privyazhi-verblyudicu", d:"2026-11-01", dur:373,
+    n:"Привяжи верблюдицу",
+    s:"Где кончается труд и начинается упование: люди, ушедшие в хадж без припасов, птицы, которые вылетают утром, и пещера Саур. В конце - задание на один вечер.",
+    src:"podcast/privyazhi-verblyudicu.mp3" }
+];
+var POD = { a:null, id:"", playing:false, raf:0 };
+var POD_RATES = [1, 1.25, 1.5, 0.75];
+function podList(){ var t = todayKey(); return PODCASTS.filter(function(p){ return !p.d || p.d <= t; }); }
+function podById(id){ return PODCASTS.filter(function(p){ return p.id === id; })[0] || null; }
+function podForPost(pid){ return podList().filter(function(p){ return p.post === pid; })[0] || null; }
+function podTime(s){ s = Math.max(0, Math.round(s || 0)); return Math.floor(s / 60) + ":" + ("0" + (s % 60)).slice(-2); }
+function podPos(id){ return (S.podPos && S.podPos[id]) || 0; }
+function podDur(p){ return (POD.id === p.id && POD.a && POD.a.duration > 0) ? POD.a.duration : p.dur; }
+function podSavePos(){
+  if(!POD.a || !POD.id) return;
+  if(!S.podPos) S.podPos = {};
+  var t = POD.a.currentTime || 0, d = POD.a.duration || 0;
+  S.podPos[POD.id] = (d && d - t < 8) ? 0 : Math.floor(t);
+  save();
+}
+function podPause(){
+  if(POD.a && POD.playing){ POD.a.pause(); POD.playing = false; podSavePos(); podPaint(); }
+}
+function podPlay(id){
+  var p = podById(id); if(!p) return;
+  if(POD.id === id && POD.a){
+    if(POD.playing){ podPause(); return; }
+  } else {
+    if(POD.a){ podSavePos(); POD.a.pause(); }
+    if(!POD.a){
+      POD.a = new Audio();
+      POD.a.preload = "metadata";
+      POD.a.addEventListener("timeupdate", function(){ podPaint(); if(Date.now() - (POD.saved || 0) > 10000){ POD.saved = Date.now(); podSavePos(); } });
+      POD.a.addEventListener("ended", function(){ POD.playing = false; if(!S.podDone) S.podDone = {}; S.podDone[POD.id] = todayKey(); podSavePos(); podPaint(); });
+      POD.a.addEventListener("pause", function(){ if(POD.playing){ POD.playing = false; podSavePos(); podPaint(); } });
+      POD.a.addEventListener("error", function(){ if(POD.id){ POD.playing = false; podPaint(); toast("Не удалось загрузить подкаст. Проверьте интернет."); } });
+      POD.a.addEventListener("loadedmetadata", function(){ podPaint(); });
+    }
+    POD.id = id;
+    POD.a.src = p.src;
+    var from = podPos(id);
+    if(from > 0){ var seek = function(){ try{ POD.a.currentTime = from; }catch(e){} POD.a.removeEventListener("loadedmetadata", seek); }; POD.a.addEventListener("loadedmetadata", seek); }
+  }
+  /* одновременно звучит что-то одно: Коран и другие плееры - на паузу */
+  try{ if(typeof QP !== "undefined" && QP.audio && QP.playing){ QP.audio.pause(); QP.playing = false; paintPlayer(); } }catch(e){}
+  try{ if(typeof SPL !== "undefined" && SPL.audio && SPL.playing){ SPL.audio.pause(); SPL.playing = false; } }catch(e){}
+  POD.a.playbackRate = S.podRate || 1;
+  var pr = POD.a.play(); if(pr && pr.catch) pr.catch(function(){ POD.playing = false; podPaint(); });
+  POD.playing = true;
+  if(!S.podStart) S.podStart = {};
+  if(!S.podStart[id]){ S.podStart[id] = todayKey(); save(); try{ rTrack("podcast_play", id); }catch(e){} }
+  podMedia(p);
+  podPaint();
+}
+function podSeek(delta){ if(!POD.a) return; var t = (POD.a.currentTime || 0) + delta; POD.a.currentTime = Math.max(0, Math.min(t, (POD.a.duration || t) - 1)); podPaint(); }
+function podSeekTo(frac){ if(!POD.a || !(POD.a.duration > 0)) return; POD.a.currentTime = POD.a.duration * Math.max(0, Math.min(1, frac)); podPaint(); }
+function podRate(){
+  var r = S.podRate || 1, i = POD_RATES.indexOf(r);
+  S.podRate = POD_RATES[(i + 1) % POD_RATES.length]; save();
+  if(POD.a) POD.a.playbackRate = S.podRate;
+  podPaint();
+}
+function podStop(){ if(POD.a){ podSavePos(); POD.a.pause(); } POD.playing = false; POD.id = ""; podPaint(); }
+function podMedia(p){
+  try{
+    if(!("mediaSession" in navigator)) return;
+    navigator.mediaSession.metadata = new MediaMetadata({ title: p.n, artist: "Заира Джаватханова", album: "Подкасты RIZQ",
+      artwork: [{ src: "icons/icon-512.png", sizes: "512x512", type: "image/png" }] });
+    navigator.mediaSession.setActionHandler("play", function(){ if(POD.id && !POD.playing) podPlay(POD.id); });
+    navigator.mediaSession.setActionHandler("pause", function(){ podPause(); });
+    navigator.mediaSession.setActionHandler("seekbackward", function(){ podSeek(-15); });
+    navigator.mediaSession.setActionHandler("seekforward", function(){ podSeek(15); });
+    try{ navigator.mediaSession.setActionHandler("previoustrack", null); navigator.mediaSession.setActionHandler("nexttrack", null); }catch(e){}
+    try{ navigator.mediaSession.setActionHandler("stop", function(){ podStop(); }); }catch(e){}
+  }catch(e){}
+}
+/* кнопка-плеер: в записи журнала и на экране «Подкасты»; обновляется без перерисовки экрана */
+function podPlayerHtml(p, big){
+  var on = POD.id === p.id, pos = on && POD.a ? POD.a.currentTime : podPos(p.id), dur = podDur(p);
+  var pct = dur ? Math.min(100, pos / dur * 100) : 0, started = pos > 0 || on;
+  var done = S.podDone && S.podDone[p.id];
+  return '<div class="pod-pl'+(big ? ' big' : '')+(on && POD.playing ? ' on' : '')+'" data-podui="'+esc(p.id)+'">'+
+    '<button class="pod-play" data-pod="'+esc(p.id)+'" aria-label="'+(on && POD.playing ? 'Пауза' : 'Слушать')+'"><i>'+(on && POD.playing ? '❚❚' : '▶')+'</i></button>'+
+    '<div class="pod-mid">'+
+      '<b>'+(on && POD.playing ? 'Слушаете подкаст' : started && pos > 0 ? 'Продолжить подкаст' : 'Прослушать как подкаст')+'</b>'+
+      '<span class="pod-sub">'+(done && !on ? '✓ прослушан · ' : '')+'голос автора · '+podTime(dur)+'</span>'+
+      '<div class="pod-bar" data-podbar="'+esc(p.id)+'"><i style="width:'+pct.toFixed(1)+'%"></i></div>'+
+      '<div class="pod-tm"><span data-podcur>'+podTime(pos)+'</span>'+
+        (on ? '<span class="pod-ctl"><button data-podskip="-15" aria-label="Назад на 15 секунд">-15</button><button data-podskip="15" aria-label="Вперёд на 15 секунд">+15</button><button data-podrate="1" aria-label="Скорость">'+String(S.podRate || 1).replace(".", ",")+'×</button></span>' : '')+
+        '<span>'+podTime(dur)+'</span></div>'+
+    '</div></div>';
+}
+function podPaint(){
+  var els = document.querySelectorAll("[data-podui]");
+  for(var i = 0; i < els.length; i++){
+    var p = podById(els[i].getAttribute("data-podui")); if(!p) continue;
+    var on = POD.id === p.id;
+    /* тот же подкаст и та же разметка кнопок - двигаем только полосу и время, иначе перерисовываем карточку */
+    var hasCtl = !!els[i].querySelector(".pod-ctl");
+    if(on === hasCtl && els[i].classList.contains("on") === (on && POD.playing)){
+      var pos = on && POD.a ? POD.a.currentTime : podPos(p.id), dur = podDur(p);
+      var bar = els[i].querySelector(".pod-bar i"); if(bar) bar.style.width = (dur ? Math.min(100, pos / dur * 100) : 0).toFixed(1) + "%";
+      var cur = els[i].querySelector("[data-podcur]"); if(cur) cur.textContent = podTime(pos);
+      var rb = els[i].querySelector("[data-podrate]"); if(rb) rb.textContent = String(S.podRate || 1).replace(".", ",") + "×";
+    } else {
+      var big = els[i].classList.contains("big");
+      var tmp = document.createElement("div"); tmp.innerHTML = podPlayerHtml(p, big);
+      els[i].parentNode.replaceChild(tmp.firstChild, els[i]);
+    }
+  }
+  /* мини-плеер на остальных экранах */
+  var mp = document.getElementById("podmini");
+  if(mp){
+    var show = POD.id && POD.a && !(V.view === "post" && podForPost(V.p) && podForPost(V.p).id === POD.id) && V.view !== "podcasty";
+    var qpOn = document.getElementById("miniplayer"); qpOn = qpOn && !qpOn.hidden;
+    if(show && !qpOn){
+      var pp = podById(POD.id);
+      mp.hidden = false;
+      var tx = document.getElementById("podMiniTxt"); if(tx) tx.textContent = (pp ? pp.n : "Подкаст") + " · " + podTime(POD.a.currentTime);
+      var bt = document.getElementById("podMiniBtn"); if(bt){ bt.textContent = POD.playing ? "❚❚" : "▶"; bt.setAttribute("aria-label", POD.playing ? "Пауза" : "Слушать"); }
+    } else mp.hidden = true;
+  }
+}
+function viewPodcasty(){
+  var list = podList();
+  var h = ['<div class="stack">'];
+  h.push('<section class="pod-hero"><span class="jr-meta">Журнал · слушать</span><b>Подкасты</b>'+
+    '<p>Темы журнала голосом Заиры Джаватхановой - живым рассказом, а не чтением с листа. Слушайте в дороге, на кухне, перед сном.</p>'+
+    '<span class="pod-n">'+plural(list.length, "выпуск", "выпуска", "выпусков")+'</span></section>');
+  if(!list.length) h.push('<div class="empty"><b>Первый выпуск скоро</b></div>');
+  list.forEach(function(p, k){
+    var post = postsAll().filter(function(x){ return x.id === p.post; })[0], r = post ? rubric(post.r) : null;
+    h.push('<section class="pod-card">'+
+      '<span class="jr-meta">Выпуск '+(list.length - k)+(r ? ' · '+esc(r.n) : '')+' <i>· '+esc(postDate(p.d))+'</i></span>'+
+      '<h3>'+esc(p.n)+'</h3><p>'+esc(p.s)+'</p>'+
+      podPlayerHtml(p, true)+
+      (post ? '<button class="btn sec sm pod-read" data-post="'+esc(post.id)+'">Читать запись в журнале ›</button>' : '')+
+      '</section>');
+  });
+  h.push('</div>');
+  return h.join("");
+}
+
 function viewPost(){
   var p = postsAll().filter(function(x){ return x.id === V.p; })[0];
   if(!p) return '<div class="empty"><b>Запись не найдена</b></div>';
@@ -27896,6 +28081,8 @@ function viewPost(){
     '<div class="jr-acts jr-actbar">'+jrLikeBtn(p.id)+'<button class="btn sec sm'+(isFav(key) ? ' on' : '')+'" data-fav="'+key+'" aria-pressed="'+(isFav(key) ? 'true' : 'false')+'"><i>'+jrIc("fav", isFav(key))+'</i>'+(isFav(key) ? "Сохранено" : "Сохранить")+'</button>'+
     '<button class="btn sec sm" data-pshare="'+esc(p.id)+'"><i>'+jrIc("share")+'</i>Поделиться</button>'+
     '<button class="btn sec sm" data-vm="post:'+esc(p.id)+'"><i>'+jrIc("reel")+'</i>Рилс</button></div></div></section>');
+  var pod = podForPost(p.id);
+  if(pod) h.push('<div class="jr-pod">'+podPlayerHtml(pod)+'</div>');
   if(p.sum && p.sum.length){
     h.push('<section class="jr-sum"><h4>Главное за 30 секунд</h4><ol>'+p.sum.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ol></section>');
   }
@@ -29033,7 +29220,7 @@ var ST_NAMES = { "tab:home":"Главная", "tab:quran":"Коран: огла�
   "cat":"Азкары и дуа", "names":"99 имён", "name":"Разбор имени", "namex":"Имя Аллаха", "tasbih":"Тасбих", "qduas":"Дуа из Корана", "hadith":"40 хадисов",
   "hadithone":"Хадис", "sira":"Сира", "calendar":"Календарь", "qibla":"Кибла", "zakat":"Закят", "kids":"Детям", "kidstory":"Детская история",
   "courses":"Программы обучения", "course":"Программа", "planner":"Планер", "finance":"Финансы", "settings":"Настройки", "admin":"Управление",
-  "post":"Запись журнала", "serii":"Серии: список", "seriya":"Серия", "suras":"Короткие суры", "live":"Мекка онлайн", "mydua":"Мои дуа", "hifz":"Заучивание", "tajwid":"Таджвид",
+  "post":"Запись журнала", "serii":"Серии: список", "podcasty":"Подкасты", "seriya":"Серия", "suras":"Короткие суры", "live":"Мекка онлайн", "mydua":"Мои дуа", "hifz":"Заучивание", "tajwid":"Таджвид",
   "report":"Отчёт за месяц", "qsettings":"Настройки чтения", "qsearch":"Поиск по Корану", "salahpics":"Как совершать намаз", "hajjtrip":"Хадж и умра",
   "sadaqa":"Садака", "qada":"Возмещение намазов", "duaall":"Все дуа", "shukr":"Дневник шукра", "guide":"Руководства", "know":"Знания: статья" };
 function stName(k){ return ST_NAMES[k] || k; }
@@ -34442,7 +34629,7 @@ function render(){
   if(RENDER_BUSY) return;
   try{ var fa = document.activeElement; FOCUS_KEEP = fa && fa.id && /^(INPUT|TEXTAREA)$/.test(fa.tagName) ? { id: fa.id, s: fa.selectionStart, e: fa.selectionEnd } : null; }catch(e){ FOCUS_KEEP = null; }
   RENDER_BUSY = 1;
-  try{ renderCore(); RENDER_FAIL = 0; }
+  try{ renderCore(); RENDER_FAIL = 0; try{ podPaint(); }catch(e2){} }
   catch(e){ renderFallback(e); errReport("render: " + (e && e.message ? e.message : e)); }
   finally{ RENDER_BUSY = 0; }
 }
@@ -34475,6 +34662,7 @@ function renderCore(){
   else if(V.view==="share") html = viewShare();
   else if(V.view==="post") html = viewPost();
   else if(V.view==="serii") html = viewSerii();
+  else if(V.view==="podcasty") html = viewPodcasty();
   else if(V.view==="seriya") html = viewSeriya();
   else if(V.view==="fav") html = viewFav();
   else if(V.view==="qmarks") html = viewQMarks();
@@ -34693,7 +34881,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-bk-save],[data-bk-copy],[data-bk-paste],[data-bk-apply],[data-nset],[data-igvid],[data-shyt],[data-igk],[data-igstep],[data-igplay],[data-wcpregerr],[data-wcshortok],[data-zhen],[data-rzvkid],[data-rzvadd],[data-rzvaddok],[data-rzvst],[data-rzvok],[data-rzvdel],[data-rzvluq],[data-rzvosn],[data-rzvedit],[data-wcgoal],[data-wcstart],[data-wcstartok],[data-wcend],[data-wcendok],[data-wcday],[data-wcfl],[data-wccol],[data-wcsy],[data-wcmd],[data-wcnote],[data-wcdel],[data-wcfrom],[data-wcto],[data-wcset],[data-wcsetok],[data-wcsw],[data-wcwipe],[data-wcmon],[data-wcgusl],[data-wcqp],[data-wcqf],[data-wcpregok],[data-wcpregset],[data-wckick],[data-wckickn],[data-wckickr],[data-wcct],[data-wcctt],[data-wcctclr],[data-wcbag],[data-wcbagi],[data-wcred],[data-wcislam],[data-wcborn],[data-wcbornok],[data-wcpin],[data-wcpinset],[data-wcpinopen],[data-wcshare],[data-wcloss],[data-wclossok],[data-wcrem],[data-wcpblood],[data-wcqi],[data-wcqfx],[data-wcfix],[data-wcaskok],[data-wcgyn],[data-wcpostred],[data-wcpostinfo],[data-wcwt],[data-wcwtcalc],[data-wckickgo],[data-wcbackup],[data-wcpinreset],[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-nafl],[data-naflnotif],[data-naflall],[data-igra],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-namesall],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
+  var node = t.closest ? t.closest("[data-bk-save],[data-bk-copy],[data-bk-paste],[data-bk-apply],[data-nset],[data-igvid],[data-shyt],[data-igk],[data-igstep],[data-igplay],[data-wcpregerr],[data-wcshortok],[data-zhen],[data-rzvkid],[data-rzvadd],[data-rzvaddok],[data-rzvst],[data-rzvok],[data-rzvdel],[data-rzvluq],[data-rzvosn],[data-rzvedit],[data-wcgoal],[data-wcstart],[data-wcstartok],[data-wcend],[data-wcendok],[data-wcday],[data-wcfl],[data-wccol],[data-wcsy],[data-wcmd],[data-wcnote],[data-wcdel],[data-wcfrom],[data-wcto],[data-wcset],[data-wcsetok],[data-wcsw],[data-wcwipe],[data-wcmon],[data-wcgusl],[data-wcqp],[data-wcqf],[data-wcpregok],[data-wcpregset],[data-wckick],[data-wckickn],[data-wckickr],[data-wcct],[data-wcctt],[data-wcctclr],[data-wcbag],[data-wcbagi],[data-wcred],[data-wcislam],[data-wcborn],[data-wcbornok],[data-wcpin],[data-wcpinset],[data-wcpinopen],[data-wcshare],[data-wcloss],[data-wclossok],[data-wcrem],[data-wcpblood],[data-wcqi],[data-wcqfx],[data-wcfix],[data-wcaskok],[data-wcgyn],[data-wcpostred],[data-wcpostinfo],[data-wcwt],[data-wcwtcalc],[data-wckickgo],[data-wcbackup],[data-wcpinreset],[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-nafl],[data-naflnotif],[data-naflall],[data-igra],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-pod],[data-podskip],[data-podrate],[data-podbar],[data-podmini],[data-podstop],[data-podopen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-namesall],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -34740,6 +34928,13 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.post){ V.tab="journal"; open("post", d.post); return; }
   if(d.pshare){ jrShare(d.pshare); return; }
   if(d.jrlike){ jrLikeToggle(d.jrlike); return; }
+  if(d.pod){ podPlay(d.pod); return; }
+  if(d.podskip){ podSeek(+d.podskip); return; }
+  if(d.podrate){ podRate(); return; }
+  if(d.podbar){ if(POD.id !== d.podbar){ podPlay(d.podbar); return; } var bb = node.getBoundingClientRect(); podSeekTo((ev.clientX - bb.left) / bb.width); return; }
+  if(d.podmini){ if(POD.id) podPlay(POD.id); return; }
+  if(d.podstop){ podStop(); return; }
+  if(d.podopen){ var pdo = podById(POD.id); V.tab = "journal"; if(pdo && pdo.post) open("post", pdo.post); else open("podcasty", null); return; }
   if(d.seropen){ V.serRet = V.view === "serii" ? 1 : 0; V.tab = "journal"; open("seriya", d.seropen); return; }
   if(d.sernext){ serEv(V.p, "next"); V.tab = "journal"; open("seriya", d.sernext); return; }
   if(d.serpost){ var spe = serById(d.serpost); if(spe && spe.post){ serEv(spe.id, "post"); V.tab = "journal"; open("post", spe.post); } return; }
