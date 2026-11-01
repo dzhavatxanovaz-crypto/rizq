@@ -3603,7 +3603,7 @@ var HADITH_SRC = [{"num":1,"n":"Дела оцениваются по намер�
 var DEF = {
   fav:[], tasbih:{}, tasbihTotal:0, read:{}, dcnt:{}, practice:{}, readDay:"", bought:[], done:[], orders:[],
   theme:"", city:"mah", method:"auto", madhab:1,
-  name:"", email:"", notifPrayer:true, notifDua:true, notifAyat:true, notifTasks:true, notifScore:true, notifAzkar:true, notifJumua:true, notifKahf:true, notifReport:true, statOn:true, notifCourse:false, notifAzan:true,
+  name:"", email:"", notifPrayer:true, notifDua:true, notifAyat:true, notifTasks:true, notifScore:true, notifAzkar:true, notifJumua:true, notifKahf:true, notifReport:true, notifPodcast:true, statOn:true, notifCourse:false, notifAzan:true,
   salah:{}, myduas:[], goals:[], namesRead:{}, daily:{}, shukrNotes:{}, shukr:[], shukrMigrated:false, shukrOpen:false, salahOpen:false,
   checks:{}, sunnah:{}, sunnahOpen:false, health:{}, healthOpen:false, pauses:[],
   qada:{p:{}, done:{}, fast:0, fastDone:0, perDay:1, log:[]}, postSeen:"", points:0, pointsDay:{}, cat:{},
@@ -32012,6 +32012,17 @@ function pushItems(){
     }
   }
   /* сервер берёт не больше 80 пунктов, иначе отказывает целиком - оставляем ближайшие */
+  /* новый выпуск подкаста - в момент выхода (01.11.2026); выпуски заводятся в PODCASTS заранее */
+  if(S.notifPodcast !== false && typeof PODCASTS !== "undefined"){
+    var podBy = {};   /* два выпуска в одну минуту - одно уведомление */
+    PODCASTS.forEach(function(p){ var atP = podAt(p); if(atP > now && atP < now + 9 * 864e5) (podBy[atP] = podBy[atP] || []).push(p); });
+    Object.keys(podBy).forEach(function(k){
+      var ps = podBy[k];
+      items.push({ at:new Date(+k).toISOString(), title: ps.length > 1 ? "Новые подкасты с Заирой Джаватхановой" : "Новый подкаст с Заирой Джаватхановой",
+        body: ps.length > 1 ? ps.map(function(p){ return "«" + p.n + "»"; }).join(" и ") + ". Нажмите, чтобы слушать"
+          : "«" + ps[0].n + "» - " + podTime(ps[0].dur) + ". Нажмите, чтобы слушать", tag:"go-podcasty" });
+    });
+  }
   /* женский календарь: напоминание за 2 дня, нейтральным текстом (16.10.2026) */
   try{ items = items.concat(wcPushItems()); }catch(e){}
   items.sort(function(a, b){ return a.at < b.at ? -1 : a.at > b.at ? 1 : 0; });
@@ -32035,7 +32046,7 @@ function pushSig(){
     (S.debts || []).filter(function(x){ return !x.closed && x.due; })
     .map(function(x){ return x.due + x.id; }).join(",");
   return [c.lat, c.lng, c.tz, S.method, S.madhab, S.notifPrayer ? 1 : 0, (S.notifDuha ? 1 : 0) + "" + (S.notifTahajjud ? 1 : 0), S.notifDua ? 1 : 0, S.notifAyat === false ? 0 : 1, HAS_TR ? 1 : 0,
-          S.notifTasks === false ? 0 : 1, S.notifScore === false ? 0 : 1, scoreState().on ? 1 : 0, S.notifAzkar === false ? 0 : 1, S.notifJumua === false ? 0 : 1, S.notifKahf === false ? 0 : 1, S.notifReport === false ? 0 : 1, JSON.stringify(S.ptAdj || {}), (S.kahf && S.kahf[todayKey()]) ? 1 : 0,
+          S.notifTasks === false ? 0 : 1, S.notifScore === false ? 0 : 1, scoreState().on ? 1 : 0, S.notifAzkar === false ? 0 : 1, S.notifJumua === false ? 0 : 1, S.notifKahf === false ? 0 : 1, S.notifReport === false ? 0 : 1, (S.notifPodcast === false ? 0 : 1) + ":" + (typeof PODCASTS !== "undefined" ? PODCASTS.map(function(p){ return p.id + p.at; }).join(",") : ""), JSON.stringify(S.ptAdj || {}), (S.kahf && S.kahf[todayKey()]) ? 1 : 0,
           (S.scoreMe && S.scoreMe.place) || 0, pauseNow() ? 1 : 0, todayKey(), tasks, wcSigPart(),
           S.ar ? (S.ar.start ? 1 : 0) + ":" + (S.ar.remind || "9") + ":" + (arDayDone(arToday()) ? 1 : 0) : ""].join("|");
 }
@@ -32655,6 +32666,7 @@ function viewProf(){
     swRow("notifAzkar", "☀", "Утренние и вечерние азкары") +
     swRow("notifKahf", "۞", "Пятница: сура аль-Кахф утром") +
     swRow("notifJumua", "☾", "Пятница: последний час для дуа") +
+    swRow("notifPodcast", "🎧", "Новые выпуски подкастов: пн, ср, пт в 9:00") +
     swRow("notifReport", "◷", "Отчёт за месяц: 1-го числа в 10:00") +
     swRow("notifTasks", "✓", "Задачи со временем") +
     swRow("notifScore", "◈", "Итоги недели в рейтинге") +
@@ -33038,7 +33050,7 @@ function accFetch(p, method, body){
 var SY_KEYS = (function(){
   var a = BK_KEYS.concat(["phone","email","qTime","qtGoal","nameMark","scoreGoal","scoreBest","score","qrmdOff","qFont",
     "qTajweed","qBook","mdnSize","qContinue","qFollow","madhabPicked","bought","leads","hlCity",
-    "notifPrayer","notifDua","notifAyat","notifTasks","notifScore","notifAzkar","notifJumua","notifKahf","notifReport","notifCourse","notifAzan","notifDuha","notifTahajjud"]), seen = {}, out = [];
+    "notifPrayer","notifDua","notifAyat","notifTasks","notifScore","notifAzkar","notifJumua","notifKahf","notifReport","notifPodcast","notifCourse","notifAzan","notifDuha","notifTahajjud"]), seen = {}, out = [];
   /* женский календарь - только на телефоне: в синхронизацию с аккаунтом не идёт */
   for(var i = 0; i < a.length; i++) if(!seen[a[i]] && a[i] !== "wcal" && a[i] !== "rzv"){ seen[a[i]] = 1; out.push(a[i]); }
   return out;
@@ -33051,7 +33063,7 @@ SY_ADD.namesRead = 1; SY_ADD.cat = 1; SY_ADD.qada = 1;
 var SY_SET = {};
 ["name","email","phone","city","gps","method","madhab","madhabPicked","ptAdj","theme","qSize","qTr","qReciter","qSpeed","qRepeat","qScroll",
  "qContinue","qFollow","fontSize","qFont","qFontSafe","qTajweed","qBook","mdnSize","qtGoal","qrmdOff","scoreGoal","score",
- "qLast","hlCity","zakat","notifPrayer","notifDua","notifAyat","notifTasks","notifScore","notifAzkar","notifJumua","notifKahf","notifReport","notifCourse","notifAzan","notifDuha","notifTahajjud"]
+ "qLast","hlCity","zakat","notifPrayer","notifDua","notifAyat","notifTasks","notifScore","notifAzkar","notifJumua","notifKahf","notifReport","notifPodcast","notifCourse","notifAzan","notifDuha","notifTahajjud"]
   .forEach(function(k){ SY_SET[k] = 1; });
 
 function syHash(s){ var h = 5381, i = s.length; while(i) h = ((h << 5) + h) ^ s.charCodeAt(--i); return (h >>> 0).toString(36) + "." + s.length; }
@@ -35983,7 +35995,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.pushtoggle!==undefined){ if(pushOn()) pushDisable(); else pushEnable(); return; }
   if(d.sw){
     S[d.sw] = !S[d.sw]; save(); render();
-    if(d.sw === "notifAyat" || d.sw === "notifPrayer" || d.sw === "notifDua" || d.sw === "notifTasks" || d.sw === "notifScore" || d.sw === "notifAzkar" || d.sw === "notifJumua" || d.sw === "notifKahf" || d.sw === "notifReport" || d.sw === "notifDuha" || d.sw === "notifTahajjud") pushSync(true);
+    if(d.sw === "notifAyat" || d.sw === "notifPrayer" || d.sw === "notifDua" || d.sw === "notifTasks" || d.sw === "notifScore" || d.sw === "notifAzkar" || d.sw === "notifJumua" || d.sw === "notifKahf" || d.sw === "notifReport" || d.sw === "notifPodcast" || d.sw === "notifDuha" || d.sw === "notifTahajjud") pushSync(true);
     if(S[d.sw] && (d.sw === "notifPrayer" || d.sw === "notifDua" || d.sw === "notifDuha" || d.sw === "notifTahajjud")){
       notifAsk().then(function(r){
         if(r === "granted"){ toast("Напоминания включены"); }
