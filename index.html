@@ -760,6 +760,15 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .knl-t b{font-size:14.5px;font-weight:600}
 .knl-t span{font-size:12px;color:var(--ink-3)}
 .knl-go{flex:none;color:var(--ink-3)}
+.hm-qa{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.hq{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:7px;min-width:0;min-height:88px;padding:11px 3px 9px;border-radius:16px;background:var(--surface);border:1px solid var(--line-soft);box-shadow:var(--shadow);color:var(--ink);text-align:center}
+.hq-ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(212,175,55,.14);color:var(--accent-ink);font-size:18px;line-height:1}
+.hq-ic .hm-ar{font-size:16px}
+.hq b{font-family:var(--f-body);font-size:11.5px;font-weight:600;line-height:1.2;overflow-wrap:anywhere}
+.hm-hd{display:flex;flex-direction:column;gap:6px;width:100%;text-align:left}
+.hm-hd b{font-family:var(--f-display);font-size:16px;font-weight:600;line-height:1.35}
+.hm-hd-t{font-size:14px;line-height:1.6;color:var(--ink-2)}
+.hm-hd-go{font-size:13px;color:var(--accent-ink);margin-top:3px;font-weight:600}
 .hm-rate{display:flex;align-items:center;gap:13px;width:100%;text-align:left;padding:15px 16px;border-radius:20px;border:1px solid rgba(212,175,55,.55);background:linear-gradient(135deg,#E9C766,#B8912F);color:#2A1E05;box-shadow:0 8px 22px rgba(184,145,47,.28)}
 .hm-rate-ic{flex:none;width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-size:21px;background:rgba(42,30,5,.12)}
 .hm-rate-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
@@ -8324,6 +8333,26 @@ function homeRateBtn(){
     (pts ? '<span class="hm-rate-n">'+pts+'<i>'+plural(pts, "балл", "балла", "баллов").replace(/^[0-9 ]+/, "")+'</i></span>' : '<span class="hm-rate-go">›</span>')+
     '</button>';
 }
+/* «Быстрый доступ» на главной: 4×3 одинаковых плитки (01.11.2026) */
+function homeQuick(){
+  var Q = [
+    ['data-go="quran"', '<span class="hm-ar" dir="rtl" lang="ar">قُرْآن</span>', "Коран"],
+    ['data-open="names"', "۹۹", "99 имён"],
+    ['data-open="sira"', "✾", "Сира"],
+    ['data-open="hadith"', "☰", "40 хадисов"],
+    ['data-open="qduas"', "✦", "Дуа из Корана"],
+    ['data-open="suras"', '<span class="hm-ar" dir="rtl" lang="ar">سُوَر</span>', "Короткие суры"],
+    ['data-open="tasbih"', "◉", (S.tasbihTotal||0) ? "Тасбих · " + S.tasbihTotal : "Тасбих"],
+    ['data-open="mydua"', "✎", "Мои дуа"],
+    ['data-open="qibla"', "✧", "Кибла"],
+    ['data-open="halal"', "☪", "Халяль рядом"],
+    ['data-open="calendar"', "☾", "Календарь"],
+    ['data-open="live"', "🕋", "Мекка онлайн"]
+  ];
+  return '<div class="hm-qa">' + Q.map(function(q){
+    return '<button class="hq" '+q[0]+'><span class="hq-ic">'+q[1]+'</span><b>'+esc(q[2])+'</b></button>';
+  }).join("") + '</div>';
+}
 function viewHomeMain(){
   OFF_HOME_ONE = false; /* одна карточка предложения на всю главную */
   var h = ['<div class="stack">'];
@@ -8553,25 +8582,19 @@ function viewHomeMain(){
   /* вместе с сёстрами: круги, дуа за сестру, «Дуа друг за друга» */
   var cmH = cmHomeCard(), sisH = hbSisterCard();
   if(cmH || sisH){ h.push('<div class="sec-h"><h3>Вместе с сёстрами</h3></div>'); h.push(cmH); h.push(sisH); }
-  /* цели и намерения - в «Ризкъ» → «Цели и планы» (01.11.2026, с главной убраны по просьбе Заиры) */
-  h.push(vmHomePlate());
+  /* цели и намерения - в «Ризкъ» → «Цели и планы» (01.11.2026, с главной убраны по просьбе Заиры);
+     видеостудия - внизу, в «От JAVATTI» */
 
-  /* быстрый доступ */
+  /* низ главной (01.11.2026): быстрый доступ → хадис дня → читать и учиться → от JAVATTI */
   h.push('<div class="sec-h"><h3>Быстрый доступ</h3></div>');
-  h.push('<div class="cats hm-mini">'+
-    '<button class="cat" data-go="quran"><div class="ic hm-ar" dir="rtl" lang="ar">قُرْآن</div><b>Коран</b><span>114 сур, аудио</span></button>'+
-    '<button class="cat" data-open="names"><div class="ic">۹۹</div><b>99 имён Аллаха</b><span>разбор и дуа</span></button>'+
-    '<button class="cat" data-open="sira"><div class="ic">✾</div><b>Сира Пророка ﷺ</b><span>'+SIRA.length+' глав</span></button>'+
-    '<button class="cat" data-open="hadith"><div class="ic">☰</div><b>40 хадисов</b><span>ан-Навави</span></button>'+
-    '<button class="cat" data-open="qduas"><div class="ic">✦</div><b>Дуа из Корана</b><span>мольбы пророков</span></button>'+
-    '<button class="cat" data-open="suras"><div class="ic hm-ar" dir="rtl" lang="ar">سُوَر</div><b>Короткие суры</b><span>для намаза наизусть</span></button>'+
-    '<button class="cat gold" data-open="tasbih"><div class="ic">◉</div><b>Тасбих</b>'+
-      '<span>'+((S.tasbihTotal||0)? "произнесено "+(S.tasbihTotal||0) : "счётчик зикра")+'</span></button>'+
-    '<button class="cat" data-open="mydua"><div class="ic">✎</div><b>Мои дуа</b>'+
-      '<span>'+(S.myduas.length? plural(S.myduas.length,"запись","записи","записей") : "личный список")+'</span></button>'+
-    '<button class="cat" data-open="qibla"><div class="ic">✧</div><b>Кибла</b><span>'+Math.round(qiblaBearing())+'° от севера</span></button>'+
-    '<button class="cat" data-open="live"><div class="ic" style="font-size:24px">🕋</div><b>Мекка онлайн</b><span>прямой эфир из Харама</span></button>'+
-    '</div>');
+  h.push(homeQuick());
+  var hd = HADITHS.length ? HADITHS[dayIndex() % HADITHS.length] : null;
+  if(hd){
+    h.push('<div class="sec-h"><h3>Хадис дня</h3><span class="more" style="color:var(--ink-3)">№ '+hd.num+'</span></div>');
+    h.push('<button class="card hm-hd" data-hadith="'+HADITHS.indexOf(hd)+'">'+
+      '<b>'+esc(hd.n)+'</b><span class="hm-hd-t">'+esc(hd.text.slice(0,110))+'...</span>'+
+      '<span class="hm-hd-go">Читать целиком →</span></button>');
+  }
 
   h.push('<div class="sec-h"><h3>Читать и учиться</h3></div>');
   var bkNudge = bookNudge();
@@ -8587,40 +8610,25 @@ function viewHomeMain(){
       '<span class="azkar-t"><b>'+esc(BOOK1.n)+'</b><span>'+sub+'</span></span>'+
       '<span class="azkar-go">›</span></button>');
   })();
-  if(!bkNudge) h.push(charityLine());
-  h.push(offerLearnCard());
-  /* понимать Коран, арабский, рейтинг, халяль - плитками 2x2 (главная 30.09.2026) */
+  /* понимать Коран и арабский - парой плиток */
   (function(){
-    var qp = qwPct(), qn = qwLearned().length, scH = scoreState(), scMe = S.scoreMe;
+    var qp = qwPct(), qn = qwLearned().length;
     var T = [
       ['<span dir="rtl" lang="ar">أَفْهَمُ</span>', "Понимать Коран", qn ? "вы понимаете " + qp.pct + "% слов" : "600 слов - " + Math.round(QW_COVERED / QW_TOTAL * 100) + "% Корана", 'data-ar="qw"'],
-      ['<span dir="rtl" lang="ar">عَرَبِي</span>', "Арабский с JAVATTI", "уроки с нуля", 'data-ar="home"'],
-      ["☪", "Халяль рядом", "еда, магазины, мечети", 'data-open="halal"']
+      ['<span dir="rtl" lang="ar">عَرَبِي</span>', "Арабский с JAVATTI", "уроки с нуля", 'data-ar="home"']
     ];
     h.push('<div class="hm-tiles">' + T.map(function(t){
       return '<button class="hm-tile" '+t[3]+'><span class="hm-tile-ic">'+t[0]+'</span><span class="hm-tile-t"><b>'+t[1]+'</b><span>'+esc(t[2])+'</span></span></button>';
     }).join("") + '</div>');
   })();
-  /* хадис дня - короткое чтение, когда день уже отмечен */
-  /* хадис дня */
-  var hd = HADITHS.length ? HADITHS[dayIndex() % HADITHS.length] : null;
-  if(hd){
-    h.push('<div class="sec-h" style="margin-top:6px"><h3>Хадис дня</h3>'+
-      '<span class="more" style="color:var(--ink-3)">№ '+hd.num+'</span></div>');
-    h.push('<button class="card" style="width:100%;text-align:left" data-hadith="'+HADITHS.indexOf(hd)+'">'+
-      '<div style="font-family:var(--f-display);font-size:16px;font-weight:600;margin-bottom:6px;line-height:1.35">'+esc(hd.n)+'</div>'+
-      '<div style="font-size:14px;line-height:1.6;color:var(--ink-2)">'+esc(hd.text.slice(0,110))+'...</div>'+
-      '<div style="font-size:13px;color:var(--accent-ink);margin-top:9px;font-weight:600">Читать целиком →</div></button>');
-  }
-  /* обучение - в самом низу */
-  h.push('<div class="sec-h" style="margin-top:6px"><h3>Обучение</h3><button class="more" data-open="courses">Все программы →</button></div>');
+  if(!bkNudge) h.push(charityLine());
+  h.push(offerLearnCard());
+
+  /* от JAVATTI: видеостудия и главная программа; остальные - по ссылке в заголовке */
+  h.push('<div class="sec-h"><h3>От JAVATTI</h3><button class="more" data-open="courses">Все программы →</button></div>');
+  h.push(vmHomePlate());
   var flagship = COURSES.filter(function(c){ return c.id === "sunnah"; })[0] || COURSES[0];
   if(flagship) h.push(courseCard(flagship));
-  var rest = COURSES.length - 1;
-  if(rest > 0){
-    h.push('<button class="btn sec sm" style="width:100%" data-open="courses">'+
-      'Ещё '+plural(rest,"программа","программы","программ")+' →</button>');
-  }
 
   h.push('<p class="disclaimer">Под каждым текстом указан источник - сборник хадисов или сура Корана.</p>');
   h.push('</div>');
