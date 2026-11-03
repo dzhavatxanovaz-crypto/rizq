@@ -17,6 +17,70 @@
     <itunes:explicit>false</itunes:explicit>
     <itunes:type>episodic</itunes:type>
     <item>
+      <title>Завещание: две ночи</title>
+      <guid isPermaLink="false">rizq-podcast-zaveshchanie-kak-napisat</guid>
+      <pubDate>Mon, 02 Nov 2026 06:00:00 GMT</pubDate>
+      <link>https://rizq.javattigroup.ru/?go=podcasty&amp;pod=zaveshchanie-kak-napisat</link>
+      <description>Почему Сунна велит не откладывать завещание, чем оно отличается от наследства, почему долги идут первыми и что почти все забывают записать.
+
+Главы:
+00:00:00 Две ночи
+00:01:04 Завещание и наследство - не одно и то же
+00:01:26 Треть - и это много
+00:02:28 Сначала долги
+00:03:19 Что записать
+00:04:13 Как оформить по закону
+
+Слушать в приложении RIZQ: https://rizq.javattigroup.ru/?go=podcasty&amp;pod=zaveshchanie-kak-napisat</description>
+      <itunes:summary>Почему Сунна велит не откладывать завещание, чем оно отличается от наследства, почему долги идут первыми и что почти все забывают записать.
+
+Главы:
+00:00:00 Две ночи
+00:01:04 Завещание и наследство - не одно и то же
+00:01:26 Треть - и это много
+00:02:28 Сначала долги
+00:03:19 Что записать
+00:04:13 Как оформить по закону
+
+Слушать в приложении RIZQ: https://rizq.javattigroup.ru/?go=podcasty&amp;pod=zaveshchanie-kak-napisat</itunes:summary>
+      <enclosure url="https://rizq.javattigroup.ru/podcast/zaveshchanie-kak-napisat.mp3" length="4163357" type="audio/mpeg"/>
+      <itunes:duration>347</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:image href="https://rizq.javattigroup.ru/podcast/cover.jpg"/>
+    </item>
+    <item>
+      <title>Истигфар: прощение и удел</title>
+      <guid isPermaLink="false">rizq-podcast-istigfar-rizk</guid>
+      <pubDate>Mon, 02 Nov 2026 06:00:00 GMT</pubDate>
+      <link>https://rizq.javattigroup.ru/?go=podcasty&amp;pod=istigfar-rizk</link>
+      <description>Аят, где просьба о прощении стоит рядом с дождём, имуществом и детьми. Почему это не сделка, а разговор, и как сделать истигфар привычкой.
+
+Главы:
+00:00:00 Одно слово рядом с дождём
+00:00:38 Слова пророка Нуха, мир ему
+00:01:40 Не сделка, а разговор
+00:02:24 Последняя треть ночи
+00:03:01 Как сделать привычкой
+
+Слушать в приложении RIZQ: https://rizq.javattigroup.ru/?go=podcasty&amp;pod=istigfar-rizk</description>
+      <itunes:summary>Аят, где просьба о прощении стоит рядом с дождём, имуществом и детьми. Почему это не сделка, а разговор, и как сделать истигфар привычкой.
+
+Главы:
+00:00:00 Одно слово рядом с дождём
+00:00:38 Слова пророка Нуха, мир ему
+00:01:40 Не сделка, а разговор
+00:02:24 Последняя треть ночи
+00:03:01 Как сделать привычкой
+
+Слушать в приложении RIZQ: https://rizq.javattigroup.ru/?go=podcasty&amp;pod=istigfar-rizk</itunes:summary>
+      <enclosure url="https://rizq.javattigroup.ru/podcast/istigfar-rizk.mp3" length="3481886" type="audio/mpeg"/>
+      <itunes:duration>290</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:image href="https://rizq.javattigroup.ru/podcast/cover.jpg"/>
+    </item>
+    <item>
       <title>Мысли о деньгах, которые звучат не вашим голосом</title>
       <guid isPermaLink="false">rizq-podcast-mysli-o-dengah</guid>
       <pubDate>Sun, 01 Nov 2026 15:00:00 GMT</pubDate>

@@ -342,7 +342,7 @@
   /* раздел «Бизнесу» переехал на свою страницу: старые ссылки #biznes (приложение, посты) ведут туда */
   if(location.hash === "#biznes"){ location.replace("biznes.html"); return; }
   window.addEventListener("hashchange", function(){ if(location.hash === "#biznes") location.replace("biznes.html"); });
-  var API = (location.hostname === "localhost" || location.hostname === "127.0.0.1") ? "http://" + location.hostname + ":3210" : "https://crm.javattigroup.ru";
+  var API = (location.hostname === "localhost" || location.hostname === "127.0.0.1") ? "http://" + location.hostname + ":3210" : "https://crm.bs-strateg.ru";
   var SUPPORT = { tel:"79285936069", phone:"+7 928 593-60-69" };
   var CATS = [["tech","Техника"],["furniture","Мебель"],["home","Для дома"],["auto","Для авто"],["other","Другое"]];
   /* Условия, утверждённые владелицей в CRM (версия 1, 03.10.2026): сайт считает по ним сразу,
