@@ -1539,10 +1539,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .pod-auto{padding:9px 13px;border-radius:20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.85);font-size:13px}
 .pod-auto.on{border-color:var(--gold);color:#fff}
 .pod-share{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12.5px;color:var(--ink-3)}
-.pod-share span{margin-right:2px}
 .pod-share button{padding:7px 11px;border-radius:16px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:13px;font-weight:600}
-.pod-share button.wa{border-color:#25d366;color:#128c4a}
-.pod-share button.tg{border-color:#2aabee;color:#1a7fb5}
 .pod-home{display:flex;align-items:center;gap:13px;padding:13px 14px;border-radius:20px;background:linear-gradient(150deg,var(--sapphire),var(--sapphire-3));border:1px solid rgba(212,175,55,.45);color:#fff;box-shadow:var(--shadow)}
 .pod-home-pl{flex:none;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:#1a1405;border:0;font-size:16px;box-shadow:0 4px 14px rgba(212,175,55,.35)}
 .pod-home-pl i{font-style:normal}
@@ -28187,20 +28184,26 @@ function podSleep(){
 }
 function podSleepLabel(){ return POD.sleep === "" ? "☾" : POD.sleep === "end" ? "☾ конец" : "☾ " + POD.sleep; }
 function podStop(){ if(POD.a){ podSavePos(); POD.a.pause(); } POD.playing = false; POD.id = ""; POD.sleep = ""; POD.sleepAt = 0; podPaint(); }
-/* «Поделиться выпуском» (просьба Заиры 01.11): WhatsApp, Telegram, «Ещё» - системное меню телефона
-   (Instagram, ВКонтакте, сообщения), «Ссылка» - скопировать. Ссылка открывает выпуск в приложении. */
+/* «Поделиться выпуском» (Заира 04.11: кнопки WhatsApp и Telegram выбрасывали из приложения - оставить одну
+   «Поделиться»). Системное меню телефона со ссылкой в самом тексте (WhatsApp и Instagram отбрасывают поле url),
+   где меню нет или оно не открылось - ссылка копируется. Ссылка открывает выпуск в приложении. */
 function podShareData(id){
   var p = podById(id); if(!p) return null;
   return { p: p, url: APP_URL + "?go=podcasty&pod=" + encodeURIComponent(p.id) + "&utm_source=share&utm_medium=podcast",
     text: "Подкаст «" + p.n + "» - голосом Заиры Джаватхановой, " + podTime(p.dur) + ". Слушать бесплатно в приложении RIZQ:" };
 }
-function podShare(id, to){
+function podShare(id){
   var w = podShareData(id); if(!w) return;
-  try{ rTrack("podcast_share", id + ":" + (to || "more")); }catch(e){}
-  if(to === "wa"){ window.open("https://wa.me/?text=" + encodeURIComponent(w.text + " " + w.url), "_blank", "noopener"); return; }
-  if(to === "tg"){ window.open("https://t.me/share/url?url=" + encodeURIComponent(w.url) + "&text=" + encodeURIComponent(w.text), "_blank", "noopener"); return; }
-  if(to !== "copy" && navigator.share){ navigator.share({ title: w.p.n, text: w.text, url: w.url }).catch(function(){}); return; }
-  copyText(w.text + " " + w.url); toast(to === "copy" ? "Ссылка на выпуск скопирована" : "Ссылка скопирована - вставьте её в Instagram или куда удобно");
+  var all = w.text + String.fromCharCode(10) + w.url;
+  try{ rTrack("podcast_share", id); }catch(e){}
+  function copy(){ copyText(all); toast("Ссылка на выпуск скопирована - вставьте её в любой чат"); }
+  try{
+    if(navigator.share){
+      navigator.share({ title: w.p.n, text: all }).catch(function(e){ if(!e || e.name !== "AbortError") copy(); });
+      return;
+    }
+  }catch(e){}
+  copy();
 }
 function podMedia(p){
   try{
@@ -28318,11 +28321,7 @@ function viewPodcasty(){
       podPlayerHtml(p, true)+
       '<div class="pod-acts">'+(post ? '<button class="btn sec sm" data-post="'+esc(post.id)+'">Читать запись ›</button>' : '')+
       '</div>'+
-      '<div class="pod-share"><span>Поделиться:</span>'+
-        '<button data-podshare="'+esc(p.id)+':wa" class="wa">WhatsApp</button>'+
-        '<button data-podshare="'+esc(p.id)+':tg" class="tg">Telegram</button>'+
-        '<button data-podshare="'+esc(p.id)+':more">Instagram и ещё</button>'+
-        '<button data-podshare="'+esc(p.id)+':copy">Ссылка</button></div>'+
+      '<div class="pod-share"><button data-podshare="'+esc(p.id)+'">↗ Поделиться</button></div>'+
       '</section>');
   });
   h.push('</div>');
@@ -35208,7 +35207,7 @@ document.getElementById("app").addEventListener("click", function(ev){
   if(d.podall){ podAll(); return; }
   if(d.podauto){ podAutoToggle(); return; }
   if(d.podch){ var pci = d.podch.lastIndexOf(":"); podPlay(d.podch.slice(0, pci), +d.podch.slice(pci + 1)); return; }
-  if(d.podshare){ var psi = d.podshare.lastIndexOf(":"); podShare(d.podshare.slice(0, psi), d.podshare.slice(psi + 1)); return; }
+  if(d.podshare){ podShare(d.podshare); return; }
   if(d.podbar){ if(POD.id !== d.podbar){ podPlay(d.podbar); return; } var bb = node.getBoundingClientRect(); podSeekTo((ev.clientX - bb.left) / bb.width); return; }
   if(d.podmini){ if(POD.id) podPlay(POD.id); return; }
   if(d.podstop){ podStop(); return; }
