@@ -17,6 +17,37 @@
     <itunes:explicit>false</itunes:explicit>
     <itunes:type>episodic</itunes:type>
     <item>
+      <title>Долг: кто торопится, а кто ждёт</title>
+      <guid isPermaLink="false">rizq-podcast-dolg-dve-storony</guid>
+      <pubDate>Wed, 04 Nov 2026 06:00:00 GMT</pubDate>
+      <link>https://rizq.javattigroup.ru/?go=podcasty&amp;pod=dolg-dve-storony</link>
+      <description>Сунна говорит с обеими сторонами долга: той, кто должна, - не тянуть, той, которой должны, - дать отсрочку. История о трёх динарах и тетрадь «Я должна / Мне должны».
+
+Главы:
+00:00:00 Две стороны одного долга
+00:00:34 Если можете отдать
+00:01:11 Если должнику тяжело
+00:01:57 Три динара
+00:03:01 Тетрадь долгов
+
+Слушать в приложении RIZQ: https://rizq.javattigroup.ru/?go=podcasty&amp;pod=dolg-dve-storony</description>
+      <itunes:summary>Сунна говорит с обеими сторонами долга: той, кто должна, - не тянуть, той, которой должны, - дать отсрочку. История о трёх динарах и тетрадь «Я должна / Мне должны».
+
+Главы:
+00:00:00 Две стороны одного долга
+00:00:34 Если можете отдать
+00:01:11 Если должнику тяжело
+00:01:57 Три динара
+00:03:01 Тетрадь долгов
+
+Слушать в приложении RIZQ: https://rizq.javattigroup.ru/?go=podcasty&amp;pod=dolg-dve-storony</itunes:summary>
+      <enclosure url="https://rizq.javattigroup.ru/podcast/dolg-dve-storony.mp3" length="3591020" type="audio/mpeg"/>
+      <itunes:duration>299</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:image href="https://rizq.javattigroup.ru/podcast/cover.jpg"/>
+    </item>
+    <item>
       <title>Завещание: две ночи</title>
       <guid isPermaLink="false">rizq-podcast-zaveshchanie-kak-napisat</guid>
       <pubDate>Mon, 02 Nov 2026 06:00:00 GMT</pubDate>
