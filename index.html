@@ -11728,6 +11728,15 @@ function clubMsk(){ var d = new Date(Date.now() + 3 * 3600000); return { day:d.g
 /* преподаватель и владелица видят все встречи сразу (отметка доступа в CRM) */
 function clubStaff(){ return clubStaffReal() && !S.clubAsStudent; }
 function clubStaffReal(){ return clubOwner() || !!(S.clubAcc && S.clubAcc.on && /^(teacher|owner)$/.test(S.clubAcc.by || "") && typeof AC !== "undefined" && AC.tok); }
+/* подпись месяца в программе: настоящие номера встреч блока и число уроков практики */
+function clubMonthLbl(ix){
+  var ns = [], pk = 0;
+  ix.forEach(function(k){ var m = CLUB_MEETS[k]; if(m.pr) pk++; else ns.push(m.n); });
+  ns.sort(function(a, b){ return a - b; });
+  var s = ns.length ? (ns.length === 1 ? 'встреча ' + ns[0] : 'встречи ' + ns[0] + '-' + ns[ns.length - 1]) : '';
+  if(pk) s += (s ? ' и ' : '') + (pk === 1 ? (s ? 'практика' : 'урок практики') : pk + ' практики');
+  return s;
+}
 function clubOpen(m){ if(clubStaff() || (m && m.n === 1)) return true;
   if(!m.pr && m.date >= CLUB_OPEN_FROM){ var ms = clubMsk(); return ms.day > m.date || (ms.day === m.date && ms.min >= CLUB_START_MIN); }
   var pv = ""; CLUB_MEETS.forEach(function(x){ if(x.date < m.date && x.date > pv) pv = x.date; }); if(!pv) return false;
@@ -14151,7 +14160,7 @@ function viewArClub(){
   clubOrder().forEach(function(idx, i){
     var m = CLUB_MEETS[idx], dt = ds[idx], past = dt < todayKey(), att = clubS().att["m" + m.n];
     if(i % 8 === 0){ if(i) h.push('</div>');
-      h.push('<div class="eyebrow" style="padding:10px 4px 6px">Месяц '+(i / 8 + 1)+' · встречи '+(i + 1)+'-'+Math.min(i + 8, CLUB_MEETS.length)+'</div><div class="qw-list">'); }
+      h.push('<div class="eyebrow" style="padding:10px 4px 6px">Месяц '+(i / 8 + 1)+' · '+clubMonthLbl(clubOrder().slice(i, i + 8))+'</div><div class="qw-list">'); }
     h.push('<button class="qw-row'+(att ? " done" : "")+(nx && nx.i === idx ? " now" : "")+'" data-ar="meet:'+m.n+'">'+
       '<span class="qw-n">'+(att ? "✓" : m.pr ? "П" : m.lbl ? "↺" : m.n)+'</span>'+
       '<span class="qw-t"><b>'+(m.pr ? 'Практика: ' : '')+esc(m.t)+'</b><span class="qw-date">'+clubDateRu(dt)+', '+clubTimeOf(m)+'</span></span>'+
@@ -15267,7 +15276,7 @@ function clubNewbieBlock(more){
     '<h3 style="font-family:var(--f-display);font-size:17px;margin:10px 0 6px">Страшно, что не получится?</h3>'+
     '<p>Клуб - для тех, кто только начал. Говорим простыми фразами и начинаем с самого простого: как вас зовут и откуда вы. Преподаватель подсказывает и помогает сказать. Ошибаться можно - за этим и приходят.</p>'+
     '<div class="eyebrow" style="margin-top:12px">С какого уровня</div>'+
-    '<p style="margin-top:6px">Можно прийти после первых уроков курса «Арабский для новичков» здесь, в приложении. Фразы каждой встречи открываются за день, с чтением русскими буквами и озвучкой: повторите их дома, и на встрече будет легче.</p>'+
+    '<p style="margin-top:6px">Можно прийти после первых уроков курса «Арабский для новичков» здесь, в приложении. Фразы каждой встречи открываются в начале встречи, с чтением русскими буквами и озвучкой: после встречи повторите их дома, так они лучше запомнятся.</p>'+
     '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">'+
       '<button class="btn sec sm" style="flex:1;min-width:180px" data-ar="rd">Открыть «Арабский для новичков»</button>'+
       (more ? '<button class="btn sm" style="flex:1;min-width:140px" data-ar="club">Подробнее о клубе</button>' : '')+
