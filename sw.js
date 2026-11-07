@@ -1,5 +1,5 @@
 /* Ризк - офлайн-кэш. Меняйте номер версии при каждом обновлении приложения. */
-var CACHE = "rizq-v374";
+var CACHE = "rizq-v375";
 /* "./" отдельно не кладём: это тот же index.html, и при каждом выпуске он качался дважды (28.10.2026) */
 var ASSETS = [
   "./index.html",
@@ -77,6 +77,9 @@ self.addEventListener("notificationclick", function (e) {
   /* метка уведомления - куда открыть: kahf - сура 18; go-xxx / open-xxx / course-xxx - разовые
      уведомления с сервера (новая глава, эфир) ведут в нужный раздел */
   var tag = String((e.notification && e.notification.tag) || ""), q = "";
+  /* ext-xxx - внешняя страница во внешнем браузере (эфир 08.11.2026); адреса только из этого списка */
+  var EXT = { "ext-efir": "https://javatti-school.online/efir" };
+  if (EXT[tag]) { e.waitUntil(clients.openWindow(EXT[tag])); return; }
   if (tag === "kahf") q = "?go=kahf";
   else { var m = tag.match(/^(go|open|course)-([a-z0-9_]{1,30})$/i); if (m) q = "?" + m[1] + "=" + m[2]; }
   e.waitUntil(clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (list) {

@@ -818,6 +818,13 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .ns-home-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
 .ns-home-t b{font-family:var(--f-display);font-size:17px;font-weight:700;color:#fff}
 .ns-home-t span{font-size:13px;line-height:1.4;color:rgba(255,255,255,.86)}
+/* бесплатный эфир 08.11.2026 - плашка на главной до 20:30 МСК */
+.efir-home{margin-top:10px;padding:15px 16px;border-radius:18px;background:linear-gradient(135deg,#1F5C4A,#0E3A2E);color:#fff;box-shadow:0 10px 26px rgba(14,58,46,.35)}
+.efir-home-e{display:flex;align-items:center;gap:7px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:#F3D88B}
+.efir-home-e i{width:8px;height:8px;border-radius:50%;background:#E5484D;box-shadow:0 0 0 3px rgba(229,72,77,.25);flex:none}
+.efir-home b{display:block;font-family:var(--f-display);font-size:17px;font-weight:700;line-height:1.25;margin:7px 0 5px;color:#fff}
+.efir-home p{margin:0 0 12px;font-size:13.5px;line-height:1.45;color:rgba(255,255,255,.88)}
+.efir-home-go{display:block;text-align:center;text-decoration:none;padding:12px 14px;border-radius:12px;background:linear-gradient(135deg,#E9C766,#B8912F);color:#2A1E05;font-family:var(--f-display);font-weight:700;font-size:15px}
 .ns-wrap{padding:14px 16px 24px;display:flex;flex-direction:column;gap:12px}
 .ns-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;color:var(--ink)}
 .ns-card h3{margin:0 0 8px;font-family:var(--f-display);font-size:20px}
@@ -8357,6 +8364,19 @@ function homeTile(cls, attr, ic, title, sub, badge){
     (badge ? '<em class="hmt-b">'+esc(badge)+'</em>' : '')+
     '<b>'+esc(title)+'</b><span class="hmt-s">'+esc(sub)+'</span></button>';
 }
+/* бесплатный эфир 08.11.2026, 19:00 МСК («да» Заиры 07.11.2026): push в 18:00 МСК, плашка до 20:30 МСК */
+var EFIR_0811 = { push: Date.UTC(2026, 10, 8, 15, 0), start: Date.UTC(2026, 10, 8, 16, 0), hide: Date.UTC(2026, 10, 8, 17, 30),
+  url: "https://javatti-school.online/efir" };
+function efirHome(){
+  var now = Date.now();
+  if(now >= EFIR_0811.hide) return "";
+  /* день по Москве: 08.11 начинается в 21:00 UTC 07.11 */
+  var today = now >= Date.UTC(2026, 10, 7, 21, 0);
+  return '<section class="efir-home"><div class="efir-home-e"><i></i>Прямой эфир · 19:00 по Москве</div>'+
+    '<b>'+(today ? 'Сегодня в 19:00 - бесплатный эфир' : '8 ноября в 19:00 - бесплатный эфир')+'</b>'+
+    '<p>Заира Джаватханова: своя помощница на нейросети за час, прямо с телефона. Без VPN и программиста</p>'+
+    '<a class="efir-home-go" href="'+EFIR_0811.url+'" target="_blank" rel="noopener">Зайти на эфир</a></section>';
+}
 function homeTiles(){
   var w = S.wcal, zsub = "цикл, беременность, дети";
   if(w && w.on && w.home && !w.pin && !w.pinH){ try{ var zs = zhenStatus(); if(w.goal === "preg" && wcPregInfo()) zsub = "Беременность: " + zs.preg; else if(wcLastEp()) zsub = zs.cycle; }catch(e){} }
@@ -8450,6 +8470,7 @@ function viewHomeMain(){
     (methodNow() === "rt" ? ' · в мечетях зухр в 12:00, фаджр в '+hhmm(tn.t.sunrise - 91/60) : '')+(ptAdjAny() ? ' · время поправлено вручную' : '')+'</span>'+
     '<button data-open="settings" style="margin-left:auto">Изменить</button></div></section>');
   /* разделы - сетка плиток под намазом (01.11.2026, раньше - четыре кнопки подряд) */
+  h.push(efirHome());
   h.push(homeTiles());
   if(nsOn()) h.push('<button class="ns-home" data-nsopen="1"><span class="ns-home-ic">♡</span>'+
     '<span class="ns-home-t"><b>Наставник для души</b><span>Разобраться в себе с опорой на Коран и Сунну</span></span>'+
@@ -33234,6 +33255,11 @@ function pushItems(){
     }
   }
   /* сервер берёт не больше 80 пунктов, иначе отказывает целиком - оставляем ближайшие */
+  /* бесплатный эфир 08.11.2026: одно уведомление в 18:00 МСК. После 18:00 не ставится,
+     сервер шлёт пункт один раз и не шлёт опоздавшие больше чем на 10 минут */
+  if(now < EFIR_0811.push && EFIR_0811.push - now < 9 * 864e5)
+    items.push({ at:new Date(EFIR_0811.push).toISOString(), title:"Сегодня в 19:00 - бесплатный эфир",
+      body:"Заира Джаватханова: своя помощница на нейросети за час, прямо с телефона. Без VPN и программиста", tag:"ext-efir" });
   /* новый выпуск подкаста - в момент выхода (01.11.2026); выпуски заводятся в PODCASTS заранее */
   if(S.notifPodcast !== false && typeof PODCASTS !== "undefined"){
     var podBy = {};   /* два выпуска в одну минуту - одно уведомление */
@@ -33268,7 +33294,7 @@ function pushSig(){
     (S.debts || []).filter(function(x){ return !x.closed && x.due; })
     .map(function(x){ return x.due + x.id; }).join(",");
   return [c.lat, c.lng, c.tz, S.method, S.madhab, S.notifPrayer ? 1 : 0, (S.notifDuha ? 1 : 0) + "" + (S.notifTahajjud ? 1 : 0), S.notifDua ? 1 : 0, S.notifAyat === false ? 0 : 1, HAS_TR ? 1 : 0,
-          S.notifTasks === false ? 0 : 1, S.notifScore === false ? 0 : 1, scoreState().on ? 1 : 0, S.notifAzkar === false ? 0 : 1, S.notifJumua === false ? 0 : 1, S.notifKahf === false ? 0 : 1, S.notifReport === false ? 0 : 1, (S.notifPodcast === false ? 0 : 1) + ":" + (typeof PODCASTS !== "undefined" ? PODCASTS.map(function(p){ return p.id + p.at; }).join(",") : ""), JSON.stringify(S.ptAdj || {}), (S.kahf && S.kahf[todayKey()]) ? 1 : 0,
+          S.notifTasks === false ? 0 : 1, S.notifScore === false ? 0 : 1, scoreState().on ? 1 : 0, S.notifAzkar === false ? 0 : 1, S.notifJumua === false ? 0 : 1, S.notifKahf === false ? 0 : 1, S.notifReport === false ? 0 : 1, Date.now() < EFIR_0811.push ? "efir0811" : "", (S.notifPodcast === false ? 0 : 1) + ":" + (typeof PODCASTS !== "undefined" ? PODCASTS.map(function(p){ return p.id + p.at; }).join(",") : ""), JSON.stringify(S.ptAdj || {}), (S.kahf && S.kahf[todayKey()]) ? 1 : 0,
           (S.scoreMe && S.scoreMe.place) || 0, pauseNow() ? 1 : 0, todayKey(), tasks, wcSigPart(),
           S.ar ? (S.ar.start ? 1 : 0) + ":" + (S.ar.remind || "9") + ":" + (arDayDone(arToday()) ? 1 : 0) : ""].join("|");
 }
