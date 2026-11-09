@@ -17,6 +17,37 @@
     <itunes:explicit>false</itunes:explicit>
     <itunes:type>episodic</itunes:type>
     <item>
+      <title>Валлахи на кассе</title>
+      <guid isPermaLink="false">rizq-podcast-klyatva-v-torgovle</guid>
+      <pubDate>Mon, 09 Nov 2026 06:00:00 GMT</pubDate>
+      <link>https://rizq.javattigroup.ru/?go=podcasty&amp;pod=klyatva-v-torgovle</link>
+      <description>Почему клятва помогает продать, но уносит благодать, что сказано о ложной клятве на рынке и как продавать без «валлахи» - пять шагов.
+
+Главы:
+00:00:00 Одно слово на кассе
+00:00:29 Что делает клятва
+00:01:36 А если клянусь правдой?
+00:02:20 Правда вместо клятвы
+00:03:00 Как продавать без клятвы
+
+Слушать в приложении RIZQ: https://rizq.javattigroup.ru/?go=podcasty&amp;pod=klyatva-v-torgovle</description>
+      <itunes:summary>Почему клятва помогает продать, но уносит благодать, что сказано о ложной клятве на рынке и как продавать без «валлахи» - пять шагов.
+
+Главы:
+00:00:00 Одно слово на кассе
+00:00:29 Что делает клятва
+00:01:36 А если клянусь правдой?
+00:02:20 Правда вместо клятвы
+00:03:00 Как продавать без клятвы
+
+Слушать в приложении RIZQ: https://rizq.javattigroup.ru/?go=podcasty&amp;pod=klyatva-v-torgovle</itunes:summary>
+      <enclosure url="https://rizq.javattigroup.ru/podcast/klyatva-v-torgovle.mp3" length="3092888" type="audio/mpeg"/>
+      <itunes:duration>258</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:image href="https://rizq.javattigroup.ru/podcast/cover.jpg"/>
+    </item>
+    <item>
       <title>Долг: кто торопится, а кто ждёт</title>
       <guid isPermaLink="false">rizq-podcast-dolg-dve-storony</guid>
       <pubDate>Wed, 04 Nov 2026 06:00:00 GMT</pubDate>
