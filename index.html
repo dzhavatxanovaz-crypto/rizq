@@ -789,6 +789,20 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hmt-igra .hmt-ic{color:#E6C868}
 .hmt-zhen{background:linear-gradient(140deg,#B4486C,#6E2440)}
 .hmt-dua{background:linear-gradient(140deg,#1F5C4A,#0E3A2E)}
+.hmt-film{background:linear-gradient(140deg,#1F5C4A,#0E3A2E);border-color:rgba(212,175,55,.35)}
+.hmt-film .hmt-ic{color:var(--gold)}
+.film-hero{padding:18px 18px 16px;border-radius:22px;color:#F4EFE2;background:linear-gradient(150deg,#1F5C4A,#0E3A2E);box-shadow:0 10px 26px rgba(14,58,46,.28)}
+.film-hero b{display:block;font-family:var(--f-display);font-size:24px;margin:4px 0 6px}
+.film-hero p{margin:0;font-size:14px;line-height:1.45;opacity:.88}
+.film-hero .jr-meta{color:#E6C868}
+.film-card{padding:0;overflow:hidden}
+.film-card.hi{box-shadow:0 0 0 2px var(--gold)}
+.film-v{position:relative;background:#0b0f14;aspect-ratio:16/9}
+.film-v video{display:block;width:100%;height:100%;background:#0b0f14;object-fit:contain}
+.film-t{padding:12px 14px 14px}
+.film-t h3{margin:2px 0 4px;font-size:17px}
+.film-t p{margin:0;font-size:14px;line-height:1.45;color:var(--ink-2,inherit);opacity:.85}
+.film-acts{display:flex;gap:8px;margin-top:10px}
 .hmt-ns{background:linear-gradient(140deg,#3E4C7A,#232B4E)}
 .hmt-pod{background:linear-gradient(140deg,var(--sapphire),var(--sapphire-3));border-color:rgba(212,175,55,.45)}
 .hmt-pod .hmt-ic{color:var(--gold)}
@@ -7761,6 +7775,7 @@ function renderHdr(){
         : V.view==="nastavnik" ? "Наставник для души"
         : V.view==="serii" ? "Наши герои"
         : V.view==="podcasty" ? "Подкасты"
+        : V.view==="filmy" ? "Фильмы"
         : V.view==="seriya" ? "Серия " + ((serById(V.p) || {}).n || "")
         : V.view==="names" ? "Имена Всевышнего"
         : V.view==="name" ? "Разбор имени"
@@ -8385,7 +8400,7 @@ function homeTiles(){
     homeTile("igra", 'data-igra="1"', "▦", "Ильм-Крафт", "игра для детей во времена Пророка ﷺ", "игра"),
     homeTile("zhen", 'data-open="zhen"', "❀", "Женский раздел", zsub, ""),
     podHomeCard(),
-    homeTile("dua", 'data-open="duas"', "♡", "Дуа друг за друга", me ? "ваша просьба видна сёстрам" : "попросите сестёр о дуа", "")
+    filmHomeTile() || homeTile("dua", 'data-open="duas"', "♡", "Дуа друг за друга", me ? "ваша просьба видна сёстрам" : "попросите сестёр о дуа", "")
   ];
   if(nsOn()) tiles.push(homeTile("ns", 'data-nsopen="1"', "♡", "Наставник для души", "разобраться в себе по Корану и Сунне", ""));
   tiles = tiles.filter(Boolean);
@@ -8928,6 +8943,12 @@ function deepOpen(qArg){
       return true;
     }
     /* ?go=istoriya - сразу последняя серия «Наших героев» (слово ИСТОРИЯ в ChatPlace), ?go=serii - список серий */
+    /* ?go=filmy - экран фильмов (10.11.2026), &film=<id> - подсветить фильм */
+    if(mg && mg[1] === "filmy"){ S.welcomed = 1; save(); V.tab = "home";
+      var mfl = q.match(/[?&]film=([a-z0-9-]+)/), fid = mfl && filmById(mfl[1]) ? mfl[1] : null;
+      open("filmy", fid);
+      if(fid) setTimeout(function(){ var el = document.getElementById("film-" + fid); if(el && el.scrollIntoView) el.scrollIntoView({ block: "center" }); }, 350);
+      return true; }
     /* ?go=podcasty - экран подкастов (01.11.2026) */
     if(mg && mg[1] === "podcasty"){ S.welcomed = 1; save(); V.tab = "journal";
       var mpod = q.match(/[?&]pod=([a-z0-9-]+)/); POD.hi = mpod && podById(mpod[1]) ? mpod[1] : "";
@@ -9265,6 +9286,7 @@ function buildIndex(){
    ["Перевод смыслов","перевод Кулиева целиком, сура за сурой","open:trread","перевод смыслов кулиев тафсир читать по-русски текст корана целиком"],
    ["Личные сообщения","переписка с сёстрами из круга","open:dms","личные сообщения переписка написать сестре чат"],
    ["Хатм вместе","читать Коран кругом","open:khatms","хатм вместе круг джуз подруги сёстры сообщество читать коран вместе"],
+   ["Фильмы","фильмы с Аксакалом - старцем Шамилем","open:filmy","фильмы фильм кино видео аксакал старец шамиль смотреть истории сира"],
    ["Дуа друг за друга","попросить дуа, сделать дуа за сестёр","open:duas","дуа просьба помолиться сообщество сёстры друг за друга"],
    ["Плеер сур","больше 200 чтецов, суры целиком","open:spl","плеер сура чтец слушать коран целиком аудио афаси судайс гамиди мп3"],
    ["Размер текста","крупный шрифт для чтения","open:settings","шрифт размер крупный текст мелко зрение увеличить плохо вижу буквы"],
@@ -29513,6 +29535,70 @@ function podPaint(){
 }
 /* карточка «Подкасты» на главной (просьба Заиры 01.11): что слушать сейчас + «Слушать подряд» */
 function podHomeKey(){ return POD.id + ":" + (POD.playing ? 1 : 0); }
+/* ---------- Фильмы (10.11.2026): фильмы с Аксакалом - старцем Шамилем ----------
+   Файлы на нашем сервере: /media/filmy/<id>.mp4 и <id>.jpg (scripts/filmy-upload.sh). v - номер версии файла (кэш). */
+/* FILMS-START */
+var FILMS = [
+  {"id":"sem-otkazov","n":"Семь отказов","s":"Поставщики один за другим отказывают Милане. Аксакал рассказывает о Хаджар и её семи кругах между холмами.","r":"Хаджар и Сафа с Марвой","dur":94,"v":1},
+  {"id":"tri-chasa","n":"Три часа ночи","s":"Ночь перед судом, когда кажется, что выхода нет. Дуа Юнуса, мир ему, из чрева кита.","r":"Дуа Юнуса","dur":87,"v":1},
+  {"id":"net-na-risunke","n":"Меня нет на рисунке","s":"Сын нарисовал семью, а мамы на рисунке нет. Как Пророк ﷺ был с детьми.","r":"Пророк ﷺ и внуки","dur":75,"v":1},
+  {"id":"nomer-bez-imeni","n":"Номер без имени","s":"Голосовое с незнакомого номера порочит сестру. Что велит Коран, когда приходит такая весть.","r":"«Проверьте» - аят 49:6","dur":86,"v":1},
+  {"id":"odinnadcat","n":"Одиннадцать пропущенных","s":"Сабина снова не берёт трубку маме. История Увайса, которого Пророк ﷺ назвал лучшим из последователей.","r":"Увайс аль-Карани","dur":79,"v":1},
+  {"id":"salam-pervyj","n":"Салам первый","s":"Сёстры в ссоре, а на Ид на столе лишняя тарелка. Абу Бакр и Мистах: простить того, кто ранил.","r":"Абу Бакр и Мистах","dur":120,"v":1},
+  {"id":"sorok-dney","n":"40 дней без него","s":"Асият осталась вдовой. Дуа Умм Салямы, после которого Всевышний дал ей лучшее.","r":"Дуа Умм Салямы","dur":94,"v":1},
+  {"id":"bez-raspiski","n":"Без расписки","s":"Зарема дала в долг без расписки. История о тысяче динаров и аят о записи долга.","r":"Тысяча динаров","dur":108,"v":1},
+  {"id":"chetyre-minuty","n":"4 минуты, чтобы соврать","s":"Через четыре минуты позвонит главный клиент, и Милана готова соврать. История Каба ибн Малика.","r":"Каб ибн Малик","dur":104,"v":1},
+  {"id":"sotri-imya","n":"Сотри своё имя","s":"Самира строит сеть под чужой биркой. Чему учит мир в Худайбии.","r":"Мир в Худайбии","dur":86,"v":1},
+  {"id":"chto-skazhut","n":"Что скажут люди","s":"Страх осуждения держит сильнее любых стен. Биляль и его «Ахад».","r":"Биляль","dur":104,"v":1},
+  {"id":"nazvala-vorovkoj","n":"Назвала воровкой","s":"Обвинение при всех. Как Пророк ﷺ ответил бедуину, который грубо дёрнул его за плащ.","r":"Бедуин и плащ","dur":108,"v":1},
+  {"id":"dom-synu","n":"Дом - сыну","s":"Отец хочет отдать дом сыну в обход дочери. Хадис ан-Нумана ибн Башира о справедливости к детям.","r":"Справедливость к детям","dur":90,"v":1},
+  {"id":"cena-dlya-svoih","n":"Цена для своих","s":"Тётя просит торт «по-родственному» и обещает занести деньги потом. Почему тянуть с долгом, когда можешь заплатить, - несправедливость.","r":"Долг и справедливость","dur":100,"v":1},
+  {"id":"vsyo-moyo","n":"Всё моё!","s":"Рамазан попрекает семью хлебом. История о двух братьях времён Пророка ﷺ: может быть, удел приходит благодаря тому, кого ты попрекаешь.","r":"Два брата","dur":157,"v":1},
+  {"id":"sgovor","n":"Сговор","s":"Сына женят, а невесту не спросили. Что сказал Пророк ﷺ о разрешении девушки.","r":"Согласие невесты","dur":108,"v":1},
+  {"id":"probka","n":"Пробка","s":"Третий год дело стоит на месте, как в пробке. Чему учит хиджра: проводник и непривычная дорога вдоль побережья.","r":"Хиджра","dur":76,"v":1},
+  {"id":"dve-nochi","n":"Две ночи","s":"Умер муж. Что делать в первые ночи, как быть с завещанием и долгами покойного.","r":"Долги покойного","dur":96,"v":1},
+  {"id":"podporki","n":"Кофейня","s":"За одну ночь из кофейни ушла вся команда. Хунейн: не число спасает, а Всевышний.","r":"Битва при Хунейне","dur":125,"v":1},
+  {"id":"kredit","n":"Магазин","s":"Зарема берёт кредит под мамины серьги. Почему Всевышний запретил лихву.","r":"Запрет лихвы","dur":92,"v":1},
+  {"id":"rynok","n":"Покажи мне рынок","s":"Начать с нуля, а не ждать помощи. Абдуррахман ибн Ауф и его «покажи мне рынок».","r":"Абдуррахман ибн Ауф","dur":72,"v":1},
+  {"id":"kazna","n":"Казна","s":"Миллион выручки, а заплатить поставщику нечем. О чём спросят в Судный день: откуда взял и на что потратил.","r":"Учёт денег","dur":67,"v":1}
+];
+/* FILMS-END */
+var FILM_DIR = "/media/filmy/";
+function filmById(id){ return FILMS.filter(function(f){ return f.id === id; })[0] || null; }
+function filmDur(sec){ sec = Math.round(sec || 0); return Math.floor(sec / 60) + ":" + ("0" + sec % 60).slice(-2); }
+function filmHomeTile(){
+  if(!FILMS.length) return "";
+  return homeTile("film", 'data-open="filmy"', "▶", "Фильмы", "с Аксакалом - старцем Шамилем", "");
+}
+function viewFilmy(){
+  var h = ['<div class="stack">'];
+  h.push('<section class="film-hero"><span class="jr-meta">Смотреть</span><b>Фильмы</b>'+
+    '<p>Короткие фильмы с Аксакалом - старцем Шамилем: жизненные истории и уроки из Корана и Сунны для тех, кто ведёт своё дело и дом.</p></section>');
+  if(!FILMS.length) h.push('<div class="empty"><b>Первый фильм скоро</b></div>');
+  FILMS.forEach(function(f){
+    var src = FILM_DIR + f.id + ".mp4?v=" + (f.v || 1), pst = FILM_DIR + f.id + ".jpg?v=" + (f.v || 1);
+    h.push('<section class="card film-card'+(V.p === f.id ? ' hi' : '')+'" id="film-'+esc(f.id)+'">'+
+      '<div class="film-v"><video controls playsinline preload="none" poster="'+pst+'" src="'+src+'" data-film="'+esc(f.id)+'"></video></div>'+
+      '<div class="film-t"><span class="jr-meta">'+filmDur(f.dur)+(f.r ? ' · '+esc(f.r) : '')+'</span>'+
+      '<h3>'+esc(f.n)+'</h3><p>'+esc(f.s)+'</p>'+
+      '<div class="film-acts"><button class="btn sec sm" data-filmshare="'+esc(f.id)+'">↗ Поделиться</button></div></div></section>');
+  });
+  h.push('</div>');
+  return h.join("");
+}
+/* один фильм за раз и подкаст на паузу */
+document.addEventListener("play", function(e){
+  var t = e.target; if(!t || !t.getAttribute || !t.getAttribute("data-film")) return;
+  [].forEach.call(document.querySelectorAll("video[data-film]"), function(v){ if(v !== t && !v.paused) v.pause(); });
+  try{ if(typeof POD !== "undefined" && POD.a && !POD.a.paused) POD.a.pause(); }catch(err){}
+}, true);
+function filmShare(id){
+  var f = filmById(id); if(!f) return;
+  var url = APP_URL + "?go=filmy&film=" + encodeURIComponent(f.id);
+  var text = "Фильм «" + f.n + "» в RIZQ: " + f.s;
+  if(navigator.share){ navigator.share({ title:f.n, text:text + String.fromCharCode(10) + url }).catch(function(){}); return; }
+  try{ navigator.clipboard.writeText(text + " " + url).then(function(){ toast("Текст и ссылка скопированы"); }, function(){ toast(url); }); }catch(e){ toast(url); }
+}
 function podHomeCard(){
   var l = podList(); if(!l.length) return "";
   var cur = POD.id ? podById(POD.id) : null, on = cur && POD.playing;
@@ -30700,7 +30786,7 @@ var ST_NAMES = { "tab:home":"Главная", "tab:quran":"Коран: огла�
   "cat":"Азкары и дуа", "names":"99 имён", "name":"Разбор имени", "namex":"Имя Аллаха", "tasbih":"Тасбих", "qduas":"Дуа из Корана", "hadith":"40 хадисов",
   "hadithone":"Хадис", "sira":"Сира", "calendar":"Календарь", "qibla":"Кибла", "zakat":"Закят", "kids":"Детям", "kidstory":"Детская история",
   "courses":"Программы обучения", "course":"Программа", "planner":"Планер", "finance":"Финансы", "settings":"Настройки", "admin":"Управление",
-  "post":"Запись журнала", "serii":"Серии: список", "podcasty":"Подкасты", "seriya":"Серия", "suras":"Короткие суры", "live":"Мекка онлайн", "mydua":"Мои дуа", "hifz":"Заучивание", "tajwid":"Таджвид",
+  "post":"Запись журнала", "serii":"Серии: список", "podcasty":"Подкасты", "filmy":"Фильмы", "seriya":"Серия", "suras":"Короткие суры", "live":"Мекка онлайн", "mydua":"Мои дуа", "hifz":"Заучивание", "tajwid":"Таджвид",
   "report":"Отчёт за месяц", "qsettings":"Настройки чтения", "qsearch":"Поиск по Корану", "salahpics":"Как совершать намаз", "hajjtrip":"Хадж и умра",
   "sadaqa":"Садака", "qada":"Возмещение намазов", "duaall":"Все дуа", "shukr":"Дневник шукра", "guide":"Руководства", "know":"Знания: статья" };
 function stName(k){ return ST_NAMES[k] || k; }
@@ -36161,6 +36247,7 @@ function renderCore(){
   else if(V.view==="post") html = viewPost();
   else if(V.view==="serii") html = viewSerii();
   else if(V.view==="podcasty") html = viewPodcasty();
+  else if(V.view==="filmy") html = viewFilmy();
   else if(V.view==="seriya") html = viewSeriya();
   else if(V.view==="fav") html = viewFav();
   else if(V.view==="qmarks") html = viewQMarks();
@@ -36379,7 +36466,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-bk-save],[data-bk-copy],[data-bk-paste],[data-bk-apply],[data-nset],[data-igvid],[data-shyt],[data-igk],[data-igstep],[data-igplay],[data-wcpregerr],[data-wcshortok],[data-zhen],[data-rzvkid],[data-rzvadd],[data-rzvaddok],[data-rzvst],[data-rzvok],[data-rzvdel],[data-rzvluq],[data-rzvosn],[data-rzvedit],[data-wcgoal],[data-wcstart],[data-wcstartok],[data-wcend],[data-wcendok],[data-wcday],[data-wcfl],[data-wccol],[data-wcsy],[data-wcmd],[data-wcnote],[data-wcdel],[data-wcfrom],[data-wcto],[data-wcset],[data-wcsetok],[data-wcsw],[data-wcwipe],[data-wcmon],[data-wcgusl],[data-wcqp],[data-wcqf],[data-wcpregok],[data-wcpregset],[data-wckick],[data-wckickn],[data-wckickr],[data-wcct],[data-wcctt],[data-wcctclr],[data-wcbag],[data-wcbagi],[data-wcred],[data-wcislam],[data-wcborn],[data-wcbornok],[data-wcpin],[data-wcpinset],[data-wcpinopen],[data-wcshare],[data-wcloss],[data-wclossok],[data-wcrem],[data-wcpblood],[data-wcqi],[data-wcqfx],[data-wcfix],[data-wcaskok],[data-wcgyn],[data-wcpostred],[data-wcpostinfo],[data-wcwt],[data-wcwtcalc],[data-wckickgo],[data-wcbackup],[data-wcpinreset],[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-nafl],[data-naflnotif],[data-naflall],[data-igra],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-pod],[data-podskip],[data-podrate],[data-podsleep],[data-podall],[data-podauto],[data-podch],[data-podshare],[data-podbar],[data-podmini],[data-podstop],[data-podopen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-dayfold],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-namesall],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
+  var node = t.closest ? t.closest("[data-bk-save],[data-bk-copy],[data-bk-paste],[data-bk-apply],[data-nset],[data-igvid],[data-shyt],[data-igk],[data-igstep],[data-igplay],[data-wcpregerr],[data-wcshortok],[data-zhen],[data-rzvkid],[data-rzvadd],[data-rzvaddok],[data-rzvst],[data-rzvok],[data-rzvdel],[data-rzvluq],[data-rzvosn],[data-rzvedit],[data-wcgoal],[data-wcstart],[data-wcstartok],[data-wcend],[data-wcendok],[data-wcday],[data-wcfl],[data-wccol],[data-wcsy],[data-wcmd],[data-wcnote],[data-wcdel],[data-wcfrom],[data-wcto],[data-wcset],[data-wcsetok],[data-wcsw],[data-wcwipe],[data-wcmon],[data-wcgusl],[data-wcqp],[data-wcqf],[data-wcpregok],[data-wcpregset],[data-wckick],[data-wckickn],[data-wckickr],[data-wcct],[data-wcctt],[data-wcctclr],[data-wcbag],[data-wcbagi],[data-wcred],[data-wcislam],[data-wcborn],[data-wcbornok],[data-wcpin],[data-wcpinset],[data-wcpinopen],[data-wcshare],[data-wcloss],[data-wclossok],[data-wcrem],[data-wcpblood],[data-wcqi],[data-wcqfx],[data-wcfix],[data-wcaskok],[data-wcgyn],[data-wcpostred],[data-wcpostinfo],[data-wcwt],[data-wcwtcalc],[data-wckickgo],[data-wcbackup],[data-wcpinreset],[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-nafl],[data-naflnotif],[data-naflall],[data-igra],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-pod],[data-podskip],[data-podrate],[data-podsleep],[data-podall],[data-podauto],[data-podch],[data-podshare],[data-filmshare],[data-podbar],[data-podmini],[data-podstop],[data-podopen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-dayfold],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-namesall],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -36513,6 +36600,7 @@ document.getElementById("app").addEventListener("click", function(ev){
     if(!v){ toast("Напишите хотя бы одну строку"); return; }
     P2.rel = { t: v, at: todayKey() }; save(); toast("Записано"); render(); return;
   }
+  if(d.filmshare){ filmShare(d.filmshare); return; }
   if(d.open){
     if(d.open==="names" || d.open==="duashort") V.q = "";
     open(d.open, null);
