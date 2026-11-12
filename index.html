@@ -16080,14 +16080,15 @@ function viewArTalk(){
   var g = AR.g, h = ['<div class="stack">'];
   if(!g || !g.t.length){ h.push('<div class="empty"><b>Нет фраз для тренировки</b></div></div>'); return h.join(""); }
   if(g.i >= g.t.length){
+    var tcm = /^cm([0-9]+)$/.exec(String(g.u));   /* встреча клуба: без рекламы клуба, «Готово» - обратно во встречу */
     h.push('<section class="card ar-fin"><div class="ar-fin-ic">✓</div><b>Сказано вслух: '+g.ok+' из '+g.t.length+'</b>'+
-      '<p>Каждая фраза, сказанная своим голосом, запоминается крепче, чем прочитанная. Хотите говорить с живыми людьми - запишитесь в разговорный клуб ниже. Завтра повторим, и часть фраз вы скажете уже без подсказки.</p>'+
-      '<div class="ar-cta"><button class="btn sec" data-ar="talk:'+g.u+'">Ещё раз</button><button class="btn" data-ar="unit:'+g.u+'">Готово</button></div></section>'+arClubCard()+'</div>');
+      '<p>Каждая фраза, сказанная своим голосом, запоминается крепче, чем прочитанная. '+(tcm ? 'На встрече эти фразы вы скажете уже без подсказки.' : 'Хотите говорить с живыми людьми - запишитесь в разговорный клуб ниже. Завтра повторим, и часть фраз вы скажете уже без подсказки.')+'</p>'+
+      '<div class="ar-cta"><button class="btn sec" data-ar="talk:'+g.u+'">Ещё раз</button><button class="btn" data-ar="'+(tcm ? 'meet:'+tcm[1] : 'unit:'+g.u)+'">Готово</button></div></section>'+(tcm ? '' : arClubCard())+'</div>');
     return h.join("");
   }
   var x = arTalkLine();
   h.push('<div class="ar-prog"><i style="width:'+Math.round(g.i / g.t.length * 100)+'%"></i></div>');
-  h.push('<div class="ar-cnt">'+(g.i + 1)+' из '+g.t.length+(x.u.id !== +g.u ? ' · повторяем урок '+arNo(x.u) : '')+'</div>');
+  h.push('<div class="ar-cnt">'+(g.i + 1)+' из '+g.t.length+(String(x.u.id) !== String(g.u) ? ' · повторяем '+(x.u.club ? 'встречу '+x.u.club.n : 'урок '+arNo(x.u)) : '')+'</div>');
   h.push('<section class="ar-card">'+
     '<div class="ar-ex-ru">Как сказать по-арабски:</div>'+
     '<div class="ar-ex-ru big">'+esc(x.l[3])+'</div>');
