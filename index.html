@@ -29402,8 +29402,7 @@ function viewJournal(){ jrLikesLoad();
    на всё приложение (new Audio, не в разметке), поэтому звук не обрывается при переходах;
    на других экранах - мини-плеер над нижней панелью. Место остановки помнится
    (S.podPos), Коран и подкаст друг друга ставят на паузу.
-   Разбор группой экспертов 01.11: главы с переходом по нажатию, график «пн, ср, пт в 9:00»
-   и отсчёт до следующего выпуска, метка «Новый», «Дальше» после выпуска, таймер сна,
+   Разбор группой экспертов 01.11: главы с переходом по нажатию, метка «Новый», «Дальше» после выпуска, таймер сна,
    «Поделиться выпуском», счёт прослушанных.
    Новый выпуск: mp3 в www/podcast/, строка в НАЧАЛО PODCASTS (post - id записи журнала,
    at - выход по Москве «ГГГГ-ММ-ДДTЧЧ:ММ», ch - главы [секунда, название]). */
@@ -29892,11 +29891,10 @@ function podHomeCard(){
 }
 function viewPodcasty(){
   mkLoad();
-  var list = podList(), heard = list.filter(function(p){ return podDone(p.id); }).length, nxt = podNextLabel();
+  var list = podList(), heard = list.filter(function(p){ return podDone(p.id); }).length;
   var h = ['<div class="stack">'];
   h.push('<section class="pod-hero"><span class="jr-meta">Журнал · слушать</span><b>Подкасты</b>'+
     '<p>Темы журнала с Заирой Джаватхановой - живым рассказом, а не чтением с листа. Слушайте в дороге, на кухне, перед сном.</p>'+
-    '<div class="pod-sched"><i>◷</i><span>Новые выпуски - <b>по понедельникам, средам и пятницам в 9:00</b> (Москва)'+(nxt ? '<br>Следующий: '+esc(nxt) : '')+'</span></div>'+
     '<div class="pod-all"><button class="pod-all-b" data-podall="1"><i>▶</i>Слушать все подряд</button>'+
       '<button class="pod-auto'+(podAutoOn() ? ' on' : '')+'" data-podauto="1" role="switch" aria-checked="'+(podAutoOn() ? 'true' : 'false')+'">Подряд: '+(podAutoOn() ? 'вкл' : 'выкл')+'</button></div>'+
     '<span class="pod-n">'+plural(list.length, "выпуск", "выпуска", "выпусков")+(heard ? ' · прослушано '+heard+' из '+list.length : '')+'</span></section>');
@@ -34314,7 +34312,7 @@ function viewProf(){
     swRow("notifAzkar", "☀", "Утренние и вечерние азкары") +
     swRow("notifKahf", "۞", "Пятница: сура аль-Кахф утром") +
     swRow("notifJumua", "☾", "Пятница: последний час для дуа") +
-    swRow("notifPodcast", "🎧", "Новые выпуски подкастов: пн, ср, пт в 9:00") +
+    swRow("notifPodcast", "🎧", "Новые выпуски подкастов") +
     swRow("notifReport", "◷", "Отчёт за месяц: 1-го числа в 10:00") +
     swRow("notifTasks", "✓", "Задачи со временем") +
     swRow("notifScore", "◈", "Итоги недели в рейтинге") +
