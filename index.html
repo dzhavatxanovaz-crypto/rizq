@@ -11740,7 +11740,7 @@ function clubOwnerNote(){
     '<p style="margin:6px 0 10px;font-size:13.5px;line-height:1.5">Вы видите клуб так же, как ученицы: диалог, слова и тест встречи открываются сразу после предыдущей встречи.</p>'+
     '<button class="btn sm" data-ar="asstudent:0">Вернуться в режим владелицы</button></section>';
   return '<section class="card" style="border-color:var(--accent-ink)"><div class="eyebrow" style="color:var(--accent-ink)">Режим владелицы</div>'+
-    '<p style="margin:6px 0 10px;font-size:13.5px;line-height:1.5">Вы видите все встречи сразу. Ученицы видят диалог и слова встречи с её начала, в 10:00 по Москве, а разминку урока практики - сразу после третьей встречи блока. Замечания присылайте в чат Claude: номер встречи и что поправить.</p>'+
+    '<p style="margin:6px 0 10px;font-size:13.5px;line-height:1.5">Вы видите все встречи сразу. Ученицы видят диалог, слова и тест встречи заранее - сразу после окончания предыдущей встречи, чтобы подготовиться. Замечания присылайте в чат Claude: номер встречи и что поправить.</p>'+
     '<button class="btn sec sm" data-ar="asstudent:1">Посмотреть как ученица</button></section>';
 }
 function clubS(){ var st = arS(); if(!st.cl) st.cl = { att:{}, hw:{} }; if(!st.cl.att) st.cl.att = {}; if(!st.cl.hw) st.cl.hw = {}; return st.cl; }
@@ -11789,7 +11789,7 @@ function clubQwUnit(n){ n = +n; if(!n) return null;
   return { id:"cq" + n, n:"Слова Корана · встреча " + n, ar:"كَلِمَاتُ القُرْآنِ", qw:1, w:w }; }
 /* с 08.11.2026 диалог и слова встречи открываются в начале урока, в 10:00 МСК (решение Заиры 05.11.2026).
    Встречи до 07.11 включительно и разминка практики - сразу после окончания предыдущей встречи. */
-var CLUB_OPEN_FROM = "2026-11-08";
+var CLUB_OPEN_FROM = "2099-01-01";   /* 12.11.2026, Заира: снова открываем сразу после предыдущей встречи - правило «в 10:00» отменено */
 function clubTimeOf(m){ return m && m.date && m.date < "2026-11-07" ? "13:00" : CLUB_TIME; }
 function clubMsk(){ var d = new Date(Date.now() + 3 * 3600000); return { day:d.getUTCFullYear() + "-" + pad(d.getUTCMonth() + 1) + "-" + pad(d.getUTCDate()), min:d.getUTCHours() * 60 + d.getUTCMinutes() }; }
 /* преподаватель и владелица видят все встречи сразу (отметка доступа в CRM) */
@@ -14197,7 +14197,7 @@ function viewArClub(){
     h.push(clubNewbieBlock(false));
     h.push('<section class="card"><div class="eyebrow">Что входит</div><ul class="ul">'+
       ['восемь встреч в месяц с преподавателем, по часу, женская группа до десяти человек',
-       'словарь встречи в приложении: фразы открываются в начале встречи',
+       'словарь встречи в приложении: фразы открываются заранее, сразу после предыдущей встречи - можно подготовиться',
        'после каждых трёх встреч - урок практики: говорим в парах по ситуации из жизни',
        'тренажёр разговора: приложение спрашивает, вы отвечаете вслух',
        'проверка произношения по одиннадцати трудным парам звуков',
@@ -14232,7 +14232,7 @@ function viewArClub(){
   if(has){ var cw = clubWords().length; h.push('<div class="ar-cta"><button class="btn sec sm" data-ar="cdict">Словарик клуба'+(cw ? ' · '+cw+' слов' : '')+'</button></div>'); }
   if(gramSee()) h.push(gramBtn());
   h.push('<div class="sec-h"><h3>Программа: '+CLUB_MEETS.length+' '+(CLUB_MEETS.length % 10 === 1 && CLUB_MEETS.length % 100 !== 11 ? 'встреча' : CLUB_MEETS.length % 10 >= 2 && CLUB_MEETS.length % 10 <= 4 && (CLUB_MEETS.length % 100 < 12 || CLUB_MEETS.length % 100 > 14) ? 'встречи' : 'встреч')+'</h3></div>');
-  h.push('<p class="ar-note" style="padding:0 4px;margin:-4px 0 8px">По системе учебника «Аль-Арабийя байна йадайк»: каждая встреча - один новый диалог. Диалог и слова открываются в начале встречи, в 10:00. После каждых трёх встреч - урок практики.</p>');
+  h.push('<p class="ar-note" style="padding:0 4px;margin:-4px 0 8px">По системе учебника «Аль-Арабийя байна йадайк»: каждая встреча - один новый диалог. Диалог и слова открываются заранее, сразу после предыдущей встречи, - можно подготовиться. После каждых трёх встреч - урок практики.</p>');
   clubOrder().forEach(function(idx, i){
     var m = CLUB_MEETS[idx], dt = ds[idx], past = dt < todayKey(), att = clubS().att["m" + m.n];
     if(i % 8 === 0){ if(i) h.push('</div>');
@@ -15028,7 +15028,7 @@ function viewArMeet(n){
     return h.join("");
   }
   if(!clubOpen(m)){
-    h.push('<section class="card"><div class="eyebrow">Скоро</div><p style="margin:6px 0 0;line-height:1.5">Диалог, слова и тест этой встречи откроются в начале встречи - '+esc(clubDateRu(dt))+', в '+CLUB_TIME+' по Москве.</p></section>');
+    h.push('<section class="card"><div class="eyebrow">Скоро</div><p style="margin:6px 0 0;line-height:1.5">Диалог, слова и тест этой встречи откроются заранее - сразу после окончания предыдущей встречи. Сама встреча - '+esc(clubDateRu(dt))+', в '+CLUB_TIME+' по Москве.</p></section>');
   } else {
   if(m.review) h.push('<p class="ar-note" style="padding:0 4px">В начале встречи повторяем диалог встречи '+esc(String(m.review))+(m.review2 ? ' и встречи '+esc(String(m.review2)) : '')+'.</p>');
   h.push(clubVideo(m.n));
