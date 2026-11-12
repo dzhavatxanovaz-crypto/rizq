@@ -805,7 +805,21 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .film-t{padding:12px 14px 14px}
 .film-t h3{margin:2px 0 4px;font-size:17px}
 .film-t p{margin:0;font-size:14px;line-height:1.45;color:var(--ink-2,inherit);opacity:.85}
-.film-acts{display:flex;gap:8px;margin-top:10px}
+.film-acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.mk-b{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:18px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:13px;font-weight:600;line-height:1.1}
+.mk-b i{font-style:normal;display:inline-flex;line-height:0}
+.mk-b b{font-weight:700}
+.mk-b.on{background:rgba(212,175,55,.16);border-color:rgba(212,175,55,.6);color:var(--accent-ink)}
+.mk-b.pop i{animation:jrPop .55s cubic-bezier(.2,1.6,.4,1)}
+.mk-fv{display:flex;align-items:center;gap:6px}
+.mk-fv .jp-star{position:static;flex:none}
+.mk-fv-b{flex:1;min-width:0;display:flex;align-items:center;gap:12px;padding:8px;border:1px solid var(--line);border-radius:14px;background:var(--surface);text-align:left;color:var(--ink)}
+.mk-fv-b img{width:96px;aspect-ratio:16/9;object-fit:cover;border-radius:9px;flex:none;background:#EDE8DE}
+.mk-fv-b .mk-pi{width:54px;height:54px;border-radius:12px;display:grid;place-items:center;font-size:24px;flex:none;background:linear-gradient(140deg,var(--sapphire),var(--sapphire-3));color:var(--gold)}
+.mk-fv-b span{display:flex;flex-direction:column;gap:3px;min-width:0}
+.mk-fv-b b{font-size:15px;line-height:1.3}
+.mk-fv-b em{font-style:normal;font-size:12.5px;color:var(--ink-3)}
+@media (prefers-reduced-motion:reduce){.mk-b.pop i{animation:none}}
 .hmt-ns{background:linear-gradient(140deg,#3E4C7A,#232B4E)}
 .hmt-pod{background:linear-gradient(140deg,var(--sapphire),var(--sapphire-3));border-color:rgba(212,175,55,.45)}
 .hmt-pod .hmt-ic{color:var(--gold)}
@@ -7531,6 +7545,7 @@ function toggleFav(k,label){
   var i=S.fav.indexOf(k);
   if(i>-1){ S.fav.splice(i,1); toast("Убрано из избранного"); }
   else { S.fav.push(k); toast(label ? label+" - в избранном" : "Добавлено в избранное"); }
+  if(/^(film|pod):/.test(k)) mkQueue("fav", k, isFav(k));
   save(); render();
 }
 function markRead(id){
@@ -29516,6 +29531,7 @@ function podPlay(id, from){
   POD.playing = true;
   if(!S.podStart) S.podStart = {};
   if(!S.podStart[id]){ S.podStart[id] = todayKey(); save(); try{ rTrack("podcast_play", id); }catch(e){} }
+  mkPlay("pod:" + id);
   podMedia(p);
   podPaint();
 }
@@ -29655,6 +29671,7 @@ var FILMS = [
   {"id":"sorok-dney","n":"40 дней без него","s":"Асият осталась вдовой. Дуа Умм Салямы, после которого Всевышний дал ей лучшее.","r":"Дуа Умм Салямы","dur":94,"v":2},
   {"id":"vsyo-moyo","n":"Всё моё!","s":"Рамазан попрекает семью хлебом. История о двух братьях времён Пророка ﷺ: может быть, удел приходит благодаря тому, кого ты попрекаешь.","r":"Два брата","dur":157,"v":2},
   {"id":"podkabluchnik","n":"Подкаблучник","s":"Друзья смеются над Русланом за то, что он помогает жене. Как Пророк ﷺ сам помогал своей семье по дому.","r":"Помощь жене по Сунне","dur":111,"v":2},
+  {"id":"poslednij-klyuch","n":"Последний ключ","s":"Асият сорок ночей делает дуа о муже, а в ресторане отдаёт чужой маме последний десерт и ничего не просит взамен. Дуа Мусы, мир ему, о любом благе.","r":"Дуа Мусы, аят 28:24","dur":130,"v":2},
   {"id":"sem-strel","n":"Семь стрел","s":"Муж день за днём ранит жену словами и поступками. Что Пророк ﷺ завещал о женщинах в прощальной проповеди.","r":"Прощальная проповедь","dur":105,"v":2},
   {"id":"odin-kon","n":"Один конь","s":"Подруги вышли за богатых, а она - за того, у кого одна машина, и та в кредит. История Асмы, дочери Абу Бакра, и аз-Зубайра, у которого был только конь.","r":"Асма и аз-Зубайр","dur":50,"v":3},
   {"id":"sem-otkazov","n":"Семь отказов","s":"Поставщики один за другим отказывают Милане. История Хаджар и её семи кругов между холмами.","r":"Хаджар и Сафа с Марвой","dur":94,"v":2},
@@ -29683,6 +29700,7 @@ function filmHomeTile(){
   return homeTile("film", 'data-open="filmy"', "▶", "Фильмы", "жизненные истории и уроки из Корана и Сунны", "");
 }
 function viewFilmy(){
+  mkLoad();
   var h = ['<div class="stack">'];
   h.push('<section class="film-hero"><span class="jr-meta">Смотреть</span><b>Фильмы</b>'+
     '<p>Короткие фильмы с жизненными историями, уроками и историями из Корана и Сунны.</p></section>');
@@ -29693,7 +29711,7 @@ function viewFilmy(){
       '<button class="film-v" data-filmplay="'+esc(f.id)+'" aria-label="Смотреть фильм «'+esc(f.n)+'»"><img loading="lazy" decoding="async" src="'+pst+'" alt=""><span class="film-pl">▶</span></button>'+
       '<div class="film-t"><span class="jr-meta">'+filmDur(f.dur)+(f.r ? ' · '+esc(f.r) : '')+'</span>'+
       '<h3>'+esc(f.n)+'</h3><p>'+esc(f.s)+'</p>'+
-      '<div class="film-acts"><button class="btn sec sm" data-filmshare="'+esc(f.id)+'">↗ Поделиться</button></div></div></section>');
+      '<div class="film-acts">'+mkLikeBtn("film:"+f.id)+mkFavBtn("film:"+f.id)+'<button class="mk-b" data-filmshare="'+esc(f.id)+'">↗ Поделиться</button></div></div></section>');
   });
   h.push('</div>');
   return h.join("");
@@ -29718,7 +29736,7 @@ function filmPlay(id, btn){
   v.setAttribute("controls", ""); v.setAttribute("playsinline", ""); v.setAttribute("preload", "auto");
   v.setAttribute("data-film", f.id); v.poster = FILM_DIR + f.id + ".jpg?v=" + (f.v || 1); v.src = src;
   v.style.cssText = "display:block;width:100%;height:100%;background:#0b0f14;object-fit:contain";
-  btn.classList.add("on"); btn.removeAttribute("data-filmplay"); btn.innerHTML = ""; btn.appendChild(v);
+  mkPlay("film:" + f.id); btn.classList.add("on"); btn.removeAttribute("data-filmplay"); btn.innerHTML = ""; btn.appendChild(v);
   var p = v.play(); if(p && p.catch) p.catch(function(){});
 }
 function filmShare(id){
@@ -29727,6 +29745,93 @@ function filmShare(id){
   var text = "Фильм «" + f.n + "» в RIZQ: " + f.s;
   if(navigator.share){ navigator.share({ title:f.n, text:text + String.fromCharCode(10) + url }).catch(function(){}); return; }
   try{ navigator.clipboard.writeText(text + " " + url).then(function(){ toast("Текст и ссылка скопированы"); }, function(){ toast(url); }); }catch(e){ toast(url); }
+}
+/* ---------- Фильмы и подкасты: «Нравится», «В избранное», «начали» (12.11.2026) ----------
+   Своя отметка - S.mkLike, избранное - общий S.fav (ключи film:<id>, pod:<id>), «начали» - S.mkPlay (одна на устройство).
+   На сервер - через очередь S.mkQ, чтобы отметка без сети не потерялась; числа по всем - api/content/marks.
+   Заира видит отклик в «Управлении» → «Статистика» → «Фильмы и подкасты: отклик». */
+var MK = null, MK_AT = 0;
+try{ MK = JSON.parse(localStorage.getItem("rizq.marks") || "null"); }catch(e){}
+function mkOn(item){ return !!(S.mkLike && S.mkLike[item]); }
+function mkN(item){ var n = (MK && MK.like && MK.like[item]) || 0; return Math.max(n, mkOn(item) ? 1 : 0); }
+function mkLikeBtn(item){
+  var on = mkOn(item), n = mkN(item), many = n >= JR_LIKE_MIN;
+  return '<button class="mk-b mk-like'+(on ? ' on' : '')+'" data-mklike="'+esc(item)+'" aria-pressed="'+(on ? 'true' : 'false')+'" aria-label="Нравится'+(many ? ', отметок: '+n : '')+'">'+
+    '<i>'+jrHeart(on, 17)+'</i>Нравится'+(many ? ' <b>'+n+'</b>' : '')+'</button>';
+}
+function mkFavBtn(item){
+  var on = isFav(item);
+  return '<button class="mk-b mk-fav'+(on ? ' on' : '')+'" data-mkfav="'+esc(item)+'" aria-pressed="'+(on ? 'true' : 'false')+'">'+
+    '<i>'+jrIc("fav", on).replace('width="20" height="20"', 'width="17" height="17"')+'</i>'+(on ? 'В избранном' : 'В избранное')+'</button>';
+}
+/* перерисовать только кнопки - без render(): иначе остановится фильм, который сейчас играет */
+function mkPaint(item, pop){
+  [].forEach.call(document.querySelectorAll('[data-mklike="'+item+'"]'), function(b){ b.outerHTML = mkLikeBtn(item); });
+  [].forEach.call(document.querySelectorAll('[data-mkfav="'+item+'"]'), function(b){ b.outerHTML = mkFavBtn(item); });
+  if(pop) setTimeout(function(){ [].forEach.call(document.querySelectorAll('[data-mk'+pop+'="'+item+'"]'), function(b){ b.classList.add("pop"); }); }, 0);
+}
+function mkQueue(kind, item, on){
+  if(!S.mkQ) S.mkQ = {};
+  S.mkQ[kind + "|" + item] = on ? 1 : 0;
+  if(!MK) MK = { like:{}, fav:{}, play:{} };
+  if(!MK[kind]) MK[kind] = {};
+  MK[kind][item] = Math.max(0, (MK[kind][item] || 0) + (on ? 1 : -1));
+  save(); mkFlush();
+}
+function mkLikeToggle(item){
+  if(!S.mkLike) S.mkLike = {};
+  var on = !mkOn(item);
+  if(on) S.mkLike[item] = todayKey(); else delete S.mkLike[item];
+  mkQueue("like", item, on); mkPaint(item, on && "like");
+  if(on && navigator.vibrate) try{ navigator.vibrate(12); }catch(e){}
+}
+function mkFavToggle(item){
+  var i = S.fav.indexOf(item), on = i < 0;
+  if(on){ S.fav.push(item); toast((item.indexOf("film:") === 0 ? "Фильм" : "Выпуск") + " - в избранном"); }
+  else { S.fav.splice(i, 1); toast("Убрано из избранного"); }
+  mkQueue("fav", item, on); mkPaint(item, on && "fav");
+}
+function mkPlay(item){
+  if(S.statOn === false) return;   /* кто выключил статистику в настройках - не считаем */
+  if(!S.mkPlay) S.mkPlay = {};
+  if(S.mkPlay[item]) return;
+  S.mkPlay[item] = todayKey(); mkQueue("play", item, true);
+}
+function mkFlush(){
+  var q = S.mkQ; if(!q) return;
+  Object.keys(q).forEach(function(k){
+    var on = q[k], ix = k.indexOf("|"), kind = k.slice(0, ix), item = k.slice(ix + 1);
+    try{
+      fetch("api/content/mark", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ device: hlDevice(), item: item, kind: kind, on: on }) })
+        .then(function(r){
+          return r.json().catch(function(){ return null; }).then(function(j){
+            /* 400 и 404 - фильм сняли или id чужой: повторять бессмысленно */
+            if((r.ok || r.status === 400 || r.status === 404) && S.mkQ && S.mkQ[k] === on){ delete S.mkQ[k]; save(); }
+            if(r.ok && j && typeof j.n === "number"){ if(!MK) MK = { like:{}, fav:{}, play:{} }; if(!MK[kind]) MK[kind] = {}; MK[kind][item] = j.n; if(kind === "like") mkPaint(item); }
+          });
+        }).catch(function(){});
+    }catch(e){}
+  });
+}
+function mkLoad(){
+  mkFlush();
+  if(Date.now() - MK_AT < 6e5) return;
+  MK_AT = Date.now();
+  try{
+    fetch("api/content/marks", { cache:"no-store" }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+      if(!j || typeof j !== "object" || !j.like) return;
+      MK = j;
+      try{ localStorage.setItem("rizq.marks", JSON.stringify(j)); }catch(e){}
+      [].forEach.call(document.querySelectorAll("[data-mklike]"), function(b){ b.outerHTML = mkLikeBtn(b.getAttribute("data-mklike")); });
+    }).catch(function(){});
+  }catch(e){}
+}
+/* из «Избранного» - к фильму или выпуску */
+function mkGo(item){
+  var ix = item.indexOf(":"), kind = item.slice(0, ix), id = item.slice(ix + 1);
+  if(kind === "film"){ open("filmy", id); }
+  else { POD.hi = id; V.tab = "journal"; open("podcasty", null); }
+  setTimeout(function(){ var el = document.getElementById((kind === "film" ? "film-" : "pod-") + id); if(el && el.scrollIntoView) el.scrollIntoView({ block:"center" }); }, 150);
 }
 function podHomeCard(){
   var l = podList(); if(!l.length) return "";
@@ -29740,6 +29845,7 @@ function podHomeCard(){
     '</div>';
 }
 function viewPodcasty(){
+  mkLoad();
   var list = podList(), heard = list.filter(function(p){ return podDone(p.id); }).length, nxt = podNextLabel();
   var h = ['<div class="stack">'];
   h.push('<section class="pod-hero"><span class="jr-meta">Журнал · слушать</span><b>Подкасты</b>'+
@@ -29757,7 +29863,7 @@ function viewPodcasty(){
       podPlayerHtml(p, true)+
       '<div class="pod-acts">'+(post ? '<button class="btn sec sm" data-post="'+esc(post.id)+'">Читать запись ›</button>' : '')+
       '</div>'+
-      '<div class="pod-share"><button data-podshare="'+esc(p.id)+'">↗ Поделиться</button></div>'+
+      '<div class="pod-share">'+mkLikeBtn("pod:"+p.id)+mkFavBtn("pod:"+p.id)+'<button data-podshare="'+esc(p.id)+'">↗ Поделиться</button></div>'+
       '</section>');
   });
   h.push('</div>');
@@ -31012,6 +31118,17 @@ function admEngageHtml(){
       var p = all.filter(function(q){ return q.id === x.post; })[0];
       return row(esc(p ? p.n : x.post), x.n, "");
     }).join("")+'</div></section>');
+  }
+  if(E.media && E.media.length){
+    var mm = E.media.map(function(x){
+      var ix = x.item.indexOf(":"), kind = x.item.slice(0, ix), id = x.item.slice(ix + 1), o = kind === "film" ? filmById(id) : podById(id);
+      return { n: (kind === "film" ? "▶ " : "🎧 ") + (o ? o.n : id), play: x.play || 0, like: x.like || 0, fav: x.fav || 0 };
+    }).sort(function(a, b){ return (b.like + b.fav) - (a.like + a.fav) || b.play - a.play; });
+    h.push('<section class="card"><div class="eyebrow">Фильмы и подкасты: отклик</div>'+
+      '<p class="disclaimer" style="text-align:left;padding:0;margin:6px 0 4px">♡ - нажали «Нравится», ★ - добавили в избранное, «начали» - сколько устройств включили. Сверху то, что откликается больше всего.</p>'+
+      '<div class="st-rows">'+mm.map(function(x){
+        return row(esc(x.n), '♡ '+x.like, '★ '+x.fav+' · начали '+x.play+(x.play ? ' · ♡ у '+pc(x.like, x.play)+' начавших' : ''));
+      }).join("")+'</div></section>');
   }
   return h.join("");
 }
@@ -33912,7 +34029,7 @@ function viewFav(){
       '<p>Нажмите звёздочку у любой дуа, имени Всевышнего или хадиса - они соберутся здесь.</p>'+
       '<button class="btn sm sec" style="margin-top:16px" data-go="dua">Открыть знания</button></div></div>';
   }
-  var duas = [], names = [], qur = [], had = [], sur = [], sira = [], guides = [], posts = [], notes = [];
+  var duas = [], names = [], qur = [], had = [], sur = [], sira = [], guides = [], posts = [], notes = [], films = [], pods = [];
   S.fav.forEach(function(k){
     var i = parseInt(k.split(":")[1],10);
     if(k.indexOf("dua:")===0){ var d = DUAS.filter(function(x){return x.id===k.slice(4);})[0]; if(d) duas.push(d); }
@@ -33925,8 +34042,10 @@ function viewFav(){
     else if(k.indexOf("guide:")===0){ var gk = k.slice(6); if(GUIDES[gk]) guides.push(gk); }
     else if(k.indexOf("post:")===0){ var pk = k.slice(5); if(postsAll().some(function(x){return x.id===pk;})) posts.push(pk); }
     else if(k.indexOf("note:")===0){ var nk = noteById(k.slice(5)); if(nk) notes.push(nk); }
+    else if(k.indexOf("film:")===0){ var fk = filmById(k.slice(5)); if(fk) films.push(fk); }
+    else if(k.indexOf("pod:")===0){ var pk2 = podById(k.slice(4)); if(pk2 && podAt(pk2) <= Date.now()) pods.push(pk2); }
   });
-  var found = duas.length + names.length + qur.length + had.length + sur.length + sira.length + guides.length + posts.length + notes.length;
+  var found = duas.length + names.length + qur.length + had.length + sur.length + sira.length + guides.length + posts.length + notes.length + films.length + pods.length;
   if(!found){
     return '<div class="stack"><div class="empty"><div class="ic">☆</div><b>В избранном пока пусто</b>'+
       '<p>Нажмите звёздочку у любой дуа, имени Всевышнего, хадиса или руководства - они соберутся здесь.</p>'+
@@ -33936,6 +34055,22 @@ function viewFav(){
   if(notes.length){
     h.push('<div class="sec-h"><h3>Заметки</h3><span class="more" style="color:var(--ink-3)">'+notes.length+'</span></div>');
     h.push('<div class="nt-grid">'+notes.map(noteCard).join("")+'</div>');
+  }
+  if(films.length){
+    h.push('<div class="sec-h"><h3>Фильмы</h3><span class="more" style="color:var(--ink-3)">'+films.length+'</span></div>');
+    films.forEach(function(f){
+      h.push('<div class="mk-fv"><button class="mk-fv-b" data-mkgo="film:'+esc(f.id)+'"><img loading="lazy" decoding="async" src="'+FILM_DIR + f.id + '.jpg?v=' + (f.v || 1)+'" alt="">'+
+        '<span><b>'+esc(f.n)+'</b><em>'+filmDur(f.dur)+(f.r ? ' · '+esc(f.r) : '')+'</em></span></button>'+
+        '<button class="jp-star on" data-fav="film:'+esc(f.id)+'" aria-label="Убрать из избранного">★</button></div>');
+    });
+  }
+  if(pods.length){
+    h.push('<div class="sec-h"><h3>Подкасты</h3><span class="more" style="color:var(--ink-3)">'+pods.length+'</span></div>');
+    pods.forEach(function(p){
+      h.push('<div class="mk-fv"><button class="mk-fv-b" data-mkgo="pod:'+esc(p.id)+'"><i class="mk-pi">🎧</i>'+
+        '<span><b>'+esc(p.n)+'</b><em>'+podTime(p.dur)+' · '+esc(postDate(p.at.slice(0, 10)))+'</em></span></button>'+
+        '<button class="jp-star on" data-fav="pod:'+esc(p.id)+'" aria-label="Убрать из избранного">★</button></div>');
+    });
   }
   if(posts.length){
     h.push('<div class="sec-h"><h3>Из журнала</h3><span class="more" style="color:var(--ink-3)">'+posts.length+'</span></div>');
@@ -36595,7 +36730,7 @@ document.addEventListener("pointercancel", ftEnd, { passive: true });
 
 document.getElementById("app").addEventListener("click", function(ev){
   var t = ev.target;
-  var node = t.closest ? t.closest("[data-bk-save],[data-bk-copy],[data-bk-paste],[data-bk-apply],[data-nset],[data-igvid],[data-shyt],[data-igk],[data-igstep],[data-igplay],[data-wcpregerr],[data-wcshortok],[data-zhen],[data-rzvkid],[data-rzvadd],[data-rzvaddok],[data-rzvst],[data-rzvok],[data-rzvdel],[data-rzvluq],[data-rzvosn],[data-rzvedit],[data-wcgoal],[data-wcstart],[data-wcstartok],[data-wcend],[data-wcendok],[data-wcday],[data-wcfl],[data-wccol],[data-wcsy],[data-wcmd],[data-wcnote],[data-wcdel],[data-wcfrom],[data-wcto],[data-wcset],[data-wcsetok],[data-wcsw],[data-wcwipe],[data-wcmon],[data-wcgusl],[data-wcqp],[data-wcqf],[data-wcpregok],[data-wcpregset],[data-wckick],[data-wckickn],[data-wckickr],[data-wcct],[data-wcctt],[data-wcctclr],[data-wcbag],[data-wcbagi],[data-wcred],[data-wcislam],[data-wcborn],[data-wcbornok],[data-wcpin],[data-wcpinset],[data-wcpinopen],[data-wcshare],[data-wcloss],[data-wclossok],[data-wcrem],[data-wcpblood],[data-wcqi],[data-wcqfx],[data-wcfix],[data-wcaskok],[data-wcgyn],[data-wcpostred],[data-wcpostinfo],[data-wcwt],[data-wcwtcalc],[data-wckickgo],[data-wcbackup],[data-wcpinreset],[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-nafl],[data-naflnotif],[data-naflall],[data-igra],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-pod],[data-podskip],[data-podrate],[data-podsleep],[data-podall],[data-podauto],[data-podch],[data-podshare],[data-filmshare],[data-filmplay],[data-podbar],[data-podmini],[data-podstop],[data-podopen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-dayfold],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-namesall],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
+  var node = t.closest ? t.closest("[data-bk-save],[data-bk-copy],[data-bk-paste],[data-bk-apply],[data-nset],[data-igvid],[data-shyt],[data-igk],[data-igstep],[data-igplay],[data-wcpregerr],[data-wcshortok],[data-zhen],[data-rzvkid],[data-rzvadd],[data-rzvaddok],[data-rzvst],[data-rzvok],[data-rzvdel],[data-rzvluq],[data-rzvosn],[data-rzvedit],[data-wcgoal],[data-wcstart],[data-wcstartok],[data-wcend],[data-wcendok],[data-wcday],[data-wcfl],[data-wccol],[data-wcsy],[data-wcmd],[data-wcnote],[data-wcdel],[data-wcfrom],[data-wcto],[data-wcset],[data-wcsetok],[data-wcsw],[data-wcwipe],[data-wcmon],[data-wcgusl],[data-wcqp],[data-wcqf],[data-wcpregok],[data-wcpregset],[data-wckick],[data-wckickn],[data-wckickr],[data-wcct],[data-wcctt],[data-wcctclr],[data-wcbag],[data-wcbagi],[data-wcred],[data-wcislam],[data-wcborn],[data-wcbornok],[data-wcpin],[data-wcpinset],[data-wcpinopen],[data-wcshare],[data-wcloss],[data-wclossok],[data-wcrem],[data-wcpblood],[data-wcqi],[data-wcqfx],[data-wcfix],[data-wcaskok],[data-wcgyn],[data-wcpostred],[data-wcpostinfo],[data-wcwt],[data-wcwtcalc],[data-wckickgo],[data-wcbackup],[data-wcpinreset],[data-b1ch],[data-b1load],[data-b1set],[data-b1fs],[data-b1opt],[data-b1tk],[data-b1ayah],[data-b1ret],[data-b1share],[data-b1gift],[data-readall],[data-goalsopen],[data-pushcard],[data-hb],[data-dd],[data-mr],[data-st],[data-chm],[data-kmem],[data-vm],[data-trs],[data-trayah],[data-cm],[data-dreport],[data-kopen],[data-kj],[data-kact],[data-kread],[data-duamade],[data-dtopic],[data-qmcol],[data-qmcolset],[data-qmf],[data-splrec],[data-splchange],[data-splplay],[data-spltog],[data-splnext],[data-splauto],[data-fbopen],[data-fbkind],[data-fbsend],[data-giftgo],[data-giftcode],[data-giftcodego],[data-giftopen],[data-giftcopy],[data-b2fs],[data-ndtclr],[data-rzctog],[data-tjplay],[data-rzcm],[data-rzcd],[data-rzcadd],[data-calon],[data-caloff],[data-calopt],[data-calcopy],[data-hsclear],[data-b2set],[data-b2opt],[data-b2tk],[data-b2ch],[data-b2load],[data-mdnsz],[data-umopen],[data-rzsec],[data-rzgo],[data-umshare],[data-hjtab],[data-umsec],[data-umchk],[data-umtrip],[data-qview],[data-mdnretry],[data-fsopen],[data-fsset],[data-finlim],[data-finlims],[data-finlimsave],[data-dbnew],[data-dbadd],[data-dbpayopen],[data-dbpay],[data-dbdel],[data-dbzakat],[data-finrep],[data-finrepadd],[data-finrepdel],[data-finrepapply],[data-finexport],[data-frtype],[data-frcat],[data-plmove],[data-movego],[data-movesheet],[data-fincatgo],[data-buyplan],[data-paynext],[data-finpartner],[data-finreq],[data-finsend],[data-kidtab],[data-kidstory],[data-kidread],[data-kidreadok],[data-kidduaok],[data-kidsex],[data-kidname],[data-tripmode],[data-tripopen],[data-trip],[data-tripcnt],[data-tripreset],[data-zsave],[data-zics],[data-spgo],[data-spplay],[data-spkid],[data-pushtoggle],[data-nafl],[data-naflnotif],[data-naflall],[data-igra],[data-hifz],[data-hifzshow],[data-hifzlearn],[data-hifzok],[data-hifzbad],[data-hifzforget],[data-qadadone],[data-qadaadd],[data-qadabulk],[data-qadaundo],[data-qadaper],[data-pauseopen],[data-pausestart],[data-pauseend],[data-pausedel],[data-jopen],[data-cshare],[data-acc],[data-von],[data-voff],[data-vcopy],[data-vpull],[data-vhide],[data-qshare],[data-checkout],[data-buytar],[data-ordcheck],[data-orddel],[data-azantest],[data-dshare],[data-ptad],[data-pahlaq],[data-prel],[data-go],[data-open],[data-guide],[data-ics],[data-icsgo],[data-welcskip],[data-rub],[data-post],[data-pshare],[data-jrlike],[data-seropen],[data-pod],[data-podskip],[data-podrate],[data-podsleep],[data-podall],[data-podauto],[data-podch],[data-podshare],[data-filmshare],[data-mklike],[data-mkfav],[data-mkgo],[data-filmplay],[data-podbar],[data-podmini],[data-podstop],[data-podopen],[data-sernext],[data-serpost],[data-serhd],[data-jrto],[data-jrq],[data-sq],[data-gto],[data-find],[data-know],[data-jump],[data-copy2],[data-wa],[data-tg],[data-native],[data-shcopy],[data-shnative],[data-shwa],[data-shtg],[data-check],[data-chk],[data-chkreset],[data-sunnah],[data-sunnahopen],[data-health],[data-healthopen],[data-cat],[data-course],[data-fav],[data-count],[data-tick],[data-reset],[data-zikr],[data-name],[data-namex],[data-hadith],[data-buy],[data-pay],[data-lesson],[data-city],[data-citypick],[data-gps],[data-method],[data-madhab],[data-sw],[data-theme],[data-why],[data-logout],[data-saveacc],[data-copy],[data-salah],[data-compass],[data-hlf],[data-hlgps],[data-hlmore],[data-hlown],[data-hlsend],[data-hlerr],[data-hlsug],[data-qtgoal],[data-qfont],[data-qbook],[data-qtaj],[data-mpage],[data-ar],[data-mtool],[data-mayah],[data-qtfold],[data-bfold],[data-sc],[data-hlshare],[data-hlflag],[data-adm],[data-hlrev],[data-hlstar],[data-hlq],[data-hlrvsend],[data-hlrvrep],[data-hlrvdel],[data-hlwa],[data-hlcopy],[data-nisab],[data-zmzh],[data-zreset],[data-say],[data-unsay],[data-namesreset],[data-daily],[data-salahopen],[data-dayopen],[data-dayfold],[data-repperiod],[data-repmonth],[data-repday],[data-sira],[data-bookch],[data-qoff],[data-qoffstop],[data-qoffclear],[data-qplan],[data-qrmd],[data-qblog],[data-a2hs],[data-nnew],[data-nopen],[data-ntag],[data-nfold],[data-nfnew],[data-nfman],[data-nfren],[data-nfdel],[data-npin],[data-ncol],[data-nck],[data-nitadd],[data-nitdel],[data-nshare],[data-ndel],[data-qdread],[data-qplanoff],[data-qmode],[data-qsurah],[data-qjuz],[data-qpage],[data-qread],[data-qplay],[data-qplayall],[data-qmark],[data-qmarksclear],[data-qcopy],[data-qscroll],[data-qsize],[data-qtr],[data-qreciter],[data-qrepeat],[data-addmydua],[data-mydua],[data-delmydua],[data-namegroup],[data-namesnd],[data-namesall],[data-nameaudio],[data-namecardshare],[data-namecardsave],[data-lead],[data-leadgo],[data-shukropen],[data-addshukr],[data-delshukr],[data-addgoal],[data-goal],[data-delgoal],[data-finmonth],[data-fintype],[data-fincat],[data-finadd],[data-findel],[data-plview],[data-plday],[data-plday1],[data-pldue],[data-plprio],[data-pladd],[data-pltoggle],[data-pldel],[data-plics],[data-plmore],[data-pledit],[data-pleprio],[data-plsave],[data-plcancel],[data-plpush],[data-plclear],[data-plgoaladd],[data-plgoalopen],[data-plgoaltask],[data-back],[data-scrim],[data-stop],[data-quizans],[data-quizreset],[data-mpplay],[data-mpstop],[data-tset],[data-dset],[data-manok],[data-manq],[data-kahfread],[data-kahfdone],[data-bkhide],[data-clubbannerx],[data-sqfrix],[data-pushask],[data-ptadj],[data-ptreset],[data-offer],[data-offerx],[data-ir]") : null;
   if(!node) return;
   var d = node.dataset;
   /* Счётчики азкаров и тасбиха срабатывают на само касание (pointerdown, ниже).
@@ -36732,6 +36867,9 @@ document.getElementById("app").addEventListener("click", function(ev){
   }
   if(d.filmplay){ filmPlay(d.filmplay, node); return; }
   if(d.filmshare){ filmShare(d.filmshare); return; }
+  if(d.mklike){ mkLikeToggle(d.mklike); return; }
+  if(d.mkfav){ mkFavToggle(d.mkfav); return; }
+  if(d.mkgo){ mkGo(d.mkgo); return; }
   if(d.open){
     if(d.open==="names" || d.open==="duashort") V.q = "";
     open(d.open, null);
