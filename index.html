@@ -806,6 +806,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .film-t h3{margin:2px 0 4px;font-size:17px}
 .film-t p{margin:0;font-size:14px;line-height:1.45;color:var(--ink-2,inherit);opacity:.85}
 .film-acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.film-more{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:11px;padding-top:10px;border-top:1px dashed var(--line)}
+.film-more-h{width:100%;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.mk-b.film-go{border-color:rgba(212,175,55,.6);color:var(--accent-ink);background:rgba(212,175,55,.08)}
 .mk-b{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:18px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:13px;font-weight:600;line-height:1.1}
 .mk-b i{font-style:normal;display:inline-flex;line-height:0}
 .mk-b b{font-weight:700}
@@ -8938,6 +8941,14 @@ function deepOpen(qArg){
       if(!finReqs().some(function(r){ return r.token === mfr[1]; })) finReqs().unshift({ token: mfr[1], kind: "murabaha", item: "Заявка с сайта", status: "new", stage: "new", step: 0, text: "Заявка принята, мы свяжемся", at: Date.now() });
       save(); try{ history.replaceState(null, "", location.pathname); }catch(e){}
       open("installment", null); finReqsRefresh(true); return true;
+    }
+    /* ?guide=<ключ>&b=<id блока> - руководство сразу на нужном месте (12.11.2026: ?guide=sunnah&b=tahajjud) */
+    var mgd = q.match(/[?&]guide=([a-z0-9_]+)/);
+    if(mgd && GUIDES[mgd[1]]){
+      S.welcomed = 1; save(); V.tab = "dua"; open("guide", mgd[1]);
+      var mgb = q.match(/[?&]b=([a-z0-9_-]+)/);
+      if(mgb) guideJump(mgd[1], mgb[1], 450);
+      return true;
     }
     var mpo = q.match(/[?&]post=([a-z0-9_-]+)/);
     if(mpo){ S.welcomed = 1; save(); V.tab = "journal"; open("post", decodeURIComponent(mpo[1])); return true; }
@@ -26667,7 +26678,7 @@ GUIDES.sunnah = {
       "Время - после иша и до рассвета. Кто уверен, что проснётся, пусть оставит витр на конец ночи, это лучше; кто боится проспать - совершит перед сном (Муслим).",
       "Во второй половине Рамадана в последнем ракяте витра читают дуа кунут."
     ]},
-    {t:"Тахаджуд - ночной намаз", p:"Совершается после сна, в последнюю треть ночи. Время, когда мольба принимается особенно.",
+    {id:"tahajjud", t:"Тахаджуд - ночной намаз", p:"Совершается после сна, в последнюю треть ночи. Время, когда мольба принимается особенно.",
      ar:"أَفْضَلُ الصَّلَاةِ بَعْدَ الْفَرِيضَةِ صَلَاةُ اللَّيْلِ",
      tr:"Афдалюс-саляти ба'даль-фаридати салятуль-лейль",
      ru:"Лучший намаз после обязательного - намаз ночной.",
@@ -29699,6 +29710,41 @@ function filmHomeTile(){
   if(!FILMS.length) return "";
   return homeTile("film", 'data-open="filmy"', "▶", "Фильмы", "жизненные истории и уроки из Корана и Сунны", "");
 }
+/* прокрутить руководство к блоку: id блока (b.id) или его номер */
+function guideJump(key, b, wait){
+  var g = GUIDES[key]; if(!g) return;
+  var i = -1; (g.blocks || []).forEach(function(x, k){ if(i < 0 && x && (x.id === b || String(k) === String(b))) i = k; });
+  if(i < 0) return;
+  setTimeout(function(){ var el = document.getElementById("gb-" + i); if(el) $screen.scrollTop = Math.max(0, $screen.scrollTop + el.getBoundingClientRect().top - $screen.getBoundingClientRect().top - 12); }, wait || 120);
+}
+/* Под фильмом - то, что можно прочитать в приложении по его теме (12.11.2026, просьба Заиры).
+   Ключ - id фильма; [переход data-jump, подпись]. Переходы: dua:<id>, post:<id>, sira:<n>, hadith:<n>, guide:<ключ>[:<блок>] */
+var FILM_GO = {
+  "bez-raspiski": [["post:dolg-zapis", "Аят о долге"]],
+  "potom": [["guide:salah", "Намаз пошагово"]],
+  "dve-nochi": [["guide:janaza", "Когда умер близкий"]],
+  "sorok-dney": [["dua:h5", "Дуа Умм Салямы"]],
+  "poslednij-klyuch": [["dua:f7", "Дуа Мусы, мир ему"], ["guide:sunnah:tahajjud", "Тахаджуд пошагово"]],
+  "sem-strel": [["sira:26", "Прощальное паломничество"]],
+  "odin-kon": [["post:asma", "История Асмы"]],
+  "tri-chasa": [["dua:h1", "Дуа Юнуса, мир ему"]],
+  "nomer-bez-imeni": [["post:aisha-ifk", "Аиша и клевета"]],
+  "odinnadcat": [["dua:f3", "Дуа за родителей"]],
+  "sotri-imya": [["sira:21", "Худайбийский договор"]],
+  "nazvala-vorovkoj": [["hadith:15", "Хадис «Не гневайся»"]],
+  "cena-dlya-svoih": [["post:dolg-dve-storony", "Долг: две стороны"]],
+  "sgovor": [["guide:nikah:1", "Условия никаха"]],
+  "podporki": [["sira:25", "Хунайн и Табук"]],
+  "kredit": [["guide:money:2", "Что считается рибой"]],
+  "rynok": [["post:ibn-auf-rynok", "Абдуррахман ибн Ауф"]]
+};
+function filmGoHtml(f){
+  var l = FILM_GO[f.id]; if(!l || !l.length) return "";
+  return '<div class="film-more"><span class="film-more-h">Читать в приложении</span>'+l.map(function(x){
+    var k = x[0].split(":")[0], ic = k === "dua" ? "🤲" : k === "guide" ? "☾" : "📖";
+    return '<button class="mk-b film-go" data-jump="'+esc(x[0])+'">'+ic+' '+esc(x[1])+' ›</button>';
+  }).join("")+'</div>';
+}
 function viewFilmy(){
   mkLoad();
   var h = ['<div class="stack">'];
@@ -29711,7 +29757,7 @@ function viewFilmy(){
       '<button class="film-v" data-filmplay="'+esc(f.id)+'" aria-label="Смотреть фильм «'+esc(f.n)+'»"><img loading="lazy" decoding="async" src="'+pst+'" alt=""><span class="film-pl">▶</span></button>'+
       '<div class="film-t"><span class="jr-meta">'+filmDur(f.dur)+(f.r ? ' · '+esc(f.r) : '')+'</span>'+
       '<h3>'+esc(f.n)+'</h3><p>'+esc(f.s)+'</p>'+
-      '<div class="film-acts">'+mkLikeBtn("film:"+f.id)+mkFavBtn("film:"+f.id)+'<button class="mk-b" data-filmshare="'+esc(f.id)+'">↗ Поделиться</button></div></div></section>');
+      filmGoHtml(f)+'<div class="film-acts">'+mkLikeBtn("film:"+f.id)+mkFavBtn("film:"+f.id)+'<button class="mk-b" data-filmshare="'+esc(f.id)+'">↗ Поделиться</button></div></div></section>');
   });
   h.push('</div>');
   return h.join("");
@@ -36830,7 +36876,7 @@ document.getElementById("app").addEventListener("click", function(ev){
     if(j[0]==="igra"){ location.href = "igra/"; return; }
     if(j[0]==="go") go(j[1]);
     else if(j[0]==="open") open(j[1], null);
-    else if(j[0]==="guide"){ V.tab="dua"; open("guide", j[1]); }
+    else if(j[0]==="guide"){ V.tab="dua"; open("guide", j[1]); if(j[2]) guideJump(j[1], j[2]); }
     else if(j[0]==="umsec"){ V.tab="dua"; V.umSec = j[1]; open("umrah", null); }
     else if(j[0]==="name"){ V.q=""; V.tab="dua"; open("name", parseInt(j[1],10)); }
     else if(j[0]==="hadith"){ V.q=""; V.tab="dua"; open("hadithOne", parseInt(j[1],10)); }
