@@ -29755,7 +29755,7 @@ try{ MK = JSON.parse(localStorage.getItem("rizq.marks") || "null"); }catch(e){}
 function mkOn(item){ return !!(S.mkLike && S.mkLike[item]); }
 function mkN(item){ var n = (MK && MK.like && MK.like[item]) || 0; return Math.max(n, mkOn(item) ? 1 : 0); }
 function mkLikeBtn(item){
-  var on = mkOn(item), n = mkN(item), many = n >= JR_LIKE_MIN;
+  var on = mkOn(item), n = mkN(item), many = n >= 1;   /* у фильмов и подкастов число видно всем сразу, с первого лайка (Заира 12.11) */
   return '<button class="mk-b mk-like'+(on ? ' on' : '')+'" data-mklike="'+esc(item)+'" aria-pressed="'+(on ? 'true' : 'false')+'" aria-label="Нравится'+(many ? ', отметок: '+n : '')+'">'+
     '<i>'+jrHeart(on, 17)+'</i>Нравится'+(many ? ' <b>'+n+'</b>' : '')+'</button>';
 }
@@ -29815,7 +29815,7 @@ function mkFlush(){
 }
 function mkLoad(){
   mkFlush();
-  if(Date.now() - MK_AT < 6e5) return;
+  if(Date.now() - MK_AT < 12e4) return;   /* числа лайков свежие: не старше 2 минут */
   MK_AT = Date.now();
   try{
     fetch("api/content/marks", { cache:"no-store" }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
